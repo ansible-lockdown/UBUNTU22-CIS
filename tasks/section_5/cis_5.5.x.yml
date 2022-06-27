@@ -1,0 +1,266 @@
+---
+- name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured"
+  block:
+      - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured | Set /etc/login.defs PASS_MIN_DAYS"
+        lineinfile:
+            path: /etc/login.defs
+            regexp: '^PASS_MIN_DAYS|^#PASS_MIN_DAYS'
+            line: 'PASS_MIN_DAYS {{ ubtu22cis_pass.min_days }}'
+
+      - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured | Set existing users PASS_MIN_DAYS"
+        command: chage --mindays {{ ubtu22cis_pass.min_days }} {{ item }}
+        failed_when: false
+        with_items:
+            - "{{ ubtu22cis_passwd| selectattr('uid', '>=', 1000) | map(attribute='id') | list }}"
+        when: ubtu22cis_disruption_high
+  when:
+      - ubtu22cis_rule_5_5_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.1.1
+      - user
+      - login
+
+- name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less"
+  block:
+      - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Set /etc/login.defs PASS_MAX_DAYS"
+        lineinfile:
+            path: /etc/login.defs
+            regexp: '^PASS_MAX_DAYS|^#PASS_MAX_DAYS'
+            line: 'PASS_MAX_DAYS {{ ubtu22cis_pass.max_days }}'
+            insertafter: '# Password aging controls'
+
+      - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Set existing users PASS_MAX_DAYS"
+        command: chage --maxdays {{ ubtu22cis_pass.max_days }} {{ item }}
+        failed_when: false
+        with_items:
+            - "{{ ubtu22cis_passwd| selectattr('uid', '>=', 1000) | map(attribute='id') | list }}"
+        when: ubtu22cis_disruption_high
+  when:
+      - ubtu22cis_rule_5_5_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.1.2
+      - user
+      - login
+
+- name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
+  block:
+      - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | Set /etc/login.defs PASS_WARN_AGE"
+        lineinfile:
+            path: /etc/login.defs
+            regexp: '^PASS_WARN_AGE|^#PASS_WARN_AGE'
+            line: 'PASS_WARN_AGE {{ ubtu22cis_pass.warn_age }}'
+
+      - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | Set existing users PASS_WARN_AGE"
+        command: chage --warndays {{ ubtu22cis_pass.warn_age }} {{ item }}
+        failed_when: false
+        with_items:
+            - "{{ ubtu22cis_passwd| selectattr('uid', '>=', 1000) | map(attribute='id') | list }}"
+        when: ubtu22cis_disruption_high
+  when:
+      - ubtu22cis_rule_5_5_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.1.3
+      - user
+      - login
+
+- name: "5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less"
+  block:
+      - name: "5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set inactive period for new users"
+        command: useradd -D -f {{ ubtu22cis_pass.inactive }}
+        failed_when: false
+
+      - name: "5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set inactive period for existing users"
+        command: chage --inactive {{ ubtu22cis_pass.inactive }} {{ item }}
+        failed_when: false
+        with_items:
+            - "{{ ubtu22cis_passwd| selectattr('uid', '>=', 1000) | map(attribute='id') | list }}"
+        when: ubtu22cis_disruption_high
+  when:
+      - ubtu22cis_rule_5_5_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.1.4
+      - user
+      - login
+
+- name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past"
+  block:
+      - name: "5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
+        shell: echo $(($(date --utc --date "$1" +%s)/86400))
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_5_5_1_5_current_time
+
+      - name: "5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed PW date in future"
+        shell: "cat /etc/shadow | awk -F: '{if($3>{{ ubtu22cis_5_5_1_5_current_time.stdout }})print$1}'"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_5_5_1_5_user_list
+
+      - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Warn about users"
+        debug:
+            msg:
+                - "WARNING!!!!The following accounts have the last PW change date in the future"
+                - "{{ ubtu22cis_5_5_1_5_user_list.stdout_lines }}"
+        when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
+
+      - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with furtre PW changed dates"
+        command: passwd --expire {{ item }}
+        failed_when: false
+        with_items:
+            - "{{ ubtu22cis_5_5_1_5_user_list.stdout_lines }}"
+        when:
+            - ubtu22cis_disruption_high
+            - ubtu22cis_5_5_1_5_user_list.stdout | length > 0
+  when:
+      - ubtu22cis_rule_5_5_1_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.1.5
+      - user
+      - login
+
+- name: "5.5.2 | PATCH | Ensure system accounts are secured"
+  block:
+      - name: "5.5.2 | PATCH | Ensure system accounts are secured | Set system accounts to login"
+        user:
+            name: "{{ item }}"
+            shell: /sbin/nologin
+        with_items:
+            - "{{ ubtu22cis_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
+        when:
+            - item != "root"
+            - item != "sync"
+            - item != "shutdown"
+            - item != "halt"
+
+      - name: "5.5.2 | PATCH | Ensure system accounts are secured | Lock non-root system accounts"
+        user:
+            name: "{{ item }}"
+            password_lock: true
+        with_items:
+            - "{{ ubtu22cis_passwd| selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
+        when:
+            - item != "root"
+  when:
+      - ubtu22cis_rule_5_5_2
+      - ubtu22cis_disruption_high
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.2
+      - user
+      - system
+
+- name: "5.5.3 | PATCH | Ensure default group for the root account is GID 0"
+  block:
+      - name: "5.5.3 | PATCH | Ensure default group for the root account is GID 0 | Set root group to GUID 0"
+        group:
+            name: root
+            gid: 0
+
+      - name: "5.5.3 | PATCH | Ensure default group for the root account is GID 0 | Set root user to root group"
+        user:
+            name: root
+            group: root
+  when:
+      - ubtu22cis_rule_5_5_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.3
+      - user
+      - system
+
+- name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
+  block:
+      - name: "5.5.4 | AUDIT | Ensure default user umask is 027 or more restrictive"
+        shell: grep -E '^session\s+optional\s+pam_umask.so' /etc/pam.d/common-session
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_5_5_4_umask_pam_status
+
+      - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
+        lineinfile:
+            path: /etc/pam.d/common-session
+            line: 'session optional                        pam_umask.so'
+            insertbefore: '^# end of pam-auth-update config'
+        when: ubtu22cis_5_5_4_umask_pam_status.stdout | length == 0
+
+      - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
+        lineinfile:
+            path: "{{ item }}"
+            regexp: '^umask '
+            line: "umask {{ ubtu22cis_bash_umask }}"
+        with_items:
+            - /etc/bash.bashrc
+            - /etc/profile
+            - /etc/login.defs
+
+      - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
+        lineinfile:
+            path: /etc/login.defs
+            regexp: '^USERGROUPS_ENAB'
+            line: USERGROUPS_ENAB no
+  when:
+      - ubtu22cis_rule_5_5_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.4
+      - user
+
+- name: "5.5.5 | PATCH | Ensure default user shell timeout is 900 seconds or less"
+  blockinfile:
+      create: yes
+      mode: 0644
+      dest: "{{ item.dest }}"
+      state: "{{ item.state }}"
+      marker: "# {mark} ANSIBLE MANAGED"
+      block: |
+        # Set session timeout - CIS ID 5.5.5
+        TMOUT={{ ubtu22cis_shell_session_timeout.timeout }}
+        # only set TMOUT if it isn't set yet to avoid a shell error
+        : ${TMOUT={{ ubtu22cis_shell_session_timeout.timeout }}}
+        readonly TMOUT
+        export TMOUT
+  with_items:
+      - { dest: "{{ ubtu22cis_shell_session_timeout.file }}", state: present }
+      - { dest: /etc/profile, state: "{{ (ubtu22cis_shell_session_timeout.file == '/etc/profile') | ternary('present', 'absent') }}" }
+      - { dest: /etc/bash.bashrc, state: present }
+  when:
+      - ubtu22cis_rule_5_5_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.5.5
+      - user

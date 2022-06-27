@@ -1,0 +1,16 @@
+---
+- name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
+  command: find /var/log -type f -exec chmod g-wx,o-rwx "{}" + -o -type d -exec chmod g-w,o-rwx "{}" +
+  changed_when: ubtu22cis_4_2_3_logfile_perms_status.rc == 0
+  check_mode: false
+  register: ubtu22cis_4_2_3_logfile_perms_status
+  when:
+      - ubtu22cis_rule_4_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_4.2.3
+      - logfiles
+      - permissions

@@ -1,0 +1,93 @@
+# Welcome to the chrony configuration file. See chrony.conf(5) for more
+# information about usuable directives.
+
+# This will use (up to):
+# - 4 sources from ntp.ubuntu.com which some are ipv6 enabled
+# - 2 sources from 2.ubuntu.pool.ntp.org which is ipv6 enabled as well
+# - 1 source from [01].ubuntu.pool.ntp.org each (ipv4 only atm)
+# This means by default, up to 6 dual-stack and up to 2 additional IPv4-only
+# sources will be used.
+# At the same time it retains some protection against one of the entries being
+# down (compare to just using one of the lines). See (LP: #1754358) for the
+# discussion.
+#
+# About using servers from the NTP Pool Project in general see (LP: #104525).
+# Approved by Ubuntu Technical Board on 2011-02-08.
+# See http://www.pool.ntp.org/join.html for more information.
+
+{% for server in ubtu22cis_time_synchronization_servers -%}
+server {{ server }} {{ ubtu22cis_chrony_server_options }}
+{% endfor %}
+
+# This directive specify the location of the file containing ID/key pairs for
+# NTP authentication.
+keyfile /etc/chrony/chrony.keys
+
+# Set runtime command key.  Note that if you change the key (not the
+# password) to anything other than 1 you will need to edit
+# /etc/ppp/ip-up.d/chrony, /etc/ppp/ip-down.d/chrony, /etc/init.d/chrony
+# and /etc/cron.weekly/chrony as these scripts use it to get the password.
+
+#commandkey 1
+
+# This directive specify the file into which chronyd will store the rate
+# information.
+driftfile /var/lib/chrony/chrony.drift
+
+# Uncomment the following line to turn logging on.
+#log tracking measurements statistics
+
+# Log files location.
+logdir /var/log/chrony
+
+# Stop bad estimates upsetting machine clock.
+maxupdateskew 100.0
+
+# This directive enables kernel synchronisation (every 11 minutes) of the
+# real-time clock. Note that it can’t be used along with the 'rtcfile' directive.
+rtcsync
+
+# Dump measurements when daemon exits.
+dumponexit
+
+# Specify directory for dumping measurements.
+
+dumpdir /var/lib/chrony
+
+# Let computer be a server when it is unsynchronised.
+
+local stratum 10
+
+# Allow computers on the unrouted nets to use the server.
+
+#allow 10/8
+#allow 192.168/16
+#allow 172.16/12
+
+# This directive forces `chronyd' to send a message to syslog if it
+# makes a system clock adjustment larger than a threshold value in seconds.
+
+logchange 0.5
+
+# This directive defines an email address to which mail should be sent
+# if chronyd applies a correction exceeding a particular threshold to the
+# system clock.
+
+# mailonchange root@localhost 0.5
+
+# This directive tells chrony to regulate the real-time clock and tells it
+# Where to store related data.  It may not work on some newer motherboards
+# that use the HPET real-time clock.  It requires enhanced real-time
+# support in the kernel.  I've commented it out because with certain
+# combinations of motherboard and kernel it is reported to cause lockups.
+
+# rtcfile /var/lib/chrony/chrony.rtc
+
+# If the last line of this file reads 'rtconutc' chrony will assume that
+# the CMOS clock is on UTC (GMT).  If it reads '# rtconutc' or is absent
+# chrony will assume local time.  The line (if any) was written by the
+# chrony postinst based on what it found in /etc/default/rcS.  You may
+# change it if necessary.
+rtconutc
+
+user {{ ubtu22cis_chrony_user }}

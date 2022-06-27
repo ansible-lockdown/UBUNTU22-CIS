@@ -1,0 +1,60 @@
+---
+- name: "3.2.1 | PATCH | Ensure packet redirect sending is disabled"
+  sysctl:
+      name: "{{ item }}"
+      value: '0'
+      sysctl_set: yes
+      state: present
+      reload: yes
+      ignoreerrors: yes
+  with_items:
+      - net.ipv4.conf.all.send_redirects
+      - net.ipv4.conf.default.send_redirects
+  notify: sysctl flush ipv4 route table
+  when:
+      - ubtu22cis_rule_3_2_1
+      - not ubtu22cis_is_router
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_3.2.1
+      - packet_redirect
+      - sysctl
+
+- name: "3.2.2 | PATCH | Ensure IP forwarding is disabled"
+  block:
+      - name: "3.2.2 | PATCH | Ensure IP forwarding is disabled | IPv4 settings"
+        sysctl:
+            name: net.ipv4.ip_forward
+            value: '0'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify:
+            - sysctl flush ipv4 route table
+
+      - name: "3.2.2 | PATCH | Ensure IP forwarding is disabled | IPv6 settings"
+        sysctl:
+            name: net.ipv6.conf.all.forwarding
+            value: '0'
+            sysctl_set: yes
+            state: present
+            reload: yes
+            ignoreerrors: yes
+        notify:
+            - sysctl flush ipv6 route table
+        when: ubtu22cis_ipv6_required
+  when:
+      - ubtu22cis_rule_3_2_2
+      - not ubtu22cis_is_router
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_3.2.2
+      - ip_forwarding
+      - sysctl

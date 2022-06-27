@@ -1,0 +1,85 @@
+---
+- name: "1.6.1.1 | PATCH | Ensure AppArmor is installed"
+  apt:
+      name: ['apparmor', 'apparmor-utils']
+      state: present
+  when:
+      - ubtu22cis_rule_1_6_1_1
+      - "'apparmor' not in ansible_facts.packages or
+        'apparmor-utils' not in ansible_facts.packages"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.6.1.1
+      - apparmor
+
+- name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
+  block:
+      - name: "1.6.1.2 | AUDIT | Ensure AppArmor is enabled in the bootloader configuration | Get current settings"
+        shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_1_6_1_2_cmdline_settings
+
+      - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
+        lineinfile:
+            path: /etc/default/grub
+            regexp: '^GRUB_CMDLINE_LINUX'
+            line: 'GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor {{ ubtu22cis_1_6_1_2_cmdline_settings.stdout }}"'
+            insertafter: '^GRUB_'
+        when:
+            - "'apparmor' not in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
+            - "'security' not in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
+        notify: grub update
+
+      - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist | Replace apparmor settings when exists"
+        replace:
+            path: /etc/default/grub
+            regexp: "{{ item.regexp }}"
+            replace: "{{ item.replace }}"
+        with_items:
+            - { regexp: 'apparmor=\S+', replace: 'apparmor=1' }
+            - { regexp: 'security=\S+', replace: 'security=apparmor' }
+        when:
+            - "'apparmor' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
+            - "'security' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
+        notify: grub update
+  when:
+      - ubtu22cis_rule_1_6_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.6.1.2
+      - apparmor
+
+- name: "1.6.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode"
+  command: aa-enforce /etc/apparmor.d/*
+  failed_when: false
+  when:
+      - ubtu22cis_rule_1_6_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.6.1.3
+      - apparmor
+
+- name: "1.6.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing"
+  command: aa-enforce /etc/apparmor.d/*
+  failed_when: false
+  when:
+      - ubtu22cis_rule_1_6_1_4
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - scored
+      - patch
+      - rule_1.6.1.4
+      - apparmor

@@ -1,0 +1,88 @@
+---
+- name: "2.2.1 | PATCH | Ensure NIS Client is not installed"
+  apt:
+      name: nis
+      state: absent
+  when:
+      - ubtu22cis_rule_2_2_1
+      - not ubtu22cis_nis_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - rule_2.2.1
+      - nis
+
+- name: "2.2.2 | PATCH | Ensure rsh client is not installed"
+  apt:
+      name: rsh-client
+      state: absent
+  when:
+      - ubtu22cis_rule_2_2_2
+      - not ubtu22cis_rsh_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_2.2.2
+      - rsh
+
+- name: "2.2.3 | PATCH | Ensure talk client is not installed"
+  apt:
+      name: talk
+      state: absent
+  when:
+      - ubtu22cis_rule_2_2_3
+      - not ubtu22cis_talk_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_2.2.3
+      - talk
+
+- name: "2.2.4 | PATCH | Ensure telnet client is not installed"
+  apt:
+      name: telnet
+      state: absent
+  when:
+      - ubtu22cis_rule_2_2_4
+      - not ubtu22cis_telnet_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_2.2.4
+      - telnet
+
+- name: "2.2.5 | PATCH | Ensure LDAP client is not installed"
+  apt:
+      name: ldap-utils
+      state: absent
+  when:
+      - ubtu22cis_rule_2_2_5
+      - not ubtu22cis_ldap_clients_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_2.2.5
+      - ldap
+
+- name: "2.2.6 | PATCH | Ensure RPC is not installed"
+  apt:
+      name: rpcbind
+      state: absent
+  when:
+      - ubtu22cis_rule_2_2_6
+      - not ubtu22cis_rpc_required
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_2.2.6
+      - rpbc

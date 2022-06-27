@@ -1,0 +1,14 @@
+---
+- name: "1.9 | PATCH | Ensure updates, patches, and additional security software are installed"
+  apt:
+      name: "*"
+      state: latest
+  when:
+      - ubtu22cis_rule_1_9
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - rule_1.9
+      - patch

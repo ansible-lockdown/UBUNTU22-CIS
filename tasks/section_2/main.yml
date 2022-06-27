@@ -1,0 +1,9 @@
+---
+- name: "SECTION | 2.1 | Special Purpose Services"
+  include: cis_2.1.x.yml
+
+- name: "SECTION | 2.2 | Service Clients"
+  include: cis_2.2.x.yml
+
+- name: "SECTION | 2.3 | Ensure nonessential services are removed or masked"
+  include: cis_2.3.yml

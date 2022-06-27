@@ -1,0 +1,58 @@
+---
+- name: grub update
+  command: update-grub
+  failed_when: false
+
+- name: reload gdm3
+  command: dpkg-reconfigure gdm3
+  failed_when: false
+
+- name: restart postfix
+  service:
+      name: postfix
+      state: restarted
+
+- name: restart exim4
+  service:
+      name: exim4
+      state: restarted
+
+- name: sysctl flush ipv4 route table
+  sysctl:
+      name: net.ipv4.route.flush
+      value: '1'
+      sysctl_set: yes
+  when: ansible_virtualization_type != "docker"
+
+- name: reload ufw
+  ufw:
+      state: reloaded
+
+- name: sysctl flush ipv6 route table
+  sysctl:
+      name: net.ipv6.route.flush
+      value: '1'
+      sysctl_set: yes
+  when: ansible_virtualization_type != "docker"
+
+- name: restart auditd
+  service:
+      name: auditd
+      state: restarted
+  when:
+      - not ubtu22cis_skip_for_travis
+  tags:
+      - skip_ansible_lint
+
+- name: restart rsyslog
+  service:
+      name: rsyslog
+      state: restarted
+
+- name: restart sshd
+  service:
+      name: sshd
+      state: restarted
+
+- name: reload gdm
+  command: dpkg-reconfigure gdm3

@@ -1,0 +1,25 @@
+galaxy_info:
+    author: "George Nalen, Mark Bolwell, and DFed"
+    description: "Apply the Ubuntu 20 CIS benmarks"
+    company: "MindPoint Group"
+    license: MIT
+    min_ansible_version: 2.9.0
+    platforms:
+        - name: Ubuntu
+          versions:
+              - focal
+    galaxy_tags:
+        - system
+        - security
+        - cis
+        - hardening
+        - benchmark
+        - compliance
+        - complianceascode
+        - ubuntu22
+collections:
+  - community.general
+  - community.crypto
+  - ansible.posix
+
+dependencies: []

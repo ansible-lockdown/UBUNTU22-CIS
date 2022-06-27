@@ -1,0 +1,27 @@
+---
+- name: "SECTION | 1.1 | Disable Unused Filesystems"
+  include: cis_1.1.x.yml
+
+- name: "SECTION | 1.2 | Cofnigure Software Updates"
+  include: cis_1.2.x.yml
+
+- name: "SECTION | 1.3. | Filesystem Integrity Checking"
+  include: cis_1.3.x.yml
+
+- name: "SECTION | 1.4 | Secure Boot Settings"
+  include: cis_1.4.x.yml
+
+- name: "SECTION | 1.5 | Additional Process Hardening"
+  include: cis_1.5.x.yml
+
+- name: "SECTION | 1.6 | Mandatory Access Control"
+  include: cis_1.6.x.yml
+
+- name: "SECTION | 1.7 | Command Line Warning Banners"
+  include: cis_1.7.x.yml
+
+- name: "SECTION | 1.8 | GNOME Display Manager"
+  include: cis_1.8.x.yml
+
+- name: "SECTION | 1.9 | Ensure updates, patches, and additional security software are installed"
+  include: cis_1.9.yml

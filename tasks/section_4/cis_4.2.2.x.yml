@@ -1,0 +1,50 @@
+---
+- name: "4.2.2.1 | PATCH | Ensure journald is configured to send logs to rsyslog"
+  lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: '^ForwardToSyslog|^#ForwardToSyslog'
+      line: 'ForwardToSyslog=yes'
+      insertafter: '\[Journal\]'
+  when:
+      - ubtu22cis_rule_4_2_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_4.2.2.1
+      - rsyslog
+      - journald
+
+- name: "4.2.2.2 | PATCH | Ensure journald is configured to compress large log files"
+  lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: '^Compress|^#Compress'
+      line: 'Compress=yes'
+      insertafter: '\[Journal\]'
+  when:
+      - ubtu22cis_rule_4_2_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - rule_4.2.2.2
+      - rsyslog
+      - journald
+
+- name: "4.2.2.3 | PATCH | Ensure journald is configured to write logfiles to persistent disk"
+  lineinfile:
+      path: /etc/systemd/journald.conf
+      regexp: '^Storage|^#Storage'
+      line: 'Storage=persistent'
+      insertafter: '\[Journal\]'
+  when:
+      - ubtu22cis_rule_4_2_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_4.2.2.3
+      - rsyslog
+      - journald

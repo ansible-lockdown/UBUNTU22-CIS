@@ -1,0 +1,55 @@
+---
+- name: "PRELIM | Run apt update"
+  apt:
+      update_cache: yes
+  when:
+      - ubtu22cis_rule_1_3_1 or
+        ubtu22cis_rule_1_9
+
+- name: "PRELIM | Check for autofs service"
+  shell: "systemctl show autofs | grep LoadState | cut -d = -f 2"
+  register: ubtu22cis_autofs_service_status
+  changed_when: false
+  check_mode: false
+  when:
+      - ubtu22cis_rule_1_1_23
+  tags:
+      - skip_ansible_lint
+
+- name: "PRELIM | Check for avahi-daemon service"
+  shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
+  register: avahi_service_status
+  changed_when: false
+  check_mode: false
+  when:
+      - ubtu22cis_rule_2_1_3
+  tags:
+      - skip_ansible_lint
+
+- name: "PRELIM | Install Network-Manager"
+  apt:
+      name: network-manager
+      state: present
+  when:
+      - ubtu22cis_rule_3_1_2
+      - not ubtu22cis_system_is_container
+      - "'network-manager' not in ansible_facts.packages"
+
+- name: "PRELIM | Install ACL"
+  apt:
+      name: acl
+      state: present
+  when:
+      - ubtu22cis_rule_6_2_6
+      - ubtu22cis_install_network_manager
+      - "'acl' not in ansible_facts.packages"
+
+- name: "PRELIM | List users accounts"
+  command: "awk -F: '{print $1}' /etc/passwd"
+  changed_when: false
+  check_mode: false
+  register: ubtu22cis_users
+  when:
+      - ubtu22cis_rule_6_2_8 or
+        ubtu22cis_rule_6_2_9 or
+        ubtu22cis_rule_6_2_10

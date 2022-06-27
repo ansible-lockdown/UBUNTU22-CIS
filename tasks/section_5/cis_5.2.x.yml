@@ -1,0 +1,46 @@
+---
+- name: "5.2.1 | PATCH | Ensure sudo is installed"
+  apt:
+      name: "{{ ubtu22cis_sudo_package }}"
+      state: present
+  when:
+      - ubtu22cis_rule_5_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.2.1
+      - sudo
+
+- name: "5.2.2 | PATCH | Ensure sudo commands use pty"
+  lineinfile:
+      path: /etc/sudoers
+      regexp: '^Defaults        use_'
+      line: 'Defaults        use_pty'
+      insertafter: '^Defaults'
+  when:
+      - ubtu22cis_rule_5_2_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.2.2
+      - sudo
+
+- name: "5.2.3 | PATCH | Ensure sudo log file exists"
+  lineinfile:
+      path: /etc/sudoers
+      regexp: '^Defaults        logfile'
+      line: 'Defaults        logfile="{{ ubtu22cis_sudo_logfile }}"'
+      insertafter: '^Defaults'
+  when:
+      - ubtu22cis_rule_5_2_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.2.3
+      - sudo

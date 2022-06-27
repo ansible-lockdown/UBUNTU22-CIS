@@ -1,0 +1,159 @@
+---
+- name: "5.1.1 | PATCH | Ensure cron daemon is enabled and running"
+  service:
+      name: cron
+      state: started
+      enabled: yes
+  when:
+      - ubtu22cis_rule_5_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.1
+      - cron
+
+- name: "5.1.2 | PATCH | Ensure permissions on /etc/crontab are configured"
+  file:
+      path: /etc/crontab
+      owner: root
+      group: root
+      mode: 0600
+  when:
+      - ubtu22cis_rule_5_1_2
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.2
+      - cron
+
+- name: "5.1.3 | PATCH | Ensure permissions on /etc/cron.hourly are configured"
+  file:
+      path: /etc/cron.hourly
+      owner: root
+      group: root
+      mode: 0700
+  when:
+      - ubtu22cis_rule_5_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.3
+      - cron
+
+- name: "5.1.4 | PATCH | Ensure permissions on /etc/cron.daily are configured"
+  file:
+      path: /etc/cron.daily
+      owner: root
+      group: root
+      mode: 0700
+  when:
+      - ubtu22cis_rule_5_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.4
+      - cron
+
+- name: "5.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
+  file:
+      path: /etc/cron.weekly
+      owner: root
+      group: root
+      mode: 0700
+  when:
+      - ubtu22cis_rule_5_1_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.5
+      - cron
+
+- name: "5.1.6 | PATCH | Ensure permissions on /etc/cron.monthly are configured"
+  file:
+      path: /etc/cron.monthly
+      owner: root
+      group: root
+      mode: 0700
+  when:
+      - ubtu22cis_rule_5_1_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.6
+      - cron
+
+- name: "5.1.7 | PATCH | Ensure permissions on /etc/cron.d are configured"
+  file:
+      path: /etc/cron.d
+      owner: root
+      group: root
+      mode: 0700
+  when:
+      - ubtu22cis_rule_5_1_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.7
+      - cron
+
+- name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users"
+  block:
+      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Remove cron.deny"
+        file:
+            path: /etc/cron.deny
+            state: absent
+
+      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Create cron.allow"
+        file:
+            path: /etc/cron.allow
+            owner: root
+            group: root
+            mode: 0640
+            state: touch
+  when:
+      - ubtu22cis_rule_5_1_8
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.8
+      - cron
+
+- name: "5.1.9 | PATCH | Ensure at is restricted to authorized users"
+  block:
+      - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Remove at.deny"
+        file:
+            path: /etc/at.deny
+            state: absent
+
+      - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Create at.allow"
+        file:
+            path: /etc/at.allow
+            owner: root
+            group: root
+            mode: 0640
+            state: touch
+  when:
+      - ubtu22cis_rule_5_1_9
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.1.9
+      - cron

@@ -1,0 +1,28 @@
+---
+- name: "4.3 | PATCH | Ensure logrotate is configured"
+  block:
+      - name: "4.3 | PATCH | Ensure logrotate is configured | Get logrotate files"
+        find:
+            paths: /etc/logrotate.d/
+        check_mode: false
+        register: ubtu22cis_4_3_logrotate_files
+
+      - name: "4.3 | PATCH | Ensure logrotate is configured | Set rotation configurations"
+        replace:
+            path: "{{ item.path }}"
+            regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
+            replace: "\\1{{ ubtu22cis_logrotate }}"
+        with_items:
+            - "{{ ubtu22cis_4_3_logrotate_files.files }}"
+            - { path: "/etc/logrotate.conf" }
+        loop_control:
+            label: "{{ item.path }}"
+  when:
+      - ubtu22cis_rule_4_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - rule_4.3
+      - logrotate

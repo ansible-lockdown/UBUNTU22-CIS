@@ -1,0 +1,64 @@
+---
+- name: "3.4.1 | PATCH | Ensure DCCP is disabled"
+  lineinfile:
+      path: /etc/modprobe.d/dccp.conf
+      regexp: '^(#)?install dccp(\\s|$)'
+      line: 'install dccp /bin/true'
+      create: yes
+  when:
+      - ubtu22cis_rule_3_4_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - patch
+      - rule_3.4.1
+      - dccp
+
+- name: "3.4.2 | PATCH | Ensure SCTP is disabled"
+  lineinfile:
+      path: /etc/modprobe.d/sctp.conf
+      regexp: "^(#)?install sctp(\\s|$)"
+      line: 'install sctp /bin/true'
+      create: yes
+  when:
+      - ubtu22cis_rule_3_4_2
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - patch
+      - rule_3.4.2
+      - sctp
+
+- name: "3.4.3 | PATCH | Ensure RDS is disabled"
+  lineinfile:
+      path: /etc/modprobe.d/rds.conf
+      regexp: '^(#)?install rds(\\s|$)'
+      line: 'install rds /bin/true'
+      create: yes
+  when:
+      - ubtu22cis_rule_3_4_3
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - patch
+      - rule_3.4.3
+      - rds
+
+- name: "3.4.4 | PATCH | Ensure TIPC is disabled"
+  lineinfile:
+      path: /etc/modprobe.d/tipc.conf
+      regexp: '^(#)?install tipc(\\s|$)'
+      line: install tipc /bin/true
+      create: yes
+  when:
+      - ubtu22cis_rule_3_4_4
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - patch
+      - rule_3.4.4
+      - tipc
