@@ -43,22 +43,25 @@
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled"
   block:
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Check for network-manager tool"
-        shell: dpkg -l | grep network-manager
+        shell: nmcli radio wifi
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_3_1_2_network_manager_status
+        register: ubtu22cis_3_1_2_wifi_status
+        when: "'network-manager' in ansible_facts.packages"
+
+      - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Warn about wireless if network-manager not installed"
+        debug:
+            msg: "ALERT!!!! You need to disable wireless interfaces manually since network-manager is not installed"
+        when: "'network-manager' not in ansible_facts.packages"
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"
         command: nmcli radio all off
         changed_when: ubtu22cis_3_1_2_nmcli_radio_off.rc == 0
         register: ubtu22cis_3_1_2_nmcli_radio_off
-        when: ubtu22cis_3_1_2_network_manager_status.stdout | length > 0
-
-      - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Warn about wireless if network-manager not installed"
-        debug:
-            msg: "ALERT!!!! You need to disable wireless interfaces manually since network-manager is not installed"
-        when: ubtu22cis_3_1_2_network_manager_status.stdout | length == 0
+        when:
+            - "'network-manager' in ansible_facts.packages"
+            - "'enabled' in ubtu22cis_3_1_2_wifi_status.stdout"
   when:
       - ubtu22cis_rule_3_1_2
   tags:

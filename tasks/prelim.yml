@@ -44,6 +44,21 @@
       - ubtu22cis_install_network_manager
       - "'acl' not in ansible_facts.packages"
 
+- name: "PRELIM | Install iptables-persistent"
+  apt:
+      name: iptables-persistent
+      state: present
+  when:
+      - "'iptables-persistent' not in ansible_facts.packages"
+      - ubtu22cis_save_iptables_cis_rules
+      - ubtu22cis_firewall_package == "iptables"
+      - ubtu22cis_ipv6_required
+      - not ubtu22cis_ipv4_required
+      - ubtu22cis_rule_3_5_3_3_1 or
+        ubtu22cis_rule_3_5_3_3_2 or
+        ubtu22cis_rule_3_5_3_3_3 or
+        ubtu22cis_rule_3_5_3_3_4
+
 - name: "PRELIM | List users accounts"
   command: "awk -F: '{print $1}' /etc/passwd"
   changed_when: false
