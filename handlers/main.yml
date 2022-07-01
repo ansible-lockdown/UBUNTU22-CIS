@@ -28,6 +28,12 @@
   ufw:
       state: reloaded
 
+- name: iptables presistent 
+  shell: bash -c "iptables-save > /etc/iptables/rules.v4"
+  changed_when: ubtu22cis_iptables_save.rc == 0
+  failed_when: ubtu22cis_iptables_save.rc > 0
+  register: ubtu22cis_iptables_save
+
 - name: ip6tables persistent 
   shell: bash -c "ip6tables-save > /etc/iptables/rules.v6"
   changed_when: ubtu22cis_ip6tables_save.rc == 0
