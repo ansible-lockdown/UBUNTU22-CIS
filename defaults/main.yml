@@ -13,7 +13,7 @@ ubtu22cis_section5_patch: true
 ubtu22cis_section6_patch: true
 
 # System will reboot if false, can give better audit results
-ubtu22_skip_reboot: True
+ubtu22_skip_reboot: true
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
@@ -73,6 +73,9 @@ ubtu22cis_system_is_container: false
 
 # skip events for ec2 instance testing pipeline
 system_is_ec2: false
+
+# Whether to skip the reboot
+skip_reboot: true
 
 # Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,

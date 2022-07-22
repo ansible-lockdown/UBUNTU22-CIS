@@ -15,6 +15,7 @@
       - ubtu22cis_rule_1_1_23
   tags:
       - skip_ansible_lint
+      - section1
 
 - name: "PRELIM | Check for avahi-daemon service"
   shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
@@ -71,3 +72,7 @@
       - ubtu22cis_rule_6_2_8 or
         ubtu22cis_rule_6_2_9 or
         ubtu22cis_rule_6_2_10
+
+- name: "PRELIM | Recapture packages"
+  package_facts:
+      manager: auto
