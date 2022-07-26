@@ -244,7 +244,7 @@
       src: /dev/shm
       state: remounted
       fstype: tmpfs
-      opts: "{{ ubtu22cis_dev_shm_fstab_options }}"
+      opts: "defaults,{% if ubtu22cis_rule_1_1_7 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_9 %}noexec{% endif %}"
   when:
       - ubtu22cis_rule_1_1_7 or
         ubtu22cis_rule_1_1_8 or

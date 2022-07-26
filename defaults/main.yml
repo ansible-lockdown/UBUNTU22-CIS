@@ -389,12 +389,8 @@ ubtu22cis_desktop_required: false
 # To conform to CIS control 1.1.5 noexec needs to present
 ubtu22cis_tmp_fstab_options: "defaults,rw,nosuid,nodev,noexec,relatime"
 
-# Control 1.1.6/1.1.7/1.1.8/1.1.9
+# Control 1.1.6
 # ubtu22cis_dev_shm_fstab_options are the fstab file system options for /dev/shm
-# To conform to CIS control 1.1.6 could use any settings
-# To conform to CIS control 1.1.7 nodev needs to be present
-# To conform to CIS control 1.1.8 nosuid needs to be present
-# To conform to CIS control 1.1.9 noexec needs to be present
 ubtu22cis_dev_shm_fstab_options: "defaults,noexec,nodev,nosuid"
 
 # Control 1.1.12/1.1.13/1.1.14
