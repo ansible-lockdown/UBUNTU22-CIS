@@ -18,12 +18,10 @@
         failed_when: false
         register: ubtu22cis_auditd_immutable_check
 
-      - debug: var=ubtu22cis_auditd_immutable_check
-
       - name: "POST | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Set reboot required"
         debug:
             msg: "Reboot required for auditd to apply new rules as immutable set"
-        notify: chagne_requires_reboot
+        notify: change_requires_reboot
         when: ubtu22cis_auditd_immutable_check.stdout == '1'
   when:
       - ubtu22cis_audit_rules_update.changed
