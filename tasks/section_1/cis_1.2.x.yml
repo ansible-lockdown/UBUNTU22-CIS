@@ -1,4 +1,5 @@
 ---
+
 - name: "1.2.1 | AUDIT | Ensure package manager repositories are configured"
   block:
       - name: "1.2.1 | AUDIT | Ensure package manager repositories are configured | Get repositories"
@@ -11,9 +12,14 @@
       - name: "1.2.1 | AUDIT | Ensure package manager repositories are configured | Message out repository configs"
         debug:
             msg:
-                - "Alert!!!! Below are the apt package repositories"
+                - "Warning!! Below are the apt package repositories"
                 - "Please review to make sure they conform to your sites policies"
                 - "{{ ubtu22cis_1_2_1_apt_policy.stdout_lines }}"
+
+      - name: "1.2.1 | AUDIT | Ensure package manager repositories are configured | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.2.1' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
   when:
       - ubtu22cis_rule_1_2_1
   tags:
@@ -36,10 +42,15 @@
       - name: "1.2.2 | AUDIT | Ensure GPG keys are configured | Message out apt gpg keys"
         debug:
             msg:
-                - "Alert!!!! Below are the apt gpg keys configured"
+                - "Warning!! Below are the apt gpg keys configured"
                 - "Please review to make sure they are configured"
                 - "in accordance with site policy"
                 - "{{ ubtu22cis_1_2_2_apt_gpgkeys.stdout_lines }}"
+      
+      - name: "1.2.2 | AUDIT | Ensure GPG keys are configured | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.2.2' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
   when:
       - ubtu22cis_rule_1_2_2
   tags:

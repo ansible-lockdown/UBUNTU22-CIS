@@ -52,7 +52,13 @@
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Warn about wireless if network-manager not installed"
         debug:
-            msg: "ALERT!!!! You need to disable wireless interfaces manually since network-manager is not installed"
+            msg: "Warning!! You need to disable wireless interfaces manually since network-manager is not installed"
+        when: "'network-manager' not in ansible_facts.packages"
+      
+      - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_3.1.2' ]"
+            warn_count: "{{ warn_count|int +1 }}"
         when: "'network-manager' not in ansible_facts.packages"
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"

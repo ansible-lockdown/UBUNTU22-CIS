@@ -48,8 +48,14 @@
       - name: "4.2.1.3 | AUDIT | Ensure logging is configured | Message out config"
         debug:
             msg:
-                - "Alert!!!Below is the current logging configurations for rsyslog, please review"
+                - "Warning!! Below is the current logging configurations for rsyslog, please review"
                 - "{{ ubtu22cis_4_2_1_3_rsyslog_config.stdout_lines }}"
+        when: not ubtu22cis_rsyslog_ansible_managed
+
+      - name: "4.2.1.3 | PATCH | Ensure logging is configured | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_4.2.1.4' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when: not ubtu22cis_rsyslog_ansible_managed
 
       - name: "4.2.1.3 | PATCH | Ensure logging is configured | Automated rsyslog configuration"

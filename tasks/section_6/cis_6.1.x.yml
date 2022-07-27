@@ -1,4 +1,5 @@
 ---
+
 - name: "6.1.1 | AUDIT | Audit system file permissions"
   block:
       - name: "6.1.1 | AUDIT | Audit system file permissions | Register package list"
@@ -20,9 +21,14 @@
       - name: "6.1.1 | AUDIT | Audit system file permissions | Message out packages results for review"
         debug:
             msg:
-                - "ALERT!!!! Below are the packages that need to be reviewed."
+                - "Warning!! Below are the packages that need to be reviewed."
                 - "You can run dpkg --verify <package name> and if nothing is returned the package is installed correctly"
                 - "{{ ubtu22cis_6_1_1_packages.stdout_lines }}"
+
+      - name: "6.1.1 | AUDIT | Audit system file permissions | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.1'"
+            warn_count: "{{ warn_count|int + 1 }}"
   when:
       - ubtu22cis_rule_6_1_1
   tags:
@@ -208,12 +214,20 @@
         set_fact:
             ubtu22cis_6_1_11_no_user_items_flatten: "{{ ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
 
-      - name: "6.1.11 | AUDIT | Ensure no unowned files or directories exist | Alert on unowned files and directories"
+      - name: "6.1.11 | AUDIT | Ensure no unowned files or directories exist | Warn on unowned files and directories"
         debug:
             msg:
-                - "ALERT!!!You have unowned files and are configured to not auto-remediate for this task"
+                - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
                 - "Please review the files/directories below and assign an owner"
                 - "{{ ubtu22cis_6_1_11_no_user_items_flatten }}"
+        when:
+            - not ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_11_no_user_items_flatten | length > 0
+
+      - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.11' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when:
             - not ubtu22cis_no_owner_adjust
             - ubtu22cis_6_1_11_no_user_items_flatten | length > 0
@@ -254,12 +268,20 @@
         set_fact:
             ubtu22cis_6_1_12_ungrouped_items_flatten: "{{ ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
 
-      - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Alert on ungrouped files and directories"
+      - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Warn on ungrouped files and directories"
         debug:
             msg:
-                - "ALERT!!!!You have ungrouped files/directories and are configured to not auto-remediate for this task"
+                - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
                 - "Please review the files/directories below and assign a group"
                 - "{{ ubtu22cis_6_1_12_ungrouped_items_flatten }}"
+        when:
+            - not ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_12_ungrouped_items_flatten | length > 0
+
+      - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.12' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when:
             - not ubtu22cis_no_group_adjust
             - ubtu22cis_6_1_12_ungrouped_items_flatten | length > 0
@@ -301,12 +323,20 @@
         set_fact:
             ubtu22cis_6_1_13_suid_executables_flatten: "{{ ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
 
-      - name: "6.1.13 | AUDIT | Audit SUID executables | Alert SUID executables exist"
+      - name: "6.1.13 | AUDIT | Audit SUID executables | Warn SUID executables exist"
         debug:
             msg:
-                - "ALERT!!!!You have SUID executables"
+                - "Warning!! You have SUID executables"
                 - "The files are listed below, please confirm the integrity of these binaries"
                 - "{{ ubtu22cis_6_1_13_suid_executables_flatten }}"
+        when:
+            - ubtu22cis_6_1_13_suid_executables_flatten | length > 0
+            - not ubtu22cis_suid_adjust
+
+      - name: "6.1.13 | AUDIT | Audit SUID executables | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.13' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when:
             - ubtu22cis_6_1_13_suid_executables_flatten | length > 0
             - not ubtu22cis_suid_adjust
@@ -347,12 +377,18 @@
         set_fact:
             ubtu22cis_6_1_14_sgid_executables_flatten: "{{ ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
 
-      - name: "6.1.14 | AUDIT | Audit SGID executables | Alert SGID executables exist"
+      - name: "6.1.14 | AUDIT | Audit SGID executables | Warn SGID executables exist"
         debug:
             msg:
-                - "ALERT!!!!You have SGID executables"
+                - "Warning!!!!You have SGID executables"
                 - "The files are listed below, please review the integrity of these binaries"
                 - "{{ ubtu22cis_6_1_14_sgid_executables_flatten }}"
+        when: ubtu22cis_6_1_14_sgid_executables_flatten | length > 0
+
+      - name: "6.1.14 | AUDIT | Audit SGID executables | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.14' ]"
+            warn_count: "{{ warn_count|int + 1 }}"
         when: ubtu22cis_6_1_14_sgid_executables_flatten | length > 0
   when:
       - ubtu22cis_rule_6_1_14

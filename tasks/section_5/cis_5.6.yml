@@ -14,6 +14,13 @@
                 - "WARNING!!!! Below is the list of consoles with root login access"
                 - "Please review for any consoles that are not in a physically secure location"
                 - "{{ ubtu22cis_5_6_terminal_list.stdout_lines }}"
+        when: ubtu22cis_5_6_terminal_list.stdout | length > 0
+
+      - name: "5.6 | AUDIT | Ensure root login is restricted to system console | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_5.6' ]"
+            warn_count: "{{ warn_count|int +1 }}"
+        when: ubtu22cis_5_6_terminal_list.stdout | length > 0
   when:
       - ubtu22cis_rule_5_6
   tags:

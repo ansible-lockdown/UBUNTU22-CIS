@@ -59,7 +59,6 @@
 - name: remount tmp
   shell: mount -o remount /tmp
 
-
 - name: restart rsyslog
   service:
       name: rsyslog

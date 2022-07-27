@@ -644,6 +644,9 @@ ubtu22cis_suid_adjust: false
 # ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 
+# Control 6.2.7
+# ubtu22cis_dotperm_ansiblemanaged is a toggle to allow this role to modify permissions on dot files
+ubtu22cis_dotperm_ansiblemanaged: true
 
 #### Audit Configuration Settings ####
 
