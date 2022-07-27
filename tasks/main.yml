@@ -98,6 +98,12 @@
   tags:
       - section6
 
+- name: run auditd logic
+  import_tasks: auditd.yml
+  when: update_audit_template
+  tags:
+      - always
+
 - name: flush handlers
   meta: flush_handlers
 
