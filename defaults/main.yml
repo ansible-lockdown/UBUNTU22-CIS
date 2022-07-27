@@ -387,11 +387,11 @@ ubtu22cis_desktop_required: false
 # To conform to CIS control 1.1.3 nodev needs to be present
 # To conform to CIS control 1.1.4 nosuid needs to be present
 # To conform to CIS control 1.1.5 noexec needs to present
-ubtu22cis_tmp_fstab_options: "defaults,rw,nosuid,nodev,noexec,relatime"
+# ubtu22cis_tmp_fstab_options: "defaults,rw,nosuid,nodev,noexec,relatime"
 
 # Control 1.1.6
 # ubtu22cis_dev_shm_fstab_options are the fstab file system options for /dev/shm
-ubtu22cis_dev_shm_fstab_options: "defaults,noexec,nodev,nosuid"
+# ubtu22cis_dev_shm_fstab_options: "defaults,noexec,nodev,nosuid"
 
 # Control 1.1.12/1.1.13/1.1.14
 # These are the settings for the /var/tmp mount
