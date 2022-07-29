@@ -1,4 +1,5 @@
 ---
+
 # If you would like a report at the end accordin to OpenSCAP as to the report results
 # then you should set ubtu22cis_oscap_scan to true/yes.
 # NOTE: This requires the python_xmltojson package on the control host.
@@ -394,7 +395,7 @@ ubtu22cis_vartmp:
     enabled: false
 
 # Control 1.3.1 - allow aide to be configured
-ubtu22cis_config_aide : true
+ubtu22cis_config_aide: true
 
 # Control 1.3.2
 # These are the crontab settings for file system integrity enforcement
@@ -601,7 +602,7 @@ ubtu22cis_pass:
     inactive: 30
 
 # Control 5.5.4
-# ubtu120cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile. 
+# ubtu120cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
 # The value needs to be 027 or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 

@@ -28,7 +28,7 @@
       - name: "6.1.1 | AUDIT | Audit system file permissions | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.1'"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_6_1_1
   tags:
@@ -223,7 +223,7 @@
       - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.11' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - not ubtu22cis_no_owner_adjust
             - ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
@@ -273,7 +273,7 @@
       - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.12' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - not ubtu22cis_no_group_adjust
             - ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
@@ -324,7 +324,7 @@
       - name: "6.1.13 | AUDIT | Audit SUID executables | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.13' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
             - not ubtu22cis_suid_adjust
@@ -376,7 +376,7 @@
       - name: "6.1.14 | AUDIT | Audit SGID executables | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.14' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
   when:
       - ubtu22cis_rule_6_1_14

@@ -1,4 +1,5 @@
 ---
+
 - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled"
   block:
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
@@ -250,7 +251,7 @@
       - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.10' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_10_var_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_10
@@ -283,7 +284,7 @@
       - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.11' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_11_var_tmp_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_11
@@ -341,7 +342,7 @@
       - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.15' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_15_var_log_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_15
@@ -374,7 +375,7 @@
       - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.16' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_16_var_log_audit_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_16
@@ -406,7 +407,7 @@
       - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.17' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_17_home_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_17

@@ -1,4 +1,5 @@
 ---
+
 - name: "3.2.1 | PATCH | Ensure packet redirect sending is disabled"
   sysctl:
       name: "{{ item }}"

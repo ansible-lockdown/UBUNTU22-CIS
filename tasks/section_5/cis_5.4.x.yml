@@ -1,4 +1,5 @@
 ---
+
 - name: "5.4.1 | PATCH | Ensure password creation requirements are configured"
   block:
       - name: "5.4.1 | PATCH | Ensure password creation requirements are configured | Install pam_pwquality module"

@@ -1,4 +1,5 @@
 ---
+
 - name: "3.5.1.1 | PATCH | Ensure ufw is installed"
   apt:
       name: ufw
@@ -148,7 +149,7 @@
       - name: "3.5.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.1.6' ]"
-            warn_count: "{{ warn_count|int +1 }}"
+            warn_count: "{{ warn_count | int +1 }}"
   when:
       - ubtu22cis_rule_3_5_1_6
       - ubtu22cis_firewall_package == "ufw"
@@ -190,14 +191,14 @@
       - name: "3.5.2.1 | AUDIT | Ensure nftables is installed | Message out warning"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
-        # apt:
-        #     name: nftables
-        #     state: present
+            # apt:
+            #     name: nftables
+            #     state: present
 
       - name: "3.5.2.1 | AUDIT | Ensure nftables is installed | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.1' ]"
-            warn_count: "{{ warn_count|int +1 }}"
+            warn_count: "{{ warn_count | int +1 }}"
   when:
       - ubtu22cis_rule_3_5_2_1
       - ubtu22cis_firewall_package == "nftables"
@@ -214,14 +215,14 @@
       - name: "3.5.2.2 | AUDIT | Ensure ufw is uninstalled or disabled with nftables | Message out warning"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
-        # apt:
-        #     name: ufw
-        #     state: absent
+            # apt:
+            #     name: ufw
+            #     state: absent
 
       - name: "3.5.2.2 | AUDIT | Ensure ufw is uninstalled or disabled with nftables | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.2' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_2
       - ubtu22cis_firewall_package == "nftables"
@@ -238,13 +239,13 @@
       - name: "3.5.2.3 | AUDIT | Ensure iptables are flushed with nftables | Message out warning"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
-        # iptables:
-        #     flush: yes
+            # iptables:
+            #     flush: yes
 
       - name: "3.5.2.3 | AUDIT | Ensure iptables are flushed with nftables | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.3' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_3
       - ubtu22cis_firewall_package == "nftables"
@@ -261,16 +262,16 @@
       - name: "3.5.2.4 | AUDIT | Ensure a nftables table exists"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables | Message out warning"
-        # command: "nft create table {{ ubtu22cis_nftables_table_name }}"
-        # changed_when: ubtu22cis_3_5_2_4_new_table.rc == 0
-        # failed_when: false
-        # check_mode: false
-        # register: ubtu22cis_3_5_2_4_new_table
+            # command: "nft create table {{ ubtu22cis_nftables_table_name }}"
+            # changed_when: ubtu22cis_3_5_2_4_new_table.rc == 0
+            # failed_when: false
+            # check_mode: false
+            # register: ubtu22cis_3_5_2_4_new_table
 
       - name: "3.5.2.4 | AUDIT | Ensure a nftables table exists | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.4' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_4
       - ubtu22cis_firewall_package == "nftables"
@@ -287,29 +288,29 @@
       - name: "3.5.2.5 | AUDIT | Ensure nftables base chains exist"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables | Message out warning"
-        # block:
-        #     - name: "3.5.2.5 | PATCH | Ensure nftables base chains exist | Input entry"
-        #       shell: 'nft create chain {{ ubtu22cis_nftables_table_name }} input { type filter hook input priority 0 \; }'
-        #       changed_when: ubtu22cis_3_5_2_5_base_chains_input.rc == 0
-        #       failed_when: false
-        #       register: ubtu22cis_3_5_2_5_base_chains_input
+            # block:
+            #     - name: "3.5.2.5 | PATCH | Ensure nftables base chains exist | Input entry"
+            #       shell: 'nft create chain {{ ubtu22cis_nftables_table_name }} input { type filter hook input priority 0 \; }'
+            #       changed_when: ubtu22cis_3_5_2_5_base_chains_input.rc == 0
+            #       failed_when: false
+            #       register: ubtu22cis_3_5_2_5_base_chains_input
 
-        #     - name: "3.5.2.5 | PATCH | Ensure nftables base chains exist | Forward entry"
-        #       shell: 'nft create chain {{ ubtu22cis_nftables_table_name }} forward { type filter hook forward priority 0 \; }'
-        #       changed_when: ubtu22cis_3_5_2_5_base_chains_forward.rc == 0
-        #       failed_when: false
-        #       register: ubtu22cis_3_5_2_5_base_chains_forward
+            #     - name: "3.5.2.5 | PATCH | Ensure nftables base chains exist | Forward entry"
+            #       shell: 'nft create chain {{ ubtu22cis_nftables_table_name }} forward { type filter hook forward priority 0 \; }'
+            #       changed_when: ubtu22cis_3_5_2_5_base_chains_forward.rc == 0
+            #       failed_when: false
+            #       register: ubtu22cis_3_5_2_5_base_chains_forward
 
-        #     - name: "3.5.2.5 | PATCH | Ensure nftables base chains exist | Output entry"
-        #       shell: 'nft create chain {{ ubtu22cis_nftables_table_name }} output { type filter hook output priority 0 \; }'
-        #       changed_when: ubtu22cis_3_5_2_5_base_chains_output.rc == 0
-        #       failed_when: false
-        #       register: ubtu22cis_3_5_2_5_base_chains_output
+            #     - name: "3.5.2.5 | PATCH | Ensure nftables base chains exist | Output entry"
+            #       shell: 'nft create chain {{ ubtu22cis_nftables_table_name }} output { type filter hook output priority 0 \; }'
+            #       changed_when: ubtu22cis_3_5_2_5_base_chains_output.rc == 0
+            #       failed_when: false
+            #       register: ubtu22cis_3_5_2_5_base_chains_output
 
       - name: "3.5.2.5 | AUDIT | Ensure nftables base chains exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.5' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_5
       - ubtu22cis_firewall_package == "nftables"
@@ -326,57 +327,57 @@
       - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Message out warning"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
-        # block:
-        #     - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Get input iif lo accept status"
-        #       shell: nft list ruleset | awk '/hook input/,/}/' | grep 'iif "lo" accept'
-        #       changed_when: false
-        #       failed_when: false
-        #       check_mode: false
-        #       register: ubtu22cis_3_5_2_6_loopback_iif_status
+            # block:
+            #     - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Get input iif lo accept status"
+            #       shell: nft list ruleset | awk '/hook input/,/}/' | grep 'iif "lo" accept'
+            #       changed_when: false
+            #       failed_when: false
+            #       check_mode: false
+            #       register: ubtu22cis_3_5_2_6_loopback_iif_status
 
-        #     - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Get input iif lo accept status"
-        #       shell: nft list ruleset | awk '/hook input/,/}/' | grep 'ip saddr'
-        #       changed_when: false
-        #       failed_when: false
-        #       check_mode: false
-        #       register: ubtu22cis_3_5_2_6_loopback_input_drop_status
+            #     - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Get input iif lo accept status"
+            #       shell: nft list ruleset | awk '/hook input/,/}/' | grep 'ip saddr'
+            #       changed_when: false
+            #       failed_when: false
+            #       check_mode: false
+            #       register: ubtu22cis_3_5_2_6_loopback_input_drop_status
 
-        #     - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Get input iif lo accept status"
-        #       shell: nft list ruleset | awk '/hook input/,/}/' | grep 'ip6 saddr'
-        #       changed_when: false
-        #       failed_when: false
-        #       check_mode: false
-        #       register: ubtu22cis_3_5_2_6_loopback_ipv6_drop_status
+            #     - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Get input iif lo accept status"
+            #       shell: nft list ruleset | awk '/hook input/,/}/' | grep 'ip6 saddr'
+            #       changed_when: false
+            #       failed_when: false
+            #       check_mode: false
+            #       register: ubtu22cis_3_5_2_6_loopback_ipv6_drop_status
 
-        #     - name: "3.5.2.6 | PATCH | Ensure nftables loopback traffic is configured | Loopback iif lo accept"
-        #       command: 'nft add rule inet {{ ubtu22cis_nftables_table_name }} input iif lo accept'
-        #       changed_when: ubtu22cis_3_5_2_6_loopback_iif.rc == 0
-        #       failed_when: false
-        #       register: ubtu22cis_3_5_2_6_loopback_iif
-        #       when: "'iif \"lo\" accept' not in ubtu22cis_3_5_2_6_loopback_iif_status.stdout"
+            #     - name: "3.5.2.6 | PATCH | Ensure nftables loopback traffic is configured | Loopback iif lo accept"
+            #       command: 'nft add rule inet {{ ubtu22cis_nftables_table_name }} input iif lo accept'
+            #       changed_when: ubtu22cis_3_5_2_6_loopback_iif.rc == 0
+            #       failed_when: false
+            #       register: ubtu22cis_3_5_2_6_loopback_iif
+            #       when: "'iif \"lo\" accept' not in ubtu22cis_3_5_2_6_loopback_iif_status.stdout"
 
-        #     - name: "3.5.2.6 | PATCH | Ensure nftables loopback traffic is configured | Loopback input drop"
-        #       command: 'nft add rule inet {{ ubtu22cis_nftables_table_name }} input ip saddr 127\.0\.0\.0\/8 counter drop'
-        #       changed_when: ubtu22cis_3_5_2_6_loopback_input_drop.rc == 0
-        #       failed_when: false
-        #       register: ubtu22cis_3_5_2_6_loopback_input_drop
-        #       when:
-        #        - "'ip saddr 127.0.0.0/8' not in ubtu18cis_3_5_3_4_loopback_input_drop_status.stdout"
-        #        - "'drop' not in ubtu22cis_3_5_2_6_loopback_input_drop_status.stdout"
+            #     - name: "3.5.2.6 | PATCH | Ensure nftables loopback traffic is configured | Loopback input drop"
+            #       command: 'nft add rule inet {{ ubtu22cis_nftables_table_name }} input ip saddr 127\.0\.0\.0\/8 counter drop'
+            #       changed_when: ubtu22cis_3_5_2_6_loopback_input_drop.rc == 0
+            #       failed_when: false
+            #       register: ubtu22cis_3_5_2_6_loopback_input_drop
+            #       when:
+            #        - "'ip saddr 127.0.0.0/8' not in ubtu18cis_3_5_3_4_loopback_input_drop_status.stdout"
+            #        - "'drop' not in ubtu22cis_3_5_2_6_loopback_input_drop_status.stdout"
 
-        #     - name: "3.5.2.6 | PATCH | Ensure nftables loopback traffic is configured | Loopback ipv6 drop"
-        #       command: 'nft add rule inet {{ ubtu22cis_nftables_table_name }} input ip6 saddr ::1 counter drop'
-        #       changed_when: ubtu22cis_3_5_2_6_loopback_ipv6_drop.rc == 0
-        #       failed_when: false
-        #       register: ubtu22cis_3_5_2_6_loopback_ipv6_drop
-        #       when:
-        #           - "'ip6 saddr' not in ubtu22cis_3_5_2_6_loopback_ipv6_drop_status.stdout"
-        #           - "'drop' not in ubtu22cis_3_5_2_6_loopback_ipv6_drop_status.stdout"
+            #     - name: "3.5.2.6 | PATCH | Ensure nftables loopback traffic is configured | Loopback ipv6 drop"
+            #       command: 'nft add rule inet {{ ubtu22cis_nftables_table_name }} input ip6 saddr ::1 counter drop'
+            #       changed_when: ubtu22cis_3_5_2_6_loopback_ipv6_drop.rc == 0
+            #       failed_when: false
+            #       register: ubtu22cis_3_5_2_6_loopback_ipv6_drop
+            #       when:
+            #           - "'ip6 saddr' not in ubtu22cis_3_5_2_6_loopback_ipv6_drop_status.stdout"
+            #           - "'drop' not in ubtu22cis_3_5_2_6_loopback_ipv6_drop_status.stdout"
 
       - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.6' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_6
       - ubtu22cis_firewall_package == "nftables"
@@ -397,7 +398,7 @@
       - name: "3.5.2.7 | AUDIT | Ensure nftables outbound and established connections are configured | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.7' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_7
       - ubtu22cis_firewall_package == "nftables"
@@ -418,7 +419,7 @@
       - name: "3.5.2.8 | AUDIT | Ensure nftables default deny firewall policy | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.8' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_8
       - ubtu22cis_firewall_package == "nftables"
@@ -435,15 +436,15 @@
       - name: "3.5.2.9 | AUDIT | Ensure nftables service is enabled | Message out warning"
         debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
-        # service:
-        #     name: nftables
-        #     state: started
-        #     enabled: yes
+            # service:
+            #     name: nftables
+            #     state: started
+            #     enabled: yes
 
       - name: "3.5.2.9 | AUDIT | Ensure nftables service is enabled | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.9' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_8
       - ubtu22cis_firewall_package == "nftables"
@@ -464,7 +465,7 @@
       - name: "3.5.2.10 | AUDIT | Ensure nftables rules are permanent | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.2.10' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_2_10
       - ubtu22cis_firewall_package == "nftables"
@@ -664,8 +665,8 @@
 
       - name: "3.5.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Set warning count"
         set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.3.2.4' ]" 
-            warn_count: "{{ warn_count|int + 1 }}"
+            control_number: "{{ control_number }} + [ 'rule_3.5.3.2.4' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_3_2_4
       - ubtu22cis_firewall_package == "iptables"
@@ -732,7 +733,7 @@
             source: ::1
             jump: DROP
             ip_version: ipv6
-        notify: ip6tables persistent 
+        notify: ip6tables persistent
   when:
       - ubtu22cis_rule_3_5_3_3_1
       - ubtu22cis_firewall_package == "iptables"
@@ -755,7 +756,7 @@
       ctstate: '{{ item.ctstate }}'
       jump: ACCEPT
       ip_version: ipv6
-  notify: ip6tables persistent 
+  notify: ip6tables persistent
   with_items:
       - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
       - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
@@ -786,7 +787,7 @@
             jump: ACCEPT
             ctstate: 'NEW,ESTABLISHED'
             ip_version: ipv6
-        notify: ip6tables persistent 
+        notify: ip6tables persistent
 
       - name: "3.5.3.3.3 | PATCH | Ensure ip6tables default deny firewall policy | Enable apt traffic"
         iptables:
@@ -794,14 +795,14 @@
             ctstate: 'ESTABLISHED'
             jump: ACCEPT
             ip_version: ipv6
-        notify: ip6tables persistent 
+        notify: ip6tables persistent
 
       - name: "3.5.3.3.3 | PATCH | Ensure ip6tables default deny firewall policy | Set drop items"
         iptables:
             policy: DROP
             chain: "{{ item }}"
             ip_version: ipv6
-        notify: ip6tables persistent 
+        notify: ip6tables persistent
         with_items:
             - INPUT
             - FORWARD
@@ -848,7 +849,7 @@
       - name: "3.5.3.3.4 | AUDIT | Ensure ip6tables firewall rules exist for all open ports | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.5.3.3.4' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
   when:
       - ubtu22cis_rule_3_5_3_3_4
       - ubtu22cis_firewall_package == "iptables"

@@ -1,5 +1,5 @@
 ---
-# - debug: var=ansible_facts
+
 - name: Gather distribution info
   # we need:
   # - hardware for ansible_mounts
@@ -135,7 +135,7 @@
 
 - name: Display warning counts and related control IDs
   debug:
-    msg: "You have {{ warn_count }} Warning(s) that require investigation that are related to the following control ID(s) {{ control_number }}"
+      msg: "You have {{ warn_count }} Warning(s) that require investigation that are related to the following control ID(s) {{ control_number }}"
   when: warn_count != 0
   tags:
       - always

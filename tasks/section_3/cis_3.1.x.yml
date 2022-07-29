@@ -1,4 +1,5 @@
 ---
+
 - name: "3.1.1 | PATCH | Disable IPv6"
   block:
       - name: "3.1.1 | AUDIT | Disable IPv6 | Get current GRUB_CMDLINE_LINUX settings"
@@ -54,11 +55,11 @@
         debug:
             msg: "Warning!! You need to disable wireless interfaces manually since network-manager is not installed"
         when: "'network-manager' not in ansible_facts.packages"
-      
+
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_3.1.2' ]"
-            warn_count: "{{ warn_count|int +1 }}"
+            warn_count: "{{ warn_count | int +1 }}"
         when: "'network-manager' not in ansible_facts.packages"
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"

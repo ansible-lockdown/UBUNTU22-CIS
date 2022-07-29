@@ -1,4 +1,5 @@
 ---
+
 - name: "1.8.1 | PATCH | Ensure GNOME Display Manager is removed"
   apt:
       name: gdm3

@@ -1,4 +1,5 @@
 ---
+
 - name: "5.7 | PATCH | Ensure access to the su command is restricted"
   block:
       - name: "5.7 | PATCH | Ensure access to the su command is restricted | Check for pam_wheel.so module"

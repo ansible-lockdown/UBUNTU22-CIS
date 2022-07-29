@@ -18,7 +18,7 @@
       - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.1' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_1_nonshadowed_users.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_1
@@ -78,7 +78,7 @@
       - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.3' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_3_passwd_gid_check.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_3
@@ -246,7 +246,7 @@
       - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world writable | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.7' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when:
             - ubtu22cis_6_2_7_audit.stdout | length == 0
             - ubtu22cis_dotperm_ansiblemanaged
@@ -363,7 +363,7 @@
       - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.11' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_11
@@ -462,7 +462,7 @@
       - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.13' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_13_user_uid_check.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_13
@@ -496,7 +496,7 @@
       - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.14' ] "
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_14_user_user_check.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_14
@@ -530,7 +530,7 @@
       - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.15' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_15_user_username_check.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_15
@@ -564,7 +564,7 @@
       - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.16' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_16_group_group_check.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_16
@@ -609,7 +609,7 @@
       - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.17' ]"
-            warn_count: "{{ warn_count|int + 1 }}"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_17
