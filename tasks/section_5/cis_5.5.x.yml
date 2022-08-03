@@ -35,7 +35,7 @@
 - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less"
   block:
       - name: "5.5.1.2 | AUDIT | Ensure password expiration is 365 days or less | Get users"
-        shell: "awk -F: '(/^[^:]+:[^!*]/ && $5>365 || $5<{{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
+        shell: "awk -F: '(/^[^:]+:[^!*]/ && $5 > 365 || $5 < {{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_2_pass_max_days_users
@@ -64,10 +64,10 @@
       - rule_5.5.1.2
       - user
       - login
+      - skip_ansible_lint
 
 - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
   block:
-
       - name: "5.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | Get users"
         command: "awk -F: '(/^[^:]+:[^!*]/ && $6<7){print $1}' /etc/shadow"
         changed_when: false
