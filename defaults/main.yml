@@ -496,6 +496,12 @@ ubtu22cis_audit_back_log_limit: 8192
 # This shoudl be set based on your sites policy
 ubtu22cis_max_log_file_size: 10
 
+### 4.1.3.x audit template
+update_audit_template: true
+
+## Advanced option found in auditd post
+allow_auditd_uid_user_exclusions: false
+
 # Control 4.1.2.2
 ubtu22cis_auditd:
     admin_space_left_action: halt
