@@ -5,5 +5,5 @@ ami_username  = "ubuntu"
 ami_user_home = "/home/ubuntu"
 instance_tags = {
   Name        = "UBUNTU22-CIS"
-  Environment = "github_test_pipeline"
+  Environment = "LE_GitHub_PR_pipeline"
 }
