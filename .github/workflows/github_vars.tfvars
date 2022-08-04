@@ -3,8 +3,8 @@
 // Declared in variables.tf
 // 
 
-namespace         = "le_github_pr_actions"
-environment       = "le_github_test_pipeline"
+namespace         = "al_github_pr_actions"
+environment       = "al_github_test_pipeline"
 
 // Matching pair name found in AWS for keypairs PEM key
 ami_key_pair_name = "github_actions"
