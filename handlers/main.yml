@@ -1,4 +1,5 @@
 ---
+
 - name: grub update
   command: update-grub
   failed_when: false
@@ -28,13 +29,13 @@
   ufw:
       state: reloaded
 
-- name: iptables presistent 
+- name: iptables presistent
   shell: bash -c "iptables-save > /etc/iptables/rules.v4"
   changed_when: ubtu22cis_iptables_save.rc == 0
   failed_when: ubtu22cis_iptables_save.rc > 0
   register: ubtu22cis_iptables_save
 
-- name: ip6tables persistent 
+- name: ip6tables persistent
   shell: bash -c "ip6tables-save > /etc/iptables/rules.v6"
   changed_when: ubtu22cis_ip6tables_save.rc == 0
   failed_when: ubtu22cis_ip6tables_save.rc > 0
@@ -47,18 +48,50 @@
       sysctl_set: yes
   when: ansible_virtualization_type != "docker"
 
-- name: restart auditd
-  service:
-      name: auditd
-      state: restarted
+# - name: auditd immutable
+#   block:
+#       # - name: "HANDLER | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Get status"
+#       - name: auditd immutable
+#         shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+#         changed_when: false
+#         failed_when: false
+#         register: ubtu22cis_auditd_immutable_check
+
+#       # - name: "HANDLER | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Set reboot required"
+#       - name: auditd immutable
+#         debug:
+#             msg: "Reboot required for auditd to apply new rules as immutable set"
+#         notify: change_requires_reboot
+#         when: ubtu22cis_auditd_immutable_check.stdout == '1'
+
+## Auditd tasks note order for handlers to run
+
+- name: auditd_immutable_check
+  shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+  changed_when: false
+  register: auditd_immutable_check
+
+- name: audit_immutable_fact
+  debug:
+      msg: "Reboot required for auditd to apply new rules as immutable set"
+  notify: change_requires_reboot
   when:
-      - not ubtu22cis_skip_for_travis
+      - auditd_immutable_check.stdout == '1'
+
+- name: restart auditd
+  shell: service auditd restart
+  args:
+      warn: false
+  when:
+      - audit_rules_updated.changed or
+        rule_4_1_2_1.changed or
+        rule_4_1_2_2.changed or
+        rule_4_1_2_3.changed
   tags:
       - skip_ansible_lint
 
 - name: remount tmp
   shell: mount -o remount /tmp
-
 
 - name: restart rsyslog
   service:
@@ -72,3 +105,7 @@
 
 - name: reload gdm
   command: dpkg-reconfigure gdm3
+
+- name: change_requires_reboot
+  set_fact:
+      change_requires_reboot: true

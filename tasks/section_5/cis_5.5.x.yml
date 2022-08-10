@@ -2,7 +2,6 @@
 
 - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured"
   block:
-
       - name: "5.5.1.1 | AUDIT | Ensure minimum days between password changes is configured | Get users"
         shell: "awk -F : '(/^[^:]+:[^!*]/ && $4 < {{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
         changed_when: false

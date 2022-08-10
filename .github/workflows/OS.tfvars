@@ -4,6 +4,6 @@ ami_os        = "ubuntu22"
 ami_username  = "ubuntu"
 ami_user_home = "/home/ubuntu"
 instance_tags = {
-  Name        = "UBUNTU20-CIS"
-  Environment = "lockdown_github_repo_workflow"
+  Name        = "UBUNTU22-CIS"
+  Environment = "Ansible_Lockdown_GH_PR_Pipeline"
 }

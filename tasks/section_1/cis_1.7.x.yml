@@ -1,4 +1,5 @@
 ---
+
 - name: "1.7.1 | PATCH | Ensure message of the day is configured properly"
   template:
       src: etc/motd.j2

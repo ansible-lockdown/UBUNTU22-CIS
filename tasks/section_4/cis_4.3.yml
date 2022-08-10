@@ -1,4 +1,5 @@
 ---
+
 - name: "4.3 | PATCH | Ensure logrotate is configured"
   block:
       - name: "4.3 | PATCH | Ensure logrotate is configured | Get logrotate files"

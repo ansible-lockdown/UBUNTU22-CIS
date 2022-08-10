@@ -8,7 +8,7 @@ variable "aws_region" {
 
 variable "instance_type" {
   description = "EC2 Instance Type"
-  default     = "t2.micro"
+  default     = "t3.micro"
   type        = string
 }
 
@@ -47,6 +47,10 @@ variable "namespace" {
   type        = string
 }
 
+variable "environment" {
+  description = "Env Name used across all tags"
+  type        = string
+}
 // taken from github_vars.tfvars &
 
 variable "main_vpc_cidr" {

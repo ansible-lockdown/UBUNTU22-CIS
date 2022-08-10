@@ -1,4 +1,5 @@
 ---
+
 - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled"
   block:
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
@@ -168,23 +169,6 @@
       - rule_1.1.1.7
       - udf
 
-# - name: "1.1.2 | PATCH | Ensure /tmp is configured"
-#   mount:
-#       path: /tmp
-#       src: /tmp
-#       state: mounted
-#       fstype: tmpfs
-#       opts: "{{ ubtu22cis_tmp_fstab_options }}"
-#   when:
-#       - ubtu22cis_rule_1_1_2
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - automated
-#       - patch
-#       - rule_1.1.2
-#       - tmp
-
 - name: |
     "1.1.2 | PATCH | Ensure /tmp is configured"
     "1.1.3 | PATCH | Ensure nodev option set on /tmp partition"
@@ -218,23 +202,6 @@
       - rule_1.1.4
       - rule_1.1.5
       - tmp
-
-# - name: "1.1.6 | PATCH | Ensure /dev/shm is configured"
-#   mount:
-#       name: /dev/shm
-#       src: /dev/shm
-#       state: mounted
-#       fstype: tmpfs
-#       opts: "{{ ubtu22cis_dev_shm_fstab_options }}"
-#   when:
-#       - ubtu22cis_rule_1_1_6
-#   tags:
-#       - level1-server
-#       - level1-workstation
-#       - automated
-#       - patch
-#       - rule_1.1.6
-#       - dev_shm
 
 - name: |
     "1.1.6 | PATCH | Ensure /dev/shm is configured"
@@ -274,11 +241,17 @@
             warn: false
         register: ubtu22cis_1_1_10_var_mounted
 
-      - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Alert if /var partition does not exist"
+      - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Warn if /var partition does not exist"
         debug:
             msg:
-                - "ALERT!!!! There is no separate partition for /var"
+                - "Warning!! There is no separate partition for /var"
                 - "Please create a separate partition for /var"
+        when: ubtu22cis_1_1_10_var_mounted.stdout | length == 0
+
+      - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.10' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_10_var_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_10
@@ -301,11 +274,17 @@
             warn: false
         register: ubtu22cis_1_1_11_var_tmp_mounted
 
-      - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Alert if /var/tmp partition does not exist"
+      - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if /var/tmp partition does not exist"
         debug:
             msg:
-                - "ALERT!!!! There is no separate partition for /var/tmp"
+                - "Warning!! There is no separate partition for /var/tmp"
                 - "Please create a separate partition for /var/tmp"
+        when: ubtu22cis_1_1_11_var_tmp_mounted.stdout | length == 0
+
+      - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.11' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_11_var_tmp_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_11
@@ -353,11 +332,17 @@
         args:
             warn: false
 
-      - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Alert if /var/log partition does not exist"
+      - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Warn if /var/log partition does not exist"
         debug:
             msg:
-                - "ALERT!!!! There is no separate partition for /var/log"
+                - "Warning!! There is no separate partition for /var/log"
                 - "Please create a separate partition for /var/log"
+        when: ubtu22cis_1_1_15_var_log_mounted.stdout | length == 0
+
+      - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.15' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_15_var_log_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_15
@@ -380,11 +365,17 @@
         args:
             warn: false
 
-      - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Alert if /var/log/audit partition does not exist"
+      - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if /var/log/audit partition does not exist"
         debug:
             msg:
-                - "ALERT!!!! There is no separate partition for /var/log/audit"
+                - "Warning!! There is no separate partition for /var/log/audit"
                 - "Please create a separate partition for /var/log/audit"
+        when: ubtu22cis_1_1_16_var_log_audit_mounted.stdout | length == 0
+
+      - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.16' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_16_var_log_audit_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_16
@@ -406,11 +397,17 @@
         args:
             warn: false
 
-      - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Alert if /home partition does not exist"
+      - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Warn if /home partition does not exist"
         debug:
             msg:
-                - "ALERT!!!! There is no separate partition for /home"
+                - "Warning!! There is no separate partition for /home"
                 - "Please create a separate partition for /home"
+        when: ubtu22cis_1_1_17_home_mounted.stdout | length == 0
+
+      - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.17' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_17_home_mounted.stdout | length == 0
   when:
       - ubtu22cis_rule_1_1_17
@@ -444,7 +441,7 @@
 
 - name: "1.1.19 | AUDIT | Ensure nodev option set on removable media partitions"
   debug:
-      msg: "Warning!!!! Not relevant control"
+      msg: "Not a relevant control"
   when:
       - ubtu22cis_rule_1_1_19
   tags:
@@ -457,7 +454,7 @@
 
 - name: "1.1.20 | AUDIT | Ensure nosuid option set on removable media partitions"
   debug:
-      msg: "Warning!!!! Not relevant control"
+      msg: "Not a relevant control"
   when:
       - ubtu22cis_rule_1_1_20
   tags:
@@ -470,7 +467,7 @@
 
 - name: "1.1.21 | AUDIT | Ensure noexec option set on removable media partitions"
   debug:
-      msg: "Warning!!!! Not relevant control"
+      msg: "Not a relevant control"
   when:
       - ubtu22cis_rule_1_1_21
   tags:

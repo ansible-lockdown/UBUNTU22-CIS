@@ -1,10 +1,12 @@
 ---
+
 - name: "4.1.2.1 | PATCH | Ensure audit log storage size is configured"
   lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "^max_log_file( |=)"
       line: "max_log_file = {{ ubtu22cis_max_log_file_size }}"
       state: present
+  register: rule_4_1_2_1
   notify: restart auditd
   when:
       - ubtu22cis_rule_4_1_2_1
@@ -21,6 +23,7 @@
       path: /etc/audit/auditd.conf
       regexp: '^max_log_file_action'
       line: "max_log_file_action = {{ ubtu22cis_auditd['max_log_file_action'] }}"
+  register: rule_4_1_2_2
   notify: restart auditd
   when:
       - ubtu22cis_rule_4_1_2_2
@@ -37,11 +40,12 @@
       path: /etc/audit/auditd.conf
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
+  register: rule_4_1_2_3
+  notify: restart auditd
   with_items:
       - { regexp: '^space_left_action', line: 'space_left_action = email' }
       - { regexp: '^action_mail_acct', line: 'action_mail_acct = root' }
       - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = halt' }
-  notify: restart auditd
   when:
       - ubtu22cis_rule_4_1_2_3
   tags:

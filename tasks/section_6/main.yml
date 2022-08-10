@@ -1,4 +1,5 @@
 ---
+
 - name: "SECTION | 6.1 | System File Permissions"
   include: cis_6.1.x.yml
 

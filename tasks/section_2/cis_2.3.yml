@@ -1,4 +1,5 @@
 ---
+
 - name: "2.3 | AUDIT | Ensure nonessential services are removed or masked"
   block:
       - name: "2.3 | AUDIT | Ensure nonessential services are removed or masked | Check for services"
@@ -13,6 +14,13 @@
             msg:
                 - "Warning!! Below are the running services. Please review and remove as well as mask un-needed services"
                 - "{{ ubtu22cis_2_3_services.stdout_lines }}"
+        when: ubtu22cis_2_3_services.stdout | length > 0
+
+      - name: "2.3 | AUDIT | Ensure nonessential services are removed or masked | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_2.3' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_2_3_services.stdout | length > 0
   when:
       - ubtu22cis_rule_2_3
   tags:

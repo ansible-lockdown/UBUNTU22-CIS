@@ -1,4 +1,5 @@
 ---
+
 - name: "1.6.1.1 | PATCH | Ensure AppArmor is installed"
   apt:
       name: ['apparmor', 'apparmor-utils']
