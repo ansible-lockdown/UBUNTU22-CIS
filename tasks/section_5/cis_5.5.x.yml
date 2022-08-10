@@ -160,9 +160,9 @@
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Set warning count"
-         set_fact:
-             control_number: "{{ control_number }} + [ 'rule_5.5.1.5' ]"
-             warn_count: "{{ warn_count | int + 1 }}"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_5.5.1.5' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
          when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
