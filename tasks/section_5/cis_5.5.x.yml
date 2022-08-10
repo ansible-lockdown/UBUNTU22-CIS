@@ -38,7 +38,7 @@
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_2_pass_max_days_users
-      
+
       - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Set /etc/login.defs PASS_MAX_DAYS"
         lineinfile:
             path: /etc/login.defs
@@ -63,10 +63,10 @@
       - rule_5.5.1.2
       - user
       - login
+      - skip_ansible_lint
 
 - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
   block:
-
       - name: "5.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | Get users"
         command: "awk -F: '(/^[^:]+:[^!*]/ && $6<7){print $1}' /etc/shadow"
         changed_when: false
@@ -155,8 +155,14 @@
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Warn about users"
         debug:
             msg:
-                - "WARNING!!!!The following accounts have the last PW change date in the future"
+                - "WARNING!! The following accounts have the last PW change date in the future"
                 - "{{ ubtu22cis_5_5_1_5_user_list.stdout_lines }}"
+        when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
+
+      - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_5.5.1.5' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
@@ -197,7 +203,7 @@
             name: "{{ item }}"
             password_lock: true
         with_items:
-            - "{{ ubtu22cis_passwd| selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
+            - "{{ ubtu22cis_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
         when:
             - item != "root"
   when:
