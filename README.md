@@ -1,10 +1,10 @@
 # Ubuntu 22 CIS
 
-![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/UBUNTU22-CIS/CommunityToDevel?label=Devel%20Build%20Status&style=plastic)
-![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/UBUNTU22-CIS/DevelToMaster?label=Main%20Build%20Status&style=plastic)
+![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/UBUNTU22-CIS/linux_benchmark_pipeline/devel?label=Devel%20Build%20Status&style=plastic)
+![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/UBUNTU22-CIS/linux_benchmark_pipeline/main?label=Main%20Build%20Status&style=plastic)
 ![Release](https://img.shields.io/github/v/release/ansible-lockdown/UBUNTU22-CIS?style=plastic)
 
-Configure Ubuntu 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/)with ubuntu20 (ubuntu22 not released at this time). There are some intrusive tasks that have a toggle in defaults main.yml to disable to automated fix
+Configure Ubuntu 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) with ubuntu20 (ubuntu22 not released at this time). There are some intrusive tasks that have a toggle in defaults main.yml to disable to automated fix
 
 ## Join us
 

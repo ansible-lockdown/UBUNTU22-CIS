@@ -1,4 +1,5 @@
 ---
+
 - name: "PRELIM | Run apt update"
   apt:
       update_cache: yes
@@ -15,6 +16,7 @@
       - ubtu22cis_rule_1_1_23
   tags:
       - skip_ansible_lint
+      - section1
 
 - name: "PRELIM | Check for avahi-daemon service"
   shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
@@ -44,6 +46,24 @@
       - ubtu22cis_install_network_manager
       - "'acl' not in ansible_facts.packages"
 
+- name: "PRELIM | Install iptables-persistent"
+  apt:
+      name: iptables-persistent
+      state: present
+  when:
+      - "'iptables-persistent' not in ansible_facts.packages"
+      - ubtu22cis_save_iptables_cis_rules
+      - ubtu22cis_firewall_package == "iptables"
+      - not ubtu22cis_ipv4_required
+      - ubtu22cis_rule_3_5_3_2_1 or
+        ubtu22cis_rule_3_5_3_2_2 or
+        ubtu22cis_rule_3_5_3_2_3 or
+        ubtu22cis_rule_3_5_3_2_4 or
+        ubtu22cis_rule_3_5_3_3_1 or
+        ubtu22cis_rule_3_5_3_3_2 or
+        ubtu22cis_rule_3_5_3_3_3 or
+        ubtu22cis_rule_3_5_3_3_4
+
 - name: "PRELIM | List users accounts"
   command: "awk -F: '{print $1}' /etc/passwd"
   changed_when: false
@@ -53,3 +73,7 @@
       - ubtu22cis_rule_6_2_8 or
         ubtu22cis_rule_6_2_9 or
         ubtu22cis_rule_6_2_10
+
+- name: "PRELIM | Recapture packages"
+  package_facts:
+      manager: auto

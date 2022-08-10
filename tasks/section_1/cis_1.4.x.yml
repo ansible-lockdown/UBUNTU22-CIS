@@ -1,4 +1,5 @@
 ---
+
 - name: "1.4.1 | PATCH | Ensure permissions on bootloader config are not overridden"
   block:
       - name: "1.4.1 | PATCH | Ensure permissions on bootloader config are not overridden | Change chmod setting"

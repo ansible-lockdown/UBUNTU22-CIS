@@ -1,4 +1,5 @@
 ---
+
 - name: "SECTION | 4.1.1 | Ensure auditing is enabled"
   include: cis_4.1.1.x.yml
 

@@ -1,4 +1,5 @@
 ---
+
 - name: "5.1.1 | PATCH | Ensure cron daemon is enabled and running"
   service:
       name: cron
@@ -117,13 +118,27 @@
             path: /etc/cron.deny
             state: absent
 
-      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Create cron.allow"
+      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Check for cron.allow"
+        stat:
+            path: /etc/cron.allow
+        register: ubtu22cis_5_1_8_status
+
+      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Create cron.allow if doesn't exist"
         file:
             path: /etc/cron.allow
             owner: root
             group: root
             mode: 0640
             state: touch
+        when: not ubtu22cis_5_1_8_status.stat.exists
+
+      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users |  Update cron.allow if exists"
+        file:
+            path: /etc/cron.allow
+            owner: root
+            group: root
+            mode: 0640
+        when: ubtu22cis_5_1_8_status.stat.exists
   when:
       - ubtu22cis_rule_5_1_8
   tags:
@@ -141,13 +156,27 @@
             path: /etc/at.deny
             state: absent
 
-      - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Create at.allow"
+      - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Check for at.allow"
+        stat:
+            path: /etc/at.allow
+        register: ubtu22cis_5_1_9_status
+
+      - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | Create at.allow if doesn't exist"
         file:
             path: /etc/at.allow
             owner: root
             group: root
             mode: 0640
             state: touch
+        when: not ubtu22cis_5_1_9_status.stat.exists
+
+      - name: "5.1.9 | PATCH | Ensure at is restricted to authorized users | update at.allow if exists"
+        file:
+            path: /etc/at.allow
+            owner: root
+            group: root
+            mode: 0640
+        when: ubtu22cis_5_1_9_status.stat.exists
   when:
       - ubtu22cis_rule_5_1_9
   tags:

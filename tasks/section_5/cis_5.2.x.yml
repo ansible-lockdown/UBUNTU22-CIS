@@ -1,4 +1,5 @@
 ---
+
 - name: "5.2.1 | PATCH | Ensure sudo is installed"
   apt:
       name: "{{ ubtu22cis_sudo_package }}"

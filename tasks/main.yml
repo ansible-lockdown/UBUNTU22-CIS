@@ -1,5 +1,5 @@
 ---
-# - debug: var=ansible_facts
+
 - name: Gather distribution info
   # we need:
   # - hardware for ansible_mounts
@@ -98,9 +98,14 @@
   tags:
       - section6
 
+- name: run auditd logic
+  import_tasks: auditd.yml
+  when: update_audit_template
+  tags:
+      - always
+
 - name: flush handlers
   meta: flush_handlers
-
 
 - name: reboot system
   block:
@@ -116,7 +121,6 @@
         when:
             - ubtu22_skip_reboot
 
-
 - import_tasks: post_remediation_audit.yml
   when:
       - run_audit
@@ -128,3 +132,10 @@
       - run_audit
   tags:
       - run_audit
+
+- name: Display warning counts and related control IDs
+  debug:
+      msg: "You have {{ warn_count }} Warning(s) that require investigation that are related to the following control ID(s) {{ control_number }}"
+  when: warn_count != 0
+  tags:
+      - always

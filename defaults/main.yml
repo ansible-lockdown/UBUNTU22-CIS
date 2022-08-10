@@ -1,4 +1,5 @@
 ---
+
 # If you would like a report at the end accordin to OpenSCAP as to the report results
 # then you should set ubtu22cis_oscap_scan to true/yes.
 # NOTE: This requires the python_xmltojson package on the control host.
@@ -13,7 +14,7 @@ ubtu22cis_section5_patch: true
 ubtu22cis_section6_patch: true
 
 # System will reboot if false, can give better audit results
-ubtu22_skip_reboot: True
+ubtu22_skip_reboot: true
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
@@ -73,6 +74,9 @@ ubtu22cis_system_is_container: false
 
 # skip events for ec2 instance testing pipeline
 system_is_ec2: false
+
+# Whether to skip the reboot
+skip_reboot: true
 
 # Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
@@ -378,21 +382,6 @@ ubtu22cis_ipv6_required: false
 ubtu22cis_desktop_required: false
 
 # Section 1 Control Variables
-# Control 1.1.2/1.1.3/1.1.4/1.1.5
-# ubtu22cis_tmp_fstab_options are the file system options for the fstabs configuration
-# To conform to CIS cotnrol 1.1.2 could use any settings
-# To conform to CIS control 1.1.3 nodev needs to be present
-# To conform to CIS control 1.1.4 nosuid needs to be present
-# To conform to CIS control 1.1.5 noexec needs to present
-ubtu22cis_tmp_fstab_options: "defaults,rw,nosuid,nodev,noexec,relatime"
-
-# Control 1.1.6/1.1.7/1.1.8/1.1.9
-# ubtu22cis_dev_shm_fstab_options are the fstab file system options for /dev/shm
-# To conform to CIS control 1.1.6 could use any settings
-# To conform to CIS control 1.1.7 nodev needs to be present
-# To conform to CIS control 1.1.8 nosuid needs to be present
-# To conform to CIS control 1.1.9 noexec needs to be present
-ubtu22cis_dev_shm_fstab_options: "defaults,noexec,nodev,nosuid"
 
 # Control 1.1.12/1.1.13/1.1.14
 # These are the settings for the /var/tmp mount
@@ -406,7 +395,7 @@ ubtu22cis_vartmp:
     enabled: false
 
 # Control 1.3.1 - allow aide to be configured
-ubtu22cis_config_aide : true
+ubtu22cis_config_aide: true
 
 # Control 1.3.2
 # These are the crontab settings for file system integrity enforcement
@@ -507,6 +496,12 @@ ubtu22cis_audit_back_log_limit: 8192
 # This shoudl be set based on your sites policy
 ubtu22cis_max_log_file_size: 10
 
+### 4.1.3.x audit template
+update_audit_template: true
+
+## Advanced option found in auditd post
+allow_auditd_uid_user_exclusions: false
+
 # Control 4.1.2.2
 ubtu22cis_auditd:
     admin_space_left_action: halt
@@ -583,7 +578,7 @@ ubtu22cis_sshd:
     macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
     kex_algorithms: "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
     client_alive_interval: 300
-    client_alive_count_max: 0
+    client_alive_count_max: 3
     login_grace_time: 60
     max_sessions: 4
     # WARNING: make sure you understand the precedence when working with these values!!
@@ -613,7 +608,7 @@ ubtu22cis_pass:
     inactive: 30
 
 # Control 5.5.4
-# ubtu120cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile. 
+# ubtu120cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
 # The value needs to be 027 or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 
@@ -656,13 +651,16 @@ ubtu22cis_suid_adjust: false
 # ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
 
+# Control 6.2.7
+# ubtu22cis_dotperm_ansiblemanaged is a toggle to allow this role to modify permissions on dot files
+ubtu22cis_dotperm_ansiblemanaged: true
 
 #### Audit Configuration Settings ####
 
 ### Audit binary settings ###
 audit_bin_version:
-    release: v0.3.16
-    checksum: 'sha256:827e354b48f93bce933f5efcd1f00dc82569c42a179cf2d384b040d8a80bfbfb'
+    release: v0.3.18
+    checksum: 'sha256:432308ebca0caf8165d45bd27e3262126aad9d15572ac8cb3149b3c91f75aace'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
