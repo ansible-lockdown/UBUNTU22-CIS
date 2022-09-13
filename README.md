@@ -6,6 +6,8 @@
 
 Configure Ubuntu 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) with ubuntu20 (ubuntu22 not released at this time). There are some intrusive tasks that have a toggle in defaults main.yml to disable to automated fix
 
+Based on [CIS Ubuntu Linux 20.04 LTS Benchmark v1.1.0 ](https://learn.cisecurity.org/l/799323/2021-04-01/41hcb)
+
 ## Join us
 
 On our [Discord Server](https://discord.gg/JFxpSgPFEJ) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
