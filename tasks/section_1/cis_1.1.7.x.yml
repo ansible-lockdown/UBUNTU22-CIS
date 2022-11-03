@@ -1,0 +1,60 @@
+---
+
+- name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home"
+  block:
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Gather /home partition"
+        shell: mount | grep "on /home\s"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        args:
+            warn: false
+        register: ubtu22cis_1_1_7_1_home_mounted
+
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Warn if /home partition does not exist"
+        debug:
+            msg:
+                - "Warning!! There is no separate partition for /home"
+                - "Please create a separate partition for /home"
+        when: ubtu22cis_1_1_7_1_home_mounted.stdout | length == 0
+
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.7.1' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_1_1_7_1_home_mounted.stdout | length == 0
+  when:
+      - ubtu22cis_rule_1_1_7_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - audit
+      - rule_1.1.7.1
+      - home
+
+- name: |
+    "1.1.7.2 | PATCH | Ensure /home partition includes the nodev option"
+    "1.1.7.3 | PATCH | Ensure /home partition includes the nosuid option"
+  mount:
+      name: "{{ item.device }}"
+      src: "{{ item.fstype }}"
+      state: present
+      fstype: xfs
+      opts: defaults,{% if ubtu22cis_rule_1_1_7_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_7_3 %}nosuid,{% endif %}
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - item.mount == "/home"
+      - ubtu22cis_rule_1_1_7_2 or
+        ubtu22cis_rule_1_1_7_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.7.2
+      - rule_1.1.7.3
+      - home

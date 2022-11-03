@@ -1,19 +1,15 @@
 ---
 
-- name: "1.4.1 | PATCH | Ensure permissions on bootloader config are not overridden"
-  block:
-      - name: "1.4.1 | PATCH | Ensure permissions on bootloader config are not overridden | Change chmod setting"
-        replace:
-            path: /usr/sbin/grub-mkconfig
-            regexp: 'chmod\s\d\d\d\s\${grub_cfg}.new'
-            replace: 'chmod 400 ${grub_cfg}.new'
-
-      - name: "1.4.1 | PATCH | Ensure permissions on bootloader config are not overridden | Remove check on password"
-        lineinfile:
-            path: /usr/sbin/grub-mkconfig
-            regexp: 'if \[ \"x\$\{grub_cfg\}\" != "x" \] && ! grep "\^password" \${grub_cfg}.new'
-            line: if [ "x${grub_cfg}" != "x" ]; then
+- name: "1.4.1 | PATCH | Ensure bootloader password is set"
+  lineinfile:
+      path: "{{ ubtu22cis_grub_user_file }}"
+      regexp: '^(password_pbkdf2 {{ ubtu22cis_grub_user }}) grub.pbkdf2.*'
+      line: '\1 {{ ubtu22cis_bootloader_password_hash }}'
+      insertafter: set superusers="{{ ubtu22cis_grub_user }}"
+      state: present
+  notify: grub update
   when:
+      - ubtu22cis_set_boot_pass
       - ubtu22cis_rule_1_4_1
   tags:
       - level1-server
@@ -23,18 +19,22 @@
       - rule_1.4.1
       - grub
 
-# ---------------
-# ---------------
-# The RHEL7 based control uses a custom module, grub_crypt
-# I need to research best way to set grub pw for Ubuntu using the
-# grub-mkpasswd-pbkdf2 command and passing the data at the same time.
-# ---------------
-# ---------------
-- name: "1.4.2 | PATCH | Ensure bootloader password is set"
-  command: /bin/true
-  changed_when: false
-  failed_when: false
-  check_mode: false
+- name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
+  block:
+      - name: "1.4.2 | AUDIT | Ensure permissions on bootloader config are configured | Check for Grub file"
+        stat:
+            path: "{{ ubtu22cis_grub_file }}"
+        check_mode: false
+        register: ubtu22cis_1_4_2_grub_cfg_status
+
+      - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured | Set permissions"
+        file:
+            path: "{{ ubtu22cis_grub_file }}"
+            owner: root
+            group: root
+            mode: 0400
+        when:
+            - ubtu22cis_1_4_2_grub_cfg_status.stat.exists
   when:
       - ubtu22cis_rule_1_4_2
   tags:
@@ -44,24 +44,11 @@
       - patch
       - rule_1.4.2
       - grub
-      - notimplemented
 
-- name: "1.4.3 | PATCH | Ensure permissions on bootloader config are configured"
-  block:
-      - name: "1.4.3 | AUDIT | Ensure permissions on bootloader config are configured | Check for Grub file"
-        stat:
-            path: /boot/grub/grub.cfg
-        check_mode: false
-        register: ubtu22cis_1_4_3_grub_cfg_status
-
-      - name: "1.4.3 | PATCH | Ensure permissions on bootloader config are configured | Set permissions"
-        file:
-            path: /boot/grub/grub.cfg
-            owner: root
-            group: root
-            mode: 0400
-        when:
-            - ubtu22cis_1_4_3_grub_cfg_status.stat.exists
+- name: "1.4.3 | PATCH | Ensure authentication required for single user mode"
+  user:
+      name: "{{ ubtu22cis_grub_user }}"
+      password: "{{ ubtu22cis_root_pw }}"
   when:
       - ubtu22cis_rule_1_4_3
   tags:
@@ -70,18 +57,4 @@
       - automated
       - patch
       - rule_1.4.3
-      - grub
-
-- name: "1.4.4 | PATCH | Ensure authentication required for single user mode"
-  user:
-      name: root
-      password: "{{ ubtu22cis_root_pw }}"
-  when:
-      - ubtu22cis_rule_1_4_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.4.4
       - passwd

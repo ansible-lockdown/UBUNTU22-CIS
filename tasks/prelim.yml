@@ -1,14 +1,37 @@
 ---
 
+- name: PRELIM | Capture tmp mount type | discover mount tmp type
+  when: 
+      - ubtu22cis_rule_1_1_2_1 or
+        ubtu22cis_rule_1_1_2_2 or
+        ubtu22cis_rule_1_1_2_3 or
+        ubtu22cis_rule_1_1_2_4
+  block:
+      - name: PRELIM | Capture tmp mount type | discover mount tmp type
+        ansible.builtin.shell: systemctl is-enabled tmp.mount
+        register: tmp_mount_type
+        changed_when: false
+        failed_when: tmp_mnt_type not in [ 0, 1 ]
+
+      - name: PRELIM | Capture tmp mount type | Set fstab
+        set_fact:
+          tmp_mnt_type: fstab
+        when: "'generated' in tmp_mnt_type.stdout"
+      
+      - name: PRELIM | Capture tmp mount type | Set systemd service
+        set_fact:
+          tmp_mnt_type: tmp_systemd
+        when: "'generated' not in tmp_mnt_type.stdout"
+
 - name: "PRELIM | Run apt update"
-  apt:
+  ansible.builtin.package:
       update_cache: yes
   when:
       - ubtu22cis_rule_1_3_1 or
         ubtu22cis_rule_1_9
 
 - name: "PRELIM | Check for autofs service"
-  shell: "systemctl show autofs | grep LoadState | cut -d = -f 2"
+  ansible.builtin.shell: "systemctl show autofs | grep LoadState | cut -d = -f 2"
   register: ubtu22cis_autofs_service_status
   changed_when: false
   check_mode: false
@@ -19,7 +42,7 @@
       - section1
 
 - name: "PRELIM | Check for avahi-daemon service"
-  shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
+  ansible.builtin.shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
   register: avahi_service_status
   changed_when: false
   check_mode: false
@@ -29,7 +52,7 @@
       - skip_ansible_lint
 
 - name: "PRELIM | Install Network-Manager"
-  apt:
+  ansible.builtin.package:
       name: network-manager
       state: present
   when:
@@ -38,7 +61,7 @@
       - "'network-manager' not in ansible_facts.packages"
 
 - name: "PRELIM | Install ACL"
-  apt:
+  ansible.builtin.package:
       name: acl
       state: present
   when:
@@ -47,7 +70,7 @@
       - "'acl' not in ansible_facts.packages"
 
 - name: "PRELIM | Install iptables-persistent"
-  apt:
+  ansible.builtin.package:
       name: iptables-persistent
       state: present
   when:
@@ -65,7 +88,7 @@
         ubtu22cis_rule_3_5_3_3_4
 
 - name: "PRELIM | List users accounts"
-  command: "awk -F: '{print $1}' /etc/passwd"
+  ansible.builtin.command: "awk -F: '{print $1}' /etc/passwd"
   changed_when: false
   check_mode: false
   register: ubtu22cis_users
@@ -75,5 +98,5 @@
         ubtu22cis_rule_6_2_10
 
 - name: "PRELIM | Recapture packages"
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto

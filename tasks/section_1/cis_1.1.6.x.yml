@@ -1,0 +1,64 @@
+---
+
+- name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
+  block:
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Gather /var/log/audit partition"
+        shell: mount | grep "on /var/log/audit\s"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        args:
+            warn: false
+        register: ubtu22cis_1_1_6_1_varlogaudit_mounted
+
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if /var/log/audit partition does not exist"
+        debug:
+            msg:
+                - "Warning!! There is no separate partition for /var/log/audit"
+                - "Please create a separate partition for /var/log/audit"
+        when: ubtu22cis_1_1_6_1_varlogaudit_mounted.stdout | length == 0
+
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.6.1' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_1_1_6_1_varlogaudit_mounted.stdout | length == 0
+  when:
+      - ubtu22cis_rule_1_1_6_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - audit
+      - rule_1.1.6.1
+      - varlogaudit
+
+- name: |
+    "1.1.6.2 | PATCH | Ensure /var/log/audit partition includes the noexec option"
+    "1.1.6.3 | PATCH | Ensure /var/log/audit partition includes the nodev option"
+    "1.1.6.4 | PATCH | Ensure /var/log/audit partition includes the nosuid option"
+  mount:
+      name: "{{ item.device }}"
+      src: "{{ item.fstype }}"
+      state: present
+      fstype: xfs
+      opts: defaults,{% if ubtu22cis_rule_1_1_6_2 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_6_3 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_6_4 %}nosuid{% endif %}
+  notify: remount var
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - item.mount == "/var/log/audit"
+      - ubtu22cis_rule_1_1_6_2 or
+        ubtu22cis_rule_1_1_6_3 or
+        ubtu22cis_rule_1_1_6_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.6.2
+      - rule_1.1.6.3
+      - rule_1.1.6.4
+      - varlogaudit

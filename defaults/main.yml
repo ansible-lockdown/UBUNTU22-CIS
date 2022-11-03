@@ -84,33 +84,33 @@ skip_reboot: true
 ubtu22cis_rule_1_1_1_1: true
 ubtu22cis_rule_1_1_1_2: true
 ubtu22cis_rule_1_1_1_3: true
-ubtu22cis_rule_1_1_1_4: true
-ubtu22cis_rule_1_1_1_5: true
-ubtu22cis_rule_1_1_1_6: true
-ubtu22cis_rule_1_1_1_7: true
-ubtu22cis_rule_1_1_2: true
-ubtu22cis_rule_1_1_3: true
-ubtu22cis_rule_1_1_4: true
-ubtu22cis_rule_1_1_5: true
-ubtu22cis_rule_1_1_6: true
-ubtu22cis_rule_1_1_7: true
-ubtu22cis_rule_1_1_8: true
+ubtu22cis_rule_1_1_2_1: true
+ubtu22cis_rule_1_1_2_2: true
+ubtu22cis_rule_1_1_2_3: true
+ubtu22cis_rule_1_1_2_4: true
+ubtu22cis_rule_1_1_3_1: true
+ubtu22cis_rule_1_1_3_2: true
+ubtu22cis_rule_1_1_3_3: true
+ubtu22cis_rule_1_1_4_1: true
+ubtu22cis_rule_1_1_4_2: true
+ubtu22cis_rule_1_1_4_3: true
+ubtu22cis_rule_1_1_4_4: true
+ubtu22cis_rule_1_1_5_1: true
+ubtu22cis_rule_1_1_5_2: true
+ubtu22cis_rule_1_1_5_3: true
+ubtu22cis_rule_1_1_5_4: true
+ubtu22cis_rule_1_1_6_1: true
+ubtu22cis_rule_1_1_6_2: true
+ubtu22cis_rule_1_1_6_3: true
+ubtu22cis_rule_1_1_6_4: true
+ubtu22cis_rule_1_1_7_1: true
+ubtu22cis_rule_1_1_7_2: true
+ubtu22cis_rule_1_1_7_3: true
+ubtu22cis_rule_1_1_8_1: true
+ubtu22cis_rule_1_1_8_2: true
+ubtu22cis_rule_1_1_8_3: true
 ubtu22cis_rule_1_1_9: true
 ubtu22cis_rule_1_1_10: true
-ubtu22cis_rule_1_1_11: true
-ubtu22cis_rule_1_1_12: true
-ubtu22cis_rule_1_1_13: true
-ubtu22cis_rule_1_1_14: true
-ubtu22cis_rule_1_1_15: true
-ubtu22cis_rule_1_1_16: true
-ubtu22cis_rule_1_1_17: true
-ubtu22cis_rule_1_1_18: true
-ubtu22cis_rule_1_1_19: true
-ubtu22cis_rule_1_1_20: true
-ubtu22cis_rule_1_1_21: true
-ubtu22cis_rule_1_1_22: true
-ubtu22cis_rule_1_1_23: true
-ubtu22cis_rule_1_1_24: true
 ubtu22cis_rule_1_2_1: true
 ubtu22cis_rule_1_2_2: true
 ubtu22cis_rule_1_3_1: true
@@ -118,7 +118,6 @@ ubtu22cis_rule_1_3_2: true
 ubtu22cis_rule_1_4_1: true
 ubtu22cis_rule_1_4_2: true
 ubtu22cis_rule_1_4_3: true
-ubtu22cis_rule_1_4_4: true
 ubtu22cis_rule_1_5_1: true
 ubtu22cis_rule_1_5_2: true
 ubtu22cis_rule_1_5_3: true
@@ -133,6 +132,26 @@ ubtu22cis_rule_1_7_3: true
 ubtu22cis_rule_1_7_4: true
 ubtu22cis_rule_1_7_5: true
 ubtu22cis_rule_1_7_6: true
+
+
+
+
+ubtu22cis_rule_1_1_11: true
+ubtu22cis_rule_1_1_12: true
+ubtu22cis_rule_1_1_13: true
+ubtu22cis_rule_1_1_14: true
+ubtu22cis_rule_1_1_15: true
+ubtu22cis_rule_1_1_16: true
+ubtu22cis_rule_1_1_17: true
+ubtu22cis_rule_1_1_18: true
+ubtu22cis_rule_1_1_19: true
+ubtu22cis_rule_1_1_20: true
+ubtu22cis_rule_1_1_21: true
+ubtu22cis_rule_1_1_22: true
+ubtu22cis_rule_1_1_23: true
+ubtu22cis_rule_1_1_24: true
+
+
 ubtu22cis_rule_1_8_1: true
 ubtu22cis_rule_1_8_2: true
 ubtu22cis_rule_1_8_3: true
@@ -381,18 +400,8 @@ ubtu22cis_ipv6_required: false
 # false means you do not require a desktop
 ubtu22cis_desktop_required: false
 
-# Section 1 Control Variables
 
-# Control 1.1.12/1.1.13/1.1.14
-# These are the settings for the /var/tmp mount
-# To conform to CIS control 1.1.12 nodev needs to be present in opts
-# To conform to CIS control 1.1.13 nosuid needs to be present in opts
-# To conform to CIS control 1.1.14 noexec needs to be present in opts
-ubtu22cis_vartmp:
-    source: /tmp
-    fstype: none
-    opts: "defaults,nodev,nosuid,noexec,bind"
-    enabled: false
+# Section 1 Control Variables
 
 # Control 1.3.1 - allow aide to be configured
 ubtu22cis_config_aide: true
@@ -409,17 +418,28 @@ ubtu22cis_aide_cron:
     aide_month: '*'
     aide_weekday: '*'
 
-# Control 1.4.4
+# Control 1.4.1
 # THIS VARAIBLE SHOULD BE CHANGED AND INCORPORATED INTO VAULT
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
-ubtu22cis_root_pw: "Password1"
+ubtu22cis_grub_user: root
+ubtu22cis_grub_user_file: /etc/grub.d/00_user
+ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
+ubtu22cis_set_boot_pass: false
 
-# Control 1.8.2
+ubtu22cis_grub_file: /boot/grub/grub.cfg
+
+# Control 1.7.2
 # This will be the motd banner must not contain the below items in order to be compliant with Ubuntu 20 CIS
 # \m, \r, \s, \v or references to the OS platform
 ubtu22cis_warning_banner: |
         Authorized uses only. All activity may be monitored and reported.
+
+# Control 1.8.4
+# Settings for desktop
+ubtu22cis_dconf_db_name: local
+ubtu22cis_screensaver_idle_delay: 900  # Set max value for idle-delay in seconds (between 1 and 900)
+ubtu22cis_screensaver_lock_delay: 5  # Set max value for lock-delay in seconds (between 0 and 5)
 
 # Section 2 Control Variables
 # Control 2.1.1.1

@@ -1,0 +1,64 @@
+---
+
+- name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp"
+  block:
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Gather /var/tmp partition"
+        shell: mount | grep "on /var/tmp\s"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        args:
+            warn: false
+        register: ubtu22cis_1_1_4_1_vartmp_mounted
+
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if /var/tmp partition does not exist"
+        debug:
+            msg:
+                - "Warning!! There is no separate partition for /var/tmp"
+                - "Please create a separate partition for /var/tmp"
+        when: ubtu22cis_1_1_4_1_vartmp_mounted.stdout | length == 0
+
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.4.1' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_1_1_4_1_vartmp_mounted.stdout | length == 0
+  when:
+      - ubtu22cis_rule_1_1_4_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - audit
+      - rule_1.1.4.1
+      - var
+
+- name: |
+    "1.1.4.2 | PATCH | Ensure /var/tmp partition includes the noexec option"
+    "1.1.4.3 | PATCH | Ensure /var/tmp partition includes the nosuid option"
+    "1.1.4.4 | PATCH | Ensure /var/tmp partition includes the nodev option"
+  mount:
+      name: "{{ item.device }}"
+      src: "{{ item.fstype }}"
+      state: present
+      fstype: xfs
+      opts: defaults,{% if ubtu22cis_rule_1_1_4_2 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_4_3 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_4_4 %}nodev{% endif %}
+  notify: remount var
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - item.mount == "/var/tmp"
+      - ubtu22cis_rule_1_1_4_2 or
+        ubtu22cis_rule_1_1_4_3 or
+        ubtu22cis_rule_1_1_4_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.4.2
+      - rule_1.1.4.3
+      - rule_1.1.4.4
+      - var
