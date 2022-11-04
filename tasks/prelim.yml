@@ -9,9 +9,9 @@
   block:
       - name: PRELIM | Capture tmp mount type | discover mount tmp type
         ansible.builtin.shell: systemctl is-enabled tmp.mount
-        register: tmp_mount_type
+        register: tmp_mnt_type
         changed_when: false
-        failed_when: tmp_mnt_type not in [ 0, 1 ]
+        failed_when: tmp_mnt_type.rc not in [ 0, 1 ]
 
       - name: PRELIM | Capture tmp mount type | Set fstab
         set_fact:
@@ -36,7 +36,7 @@
   changed_when: false
   check_mode: false
   when:
-      - ubtu22cis_rule_1_1_23
+      - ubtu22cis_rule_1_1_9
   tags:
       - skip_ansible_lint
       - section1
