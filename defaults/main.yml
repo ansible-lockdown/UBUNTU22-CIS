@@ -132,30 +132,16 @@ ubtu22cis_rule_1_7_3: true
 ubtu22cis_rule_1_7_4: true
 ubtu22cis_rule_1_7_5: true
 ubtu22cis_rule_1_7_6: true
-
-
-
-
-ubtu22cis_rule_1_1_11: true
-ubtu22cis_rule_1_1_12: true
-ubtu22cis_rule_1_1_13: true
-ubtu22cis_rule_1_1_14: true
-ubtu22cis_rule_1_1_15: true
-ubtu22cis_rule_1_1_16: true
-ubtu22cis_rule_1_1_17: true
-ubtu22cis_rule_1_1_18: true
-ubtu22cis_rule_1_1_19: true
-ubtu22cis_rule_1_1_20: true
-ubtu22cis_rule_1_1_21: true
-ubtu22cis_rule_1_1_22: true
-ubtu22cis_rule_1_1_23: true
-ubtu22cis_rule_1_1_24: true
-
-
 ubtu22cis_rule_1_8_1: true
 ubtu22cis_rule_1_8_2: true
 ubtu22cis_rule_1_8_3: true
 ubtu22cis_rule_1_8_4: true
+ubtu22cis_rule_1_8_5: true
+ubtu22cis_rule_1_8_6: true
+ubtu22cis_rule_1_8_7: true
+ubtu22cis_rule_1_8_8: true
+ubtu22cis_rule_1_8_9: true
+ubtu22cis_rule_1_8_10: true
 ubtu22cis_rule_1_9: true
 
 # Section 2 Fixes
@@ -679,8 +665,8 @@ ubtu22cis_dotperm_ansiblemanaged: true
 
 ### Audit binary settings ###
 audit_bin_version:
-    release: v0.3.18
-    checksum: 'sha256:432308ebca0caf8165d45bd27e3262126aad9d15572ac8cb3149b3c91f75aace'
+    release: v0.3.20
+    checksum: 'sha256:459bc14662967d07795234374a04d611cd2f821140eb4225e7d9ba4572630e11'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
@@ -707,13 +693,13 @@ audit_files_url: "some url maybe s3?"
 
 ## Goss configuration information
 # Where the goss configs and outputs are stored
-audit_out_dir: '/var/tmp'
+audit_out_dir: '/opt'
 # Where the goss audit configuration will be stored
 audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
 
 # If changed these can affect other products
-pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
 audit_control_file: "{{ audit_conf_dir }}goss.yml"
