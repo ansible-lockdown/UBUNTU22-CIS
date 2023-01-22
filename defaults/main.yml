@@ -354,7 +354,7 @@ ubtu22cis_rule_5_6: true
 ubtu22cis_rule_5_7: true
 
 # Section 6 Fixes
-# Section is Systme Maintenance (System File Permissions and User and Group Settings)
+# Section is System Maintenance (System File Permissions and User and Group Settings)
 ubtu22cis_rule_6_1_1: true
 ubtu22cis_rule_6_1_2: true
 ubtu22cis_rule_6_1_3: true
