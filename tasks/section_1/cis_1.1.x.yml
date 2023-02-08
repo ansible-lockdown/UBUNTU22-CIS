@@ -2,11 +2,17 @@
 
 - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled"
   block:
-      - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
+      - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config | Not loadable"
         lineinfile:
             dest: /etc/modprobe.d/cramfs.conf
             regexp: "^(#)?install cramfs(\\s|$)"
             line: install cramfs /bin/true
+            create: yes
+
+      - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config | Deny list"
+        lineinfile:
+            dest: /etc/modprobe.d/cramfs.conf
+            line: blacklist cramfs
             create: yes
 
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Disable cramfs"
