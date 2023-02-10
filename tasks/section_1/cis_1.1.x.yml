@@ -217,7 +217,8 @@
   mount:
       name: /dev/shm
       src: /dev/shm
-      state: remounted
+    #   state: remounted
+      state: mounted
       fstype: tmpfs
       opts: "defaults,{% if ubtu22cis_rule_1_1_7 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_9 %}noexec{% endif %}"
   when:
