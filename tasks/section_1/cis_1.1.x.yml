@@ -530,11 +530,16 @@
 
 - name: "1.1.24 | PATCH | Disable USB Storage"
   block:
-      - name: "1.1.24 | PATCH | Disable USB Storage | Set modprobe config"
+      - name: "1.1.24 | PATCH | Disable USB Storage | Set modprobe config | Not loadable"
         lineinfile:
             path: /etc/modprobe.d/usb_storage.conf
             regexp: '^install usb-storage'
             line: 'install usb-storage /bin/true'
+            create: yes
+      - name: "1.1.24 | PATCH | Disable USB Storage | Set modprobe config | Deny list"
+        lineinfile:
+            dest: /etc/modprobe.d/usb_storage.conf
+            line: blacklist usb-storage
             create: yes
 
       - name: "1.1.24 | PATCH | Disable USB Storage | Remove usb-storage module"
