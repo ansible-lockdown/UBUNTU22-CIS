@@ -75,6 +75,29 @@
       - rule_1.5.3
       - prelink
 
+- name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting is not enabled"
+  block:
+      - name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting is not enabled | disable in /etc/default/apport"
+        lineinfile:
+            path: /etc/default/apport
+            regexp: '^enabled=1'
+            line: 'enabled=0'
+
+      - name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting is not enabled | disable apport.service"
+        systemd:
+            name: apport
+            enabled: false
+            state: stopped
+  when:
+      - ubtu22cis_rule_1_5_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.5.3
+      - apport
+
 - name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting (apport) is not installed"
   apt:
       name: apport
