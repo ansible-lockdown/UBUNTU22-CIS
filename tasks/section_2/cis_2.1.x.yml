@@ -20,6 +20,7 @@
         apt:
             name: ['ntp', 'chrony']
             state: absent
+            purge: true
 
       - name: "2.1.1.2 | PATCH | Ensure systemd-timesyncd is configured | Set configuration for systemd-timesyncd"
         lineinfile:
@@ -61,6 +62,7 @@
         apt:
             name: ntp
             state: absent
+            purge: true
 
       - name: "2.1.1.3 | PATCH | Ensure chrony is configured | Disable/Mask systemd-timesyncd"
         systemd:
@@ -113,6 +115,7 @@
         apt:
             name: chrony
             state: absent
+            purge: true
 
       - name: "2.1.1.4 | PATCH | Ensure ntp is configured | Disable/Mask systemd-timesyncd"
         systemd:
@@ -159,6 +162,7 @@
   apt:
       name: xserver-xorg*
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_2
       - not ubtu22cis_desktop_required
@@ -189,6 +193,7 @@
         apt:
             name: avahi-daemon
             state: absent
+            purge: true
   when:
       - ubtu22cis_rule_2_1_3
       - not ubtu22cis_avahi_server
@@ -207,6 +212,7 @@
   apt:
       name: cups
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_4
       - not ubtu22cis_cups_server
@@ -224,6 +230,7 @@
   apt:
       name: isc-dhcp-server
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_5
       - not ubtu22cis_dhcp_server
@@ -241,6 +248,7 @@
   apt:
       name: slapd
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_6
       - not ubtu22cis_ldap_server
@@ -258,6 +266,7 @@
   apt:
       name: nfs-kernel-server
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_7
       - not ubtu22cis_nfs_server
@@ -276,6 +285,7 @@
   apt:
       name: bind9
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_8
       - not ubtu22cis_dns_server
@@ -293,6 +303,7 @@
   apt:
       name: vsftpd
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_9
       - not ubtu22cis_vsftpd_server
@@ -310,6 +321,7 @@
   apt:
       name: apache2
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_10
       - not ubtu22cis_httpd_server
@@ -327,6 +339,7 @@
   apt:
       name: ['dovecot-imapd', 'dovecot-pop3d']
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_11
       - not ubtu22cis_dovecot_server
@@ -345,6 +358,7 @@
   apt:
       name: samba
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_12
       - not ubtu22cis_smb_server
@@ -362,6 +376,7 @@
   apt:
       name: squid
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_13
       - not ubtu22cis_squid_server
@@ -379,6 +394,7 @@
   apt:
       name: snmpd
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_14
       - not ubtu22cis_snmp_server
@@ -453,6 +469,7 @@
   apt:
       name: rsync
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_16
       - not ubtu22cis_rsync_server
@@ -469,6 +486,7 @@
   apt:
       name: nis
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_2_1_17
       - not ubtu22cis_nis_server

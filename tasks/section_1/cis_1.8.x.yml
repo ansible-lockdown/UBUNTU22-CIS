@@ -4,6 +4,7 @@
   apt:
       name: gdm3
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_1_8_1
       - not ubtu22cis_desktop_required

@@ -64,6 +64,7 @@
         apt:
             name: prelink
             state: absent
+            purge: true
   when:
       - ubtu22cis_rule_1_5_3
       - "'prelink' in ansible_facts.packages"
@@ -102,6 +103,7 @@
   apt:
       name: apport
       state: absent
+      purge: true
   when:
       - ubtu22cis_rule_1_5_3
       - "'apport' in ansible_facts.packages"
