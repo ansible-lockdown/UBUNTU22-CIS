@@ -75,6 +75,21 @@
       - rule_1.5.3
       - prelink
 
+- name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting (apport) is not installed"
+  apt:
+      name: apport
+      state: absent
+  when:
+      - ubtu22cis_rule_1_5_3
+      - "'apport' in ansible_facts.packages"
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.5.3
+      - apport
+
 
 - name: "1.5.4 | PATCH | Ensure core dumps are restricted"
   block:
@@ -87,9 +102,19 @@
             sysctl_set: yes
             ignoreerrors: yes
 
-      - name: "1.5.4 | PATCH | Ensure core dumps are restricted | security limits"
+      - name: "1.5.4 | PATCH | Ensure core dumps are restricted | security limits - 99_zero_core.conf"
         lineinfile:
             path: /etc/security/limits.d/99_zero_core.conf
+            regexp: '^\* hard core'
+            line: '* hard core 0'
+            create: true
+            owner: root
+            group: root
+            mode: '0644'
+
+      - name: "1.5.4 | PATCH | Ensure core dumps are restricted | security limits - limits.conf"
+        lineinfile:
+            path: /etc/security/limits.conf
             regexp: '^\* hard core'
             line: '* hard core 0'
             create: true
