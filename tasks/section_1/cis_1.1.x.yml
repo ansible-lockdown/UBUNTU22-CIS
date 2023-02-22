@@ -202,9 +202,9 @@
       - var/tmp
 
 - name: |
-    "1.1.12 | PATCH | Ensure /var/tmp partition includes the nodev option"
-    "1.1.13 | PATCH | Ensure /var/tmp partition includes the nosuid option"
-    "1.1.14 | PATCH | Ensure /var/tmp partition includes the noexec option"
+    "1.1.4.2 | PATCH | Ensure /var/tmp partition includes the noexec option"
+    "1.1.4.3 | PATCH | Ensure /var/tmp partition includes the nosuid option"
+    "1.1.4.4 | PATCH | Ensure /var/tmp partition includes the nodev option"
   mount:
       name: /var/tmp
       src: "{{ ubtu22cis_vartmp['source'] }}"
@@ -212,18 +212,18 @@
       fstype: "{{ ubtu22cis_vartmp['fstype'] }}"
       opts: "{{ ubtu22cis_vartmp['opts'] }}"
   when:
-      - ubtu22cis_rule_1_1_12 or
-        ubtu22cis_rule_1_1_13 or
-        ubtu22cis_rule_1_1_14
+      - ubtu22cis_rule_1_1_4_2 or
+        ubtu22cis_rule_1_1_4_3 or
+        ubtu22cis_rule_1_1_4_4
       - ubtu22cis_vartmp['enabled']
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
-      - rule_1.1.12
-      - rule_1.1.13
-      - rule_1.1.14
+      - rule_1.1.4.2
+      - rule_1.1.4.3
+      - rule_1.1.4.4
       - var/tmp
 
 - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log"
