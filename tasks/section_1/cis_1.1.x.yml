@@ -111,31 +111,28 @@
       - tmp
 
 - name: |
-    "1.1.6 | PATCH | Ensure /dev/shm is configured"
-    "1.1.7 | PATCH | Ensure nodev option set on /dev/shm partition"
-    "1.1.8 | PATCH | Ensure nosuid option set on /dev/shm partition"
-    "1.1.9 | PATCH | Ensure noexec option set on /dev/shm partition"
+    "1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition"
+    "1.1.8.2 | PATCH | Ensure noexec option set on /dev/shm partition"
+    "1.1.8.3 | PATCH | Ensure nosuid option set on /dev/shm partition"
   mount:
       name: /dev/shm
       src: /dev/shm
     #   state: remounted
       state: mounted
       fstype: tmpfs
-      opts: "defaults,{% if ubtu22cis_rule_1_1_7 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_9 %}noexec{% endif %}"
+      opts: "defaults,{% if ubtu22cis_rule_1_1_8_1 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8_3 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_8_2 %}noexec{% endif %}"
   when:
-      - ubtu22cis_rule_1_1_6 or
-        ubtu22cis_rule_1_1_7 or
-        ubtu22cis_rule_1_1_8 or
-        ubtu22cis_rule_1_1_9
+      - ubtu22cis_rule_1_1_8_1 or
+        ubtu22cis_rule_1_1_8_2 or
+        ubtu22cis_rule_1_1_8_3
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
-      - rule_1.1.6
-      - rule_1.1.7
-      - rule_1.1.8
-      - rule_1.1.9
+      - rule_1.1.8.1
+      - rule_1.1.8.2
+      - rule_1.1.8.3
       - dev_shm
 
 - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var"
