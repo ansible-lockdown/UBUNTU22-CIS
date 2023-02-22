@@ -285,37 +285,38 @@
       - var/log
 
 
-- name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit"
+- name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
-      - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Gather /var/log/audit"
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Gather /var/log/audit"
         shell: mount | grep "on /var/log/audit "
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_1_1_16_var_log_audit_mounted
+        register: ubtu22cis_1_1_6_1_var_log_audit_mounted
         args:
             warn: false
 
-      - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if /var/log/audit partition does not exist"
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if /var/log/audit partition does not exist"
         debug:
             msg:
                 - "Warning!! There is no separate partition for /var/log/audit"
                 - "Please create a separate partition for /var/log/audit"
-        when: ubtu22cis_1_1_16_var_log_audit_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_6_1_var_log_audit_mounted.stdout | length == 0
 
-      - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
+      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.16' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_16_var_log_audit_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_6_1_var_log_audit_mounted.stdout | length == 0
   when:
-      - ubtu22cis_rule_1_1_16
+      - ubtu22cis_rule_1_1_6_1
   tags:
       - level2-server
       - level2-workstation
       - automated
       - audit
       - var/log/audit
+      - rule_1.1.6.1
 
 - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home"
   block:
