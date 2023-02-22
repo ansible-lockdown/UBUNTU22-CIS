@@ -168,37 +168,37 @@
       - rule_1.1.8.3
       - dev_shm
 
-- name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp"
+- name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp"
   block:
-      - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Gather /var/tmp partition"
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Gather /var/tmp partition"
         shell: mount | grep "on /var/tmp "
         changed_when: false
         failed_when: false
         check_mode: false
         args:
             warn: false
-        register: ubtu22cis_1_1_11_var_tmp_mounted
+        register: ubtu22cis_1_1_4_1_var_tmp_mounted
 
-      - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if /var/tmp partition does not exist"
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if /var/tmp partition does not exist"
         debug:
             msg:
                 - "Warning!! There is no separate partition for /var/tmp"
                 - "Please create a separate partition for /var/tmp"
-        when: ubtu22cis_1_1_11_var_tmp_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_4_1_var_tmp_mounted.stdout | length == 0
 
-      - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp | Set warning count"
+      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.11' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_11_var_tmp_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_4_1_var_tmp_mounted.stdout | length == 0
   when:
-      - ubtu22cis_rule_1_1_11
+      - ubtu22cis_rule_1_1_4.1
   tags:
       - level2-server
       - level2-workstation
       - automated
       - audit
-      - rule_1.1.11
+      - rule_1.1.4.1
       - var/tmp
 
 - name: |
