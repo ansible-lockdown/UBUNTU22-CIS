@@ -110,6 +110,39 @@
       - rule_1.1.2.4
       - tmp
 
+- name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var"
+  block:
+      - name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var | Gather /var partition"
+        shell: mount | grep "on /var "
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        args:
+            warn: false
+        register: ubtu22cis_1_1_3_1_var_mounted
+
+      - name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var | Warn if /var partition does not exist"
+        debug:
+            msg:
+                - "Warning!! There is no separate partition for /var"
+                - "Please create a separate partition for /var"
+        when: ubtu22cis_1_1_3_1_var_mounted.stdout | length == 0
+
+      - name: "1.1.3.1 | AUDIT | Ensure separate partition exists for /var | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_1.1.10' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_1_1_3_1_var_mounted.stdout | length == 0
+  when:
+      - ubtu22cis_rule_1_1_3_1
+  tags:
+      - level2-server
+      - level2-workstation
+      - automated
+      - audit
+      - rule_1.1.3.1
+      - var
+
 - name: |
     "1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition"
     "1.1.8.2 | PATCH | Ensure noexec option set on /dev/shm partition"
@@ -134,39 +167,6 @@
       - rule_1.1.8.2
       - rule_1.1.8.3
       - dev_shm
-
-- name: "1.1.10 | AUDIT | Ensure separate partition exists for /var"
-  block:
-      - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Gather /var partition"
-        shell: mount | grep "on /var "
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        args:
-            warn: false
-        register: ubtu22cis_1_1_10_var_mounted
-
-      - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Warn if /var partition does not exist"
-        debug:
-            msg:
-                - "Warning!! There is no separate partition for /var"
-                - "Please create a separate partition for /var"
-        when: ubtu22cis_1_1_10_var_mounted.stdout | length == 0
-
-      - name: "1.1.10 | AUDIT | Ensure separate partition exists for /var | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.1.10' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_10_var_mounted.stdout | length == 0
-  when:
-      - ubtu22cis_rule_1_1_10
-  tags:
-      - level2-server
-      - level2-workstation
-      - automated
-      - audit
-      - rule_1.1.10
-      - var
 
 - name: "1.1.11 | AUDIT | Ensure separate partition exists for /var/tmp"
   block:
