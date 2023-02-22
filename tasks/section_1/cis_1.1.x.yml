@@ -79,6 +79,7 @@
       - rule_1.1.1.3
       - udf
 
+# 1.1.2
 - name: |
     "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition"
     "1.1.2.3 | PATCH | Ensure nosuid option set on /tmp partition"
@@ -143,31 +144,6 @@
       - rule_1.1.3.1
       - var
 
-- name: |
-    "1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition"
-    "1.1.8.2 | PATCH | Ensure noexec option set on /dev/shm partition"
-    "1.1.8.3 | PATCH | Ensure nosuid option set on /dev/shm partition"
-  mount:
-      name: /dev/shm
-      src: /dev/shm
-    #   state: remounted
-      state: mounted
-      fstype: tmpfs
-      opts: "defaults,{% if ubtu22cis_rule_1_1_8_1 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8_3 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_8_2 %}noexec{% endif %}"
-  when:
-      - ubtu22cis_rule_1_1_8_1 or
-        ubtu22cis_rule_1_1_8_2 or
-        ubtu22cis_rule_1_1_8_3
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.1.8.1
-      - rule_1.1.8.2
-      - rule_1.1.8.3
-      - dev_shm
-
 - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp"
   block:
       - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Gather /var/tmp partition"
@@ -201,6 +177,7 @@
       - rule_1.1.4.1
       - var/tmp
 
+# 1.1.4.2-4
 - name: |
     "1.1.4.2 | PATCH | Ensure /var/tmp partition includes the noexec option"
     "1.1.4.3 | PATCH | Ensure /var/tmp partition includes the nosuid option"
@@ -259,12 +236,13 @@
       - rule_1.1.5.1
       - var/log
 
+# 1.1.5.2-4
 - name: |
     "1.1.5.2 | PATCH | Ensure /var/log partition includes the nodev option"
     "1.1.5.3 | PATCH | Ensure /var/log partition includes the noexec option"
     "1.1.5.4 | PATCH | Ensure /var/log partition includes the nosuid option"
   mount:
-      name: /var/tmp
+      name: /var/log
       src: "{{ ubtu22cis_varlog['source'] }}"
       state: present
       fstype: "{{ ubtu22cis_varlog['fstype'] }}"
@@ -317,12 +295,13 @@
       - var/log/audit
       - rule_1.1.6.1
 
+# 1.1.6.2-4
 - name: |
     "1.1.6.2 | PATCH | Ensure /var/log/audit partition includes the noexec option"
     "1.1.6.3 | PATCH | Ensure /var/log/audit partition includes the nodev option"
     "1.1.6.4 | PATCH | Ensure /var/log/audit partition includes the nosuid option"
   mount:
-      name: /var/tmp
+      name: /var/log/audit
       src: "{{ ubtu22cis_varlogaudit['source'] }}"
       state: present
       fstype: "{{ ubtu22cis_varlogaudit['fstype'] }}"
@@ -343,131 +322,94 @@
       - var/log/audit
 
 
-- name: "1.1.17 | AUDIT | Ensure separate partition exists for /home"
+- name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home"
   block:
-      - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Gather /home"
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Gather /home"
         shell: mount | grep "on /home"
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_1_1_17_home_mounted
+        register: ubtu22cis_1_1_7_1_home_mounted
         args:
             warn: false
 
-      - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Warn if /home partition does not exist"
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Warn if /home partition does not exist"
         debug:
             msg:
                 - "Warning!! There is no separate partition for /home"
                 - "Please create a separate partition for /home"
-        when: ubtu22cis_1_1_17_home_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_7_1_home_mounted.stdout | length == 0
 
-      - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home | Set warning count"
+      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.17' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_17_home_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_7_1_home_mounted.stdout | length == 0
   when:
-      - ubtu22cis_rule_1_1_17
+      - ubtu22cis_rule_1_1_7_1
   tags:
       - level2-server
       - level2-workstation
       - automated
       - audit
       - /home
+      - rule_1.1.7.1
 
-- name: "1.1.18 | PATCH | Ensure /home partition includes the nodev option"
+#1.1.7.2,3
+- name: |
+    "1.1.7.2 | PATCH | Ensure /home partition includes the nodev option"
+    "1.1.7.3 | PATCH | Ensure /home partition includes the nosuid option"
   mount:
-      name: "/home"
-      src: "{{ item.device }}"
+      name: /home
+      src: "{{ ubtu22cis_home['source'] }}"
+      state: present
+      fstype: "{{ ubtu22cis_home['fstype'] }}"
+      opts: "{{ ubtu22cis_home['opts'] }}"
+  when:
+      - ubtu22cis_rule_1_1_7_2 or
+        ubtu22cis_rule_1_1_7_3
+      - ubtu22cis_home['enabled']
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.7.2
+      - rule_1.1.7.3
+      - var/log/audit
+
+- name: |
+    "1.1.8.1 | PATCH | Ensure nodev option set on /dev/shm partition"
+    "1.1.8.2 | PATCH | Ensure noexec option set on /dev/shm partition"
+    "1.1.8.3 | PATCH | Ensure nosuid option set on /dev/shm partition"
+  mount:
+      name: /dev/shm
+      src: /dev/shm
+    #   state: remounted
       state: mounted
-      fstype: "{{ item.fstype }}"
-      opts: "nodev"
-  with_items: "{{ ansible_mounts }}"
-  loop_control:
-      label: "{{ item.device }}"
+      fstype: tmpfs
+      opts: "defaults,{% if ubtu22cis_rule_1_1_8_1 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8_3 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_8_2 %}noexec{% endif %}"
   when:
-      - ubtu22cis_rule_1_1_18
-      - item.mount == "/home"
+      - ubtu22cis_rule_1_1_8_1 or
+        ubtu22cis_rule_1_1_8_2 or
+        ubtu22cis_rule_1_1_8_3
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
-      - rule_1.1.18
-      - /home
+      - rule_1.1.8.1
+      - rule_1.1.8.2
+      - rule_1.1.8.3
+      - dev_shm
 
-- name: "1.1.19 | AUDIT | Ensure nodev option set on removable media partitions"
-  debug:
-      msg: "Not a relevant control"
-  when:
-      - ubtu22cis_rule_1_1_19
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_1.1.19
-      - removable_media
-
-- name: "1.1.20 | AUDIT | Ensure nosuid option set on removable media partitions"
-  debug:
-      msg: "Not a relevant control"
-  when:
-      - ubtu22cis_rule_1_1_20
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_1.1.20
-      - removable_media
-
-- name: "1.1.21 | AUDIT | Ensure noexec option set on removable media partitions"
-  debug:
-      msg: "Not a relevant control"
-  when:
-      - ubtu22cis_rule_1_1_21
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_1.1.21
-      - removable_media
-
-- name: "1.1.22 | PATCH | Ensure sticky bit is set on all world-writable directories"
-  block:
-      - name: "1.1.22 | PATCH | Ensure sticky bit is set on all world-writable directories | Find directories"
-        shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type d \( -perm -0002 -a ! -perm -1000 \) 2>/dev/null
-        changed_when: false
-        failed_when: false
-        register: ubtu22cis_1_1_22_status
-
-      - name: "1.1.22 | PATCH | Ensure sticky bit is set on all world-writable directories | set sticky bit"
-        file:
-            path: "{{ item }}"
-            state: directory
-            mode: a+t
-        with_items:
-            - "{{ ubtu22cis_1_1_22_status.stdout_lines }}"
-        when: ubtu22cis_1_1_22_status.stdout | length > 0
-  when:
-      - ubtu22cis_rule_1_1_22
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.1.22
-      - sticky_bit
-
-- name: "1.1.23 | PATCH | Disable Automounting"
+- name: "1.1.9 | PATCH | Disable Automounting"
   service:
       name: autofs
       state: stopped
       enabled: no
   when:
-      - ubtu22cis_rule_1_1_23
+      - ubtu22cis_rule_1_1_9
       - ubtu22cis_autofs_service_status.stdout == "loaded"
       - not ubtu22cis_allow_autofs
   tags:
@@ -475,35 +417,35 @@
       - level2-workstation
       - automated
       - patch
-      - rule_1.1.23
+      - rule_1.1.9
       - automounting
 
-- name: "1.1.24 | PATCH | Disable USB Storage"
+- name: "1.1.10 | PATCH | Disable USB Storage"
   block:
-      - name: "1.1.24 | PATCH | Disable USB Storage | Set modprobe config | Not loadable"
+      - name: "1.1.10 | PATCH | Disable USB Storage | Set modprobe config | Not loadable"
         lineinfile:
             path: /etc/modprobe.d/usb_storage.conf
             regexp: '^install usb-storage'
             line: 'install usb-storage /bin/true'
             create: yes
-      - name: "1.1.24 | PATCH | Disable USB Storage | Set modprobe config | Deny list"
+      - name: "1.1.10 | PATCH | Disable USB Storage | Set modprobe config | Deny list"
         lineinfile:
             dest: /etc/modprobe.d/usb_storage.conf
             line: blacklist usb-storage
             create: yes
 
-      - name: "1.1.24 | PATCH | Disable USB Storage | Remove usb-storage module"
+      - name: "1.1.10 | PATCH | Disable USB Storage | Remove usb-storage module"
         modprobe:
             name: usb-storage
             state: absent
         when: ansible_connection != 'docker'
   when:
-      - ubtu22cis_rule_1_1_24
+      - ubtu22cis_rule_1_1_10
       - not ubtu22cis_allow_usb_storage
   tags:
       - level1-server
       - level2-workstation
       - automated
       - patch
-      - rule_1.1.24
+      - rule_1.1.10
       - usb_storage
