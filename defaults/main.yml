@@ -84,7 +84,9 @@ skip_reboot: true
 ubtu22cis_rule_1_1_1_1: true
 ubtu22cis_rule_1_1_1_2: true
 ubtu22cis_rule_1_1_1_3: true
-ubtu22cis_rule_1_1_2: true
+ubtu22cis_rule_1_1_2_2: true
+ubtu22cis_rule_1_1_2_3: true
+ubtu22cis_rule_1_1_2_4: true
 ubtu22cis_rule_1_1_3: true
 ubtu22cis_rule_1_1_4: true
 ubtu22cis_rule_1_1_5: true
