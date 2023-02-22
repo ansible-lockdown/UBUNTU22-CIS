@@ -226,38 +226,64 @@
       - rule_1.1.4.4
       - var/tmp
 
-- name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log"
+- name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log"
   block:
-      - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Gather /var/log partition"
+      - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Gather /var/log partition"
         shell: mount | grep "on /var/log "
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_1_1_15_var_log_mounted
+        register: ubtu22cis_1_1_5_1_var_log_mounted
         args:
             warn: false
 
-      - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Warn if /var/log partition does not exist"
+      - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Warn if /var/log partition does not exist"
         debug:
             msg:
                 - "Warning!! There is no separate partition for /var/log"
                 - "Please create a separate partition for /var/log"
-        when: ubtu22cis_1_1_15_var_log_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_5_1_var_log_mounted.stdout | length == 0
 
-      - name: "1.1.15 | AUDIT | Ensure separate partition exists for /var/log | Set warning count"
+      - name: "1.1.5.1 | AUDIT | Ensure separate partition exists for /var/log | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.15' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_15_var_log_mounted.stdout | length == 0
+        when: ubtu22cis_1_1_5_1_var_log_mounted.stdout | length == 0
   when:
-      - ubtu22cis_rule_1_1_15
+      - ubtu22cis_rule_1_1_5_1
   tags:
       - level2-server
       - level2-workstation
       - automated
       - audit
-      - rule_1.1.15
+      - rule_1.1.5.1
       - var/log
+
+- name: |
+    "1.1.5.2 | PATCH | Ensure /var/log partition includes the nodev option"
+    "1.1.5.3 | PATCH | Ensure /var/log partition includes the noexec option"
+    "1.1.5.4 | PATCH | Ensure /var/log partition includes the nosuid option"
+  mount:
+      name: /var/tmp
+      src: "{{ ubtu22cis_varlog['source'] }}"
+      state: present
+      fstype: "{{ ubtu22cis_varlog['fstype'] }}"
+      opts: "{{ ubtu22cis_varlog['opts'] }}"
+  when:
+      - ubtu22cis_rule_1_1_5_2 or
+        ubtu22cis_rule_1_1_5_3 or
+        ubtu22cis_rule_1_1_5_4
+      - ubtu22cis_varlog['enabled']
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.5.2
+      - rule_1.1.5.3
+      - rule_1.1.5.4
+      - var/log
+
 
 - name: "1.1.16 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
