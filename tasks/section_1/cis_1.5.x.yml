@@ -1,90 +1,59 @@
 ---
 
-- name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled"
+- name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
   block:
-      - name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled | Find status of XD/NX"
-        shell: "journalctl | grep 'protection: active'"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_1_5_1_xdnx_status
-
-      - name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled | Warn if XD/NX is not enabled"
-        debug:
-            msg:
-                - "Warning!! You do not have XD/NX (Execute Disable/No Execute) enabled"
-                - "To conform to CIS standards this needs to be enabled"
-        when: "'active'not in ubtu22cis_1_5_1_xdnx_status.stdout"
-
-      - name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.5.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: "'active'not in ubtu22cis_1_5_1_xdnx_status.stdout"
-  when:
-      - ubtu22cis_rule_1_5_1
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_1.5.1
-      - xd/nx
-
-- name: "1.5.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
-  block:
-      - name: "1.5.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set ASLR settings"
+      - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set ASLR settings"
         lineinfile:
             path: /etc/sysctl.conf
             regexp: '^kernel.randomize_va_space'
             line: 'kernel.randomize_va_space = 2'
 
-      - name: "1.5.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
+      - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
         sysctl:
             name: kernel.randomize_va_space
             value: '2'
   when:
-      - ubtu22cis_rule_1_5_2
+      - ubtu22cis_rule_1_5_1
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
-      - rule_1.5.2
+      - rule_1.5.1
       - aslr
 
-- name: "1.5.3 | PATCH | Ensure prelink is not installed"
+- name: "1.5.2 | PATCH | Ensure prelink is not installed"
   block:
-      - name: "1.5.3 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
+      - name: "1.5.2 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
         command: prelink -ua
         changed_when: false
         failed_when: false
 
-      - name: "1.5.3 | PATCH | Ensure prelink is not installed| Remove prelink package"
+      - name: "1.5.2 | PATCH | Ensure prelink is not installed| Remove prelink package"
         apt:
             name: prelink
             state: absent
             purge: true
   when:
-      - ubtu22cis_rule_1_5_3
+      - ubtu22cis_rule_1_5_2
       - "'prelink' in ansible_facts.packages"
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
-      - rule_1.5.3
+      - rule_1.5.2
       - prelink
 
-- name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting is not enabled"
+- name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled"
   block:
-      - name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting is not enabled | disable in /etc/default/apport"
+      - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | disable in /etc/default/apport"
         lineinfile:
             path: /etc/default/apport
             regexp: '^enabled=1'
             line: 'enabled=0'
 
-      - name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting is not enabled | disable apport.service"
+      - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | disable apport.service"
         systemd:
             name: apport
             enabled: false
@@ -99,7 +68,7 @@
       - rule_1.5.3
       - apport
 
-- name: "1.5.3 (22.04) | PATCH | Ensure Automatic Error Reporting (apport) is not installed"
+- name: "1.5.3 | PATCH | Ensure Automatic Error Reporting (apport) is not installed"
   apt:
       name: apport
       state: absent
