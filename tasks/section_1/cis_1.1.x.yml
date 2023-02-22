@@ -284,7 +284,6 @@
       - rule_1.1.5.4
       - var/log
 
-
 - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Gather /var/log/audit"
@@ -317,6 +316,32 @@
       - audit
       - var/log/audit
       - rule_1.1.6.1
+
+- name: |
+    "1.1.6.2 | PATCH | Ensure /var/log/audit partition includes the noexec option"
+    "1.1.6.3 | PATCH | Ensure /var/log/audit partition includes the nodev option"
+    "1.1.6.4 | PATCH | Ensure /var/log/audit partition includes the nosuid option"
+  mount:
+      name: /var/tmp
+      src: "{{ ubtu22cis_varlogaudit['source'] }}"
+      state: present
+      fstype: "{{ ubtu22cis_varlogaudit['fstype'] }}"
+      opts: "{{ ubtu22cis_varlogaudit['opts'] }}"
+  when:
+      - ubtu22cis_rule_1_1_6_2 or
+        ubtu22cis_rule_1_1_6_3 or
+        ubtu22cis_rule_1_1_6_4
+      - ubtu22cis_varlogaudit['enabled']
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.6.2
+      - rule_1.1.6.3
+      - rule_1.1.6.4
+      - var/log/audit
+
 
 - name: "1.1.17 | AUDIT | Ensure separate partition exists for /home"
   block:

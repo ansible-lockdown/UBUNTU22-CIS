@@ -97,6 +97,9 @@ ubtu22cis_rule_1_1_5_2: true
 ubtu22cis_rule_1_1_5_3: true
 ubtu22cis_rule_1_1_5_4: true
 ubtu22cis_rule_1_1_6_1: true
+ubtu22cis_rule_1_1_6_2: true
+ubtu22cis_rule_1_1_6_3: true
+ubtu22cis_rule_1_1_6_4: true
 ubtu22cis_rule_1_1_8_1: true
 ubtu22cis_rule_1_1_8_2: true
 ubtu22cis_rule_1_1_8_3: true
@@ -396,6 +399,12 @@ ubtu22cis_vartmp:
     enabled: false
 
 ubtu22cis_varlog:
+    source: /var/log
+    fstype: none
+    opts: "defaults,nodev,nosuid,noexec,bind"
+    enabled: false
+
+ubtu22cis_varlogaudit:
     source: /var/log
     fstype: none
     opts: "defaults,nodev,nosuid,noexec,bind"
