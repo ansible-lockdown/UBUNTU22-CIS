@@ -1,80 +1,82 @@
 ---
-
-- name: "1.8.1 | PATCH | Ensure GNOME Display Manager is removed"
+# Opinionated take on section: Server images are assumed to be non-interactive
+# under normal operation.  Remote terminal access without a graphical head
+# should be preferred so removing GDM will cover sections 1.8.1-10
+- name: "1.8.1-10 | PATCH | Ensure GNOME Display Manager is removed"
   apt:
       name: gdm3
       state: absent
       purge: true
   when:
-      - ubtu22cis_rule_1_8_1
-      - not ubtu22cis_desktop_required
-      - ubtu22cis_disruption_high
+      - ubtu22cis_rule_1_8_1 or
+        ubtu22cis_remove_gdm3
   tags:
       - level2-server
       - manual
       - patch
       - rule_1.8.1
       - gnome
+      - remove-gdm3
 
-- name: "1.8.2 | PATCH | Ensure GDM login banner is configured"
-  lineinfile:
-      path: /etc/gdm3/greeter.dconf-defaults
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-      insertafter: "{{ item.insertafter }}"
-      create: yes
-      owner: root
-      group: root
-      mode: 0644
-  notify: reload gdm
-  with_items:
-      - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
-      - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
-      - { regexp: 'banner-message-text', line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: 'banner-message-enable' }
-  when:
-      - ubtu22cis_rule_1_8_2
-      - ubtu22cis_desktop_required
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.8.2
-      - gnome
+# - name: "1.8.2 | PATCH | Ensure GDM login banner is configured"
+#   lineinfile:
+#       path: /etc/gdm3/greeter.dconf-defaults
+#       regexp: "{{ item.regexp }}"
+#       line: "{{ item.line }}"
+#       insertafter: "{{ item.insertafter }}"
+#       create: yes
+#       owner: root
+#       group: root
+#       mode: 0644
+#   notify: reload gdm
+#   with_items:
+#       - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
+#       - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
+#       - { regexp: 'banner-message-text', line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: 'banner-message-enable' }
+#   when:
+#       - ubtu22cis_rule_1_8_2
+#       - ubtu22cis_desktop_required
+#   tags:
+#       - level1-server
+#       - level1-workstation
+#       - automated
+#       - patch
+#       - rule_1.8.2
+#       - gnome
 
-- name: "1.8.3 | PATCH | Ensure disable-user-list is enabled"
-  lineinfile:
-      path: /etc/gdm3/greeter.dconf-defaul
-      regexp: '^disable-user-list='
-      line: 'disable-user-list=true'
-      insertafter: 'banner-message-text='
-      create: yes
-      owner: root
-      group: root
-      mode: 0644
-  notify: reload gdm
-  when:
-      - ubtu22cis_rule_1_8_3
-      - ubtu22cis_desktop_required
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.8.3
-      - gdm3
+# - name: "1.8.3 | PATCH | Ensure disable-user-list is enabled"
+#   lineinfile:
+#       path: /etc/gdm3/greeter.dconf-defaul
+#       regexp: '^disable-user-list='
+#       line: 'disable-user-list=true'
+#       insertafter: 'banner-message-text='
+#       create: yes
+#       owner: root
+#       group: root
+#       mode: 0644
+#   notify: reload gdm
+#   when:
+#       - ubtu22cis_rule_1_8_3
+#       - ubtu22cis_desktop_required
+#   tags:
+#       - level1-server
+#       - level1-workstation
+#       - automated
+#       - patch
+#       - rule_1.8.3
+#       - gdm3
 
-- name: "1.8.4 | PATCH | Ensure XDCMP is not enabled"
-  lineinfile:
-      path: /etc/gdm3/custom.conf
-      regexp: '^Enable.*=.*true'
-      state: absent
-  when:
-      - ubtu22cis_rule_1_8_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.8.4
-      - xdcmp
+# - name: "1.8.4 | PATCH | Ensure XDCMP is not enabled"
+#   lineinfile:
+#       path: /etc/gdm3/custom.conf
+#       regexp: '^Enable.*=.*true'
+#       state: absent
+#   when:
+#       - ubtu22cis_rule_1_8_4
+#   tags:
+#       - level1-server
+#       - level1-workstation
+#       - automated
+#       - patch
+#       - rule_1.8.4
+#       - xdcmp

@@ -100,21 +100,14 @@ ubtu22cis_rule_1_1_6_1: true
 ubtu22cis_rule_1_1_6_2: true
 ubtu22cis_rule_1_1_6_3: true
 ubtu22cis_rule_1_1_6_4: true
+ubtu22cis_rule_1_1_7_1: true
+ubtu22cis_rule_1_1_7_2: true
+ubtu22cis_rule_1_1_7_3: true
 ubtu22cis_rule_1_1_8_1: true
 ubtu22cis_rule_1_1_8_2: true
 ubtu22cis_rule_1_1_8_3: true
-ubtu22cis_rule_1_1_3: true
-ubtu22cis_rule_1_1_4: true
-ubtu22cis_rule_1_1_5: true
-ubtu22cis_rule_1_1_16: true
-ubtu22cis_rule_1_1_17: true
-ubtu22cis_rule_1_1_18: true
-ubtu22cis_rule_1_1_19: true
-ubtu22cis_rule_1_1_20: true
-ubtu22cis_rule_1_1_21: true
-ubtu22cis_rule_1_1_22: true
-ubtu22cis_rule_1_1_23: true
-ubtu22cis_rule_1_1_24: true
+ubtu22cis_rule_1_1_9: true
+ubtu22cis_rule_1_1_10: true
 ubtu22cis_rule_1_2_1: true
 ubtu22cis_rule_1_2_2: true
 ubtu22cis_rule_1_3_1: true
@@ -138,9 +131,6 @@ ubtu22cis_rule_1_7_4: true
 ubtu22cis_rule_1_7_5: true
 ubtu22cis_rule_1_7_6: true
 ubtu22cis_rule_1_8_1: true
-ubtu22cis_rule_1_8_2: true
-ubtu22cis_rule_1_8_3: true
-ubtu22cis_rule_1_8_4: true
 ubtu22cis_rule_1_9: true
 
 # Section 2 Fixes
@@ -383,7 +373,7 @@ ubtu22cis_ipv6_required: false
 # Other system wide variables
 # ubtu22cis_desktop_required is the toggle for requiring desktop environments. True means you use a desktop and will not disable/remove needed items to run a desktop (not recommented for servers)
 # false means you do not require a desktop
-ubtu22cis_desktop_required: false
+ubtu22cis_remove_gdm3: true
 
 # Section 1 Control Variables
 
