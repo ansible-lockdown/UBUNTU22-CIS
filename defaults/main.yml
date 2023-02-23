@@ -235,15 +235,23 @@ ubtu22cis_rule_4_1_14: true
 ubtu22cis_rule_4_1_15: true
 ubtu22cis_rule_4_1_16: true
 ubtu22cis_rule_4_1_17: true
-ubtu22cis_rule_4_2_1_1: true
-ubtu22cis_rule_4_2_1_2: true
+#ubtu22cis_rule_4_2_1_1_1: true
+#ubtu22cis_rule_4_2_1_1_2: true
+#ubtu22cis_rule_4_2_1_1_3: true
+#ubtu22cis_rule_4_2_1_1_4: true
+#ubtu22cis_rule_4_2_1_2: true
 ubtu22cis_rule_4_2_1_3: true
 ubtu22cis_rule_4_2_1_4: true
-ubtu22cis_rule_4_2_1_5: true
-ubtu22cis_rule_4_2_1_6: true
+#ubtu22cis_rule_4_2_1_5: true
+#ubtu22cis_rule_4_2_1_6: true
+#ubtu22cis_rule_4_2_1_7: true
 ubtu22cis_rule_4_2_2_1: true
 ubtu22cis_rule_4_2_2_2: true
 ubtu22cis_rule_4_2_2_3: true
+ubtu22cis_rule_4_2_2_4: true
+ubtu22cis_rule_4_2_2_5: true
+ubtu22cis_rule_4_2_2_6: true
+ubtu22cis_rule_4_2_2_7: true
 ubtu22cis_rule_4_2_3: true
 ubtu22cis_rule_4_3: true
 ubtu22cis_rule_4_4: true
@@ -368,7 +376,7 @@ ubtu22cis_is_router: false
 ubtu22cis_ipv4_required: true
 
 # IPv6 requirement toggle
-ubtu22cis_ipv6_required: false
+ubtu22cis_ipv6_required: true
 
 # Other system wide variables
 # ubtu22cis_desktop_required is the toggle for requiring desktop environments. True means you use a desktop and will not disable/remove needed items to run a desktop (not recommented for servers)

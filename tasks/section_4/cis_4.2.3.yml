@@ -1,14 +1,14 @@
 ---
 
-- name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
+- name: "4.2.3 | PATCH | Ensure all logfiles have appropriate permissions and ownership"
   block:
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
+      - name: "4.2.3 | PATCH | Ensure all logfiles have appropriate permissions and ownership | Find log files"
         find:
             paths: /var/log
             recurse: yes
         register: ubtu22cis_4_2_3_logfiles
 
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions"
+      - name: "4.2.3 | PATCH | Ensure all logfiles have appropriate permissions and ownership | Apply permissions and ownership"
         file:
             path: "{{ item.path }}"
             mode: g-w,o-rwx
