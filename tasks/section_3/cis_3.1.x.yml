@@ -1,6 +1,6 @@
 ---
-
-- name: "3.1.1 | PATCH | Disable IPv6"
+# This can stay for the 
+- name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled (Disable IPv6)"
   block:
       - name: "3.1.1 | AUDIT | Disable IPv6 | Get current GRUB_CMDLINE_LINUX settings"
         shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
