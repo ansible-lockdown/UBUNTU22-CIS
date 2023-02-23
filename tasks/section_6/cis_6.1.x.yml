@@ -1,50 +1,69 @@
 ---
+# Audited: Tasks are the same, need to renumber to match 22.04
 
-- name: "6.1.1 | AUDIT | Audit system file permissions"
-  block:
-      - name: "6.1.1 | AUDIT | Audit system file permissions | Register package list"
-        command: ls -a /bin/
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_1_packages
+### Commented out as task heading is not in 22.04 but preserving task in case
+### this is mapped elsewhere
+# - name: "6.1.1 | AUDIT | Audit system file permissions"
+#   block:
+#       - name: "6.1.1 | AUDIT | Audit system file permissions | Register package list"
+#         command: ls -a /bin/
+#         changed_when: false
+#         failed_when: false
+#         check_mode: false
+#         register: ubtu22cis_6_1_1_packages
 
-      # - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Audit the packages"
-      #   command: dpkg --verify {{ item }}
-      #   changed_when: false
-      #   failed_when: false
-      #   check_mode: false
-      #   with_items:
-      #       - "{{ ubtu18cis_6_1_1_packages.stdout_lines }}"
-      #   register: ubtu18cis_6_1_1_packages_audited
+#       # - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Audit the packages"
+#       #   command: dpkg --verify {{ item }}
+#       #   changed_when: false
+#       #   failed_when: false
+#       #   check_mode: false
+#       #   with_items:
+#       #       - "{{ ubtu18cis_6_1_1_packages.stdout_lines }}"
+#       #   register: ubtu18cis_6_1_1_packages_audited
 
-      - name: "6.1.1 | AUDIT | Audit system file permissions | Message out packages results for review"
-        debug:
-            msg:
-                - "Warning!! Below are the packages that need to be reviewed."
-                - "You can run dpkg --verify <package name> and if nothing is returned the package is installed correctly"
-                - "{{ ubtu22cis_6_1_1_packages.stdout_lines }}"
+#       - name: "6.1.1 | AUDIT | Audit system file permissions | Message out packages results for review"
+#         debug:
+#             msg:
+#                 - "Warning!! Below are the packages that need to be reviewed."
+#                 - "You can run dpkg --verify <package name> and if nothing is returned the package is installed correctly"
+#                 - "{{ ubtu22cis_6_1_1_packages.stdout_lines }}"
 
-      - name: "6.1.1 | AUDIT | Audit system file permissions | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.1.1'"
-            warn_count: "{{ warn_count | int + 1 }}"
-  when:
-      - ubtu22cis_rule_6_1_1
-  tags:
-      - level2-server
-      - level2-workstation
-      - manual
-      - audit
-      - rule_6.1.1
-      - permissions
+#       - name: "6.1.1 | AUDIT | Audit system file permissions | Set warning count"
+#         set_fact:
+#             control_number: "{{ control_number }} + [ 'rule_6.1.1'"
+#             warn_count: "{{ warn_count | int + 1 }}"
+#   when:
+#       - ubtu22cis_rule_6_1_1
+#   tags:
+#       - level2-server
+#       - level2-workstation
+#       - manual
+#       - audit
+#       - rule_6.1.1
+#       - permissions
 
-- name: "6.1.2 | PATCH | Ensure permissions on /etc/passwd are configured"
+- name: "6.1.1 | PATCH | Ensure permissions on /etc/passwd are configured"
   file:
       path: /etc/passwd
       owner: root
       group: root
       mode: 0644
+  when:
+      - ubtu22cis_rule_6_1_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_6.1.1
+      - permissions
+
+- name: "6.1.2 | PATCH | Ensure permissions on /etc/passwd- are configured"
+  file:
+      path: /etc/passwd-
+      owner: root
+      group: root
+      mode: 0600
   when:
       - ubtu22cis_rule_6_1_2
   tags:
@@ -55,12 +74,12 @@
       - rule_6.1.2
       - permissions
 
-- name: "6.1.3 | PATCH | Ensure permissions on /etc/passwd- are configured"
+- name: "6.1.3 | PATCH | Ensure permissions on /etc/group are configured"
   file:
-      path: /etc/passwd-
+      path: /etc/group
       owner: root
       group: root
-      mode: 0600
+      mode: 0644
   when:
       - ubtu22cis_rule_6_1_3
   tags:
@@ -71,9 +90,9 @@
       - rule_6.1.3
       - permissions
 
-- name: "6.1.4 | PATCH | Ensure permissions on /etc/group are configured"
+- name: "6.1.4 | PATCH | Ensure permissions on /etc/group- are configured"
   file:
-      path: /etc/group
+      path: /etc/group-
       owner: root
       group: root
       mode: 0644
@@ -87,12 +106,12 @@
       - rule_6.1.4
       - permissions
 
-- name: "6.1.5 | PATCH | Ensure permissions on /etc/group- are configured"
+- name: "6.1.5 | PATCH | Ensure permissions on /etc/shadow are configured"
   file:
-      path: /etc/group-
+      path: /etc/shadow
       owner: root
-      group: root
-      mode: 0644
+      group: shadow
+      mode: 0640
   when:
       - ubtu22cis_rule_6_1_5
   tags:
@@ -103,9 +122,9 @@
       - rule_6.1.5
       - permissions
 
-- name: "6.1.6 | PATCH | Ensure permissions on /etc/shadow are configured"
+- name: "6.1.6 | PATCH | Ensure permissions on /etc/shadow- are configured"
   file:
-      path: /etc/shadow
+      path: /etc/shadow-
       owner: root
       group: shadow
       mode: 0640
@@ -119,9 +138,9 @@
       - rule_6.1.6
       - permissions
 
-- name: "6.1.7 | PATCH | Ensure permissions on /etc/shadow- are configured"
+- name: "6.1.7 | PATCH | Ensure permissions on /etc/gshadow are configured"
   file:
-      path: /etc/shadow-
+      path: /etc/gshadow
       owner: root
       group: shadow
       mode: 0640
@@ -135,9 +154,9 @@
       - rule_6.1.7
       - permissions
 
-- name: "6.1.8 | PATCH | Ensure permissions on /etc/gshadow are configured"
+- name: "6.1.8 | PATCH | Ensure permissions on /etc/gshadow- are configured"
   file:
-      path: /etc/gshadow
+      path: /etc/gshadow-
       owner: root
       group: shadow
       mode: 0640
@@ -151,12 +170,26 @@
       - rule_6.1.8
       - permissions
 
-- name: "6.1.9 | PATCH | Ensure permissions on /etc/gshadow- are configured"
-  file:
-      path: /etc/gshadow-
-      owner: root
-      group: shadow
-      mode: 0640
+- name: "6.1.9 | PATCH | Ensure no world writable files exist"
+  block:
+      - name: "6.1.9 | AUDIT | Ensure no world writable files exist | Get list of world-writable files"
+        shell: find {{ item.mount }} -xdev -type f -perm -0002 -not -fstype nfs
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_1_9_wwf
+        with_items:
+            - "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
+
+      - name: "6.1.9 | PATCH | Ensure no world writable files exist | Adjust world-writable files if they exist"
+        file:
+            path: "{{ item }}"
+            mode: o-w
+        with_items:
+            - "{{ ubtu22cis_6_1_9_wwf.results | map(attribute='stdout_lines') | flatten  }}"
+        when: ubtu22cis_no_world_write_adjust
   when:
       - ubtu22cis_rule_6_1_9
   tags:
@@ -167,26 +200,46 @@
       - rule_6.1.9
       - permissions
 
-- name: "6.1.10 | PATCH | Ensure no world writable files exist"
+- name: "6.1.10 | PATCH | Ensure no unowned files or directories exist"
   block:
-      - name: "6.1.10 | AUDIT | Ensure no world writable files exist | Get list of world-writable files"
-        shell: find {{ item.mount }} -xdev -type f -perm -0002 -not -fstype nfs
+      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Get unowned files or directories"
+        shell: find {{ item.mount }} -xdev -nouser -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_6_1_10_wwf
+        register: ubtu22cis_6_1_10_no_user_items
         with_items:
             - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
-      - name: "6.1.10 | PATCH | Ensure no world writable files exist | Adjust world-writable files if they exist"
+      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Warn on unowned files and directories"
+        debug:
+            msg:
+                - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
+                - "Please review the files/directories below and assign an owner"
+                - "{{ ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
+        when:
+            - not ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
+
+      - name: "6.1.10 | PATCH | Ensure no unowned files or directories exist | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.10' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when:
+            - not ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
+
+      - name: "6.1.10 | PATCH | Ensure no unowned files or directories exist | Set unowned files/directories to configured owner"
         file:
             path: "{{ item }}"
-            mode: o-w
+            owner: "{{ ubtu22cis_unowned_owner }}"
         with_items:
-            - "{{ ubtu22cis_6_1_10_wwf.results | map(attribute='stdout_lines') | flatten  }}"
-        when: ubtu22cis_no_world_write_adjust
+            - "{{ ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
+        when:
+            - ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
   when:
       - ubtu22cis_rule_6_1_10
   tags:
@@ -197,46 +250,46 @@
       - rule_6.1.10
       - permissions
 
-- name: "6.1.11 | PATCH | Ensure no unowned files or directories exist"
+- name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist"
   block:
-      - name: "6.1.11 | AUDIT | Ensure no unowned files or directories exist | Get unowned files or directories"
-        shell: find {{ item.mount }} -xdev -nouser -not -fstype nfs
+      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Get ungrouped fiels or directories"
+        shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_6_1_11_no_user_items
+        register: ubtu22cis_6_1_11_ungrouped_items
         with_items:
             - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
-      - name: "6.1.11 | AUDIT | Ensure no unowned files or directories exist | Warn on unowned files and directories"
+      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Warn on ungrouped files and directories"
         debug:
             msg:
-                - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
-                - "Please review the files/directories below and assign an owner"
-                - "{{ ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
+                - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
+                - "Please review the files/directories below and assign a group"
+                - "{{ ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
         when:
-            - not ubtu22cis_no_owner_adjust
-            - ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
+            - not ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
 
-      - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist | Set warning count"
+      - name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.11' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when:
-            - not ubtu22cis_no_owner_adjust
-            - ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
+            - not ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
 
-      - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist | Set unowned files/directories to configured owner"
+      - name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
         file:
             path: "{{ item }}"
-            owner: "{{ ubtu22cis_unowned_owner }}"
+            group: "{{ ubtu22cis_ungrouped_group }}"
         with_items:
-            - "{{ ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
+            - "{{ ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
         when:
-            - ubtu22cis_no_owner_adjust
-            - ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
+            - ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
   when:
       - ubtu22cis_rule_6_1_11
   tags:
@@ -247,86 +300,36 @@
       - rule_6.1.11
       - permissions
 
-- name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist"
+- name: "6.1.12 | AUDIT | Audit SUID executables"
   block:
-      - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Get ungrouped fiels or directories"
-        shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_12_ungrouped_items
-        with_items:
-            - "{{ ansible_mounts }}"
-        loop_control:
-            label: "{{ item.mount }}"
-
-      - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Warn on ungrouped files and directories"
-        debug:
-            msg:
-                - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
-                - "Please review the files/directories below and assign a group"
-                - "{{ ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
-        when:
-            - not ubtu22cis_no_group_adjust
-            - ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
-
-      - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.1.12' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when:
-            - not ubtu22cis_no_group_adjust
-            - ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
-
-      - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
-        file:
-            path: "{{ item }}"
-            group: "{{ ubtu22cis_ungrouped_group }}"
-        with_items:
-            - "{{ ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
-        when:
-            - ubtu22cis_no_group_adjust
-            - ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
-  when:
-      - ubtu22cis_rule_6_1_12
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.1.12
-      - permissions
-
-- name: "6.1.13 | AUDIT | Audit SUID executables"
-  block:
-      - name: "6.1.13 | AUDIT | Audit SUID executables | Find SUID executables"
+      - name: "6.1.12 | AUDIT | Audit SUID executables | Find SUID executables"
         # shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -4000
         shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_6_1_13_suid_executables
+        register: ubtu22cis_6_1_12_suid_executables
         with_items:
             - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
-      - name: "6.1.13 | AUDIT | Audit SUID executables | Warn SUID executables exist"
+      - name: "6.1.12 | AUDIT | Audit SUID executables | Warn SUID executables exist"
         debug:
             msg:
                 - "Warning!! You have SUID executables"
                 - "The files are listed below, please confirm the integrity of these binaries"
-                - "{{ ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten  }}"
+                - "{{ ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten  }}"
         when:
-            - ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
+            - ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
             - not ubtu22cis_suid_adjust
 
       - name: "6.1.13 | AUDIT | Audit SUID executables | Set warning count"
         set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.1.13' ]"
+            control_number: "{{ control_number }} + [ 'rule_6.1.12' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when:
-            - ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
+            - ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
             - not ubtu22cis_suid_adjust
 
       - name: "6.1.13 | PATCH | Audit SUID executables | Remove SUID bit"
@@ -334,10 +337,50 @@
             path: "{{ item }}"
             mode: 'u-s'
         with_items:
-            - "{{ ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
+            - "{{ ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
         when:
             - ubtu22cis_suid_adjust
-            - ubtu22cis_6_1_13_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
+            - ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
+  when:
+      - ubtu22cis_rule_6_1_12
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - audit
+      - rule_6.1.12
+      - permissions
+
+- name: "6.1.13 | AUDIT | Audit SGID executables"
+  block:
+      - name: "6.1.13 | AUDIT | Audit SGID executables | Find SGID executables"
+        shell: find {{ item }} -xdev -type f -perm -2000 -not -fstype nfs
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_1_13_sgid_executables
+        with_items:
+            - "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.mount }}"
+
+      - name: "6.1.14 | AUDIT | Audit SGID executables | Flatten sgid_executables results for easier use"
+        set_fact:
+            ubtu22cis_6_1_13_sgid_executables_flatten: "{{ ubtu22cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
+
+      - name: "6.1.14 | AUDIT | Audit SGID executables | Warn SGID executables exist"
+        debug:
+            msg:
+                - "Warning!!!!You have SGID executables"
+                - "The files are listed below, please review the integrity of these binaries"
+                - "{{ ubtu22cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
+        when: ubtu22cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
+
+      - name: "6.1.14 | AUDIT | Audit SGID executables | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.1.14' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
   when:
       - ubtu22cis_rule_6_1_13
   tags:
@@ -346,44 +389,4 @@
       - manual
       - audit
       - rule_6.1.13
-      - permissions
-
-- name: "6.1.14 | AUDIT | Audit SGID executables"
-  block:
-      - name: "6.1.14 | AUDIT | Audit SGID executables | Find SGID executables"
-        shell: find {{ item }} -xdev -type f -perm -2000 -not -fstype nfs
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_14_sgid_executables
-        with_items:
-            - "{{ ansible_mounts }}"
-        loop_control:
-            label: "{{ item.mount }}"
-
-      - name: "6.1.14 | AUDIT | Audit SGID executables | Flatten sgid_executables results for easier use"
-        set_fact:
-            ubtu22cis_6_1_14_sgid_executables_flatten: "{{ ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
-
-      - name: "6.1.14 | AUDIT | Audit SGID executables | Warn SGID executables exist"
-        debug:
-            msg:
-                - "Warning!!!!You have SGID executables"
-                - "The files are listed below, please review the integrity of these binaries"
-                - "{{ ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
-        when: ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
-
-      - name: "6.1.14 | AUDIT | Audit SGID executables | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.1.14' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
-  when:
-      - ubtu22cis_rule_6_1_14
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_6.1.14
       - permissions

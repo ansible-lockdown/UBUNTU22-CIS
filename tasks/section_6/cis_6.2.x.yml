@@ -1,5 +1,4 @@
 ---
-
 - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords"
   block:
       - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Get users not using shadowed passwords"
@@ -30,15 +29,15 @@
       - rule_6.2.1
       - user_accounts
 
-- name: "6.2.2 | PATCH | Ensure password fields are not empty"
+- name: "6.2.2 | PATCH | Ensure /etc/shadow password fields are not empty"
   block:
-      - name: "6.2.2 | AUDIT | Ensure password fields are not empty | Find users with no password"
+      - name: "6.2.2 | AUDIT | Ensure /etc/shadow password fields are not empty | Find users with no password"
         shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
         changed_when: no
         check_mode: false
         register: ubtu22cis_6_2_2_empty_password_acct
 
-      - name: "6.2.2 | PATCH | Ensure password fields are not empty | Lock users with empty password"
+      - name: "6.2.2 | PATCH | Ensure /etc/shadow password fields are not empty | Lock users with empty password"
         user:
             name: "{{ item }}"
             password_lock: yes
@@ -90,293 +89,189 @@
       - rule_6.2.3
       - groups
 
-- name: "6.2.4 | PATCH | Ensure all users' home directories exist"
+- name: "6.2.4 | AUDIT | Ensure shadow group is empty"
   block:
-      - name: capture audit task for missing homedirs
-        block: &u20s_homedir_audit
-            - name: "6.2.4 | PATCH | Ensure all users' home directories exist | Find users missing home directories"
-              shell: pwck -r | grep -vF -e "'/nonexistent'" | grep -P {{ ld_regex | quote }}
-              check_mode: false
-              register: ubtu22cis_users_missing_home
-              changed_when: ubtu22cis_6_2_4_audit | length > 0
-              # failed_when: 0: success, 1: no grep match, 2: pwck found something
-              failed_when: ubtu22cis_users_missing_home.rc not in [0,1,2]
+      - name: "6.2.4 | AUDIT | Ensure shadow group is empty | Get Shadow GID"
+        shell: grep ^shadow /etc/group | cut -f3 -d":"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_2_4_shadow_gid
 
-      ### NOTE: due to https://github.com/ansible/ansible/issues/24862 This is a shell command, and is quite frankly less than ideal.
-      - name: "6.2.4 | PATCH | Ensure all users' home directories exist| Creates home directories"
-        command: "mkhomedir_helper {{ item }}"
-        # check_mode: "{{ ubtu22cis_disruptive_check_mode }}"
-        with_items: "{{ ubtu22cis_6_2_4_audit | map(attribute='id') | list }}"
-        when:
-            - ubtu22cis_users_missing_home is changed
-            - ubtu22cis_disruption_high
+      - name: "6.2.4 | AUDIT | Ensure shadow group is empty | List of users with Shadow GID"
+        shell: awk -F":" '($4 == "{{ ubtu22cis_6_2_4_shadow_gid.stdout }}") { print }' /etc/passwd | cut -f1 -d":"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_2_4_users_shadow_gid
 
-      ### NOTE: Now we need to address that SELINUX will not let mkhomedir_helper create home directories for UUID < 500, so the ftp user will still show up in a pwck. Not sure this is needed, I need to confirm if that user is removed in an earlier task.
-      ### ^ Likely doesn't matter as 6.2.7 defines "local interactive users" as those w/ uid 1000-4999
-      - name: replay audit task
-        block: *u20s_homedir_audit
+      - name: "6.2.4 | AUDIT | Ensure shadow group is empty | Message on no users"
+        debug:
+            msg: "Good News! There are no users with the Shadow GID on your system"
+        when: ubtu22cis_6_2_4_users_shadow_gid.stdout | length == 0
 
-      # CAUTION: debug loops don't show changed since 2.4:
-      # Fix: https://github.com/ansible/ansible/pull/59958
-      - name: "6.2.4 | PATCH | Ensure all users' home directories exist | Warn about correcting owner and group"
-        debug: msg="You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
-        with_items: "{{ ubtu22cis_6_2_4_audit | map(attribute='dir') | list }}"
-        changed_when: ubtu22cis_audit_complex
-        when:
-            - ubtu22cis_users_missing_home is changed
-  vars:
-      ld_regex: >-
-          ^user '(?P<user>.*)': directory '(?P<dir>.*)' does not exist$
-      ld_users: "{{ ubtu22cis_users_missing_home.stdout_lines | map('regex_replace', ld_regex, '\\g<user>') | list }}"
-      ubtu22cis_6_2_4_audit: "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | selectattr('id', 'in', ld_users) | list }}"
+      - name: "6.2.4 | AUDIT | Ensure shadow group is empty | Message on users with Shadow GID"
+        debug:
+            msg:
+                - "Warning!! There are users that are in the Shadow group"
+                - "To conform to CIS standards no users should be in this group"
+                - "Please move the users below into another group"
+                - "{{ ubtu22cis_6_2_4_users_shadow_gid.stdout_lines }}"
+        when: ubtu22cis_6_2_4_users_shadow_gid.stdout | length > 0
+
+      - name: "6.2.4 | AUDIT | Ensure shadow group is empty | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.2.4' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_6_2_4_users_shadow_gid.stdout | length > 0
   when:
       - ubtu22cis_rule_6_2_4
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - patch
+      - audit
       - rule_6.2.4
+      - groups
       - user
 
-- name: "6.2.5 | PATCH | Ensure users own their home directories"
-  file:
-      path: "{{ item.dir }}"
-      owner: "{{ item.id }}"
-      state: directory
-  with_items:
-      - "{{ ubtu22cis_passwd }}"
-  loop_control:
-      label: "{{ ubtu22cis_passwd_label }}"
-  when:
-      - ubtu22cis_rule_6_2_5
-      - item.uid >= 1000
-      - item.dir != '/nonexistent'
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.2.5
-      - user
-
-- name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
+- name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist"
   block:
-      - name: "6.2.6 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive | Get home directories"
-        stat:
-            path: "{{ item }}"
-        with_items: "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
-        check_mode: false
-        register: ubtu22cis_6_2_6_audit
-
-      - name: "6.2.6 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive | Find home directories more 750"
-        command: find -H {{ item.0 | quote }} -not -type l -perm /027
-        register: ubtu22cis_6_2_6_patch_audit
-        changed_when: ubtu22cis_6_2_6_patch_audit.stdout | length > 0
-        check_mode: false
-        when:
-            - item.1.exists
-        with_together:
-            - "{{ ubtu22cis_6_2_6_audit.results | map(attribute='item') | list }}"
-            - "{{ ubtu22cis_6_2_6_audit.results | map(attribute='stat') | list }}"
-        loop_control:
-            label: "{{ item.0 }}"
-
-      - name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set home perms"
-        file:
-            path: "{{ item.0 }}"
-            recurse: yes
-            mode: a-st,g-w,o-rwx
-        register: ubtu22cis_6_2_6_patch
-        when:
-            - ubtu22cis_disruption_high
-            - item.1.exists
-        with_together:
-            - "{{ ubtu22cis_6_2_6_audit.results | map(attribute='item') | list }}"
-            - "{{ ubtu22cis_6_2_6_audit.results | map(attribute='stat') | list }}"
-        loop_control:
-            label: "{{ item.0 }}"
-
-      # set default ACLs so the homedir has an effective umask of 0027
-      - name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set ACL's"
-        acl:
-            path: "{{ item.0 }}"
-            default: yes
-            state: present
-            recursive: yes
-            etype: "{{ item.1.etype }}"
-            permissions: "{{ item.1.mode }}"
-        when: not ubtu22cis_system_is_container
-        with_nested:
-            - "{{ (ansible_check_mode | ternary(ubtu22cis_6_2_6_patch_audit, ubtu22cis_6_2_6_patch)).results |
-              rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
-            -
-                - etype: group
-                  mode: rx
-                - etype: other
-                  mode: '0'
-  when:
-      - ubtu22cis_rule_6_2_6
-      - ubtu22cis_disruption_high
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.2.6
-      - user
-
-- name: "6.2.7 | PATCH | Ensure users' dot files are not group or world writable"
-  block:
-      - name: "6.2.7 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
-        shell: find /home/ -name "\.*" -perm /g+w,o+w
-        changed_when: no
-        failed_when: no
-        check_mode: false
-        register: ubtu22cis_6_2_7_audit
-
-      - name: "6.2.7 | AUDIT | Ensure users' dot files are not group or world-writable | Warning on files found"
-        debug:
-            msg:
-                - "Warning!! You have group or world-writable dot files on your system and have configured for manual intervention"
-        when:
-            - ubtu22cis_6_2_7_audit.stdout | length == 0
-            - ubtu22cis_dotperm_ansiblemanaged
-
-      - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world writable | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.7' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when:
-            - ubtu22cis_6_2_7_audit.stdout | length == 0
-            - ubtu22cis_dotperm_ansiblemanaged
-
-      - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
-        file:
-            path: '{{ item }}'
-            mode: go-w
-        with_items: "{{ ubtu22cis_6_2_7_audit.stdout_lines }}"
-        when:
-            - ubtu22cis_6_2_7_audit.stdout | length > 0
-            - ubtu22cis_dotperm_ansiblemanaged
-  when:
-      - ubtu22cis_rule_6_2_7
-      - ubtu22cis_disruption_high
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.2.7
-      - user
-
-- name: "6.2.8 | PATCH | Ensure no users have .netrc files"
-  file:
-      dest: "~{{ item }}/.netrc"
-      state: absent
-  with_items:
-      - "{{ ubtu22cis_users.stdout_lines }}"
-  when:
-      - ubtu22cis_rule_6_2_8
-      - ubtu22cis_disruption_high
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.2.8
-      - user
-
-- name: "6.2.9 | PATCH | Ensure no users have .forward files"
-  file:
-      dest: "~{{ item }}/.forward"
-      state: absent
-  with_items:
-      - "{{ ubtu22cis_users.stdout_lines }}"
-  when:
-      - ubtu22cis_rule_6_2_9
-      - ubtu22cis_disruption_high
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.2.9
-      - user
-
-- name: "6.2.10 | PATCH | Ensure no users have .rhosts files"
-  file:
-      dest: "~{{ item }}/.rhosts"
-      state: absent
-  with_items:
-      - "{{ ubtu22cis_users.stdout_lines }}"
-  when:
-      - ubtu22cis_rule_6_2_10
-      - ubtu22cis_disruption_high
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.2.10
-      - user
-
-- name: "6.2.11 | PATCH | Ensure root is the only UID 0 account"
-  block:
-      - name: "6.2.11 | AUDIT | Ensure root is the only UID 0 account | Get non-root users with UID of 0"
-        shell: awk -F":" '($3 == 0 && $1 != \"root\") {i++;print $1 }' /etc/passwd
+      - name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
+        shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_6_2_11_uid_0_notroot
+        register: ubtu22cis_6_2_5_user_uid_check
 
-      - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account | Lock UID 0 users"
-        user:
-            name: "{{ item }}"
-            password_lock: yes
-        with_items:
-            - "{{ ubtu22cis_6_2_11_uid_0_notroot.stdout_lines }}"
-        when:
-            - ubtu22cis_disruption_high
-            - ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
-
-      - name: "6.2.11 | AUDIT | Ensure root is the only UID 0 account | Warning about accounts disruption high"
+      - name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
         debug:
-            msg:
-                - "Warning!! You have non-root users with a UID of 0 and ubtu18cis_disruption_high enabled"
-                - "This means the following accounts were password locked and will need to have the UID's manually adjusted"
-                - "{{ ubtu22cis_6_2_11_uid_0_notroot.stdout_lines }}"
-        when:
-            - ubtu22cis_disruption_high
-            - ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
+            msg: "Good News! There are no duplicate UID's in the system"
+        when: ubtu22cis_6_2_5_user_uid_check.stdout | length == 0
 
-      - name: "6.2.11 | AUDIT | Ensure root is the only UID 0 account | Warning about accounts disruption low"
+      - name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
         debug:
-            msg:
-                - "Warning!! You have non-root users with a UID of 0 and ubtu18cis_disruption_high disabled"
-                - "This means no action was taken, you will need to have the UID's of the users below manually adjusted"
-                - "{{ ubtu22cis_6_2_11_uid_0_notroot.stdout_lines }}"
-        when:
-            - not ubtu22cis_disruption_high
-            - ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
+            msg: "Warning!! The following users have UIDs that are duplicates: {{ ubtu22cis_6_2_5_user_uid_check.stdout_lines }}"
+        when: ubtu22cis_6_2_5_user_uid_check.stdout | length > 0
 
-      - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account | Set warning count"
+      - name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
         set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.11' ]"
+            control_number: "{{ control_number }} + [ 'rule_6.2.5' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
+        when: ubtu22cis_6_2_5_user_uid_check.stdout | length > 0
   when:
-      - ubtu22cis_rule_6_2_11
+      - ubtu22cis_rule_6_2_5
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - scored
-      - rule_6.2.11
+      - audit
+      - rule_6.2.5
       - user
-      - root
 
-- name: "6.2.12 | PATCH | Ensure root PATH Integrity"
+- name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist"
+  block:
+      - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
+        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
+        changed_when: no
+        failed_when: no
+        check_mode: false
+        register: ubtu22cis_6_2_6_user_user_check
+
+      - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
+        debug:
+            msg: "Good News! There are no duplicate GIDs in the system"
+        when: ubtu22cis_6_2_6_user_user_check.stdout | length == 0
+
+      - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
+        debug:
+            msg: "Warning!! The following groups have duplicate GIDs: {{ ubtu22cis_6_2_6_user_user_check.stdout_lines }}"
+        when: ubtu22cis_6_2_6_user_user_check.stdout | length > 0
+
+      - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.2.6' ] "
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_6_2_6_user_user_check.stdout | length > 0
+  when:
+      - ubtu22cis_rule_6_2_6
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - rule_6.2.6
+      - groups
+
+- name: "6.2.7 | AUDIT | Ensure no duplicate user names exist"
+  block:
+      - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
+        shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
+        changed_when: no
+        failed_when: no
+        check_mode: false
+        register: ubtu22cis_6_2_7_user_username_check
+
+      - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
+        debug:
+            msg: "Good News! There are no duplicate user names in the system"
+        when: ubtu22cis_6_2_7_user_username_check.stdout | length == 0
+
+      - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
+        debug:
+            msg: "Warning!! The following user names are duplicates: {{ ubtu22cis_6_2_7_user_username_check.stdout_lines }}"
+        when: ubtu22cis_6_2_7_user_username_check.stdout | length > 0
+
+      - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.2.7' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_6_2_7_user_username_check.stdout | length > 0
+  when:
+      - ubtu22cis_rule_6_2_7
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - rule_6.2.7
+      - user
+
+- name: "6.2.8 | AUDIT | Ensure no duplicate group names exist"
+  block:
+      - name: "6.2.8 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
+        shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_2_8_group_group_check
+
+      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
+        debug:
+            msg: "Good News! There are no duplicate group names in the system"
+        when: ubtu22cis_6_2_8_group_group_check.stdout | length == 0
+
+      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
+        debug:
+            msg: "Warning!! The following group names are duplicates: {{ ubtu22cis_6_2_8_group_group_check.stdout_lines }}"
+        when: ubtu22cis_6_2_8_group_group_check.stdout | length > 0
+
+      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.2.8' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_6_2_8_group_group_check.stdout | length > 0
+  when:
+      - ubtu22cis_rule_6_2_8
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - audit
+      - rule_6.2.8
+      - groups
+
+- name: "6.2.9 | PATCH | Ensure root PATH Integrity"
   command: /bin/true
   changed_when: false
   failed_when: false
@@ -429,7 +324,134 @@
   #     #   with_items:
   #     #       - "{{ ubtu18cis_6_2_12_path_stat | selectattr('exists','==','true') | map(attribute='path') }}"
   when:
+      - ubtu22cis_rule_6_2_9
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_6.2.9
+      - user
+      - root
+      - notimplemented
+
+- name: "6.2.10 | PATCH | Ensure root is the only UID 0 account"
+  block:
+      - name: "6.2.10 | AUDIT | Ensure root is the only UID 0 account | Get non-root users with UID of 0"
+        shell: awk -F":" '($3 == 0 && $1 != \"root\") {i++;print $1 }' /etc/passwd
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_2_10_uid_0_notroot
+
+      - name: "6.2.10 | PATCH | Ensure root is the only UID 0 account | Lock UID 0 users"
+        user:
+            name: "{{ item }}"
+            password_lock: yes
+        with_items:
+            - "{{ ubtu22cis_6_2_10_uid_0_notroot.stdout_lines }}"
+        when:
+            - ubtu22cis_disruption_high
+            - ubtu22cis_6_2_10_uid_0_notroot.stdout | length > 0
+
+      - name: "6.2.10 | AUDIT | Ensure root is the only UID 0 account | Warning about accounts disruption high"
+        debug:
+            msg:
+                - "Warning!! You have non-root users with a UID of 0 and ubtu18cis_disruption_high enabled"
+                - "This means the following accounts were password locked and will need to have the UID's manually adjusted"
+                - "{{ ubtu22cis_6_2_10_uid_0_notroot.stdout_lines }}"
+        when:
+            - ubtu22cis_disruption_high
+            - ubtu22cis_6_2_10_uid_0_notroot.stdout | length > 0
+
+      - name: "6.2.10 | AUDIT | Ensure root is the only UID 0 account | Warning about accounts disruption low"
+        debug:
+            msg:
+                - "Warning!! You have non-root users with a UID of 0 and ubtu18cis_disruption_high disabled"
+                - "This means no action was taken, you will need to have the UID's of the users below manually adjusted"
+                - "{{ ubtu22cis_6_2_10_uid_0_notroot.stdout_lines }}"
+        when:
+            - not ubtu22cis_disruption_high
+            - ubtu22cis_6_2_10_uid_0_notroot.stdout | length > 0
+
+      - name: "6.2.10 | PATCH | Ensure root is the only UID 0 account | Set warning count"
+        set_fact:
+            control_number: "{{ control_number }} + [ 'rule_6.2.10' ]"
+            warn_count: "{{ warn_count | int + 1 }}"
+        when: ubtu22cis_6_2_10_uid_0_notroot.stdout | length > 0
+  when:
+      - ubtu22cis_rule_6_2_10
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - scored
+      - rule_6.2.10
+      - user
+      - root
+
+- name: "6.2.11 | PATCH | Ensure all users' home directories exist"
+  block:
+      - name: capture audit task for missing homedirs
+        block: &u20s_homedir_audit
+            - name: "6.2.11 | PATCH | Ensure all users' home directories exist | Find users missing home directories"
+              shell: pwck -r | grep -vF -e "'/nonexistent'" | grep -P {{ ld_regex | quote }}
+              check_mode: false
+              register: ubtu22cis_users_missing_home
+              changed_when: ubtu22cis_6_2_4_audit | length > 0
+              # failed_when: 0: success, 1: no grep match, 2: pwck found something
+              failed_when: ubtu22cis_users_missing_home.rc not in [0,1,2]
+
+      ### NOTE: due to https://github.com/ansible/ansible/issues/24862 This is a shell command, and is quite frankly less than ideal.
+      - name: "6.2.11 | PATCH | Ensure all users' home directories exist| Creates home directories"
+        command: "mkhomedir_helper {{ item }}"
+        # check_mode: "{{ ubtu22cis_disruptive_check_mode }}"
+        with_items: "{{ ubtu22cis_6_2_4_audit | map(attribute='id') | list }}"
+        when:
+            - ubtu22cis_users_missing_home is changed
+            - ubtu22cis_disruption_high
+
+      ### NOTE: Now we need to address that SELINUX will not let mkhomedir_helper create home directories for UUID < 500, so the ftp user will still show up in a pwck. Not sure this is needed, I need to confirm if that user is removed in an earlier task.
+      ### ^ Likely doesn't matter as 6.2.7 defines "local interactive users" as those w/ uid 1000-4999
+      - name: replay audit task
+        block: *u20s_homedir_audit
+
+      # CAUTION: debug loops don't show changed since 2.4:
+      # Fix: https://github.com/ansible/ansible/pull/59958
+      - name: "6.2.11 | PATCH | Ensure all users' home directories exist | Warn about correcting owner and group"
+        debug: msg="You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
+        with_items: "{{ ubtu22cis_6_2_4_audit | map(attribute='dir') | list }}"
+        changed_when: ubtu22cis_audit_complex
+        when:
+            - ubtu22cis_users_missing_home is changed
+  vars:
+      ld_regex: >-
+          ^user '(?P<user>.*)': directory '(?P<dir>.*)' does not exist$
+      ld_users: "{{ ubtu22cis_users_missing_home.stdout_lines | map('regex_replace', ld_regex, '\\g<user>') | list }}"
+      ubtu22cis_6_2_4_audit: "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | selectattr('id', 'in', ld_users) | list }}"
+  when:
+      - ubtu22cis_rule_6_2_11
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_6.2.11
+      - user
+
+- name: "6.2.12 | PATCH | Ensure users own their home directories"
+  file:
+      path: "{{ item.dir }}"
+      owner: "{{ item.id }}"
+      state: directory
+  with_items:
+      - "{{ ubtu22cis_passwd }}"
+  loop_control:
+      label: "{{ ubtu22cis_passwd_label }}"
+  when:
       - ubtu22cis_rule_6_2_12
+      - item.uid >= 1000
+      - item.dir != '/nonexistent'
   tags:
       - level1-server
       - level1-workstation
@@ -437,187 +459,164 @@
       - patch
       - rule_6.2.12
       - user
-      - root
-      - notimplemented
 
-- name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist"
+- name: "6.2.13 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
   block:
-      - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
-        changed_when: false
-        failed_when: false
+      - name: "6.2.13 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive | Get home directories"
+        stat:
+            path: "{{ item }}"
+        with_items: "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
         check_mode: false
-        register: ubtu22cis_6_2_13_user_uid_check
+        register: ubtu22cis_6_2_13_audit
 
-      - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
-        debug:
-            msg: "Good News! There are no duplicate UID's in the system"
-        when: ubtu22cis_6_2_13_user_uid_check.stdout | length == 0
+      - name: "6.2.13 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive | Find home directories more 750"
+        command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        register: ubtu22cis_6_2_6_patch_audit
+        changed_when: ubtu22cis_6_2_6_patch_audit.stdout | length > 0
+        check_mode: false
+        when:
+            - item.1.exists
+        with_together:
+            - "{{ ubtu22cis_6_2_13_audit.results | map(attribute='item') | list }}"
+            - "{{ ubtu22cis_6_2_13_audit.results | map(attribute='stat') | list }}"
+        loop_control:
+            label: "{{ item.0 }}"
 
-      - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
-        debug:
-            msg: "Warning!! The following users have UIDs that are duplicates: {{ ubtu22cis_6_2_13_user_uid_check.stdout_lines }}"
-        when: ubtu22cis_6_2_13_user_uid_check.stdout | length > 0
+      - name: "6.2.13 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set home perms"
+        file:
+            path: "{{ item.0 }}"
+            recurse: yes
+            mode: a-st,g-w,o-rwx
+        register: ubtu22cis_6_2_6_patch
+        when:
+            - ubtu22cis_disruption_high
+            - item.1.exists
+        with_together:
+            - "{{ ubtu22cis_6_2_13_audit.results | map(attribute='item') | list }}"
+            - "{{ ubtu22cis_6_2_13_audit.results | map(attribute='stat') | list }}"
+        loop_control:
+            label: "{{ item.0 }}"
 
-      - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.13' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_2_13_user_uid_check.stdout | length > 0
+      # set default ACLs so the homedir has an effective umask of 0027
+      - name: "6.2.13 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set ACL's"
+        acl:
+            path: "{{ item.0 }}"
+            default: yes
+            state: present
+            recursive: yes
+            etype: "{{ item.1.etype }}"
+            permissions: "{{ item.1.mode }}"
+        when: not ubtu22cis_system_is_container
+        with_nested:
+            - "{{ (ansible_check_mode | ternary(ubtu22cis_6_2_6_patch_audit, ubtu22cis_6_2_6_patch)).results |
+              rejectattr('skipped', 'defined') | map(attribute='item') | map('first') | list }}"
+            -
+                - etype: group
+                  mode: rx
+                - etype: other
+                  mode: '0'
   when:
       - ubtu22cis_rule_6_2_13
+      - ubtu22cis_disruption_high
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - audit
+      - patch
       - rule_6.2.13
       - user
 
-- name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist"
-  block:
-      - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
-        changed_when: no
-        failed_when: no
-        check_mode: false
-        register: ubtu22cis_6_2_14_user_user_check
-
-      - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-        debug:
-            msg: "Good News! There are no duplicate GIDs in the system"
-        when: ubtu22cis_6_2_14_user_user_check.stdout | length == 0
-
-      - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
-        debug:
-            msg: "Warning!! The following groups have duplicate GIDs: {{ ubtu22cis_6_2_14_user_user_check.stdout_lines }}"
-        when: ubtu22cis_6_2_14_user_user_check.stdout | length > 0
-
-      - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.14' ] "
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_2_14_user_user_check.stdout | length > 0
+- name: "6.2.14 | PATCH | Ensure no users have .netrc files"
+  file:
+      dest: "~{{ item }}/.netrc"
+      state: absent
+  with_items:
+      - "{{ ubtu22cis_users.stdout_lines }}"
   when:
       - ubtu22cis_rule_6_2_14
+      - ubtu22cis_disruption_high
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - audit
+      - patch
       - rule_6.2.14
-      - groups
+      - user
 
-- name: "6.2.15 | AUDIT | Ensure no duplicate user names exist"
-  block:
-      - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
-        shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
-        changed_when: no
-        failed_when: no
-        check_mode: false
-        register: ubtu22cis_6_2_15_user_username_check
-
-      - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
-        debug:
-            msg: "Good News! There are no duplicate user names in the system"
-        when: ubtu22cis_6_2_15_user_username_check.stdout | length == 0
-
-      - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
-        debug:
-            msg: "Warning!! The following user names are duplicates: {{ ubtu22cis_6_2_15_user_username_check.stdout_lines }}"
-        when: ubtu22cis_6_2_15_user_username_check.stdout | length > 0
-
-      - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.15' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_2_15_user_username_check.stdout | length > 0
+- name: "6.2.15 | PATCH | Ensure no users have .forward files"
+  file:
+      dest: "~{{ item }}/.forward"
+      state: absent
+  with_items:
+      - "{{ ubtu22cis_users.stdout_lines }}"
   when:
       - ubtu22cis_rule_6_2_15
+      - ubtu22cis_disruption_high
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - audit
+      - patch
       - rule_6.2.15
       - user
 
-- name: "6.2.16 | AUDIT | Ensure no duplicate group names exist"
-  block:
-      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
-        shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_2_16_group_group_check
-
-      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
-        debug:
-            msg: "Good News! There are no duplicate group names in the system"
-        when: ubtu22cis_6_2_16_group_group_check.stdout | length == 0
-
-      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
-        debug:
-            msg: "Warning!! The following group names are duplicates: {{ ubtu22cis_6_2_16_group_group_check.stdout_lines }}"
-        when: ubtu22cis_6_2_16_group_group_check.stdout | length > 0
-
-      - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.16' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_2_16_group_group_check.stdout | length > 0
+- name: "6.2.16 | PATCH | Ensure no users have .rhosts files"
+  file:
+      dest: "~{{ item }}/.rhosts"
+      state: absent
+  with_items:
+      - "{{ ubtu22cis_users.stdout_lines }}"
   when:
       - ubtu22cis_rule_6_2_16
+      - ubtu22cis_disruption_high
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - audit
+      - patch
       - rule_6.2.16
-      - groups
+      - user
 
-- name: "6.2.17 | AUDIT | Ensure shadow group is empty"
+- name: "6.2.17 | PATCH | Ensure users' dot files are not group or world writable"
   block:
-      - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Get Shadow GID"
-        shell: grep ^shadow /etc/group | cut -f3 -d":"
-        changed_when: false
-        failed_when: false
+      - name: "6.2.17 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
+        shell: find /home/ -name "\.*" -perm /g+w,o+w
+        changed_when: no
+        failed_when: no
         check_mode: false
-        register: ubtu22cis_6_2_17_shadow_gid
+        register: ubtu22cis_6_2_17_audit
 
-      - name: "6.2.17 | AUDIT | Ensure shadow group is empty | List of users with Shadow GID"
-        shell: awk -F":" '($4 == "{{ ubtu22cis_6_2_17_shadow_gid.stdout }}") { print }' /etc/passwd | cut -f1 -d":"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_2_17_users_shadow_gid
-
-      - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Message on no users"
-        debug:
-            msg: "Good News! There are no users with the Shadow GID on your system"
-        when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length == 0
-
-      - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Message on users with Shadow GID"
+      - name: "6.2.17 | AUDIT | Ensure users' dot files are not group or world-writable | Warning on files found"
         debug:
             msg:
-                - "Warning!! There are users that are in the Shadow group"
-                - "To conform to CIS standards no users should be in this group"
-                - "Please move the users below into another group"
-                - "{{ ubtu22cis_6_2_17_users_shadow_gid.stdout_lines }}"
-        when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length > 0
+                - "Warning!! You have group or world-writable dot files on your system and have configured for manual intervention"
+        when:
+            - ubtu22cis_6_2_17_audit.stdout | length == 0
+            - ubtu22cis_dotperm_ansiblemanaged
 
-      - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Set warning count"
+      - name: "6.2.17 | PATCH | Ensure users' dot files are not group or world writable | Set warning count"
         set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.17' ]"
             warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length > 0
+        when:
+            - ubtu22cis_6_2_17_audit.stdout | length == 0
+            - ubtu22cis_dotperm_ansiblemanaged
+
+      - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
+        file:
+            path: '{{ item }}'
+            mode: go-w
+        with_items: "{{ ubtu22cis_6_2_17_audit.stdout_lines }}"
+        when:
+            - ubtu22cis_6_2_17_audit.stdout | length > 0
+            - ubtu22cis_dotperm_ansiblemanaged
   when:
       - ubtu22cis_rule_6_2_17
+      - ubtu22cis_disruption_high
   tags:
       - level1-server
       - level1-workstation
       - automated
-      - audit
+      - patch
       - rule_6.2.17
-      - groups
       - user
