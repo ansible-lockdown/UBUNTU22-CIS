@@ -1,5 +1,5 @@
 ---
-
+# Audited: This is Section 5.3.x in 22.04
 - name: "5.2.1 | PATCH | Ensure sudo is installed"
   apt:
       name: "{{ ubtu22cis_sudo_package }}"

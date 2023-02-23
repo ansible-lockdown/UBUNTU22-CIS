@@ -1,5 +1,5 @@
 ---
-
+# TODO: Find whether this has been remapped elsewhere in the benchmarks
 - name: "5.6 | AUDIT | Ensure root login is restricted to system console"
   block:
       - name: "5.6 | AUDIT | Ensure root login is restricted to system console | Get list of all terminals"

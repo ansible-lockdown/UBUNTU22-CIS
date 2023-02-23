@@ -1,5 +1,6 @@
 ---
-
+# Audited: This is now Section 5.2.x
+#          Task IDs are in a new order for 22.04
 - name: "5.3.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured"
   file:
       path: /etc/ssh/sshd_config

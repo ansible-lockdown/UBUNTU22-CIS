@@ -198,3 +198,6 @@
       - patch
       - rule_5.4.4
       - pamd
+
+# Need 5.4.5 Ensure all current passwords uses the configured hashing algorithm
+# This may not be required based on Assessor report results
