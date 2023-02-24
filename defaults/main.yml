@@ -271,32 +271,37 @@ ubtu22cis_rule_5_1_9: true
 ubtu22cis_rule_5_2_1: true
 ubtu22cis_rule_5_2_2: true
 ubtu22cis_rule_5_2_3: true
+ubtu22cis_rule_5_2_4: true
+ubtu22cis_rule_5_2_5: true
+ubtu22cis_rule_5_2_6: true
+ubtu22cis_rule_5_2_7: true
+ubtu22cis_rule_5_2_8: true
+ubtu22cis_rule_5_2_9: true
+ubtu22cis_rule_5_2_10: true
+ubtu22cis_rule_5_2_11: true
+ubtu22cis_rule_5_2_12: true
+ubtu22cis_rule_5_2_13: true
+ubtu22cis_rule_5_2_14: true
+ubtu22cis_rule_5_2_15: true
+ubtu22cis_rule_5_2_16: true
+ubtu22cis_rule_5_2_17: true
+ubtu22cis_rule_5_2_18: true
+ubtu22cis_rule_5_2_19: true
+ubtu22cis_rule_5_2_20: true
+ubtu22cis_rule_5_2_21: true
+ubtu22cis_rule_5_2_22: true
 ubtu22cis_rule_5_3_1: true
 ubtu22cis_rule_5_3_2: true
 ubtu22cis_rule_5_3_3: true
-ubtu22cis_rule_5_3_4: true
-ubtu22cis_rule_5_3_5: true
-ubtu22cis_rule_5_3_6: true
+# ubtu22cis_rule_5_3_4: true
+# ubtu22cis_rule_5_3_5: true
+# ubtu22cis_rule_5_3_6: true
 ubtu22cis_rule_5_3_7: true
-ubtu22cis_rule_5_3_8: true
-ubtu22cis_rule_5_3_9: true
-ubtu22cis_rule_5_3_10: true
-ubtu22cis_rule_5_3_11: true
-ubtu22cis_rule_5_3_12: true
-ubtu22cis_rule_5_3_13: true
-ubtu22cis_rule_5_3_14: true
-ubtu22cis_rule_5_3_15: true
-ubtu22cis_rule_5_3_16: true
-ubtu22cis_rule_5_3_17: true
-ubtu22cis_rule_5_3_18: true
-ubtu22cis_rule_5_3_19: true
-ubtu22cis_rule_5_3_20: true
-ubtu22cis_rule_5_3_21: true
-ubtu22cis_rule_5_3_22: true
 ubtu22cis_rule_5_4_1: true
 ubtu22cis_rule_5_4_2: true
 ubtu22cis_rule_5_4_3: true
 ubtu22cis_rule_5_4_4: true
+# ubtu22cis_rule_5_4_5: true
 ubtu22cis_rule_5_5_1_1: true
 ubtu22cis_rule_5_5_1_2: true
 ubtu22cis_rule_5_5_1_3: true
@@ -307,7 +312,6 @@ ubtu22cis_rule_5_5_3: true
 ubtu22cis_rule_5_5_4: true
 ubtu22cis_rule_5_5_5: true
 ubtu22cis_rule_5_6: true
-ubtu22cis_rule_5_7: true
 
 # Section 6 Fixes
 # Section is Systme Maintenance (System File Permissions and User and Group Settings)

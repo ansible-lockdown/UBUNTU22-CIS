@@ -1,12 +1,9 @@
 ---
-# Audited: This is now Section 5.2.x
-#          Task IDs are in a new order for 22.04
-- name: "5.3.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured"
-  file:
-      path: /etc/ssh/sshd_config
-      owner: root
-      group: root
-      mode: 0600
+# Audited: Remapping completed
+- name: "5.3.1 | PATCH | Ensure sudo is installed"
+  apt:
+      name: "{{ ubtu22cis_sudo_package }}"
+      state: present
   when:
       - ubtu22cis_rule_5_3_1
   tags:
@@ -15,26 +12,14 @@
       - automated
       - patch
       - rule_5.3.1
-      - ssh
+      - sudo
 
-- name: "5.3.2 | PATCH | Ensure permissions on SSH private host key files are configured"
-  block:
-      - name: "5.3.2 | AUDIT | Ensure permissions on SSH private host key files are configured | Find ssh_host private keys"
-        find:
-            paths: /etc/ssh
-            patterns: 'ssh_host_*_key'
-        register: ubtu22cis_5_3_2_ssh_host_priv_keys
-
-      - name: "5.3.2 | PATCH | Ensure permissions on SSH private host key files are configured | Set permissions"
-        file:
-            path: "{{ item.path }}"
-            owner: root
-            group: root
-            mode: 0600
-        with_items:
-            - "{{ ubtu22cis_5_3_2_ssh_host_priv_keys.files }}"
-        loop_control:
-            label: "{{ item.path }}"
+- name: "5.3.2 | PATCH | Ensure sudo commands use pty"
+  lineinfile:
+      path: /etc/sudoers
+      regexp: '^Defaults        use_'
+      line: 'Defaults        use_pty'
+      insertafter: '^Defaults'
   when:
       - ubtu22cis_rule_5_3_2
   tags:
@@ -43,26 +28,14 @@
       - automated
       - patch
       - rule_5.3.2
-      - ssh
+      - sudo
 
-- name: "5.3.3 | PATCH | Ensure permissions on SSH public host key files are configured"
-  block:
-      - name: "5.3.3 | AUDIT | Ensure permissions on SSH public host key files are configured | Find ssh_host public keys"
-        find:
-            paths: /etc/ssh
-            patterns: 'ssh_host_*_key.pub'
-        register: ubtu22cis_5_3_3_ssh_host_pub_keys
-
-      - name: "5.3.3 | PATCH | Ensure permissions on SSH public host key files are configured | Set permissions"
-        file:
-            path: "{{ item.path }}"
-            owner: root
-            group: root
-            mode: 0644
-        with_items:
-            - "{{ ubtu22cis_5_3_3_ssh_host_pub_keys.files }}"
-        loop_control:
-            label: "{{ item.path }}"
+- name: "5.3.3 | PATCH | Ensure sudo log file exists"
+  lineinfile:
+      path: /etc/sudoers
+      regexp: '^Defaults        logfile'
+      line: 'Defaults        logfile="{{ ubtu22cis_sudo_logfile }}"'
+      insertafter: '^Defaults'
   when:
       - ubtu22cis_rule_5_3_3
   tags:
@@ -71,91 +44,42 @@
       - automated
       - patch
       - rule_5.3.3
-      - ssh
+      - sudo
 
-- name: "5.3.4 | PATCH | Ensure SSH access is limited"
+# (Level 2 - Server) 5.3.4 Ensure users must provide password for privilege escalation
+
+# Need 5.3.5 Ensure re-authentication for privilege escalation is not disabled globally
+
+# Need 5.3.6 Ensure sudo authentication timeout is configured correctly
+
+- name: "5.3.7 | PATCH | Ensure access to the su command is restricted"
   block:
-      - name: "5.3.4 | PATCH | Ensure SSH access is limited | Add allowed users"
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Check for pam_wheel.so module"
+        command: grep '^auth.*required.*pam_wheel' /etc/pam.d/su
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_5_3_7_pam_wheel_status
+
+      - name: "5.7 | PATCH | Ensure access to the su command is restricted | Create empty sugroup"
+        group:
+            name: "{{ ubtu22cis_su_group }}"
+
+      - name: "5.7 | PATCH | Ensure access to the su command is restricted | Set pam_wheel if exists"
+        pamd:
+            name: su
+            type: auth
+            control: required
+            module_path: pam_wheel.so
+            module_arguments: 'use_uid group={{ ubtu22cis_su_group }}'
+        when: ubtu22cis_5_3_7_pam_wheel_status.stdout | length > 0
+
+      - name: "5.7 | PATCH | Ensure access to the su command is restricted | Set pam_wheel if does not exist"
         lineinfile:
-            path: /etc/ssh/sshd_config
-            regexp: '^AllowUsers|^#AllowUsers'
-            line: 'AllowUsers {{ ubtu22cis_sshd.allow_users }}'
-        notify: restart sshd
-        when: "ubtu22cis_sshd['allow_users']|default('') != ''"
-
-      - name: "5.3.4 | PATCH | Ensure SSH access is limited | Add allowed groups"
-        lineinfile:
-            path: /etc/ssh/sshd_config
-            regexp: '^AllowGroups|^#AllowGroups'
-            line: 'AllowGroups {{ ubtu22cis_sshd.allow_groups }}'
-        notify: restart sshd
-        when: "ubtu22cis_sshd['allow_groups']|default('') != ''"
-
-      - name: "5.3.4 | PATCH | Ensure SSH access is limited | Add deny users"
-        lineinfile:
-            path: /etc/ssh/sshd_config
-            regexp: '^DenyUsers|^#DenyUsers'
-            line: 'DenyUsers {{ ubtu22cis_sshd.deny_users }}'
-        notify: restart sshd
-        when: "ubtu22cis_sshd['deny_users']|default('') != ''"
-
-      - name: "5.3.4 | PATCH | Ensure SSH access is limited | Add deny groups"
-        lineinfile:
-            path: /etc/ssh/sshd_config
-            regexp: '^DenyGroups|^#DenyGroups'
-            line: 'DenyGroups {{ ubtu22cis_sshd.deny_groups }}'
-        notify: restart sshd
-        when: "ubtu22cis_sshd['deny_groups']|default('') != ''"
-  when:
-      - ubtu22cis_rule_5_3_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.4
-      - ssh
-
-- name: "5.3.5 | PATCH | Ensure SSH LogLevel is appropriate"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^LogLevel|^#LogLevel'
-      line: 'LogLevel {{ ubtu22cis_sshd.log_level }}'
-      insertafter: '^# Logging'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_5
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.5
-      - ssh
-
-- name: "5.3.6 | PATCH | Ensure SSH X11 forwarding is disabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^X11Forwarding|^#X11Forwarding'
-      line: 'X11Forwarding no'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_6
-  tags:
-      - level2-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.6
-      - ssh
-
-- name: "5.3.7 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^MaxAuthTries|^#MaxAuthTries'
-      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries }}'
-      insertafter: '^# Authentication'
-  notify: restart sshd
+            path: /etc/pam.d/su
+            line: 'auth       required   pam_wheel.so use_uid group={{ ubtu22cis_su_group }}'
+            create: yes
+        when: ubtu22cis_5_3_7_pam_wheel_status.stdout | length == 0
   when:
       - ubtu22cis_rule_5_3_7
   tags:
@@ -164,256 +88,4 @@
       - automated
       - patch
       - rule_5.3.7
-      - ssh
-
-- name: "5.3.8 | PATCH | Ensure SSH IgnoreRhosts is enabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^IgnoreRhosts|^#IgnoreRhosts'
-      line: 'IgnoreRhosts yes'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_8
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.8
-      - ssh
-
-- name: "5.3.9 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^HostbasedAuthentication|^#HostbasedAuthentication'
-      line: 'HostbasedAuthentication no'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_9
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.9
-      - ssh
-
-- name: "5.3.10 | PATCH | Ensure SSH root login is disabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^PermitRootLogin|^#PermitRootLogin'
-      line: 'PermitRootLogin no'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_10
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.10
-      - ssh
-
-- name: "5.3.11 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^PermitEmptyPasswords|^#PermitEmptyPasswords'
-      line: 'PermitEmptyPasswords no'
-      insertafter: '# To disable tunneled clear text passwords'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_11
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.11
-      - ssh
-
-- name: "5.3.12 | PATCH | Ensure SSH PermitUserEnvironment is disabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^PermitUserEnvironment|^#PermitUserEnvironment'
-      line: 'PermitUserEnvironment no'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_12
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.12
-      - ssh
-
-- name: "5.3.13 | PATCH | Ensure only strong Ciphers are used"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^Ciphers|^#Ciphers'
-      line: 'Ciphers {{ ubtu22cis_sshd.ciphers }}'
-      insertafter: '^# Ciphers and keying'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_13
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.13
-      - ssh
-
-- name: "5.3.14 | PATCH | Ensure only strong MAC algorithms are used"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^MACs|^#MACs'
-      line: 'MACs {{ ubtu22cis_sshd.macs }}'
-      insertafter: '^# Ciphers and keying'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_14
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.14
-      - ssh
-
-- name: "5.3.15 | PATCH | Ensure only strong Key Exchange algorithms are used"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^KexAlgorithms|^#KexAlgorithms'
-      line: 'KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms }}'
-      insertafter: '^# Ciphers and keying'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_15
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.15
-      - ssh
-
-- name: "5.3.16 | PATCH | Ensure SSH Idle Timeout Interval is configured"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-  with_items:
-      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval }}' }
-      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max }}' }
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_16
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.16
-      - sshd
-
-- name: "5.3.17 | PATCH | Ensure SSH LoginGraceTime is set to one minute or less"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^LoginGraceTime|^#LoginGraceTime'
-      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time }}'
-      insertafter: '^# Authentication'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_17
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.17
-      - ssh
-
-- name: "5.3.18 | PATCH | Ensure SSH warning banner is configured"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^Banner|^#Banner'
-      line: Banner /etc/issue.net
-      insertafter: '^# no default banner path'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_18
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.18
-      - ssh
-
-- name: "5.3.19 | PATCH | Ensure SSH PAM is enabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^UsePAM|^#UsePAM'
-      line: 'UsePAM yes'
-      insertafter: '^# and ChallengeResponseAuthentication'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_19
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.19
-      - ssh
-      - pam
-
-- name: "5.3.20 | PATCH | Ensure SSH AllowTcpForwarding is disabled"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^AllowTcpForwarding|^#AllowTcpForwarding'
-      line: 'AllowTcpForwarding no'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_20
-  tags:
-      - level2-server
-      - level2-workstation
-      - automated
-      - patch
-      - rule_5.3.20
-      - ssh
-
-- name: "5.3.21 | PATCH | Ensure SSH MaxStartups is configured"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^MaxStartups|^#MaxStartups'
-      line: 'MaxStartups 10:30:60'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_21
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.21
-      - ssh
-
-- name: "5.3.22 | PATCH | Ensure SSH MaxSessions is set to 4 or less"
-  lineinfile:
-      path: /etc/ssh/sshd_config
-      regexp: '^MaxSessions|^#MaxSessions'
-      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions }}'
-      insertafter: '^# Authentication'
-  notify: restart sshd
-  when:
-      - ubtu22cis_rule_5_3_22
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_5.3.22
-      - ssh
+      - user

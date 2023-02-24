@@ -1,5 +1,5 @@
 ---
-
+# AUDITED: 5.4.5 task is needed dependent upon CIS report
 - name: "5.4.1 | PATCH | Ensure password creation requirements are configured"
   block:
       - name: "5.4.1 | PATCH | Ensure password creation requirements are configured | Install pam_pwquality module"
