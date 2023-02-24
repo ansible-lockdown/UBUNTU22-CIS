@@ -549,15 +549,16 @@
             jump: ACCEPT
         notify: iptables presistent
 
-      - name: "3.5.3.2.1 | PATCH | Ensure iptables default deny firewall policy | Set drop items"
-        iptables:
-            policy: DROP
-            chain: "{{ item }}"
-        notify: iptables presistent
-        with_items:
-            - INPUT
-            - FORWARD
-            - OUTPUT
+    # 2023/02/24 - Commented out for now for troubleshooting
+    #   - name: "3.5.3.2.1 | PATCH | Ensure iptables default deny firewall policy | Set drop items"
+    #     iptables:
+    #         policy: DROP
+    #         chain: "{{ item }}"
+    #     notify: iptables presistent
+    #     with_items:
+    #         - INPUT
+    #         - FORWARD
+    #         - OUTPUT
   when:
       - ubtu22cis_rule_3_5_3_2_1
       - ubtu22cis_firewall_package == "iptables"
