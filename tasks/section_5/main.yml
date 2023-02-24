@@ -18,5 +18,3 @@
 - name: "SECTION | 5.6 | Ensure root login is restricted to system console"
   include: cis_5.6.yml
 
-- name: "SECTION | 5.7 | Ensure access to the su command is restricted"
-  include: cis_5.7.yml
