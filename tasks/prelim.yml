@@ -13,7 +13,7 @@
   changed_when: false
   check_mode: false
   when:
-      - ubtu22cis_rule_1_1_23
+      - ubtu22cis_rule_1_1_9
   tags:
       - skip_ansible_lint
       - section1
