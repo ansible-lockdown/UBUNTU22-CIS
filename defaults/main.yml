@@ -394,6 +394,12 @@ ubtu22cis_remove_gdm3: true
 # To conform to CIS control 1.1.12 nodev needs to be present in opts
 # To conform to CIS control 1.1.13 nosuid needs to be present in opts
 # To conform to CIS control 1.1.14 noexec needs to be present in opts
+ubtu22cis_home:
+    source: /home
+    fstype: none
+    opts: "defaults,nodev,nosuid,bind"
+    enabled: false
+
 ubtu22cis_vartmp:
     source: /tmp
     fstype: none
