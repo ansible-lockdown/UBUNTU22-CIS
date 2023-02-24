@@ -386,8 +386,10 @@ ubtu22cis_ipv6_required: true
 # ubtu22cis_desktop_required is the toggle for requiring desktop environments. True means you use a desktop and will not disable/remove needed items to run a desktop (not recommented for servers)
 # false means you do not require a desktop
 ubtu22cis_remove_gdm3: true
+ubtu22cis_remove_xwindows: true
 
-# Section 1 Control Variables
+
+# Sxwindowson 1 Control Variables
 
 # Control 1.1.12/1.1.13/1.1.14
 # These are the settings for the /var/tmp mount

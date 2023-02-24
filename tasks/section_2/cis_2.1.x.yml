@@ -165,7 +165,7 @@
       purge: true
   when:
       - ubtu22cis_rule_2_1_2
-      - not ubtu22cis_desktop_required
+      - ubtu22cis_remove_xwindows
   tags:
       - level1-server
       - automated
