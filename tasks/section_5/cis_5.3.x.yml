@@ -61,11 +61,11 @@
         check_mode: false
         register: ubtu22cis_5_3_7_pam_wheel_status
 
-      - name: "5.7 | PATCH | Ensure access to the su command is restricted | Create empty sugroup"
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Create empty sugroup"
         group:
             name: "{{ ubtu22cis_su_group }}"
 
-      - name: "5.7 | PATCH | Ensure access to the su command is restricted | Set pam_wheel if exists"
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Set pam_wheel if exists"
         pamd:
             name: su
             type: auth
@@ -74,7 +74,7 @@
             module_arguments: 'use_uid group={{ ubtu22cis_su_group }}'
         when: ubtu22cis_5_3_7_pam_wheel_status.stdout | length > 0
 
-      - name: "5.7 | PATCH | Ensure access to the su command is restricted | Set pam_wheel if does not exist"
+      - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Set pam_wheel if does not exist"
         lineinfile:
             path: /etc/pam.d/su
             line: 'auth       required   pam_wheel.so use_uid group={{ ubtu22cis_su_group }}'
