@@ -5,7 +5,7 @@
   service:
       name: autofs
       state: stopped
-      enabled: no
+      enabled: false
   when:
       - ubtu22cis_rule_1_1_9
       - ubtu22cis_autofs_service_status.stdout == "loaded"

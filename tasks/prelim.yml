@@ -1,7 +1,7 @@
 ---
 
 - name: PRELIM | Capture tmp mount type | discover mount tmp type
-  when: 
+  when:
       - ubtu22cis_rule_1_1_2_1 or
         ubtu22cis_rule_1_1_2_2 or
         ubtu22cis_rule_1_1_2_3 or
@@ -15,17 +15,17 @@
 
       - name: PRELIM | Capture tmp mount type | Set fstab
         set_fact:
-          tmp_mnt_type: fstab
+            tmp_mnt_type: fstab
         when: "'generated' in tmp_mnt_type.stdout"
-      
+
       - name: PRELIM | Capture tmp mount type | Set systemd service
         set_fact:
-          tmp_mnt_type: tmp_systemd
+            tmp_mnt_type: tmp_systemd
         when: "'generated' not in tmp_mnt_type.stdout"
 
 - name: "PRELIM | Run apt update"
   ansible.builtin.package:
-      update_cache: yes
+      update_cache: true
   when:
       - ubtu22cis_rule_1_3_1 or
         ubtu22cis_rule_1_9

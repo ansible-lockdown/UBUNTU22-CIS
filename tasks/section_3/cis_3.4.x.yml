@@ -5,7 +5,7 @@
       path: /etc/modprobe.d/dccp.conf
       regexp: '^(#)?install dccp(\\s|$)'
       line: 'install dccp /bin/true'
-      create: yes
+      create: true
   when:
       - ubtu22cis_rule_3_4_1
   tags:
@@ -21,7 +21,7 @@
       path: /etc/modprobe.d/sctp.conf
       regexp: "^(#)?install sctp(\\s|$)"
       line: 'install sctp /bin/true'
-      create: yes
+      create: true
   when:
       - ubtu22cis_rule_3_4_2
   tags:
@@ -37,7 +37,7 @@
       path: /etc/modprobe.d/rds.conf
       regexp: '^(#)?install rds(\\s|$)'
       line: 'install rds /bin/true'
-      create: yes
+      create: true
   when:
       - ubtu22cis_rule_3_4_3
   tags:
@@ -53,7 +53,7 @@
       path: /etc/modprobe.d/tipc.conf
       regexp: '^(#)?install tipc(\\s|$)'
       line: install tipc /bin/true
-      create: yes
+      create: true
   when:
       - ubtu22cis_rule_3_4_4
   tags:

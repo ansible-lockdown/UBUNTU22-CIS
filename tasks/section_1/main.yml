@@ -4,15 +4,16 @@
   ansible.builtin.import_tasks: cis_1.1.1.x.yml
 
 - name: "SECTION | 1.1.x | Filesystems and mount options"
-  ansible.builtin.import_tasks: cis_1.1.2.x.yml
-  ansible.builtin.import_tasks: cis_1.1.3.x.yml
-  ansible.builtin.import_tasks: cis_1.1.4.x.yml
-  ansible.builtin.import_tasks: cis_1.1.5.x.yml
-  ansible.builtin.import_tasks: cis_1.1.6.x.yml
-  ansible.builtin.import_tasks: cis_1.1.7.x.yml
-  ansible.builtin.import_tasks: cis_1.1.8.x.yml
-  ansible.builtin.import_tasks: cis_1.1.9.yml
-  ansible.builtin.import_tasks: cis_1.1.10.yml
+  ansible.builtin.import_tasks:
+  - cis_1.1.2.x.yml
+  - cis_1.1.3.x.yml
+  - cis_1.1.4.x.yml
+  - cis_1.1.5.x.yml
+  - cis_1.1.6.x.yml
+  - cis_1.1.7.x.yml
+  - cis_1.1.8.x.yml
+  - cis_1.1.9.yml
+  - cis_1.1.10.yml
 
 - name: "SECTION | 1.2 | Configure Software Updates"
   ansible.builtin.import_tasks: cis_1.2.x.yml

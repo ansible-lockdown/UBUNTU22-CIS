@@ -22,7 +22,7 @@
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
       insertafter: "{{ item.insertafter }}"
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644
@@ -48,7 +48,7 @@
       regexp: '^disable-user-list='
       line: 'disable-user-list=true'
       insertafter: 'banner-message-text='
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644
@@ -73,8 +73,8 @@
             line: "{{ item.line }}"
             insertafter: "{{ item.after | default(omit) }}"
             loop:
-            - "{ regexp: 'user-db: user', line: 'user' }"
-            - "{ regexp: 'system-db: {{ ubtu22cis_dconf_db_name }}'', after: '^user-db.*' }"
+                - "{ regexp: 'user-db: user', line: 'user' }"
+                - "{ regexp: 'system-db: {{ ubtu22cis_dconf_db_name }}'', after: '^user-db.*' }"
 
       - name: "1.8.4 | PATCH | Ensure GDM screen locks when the user is idle | make directory"
         ansible.builtin.file:
@@ -107,19 +107,19 @@
   block:
       - name: "1.8.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lock directory"
         ansible.builtin.file:
-          path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
-          owner: root
-          group: root
-          mode: 0755
-          state: directory
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
+            owner: root
+            group: root
+            mode: 0755
+            state: directory
 
       - name: "1.8.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lockfile"
         ansible.builtin.template:
-          src: etc/dconf/db/00-screensaver_lock.j2
-          dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-screensaver"
-          owner: root
-          group: root
-          mode: 0644
+            src: etc/dconf/db/00-screensaver_lock.j2
+            dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-screensaver"
+            owner: root
+            group: root
+            mode: 0644
   notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_5
@@ -166,19 +166,19 @@
   block:
       - name: "1.8.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lock directory"
         ansible.builtin.file:
-          path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
-          owner: root
-          group: root
-          mode: 0755
-          state: directory
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
+            owner: root
+            group: root
+            mode: 0755
+            state: directory
 
       - name: "1.8.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lockfile"
         ansible.builtin.template:
-          src: etc/dconf/db/00-automount_lock.j2
-          dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-automount_lock"
-          owner: root
-          group: root
-          mode: 0644
+            src: etc/dconf/db/00-automount_lock.j2
+            dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-automount_lock"
+            owner: root
+            group: root
+            mode: 0644
   notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_7
@@ -224,19 +224,19 @@
   block:
       - name: "1.8.9 | PATCH | Ensure GDM autorun-never is not overridden | make lock directory"
         ansible.builtin.file:
-          path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
-          owner: root
-          group: root
-          mode: 0755
-          state: directory
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
+            owner: root
+            group: root
+            mode: 0755
+            state: directory
 
       - name: "1.8.9 | PATCH | Ensure GDM autorun-never is not overridden | make lockfile"
         ansible.builtin.template:
-          src: etc/dconf/db/00-autorun_lock.j2
-          dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-autorun_lock"
-          owner: root
-          group: root
-          mode: 0644
+            src: etc/dconf/db/00-autorun_lock.j2
+            dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-autorun_lock"
+            owner: root
+            group: root
+            mode: 0644
   notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_9

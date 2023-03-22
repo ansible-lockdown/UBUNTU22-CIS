@@ -122,14 +122,14 @@
       - name: reboot system if not skipped
         reboot:
         when:
-            - not ubtu22_skip_reboot
+            - not skip_reboot
 
       - name: Warning a reboot required but skip option set
         debug:
             msg: "Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results"
         changed_when: true
         when:
-            - ubtu22_skip_reboot
+            - skip_reboot
 
 - import_tasks: post_remediation_audit.yml
   when:

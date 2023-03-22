@@ -48,19 +48,19 @@
   block:
       - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | disable"
         lineinfile:
-          path: /etc/default/apport
-          regexp: ^enabled
-          line: enabled=0
-          create: true
-          owner: root
-          group: root
-          mode: 0644
+            path: /etc/default/apport
+            regexp: ^enabled
+            line: enabled=0
+            create: true
+            owner: root
+            group: root
+            mode: 0644
 
       - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
         package:
-          name: apport
-          state: absent
-        when: 
+            name: apport
+            state: absent
+        when:
             - "'apport' in ansible_facts.packages"
   when:
       - ubtu22cis_rule_1_5_3
@@ -79,9 +79,9 @@
             name: fs.suid_dumpable
             value: '0'
             state: present
-            reload: yes
-            sysctl_set: yes
-            ignoreerrors: yes
+            reload: true
+            sysctl_set: true
+            ignoreerrors: true
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | security limits"
         lineinfile:

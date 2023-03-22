@@ -3,7 +3,6 @@
 # If you would like a report at the end accordin to OpenSCAP as to the report results
 # then you should set ubtu22cis_oscap_scan to true/yes.
 # NOTE: This requires the python_xmltojson package on the control host.
-ubtu22cis_oscap_scan: no
 ubtu22cis_report_dir: /tmp
 
 ubtu22cis_section1_patch: true
@@ -14,11 +13,12 @@ ubtu22cis_section5_patch: true
 ubtu22cis_section6_patch: true
 
 # System will reboot if false, can give better audit results
-ubtu22_skip_reboot: true
+skip_reboot: true
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
+benchmark_version: v1.0.0
 
 ### Audit Binary is required on the remote host
 setup_audit: false
@@ -41,31 +41,6 @@ audit_cmd_timeout: 60000
 
 ### End Audit enablements ####
 
-# We've defined complexity-high to mean that we cannot automatically remediate
-# the rule in question.  In the future this might mean that the remediation
-# may fail in some cases.
-ubtu22cis_complexity_high: false
-
-# Show "changed" for complex items not remediated per complexity-high setting
-# to make them stand out.  "changed" items on a second run of the role would
-# indicate items requiring manual review.
-ubtu22cis_audit_complex: true
-
-# We've defined disruption-high to indicate items that are likely to cause
-# disruption in a normal workflow.  These items can be remediated automatically
-# but are disabled by default to avoid disruption.
-# Value of true runs duscruptive tasks, value of false will skip disruptive tasks
-ubtu22cis_disruption_high: true
-
-# Show "changed" for disruptive items not remediated per disruption-high
-# setting to make them stand out.
-ubtu22cis_audit_disruptive: yes
-
-ubtu22cis_skip_for_travis: false
-
-ubtu22cis_workaround_for_disa_benchmark: true
-ubtu22cis_workaround_for_ssg_benchmark: true
-
 # tweak role to run in a chroot, such as in kickstart %post script
 ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 
@@ -74,9 +49,6 @@ ubtu22cis_system_is_container: false
 
 # skip events for ec2 instance testing pipeline
 system_is_ec2: false
-
-# Whether to skip the reboot
-skip_reboot: true
 
 # Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
@@ -683,7 +655,7 @@ audit_bin_copy_location: /some/accessible/path
 ## managed by the control audit_content
 # git
 audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-audit_git_version: main
+audit_git_version: "benchmark-{{ benchmark_version }}"
 
 # archive or copy:
 audit_conf_copy: "some path to copy from"
@@ -698,8 +670,8 @@ audit_out_dir: '/opt'
 audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
 
 # If changed these can affect other products
-pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
 audit_control_file: "{{ audit_conf_dir }}goss.yml"

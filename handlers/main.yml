@@ -6,7 +6,7 @@
 
 - name: Reload_systemctl
   systemd:
-    daemon_reload: true
+      daemon_reload: true
 
 - name: Update dconf
   command: dconf update
@@ -26,7 +26,7 @@
   sysctl:
       name: net.ipv4.route.flush
       value: '1'
-      sysctl_set: yes
+      sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
 - name: reload ufw
@@ -49,7 +49,7 @@
   sysctl:
       name: net.ipv6.route.flush
       value: '1'
-      sysctl_set: yes
+      sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
 - name: auditd_immutable_check
