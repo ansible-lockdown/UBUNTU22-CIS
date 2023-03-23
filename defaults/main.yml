@@ -594,7 +594,7 @@ ubtu22cis_bash_umask: '027'
 # Session timeout setting file (TMOUT setting can be set in multiple files)
 # Timeout value is in seconds. Set value to 900 seconds or less
 ubtu22cis_shell_session_timeout:
-    file: /etc/profile.d/tmout.sh
+    ansible.builtin.file: /etc/profile.d/tmout.sh
     timeout: 900
 
 # Control 5.7
@@ -657,8 +657,8 @@ audit_bin_copy_location: /some/accessible/path
 audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
 audit_git_version: "benchmark-{{ benchmark_version }}"
 
-# archive or copy:
-audit_conf_copy: "some path to copy from"
+# archive or ansible.builtin.copy:
+audit_conf_ansible.builtin.copy: "some path to copy from"
 
 # get_url:
 audit_files_url: "some url maybe s3?"

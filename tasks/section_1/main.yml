@@ -3,17 +3,32 @@
 - name: "SECTION | 1.1.1 | Disable Unused Filesystems"
   ansible.builtin.import_tasks: cis_1.1.1.x.yml
 
-- name: "SECTION | 1.1.x | Filesystems and mount options"
-  ansible.builtin.import_tasks:
-  - cis_1.1.2.x.yml
-  - cis_1.1.3.x.yml
-  - cis_1.1.4.x.yml
-  - cis_1.1.5.x.yml
-  - cis_1.1.6.x.yml
-  - cis_1.1.7.x.yml
-  - cis_1.1.8.x.yml
-  - cis_1.1.9.yml
-  - cis_1.1.10.yml
+- name: "SECTION | 1.1.2 | configure /tmp"
+  ansible.builtin.import_tasks: cis_1.1.2.x.yml
+
+- name: "SECTION | 1.1.3 | configure /var"
+  ansible.builtin.import_tasks: cis_1.1.3.x.yml
+
+- name: "SECTION | 1.1.4 | configure /var/tmp"
+  ansible.builtin.import_tasks: cis_1.1.4.x.yml
+
+- name: "SECTION | 1.1.5 | configure /var/log"
+  ansible.builtin.import_tasks: cis_1.1.5.x.yml
+
+- name: "SECTION | 1.1.6 | configure /var/log/audit"
+  ansible.builtin.import_tasks: cis_1.1.6.x.yml
+
+- name: "SECTION | 1.1.7 | configure /home"
+  ansible.builtin.import_tasks: cis_1.1.7.x.yml
+
+- name: "SECTION | 1.1.8 | configure /dev/shm"
+  ansible.builtin.import_tasks: cis_1.1.8.x.yml
+
+- name: "SECTION | 1.1.9 | configure software updates"
+  ansible.builtin.import_tasks: cis_1.1.9.yml
+
+- name: "SECTION | 1.1.10 | Disable USB storage"
+  ansible.builtin.import_tasks: cis_1.1.10.yml
 
 - name: "SECTION | 1.2 | Configure Software Updates"
   ansible.builtin.import_tasks: cis_1.2.x.yml

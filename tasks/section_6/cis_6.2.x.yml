@@ -3,20 +3,20 @@
 - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords"
   block:
       - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Get users not using shadowed passwords"
-        command: awk -F':' '($2 != "x" ) { print $1}' /etc/passwd
+        ansible.builtin.shell: awk -F':' '($2 != "x" ) { print $1}' /etc/passwd
         changed_when: false
         failed_when: false
         register: ubtu22cis_6_2_1_nonshadowed_users
 
       - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Warn on findings"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have users that are not using a shadowed password. Please convert the below accounts to use a shadowed password"
                 - "{{ ubtu22cis_6_2_1_nonshadowed_users.stdout_lines }}"
         when: ubtu22cis_6_2_1_nonshadowed_users.stdout | length > 0
 
       - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.1' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_1_nonshadowed_users.stdout | length > 0
@@ -33,13 +33,13 @@
 - name: "6.2.2 | PATCH | Ensure password fields are not empty"
   block:
       - name: "6.2.2 | AUDIT | Ensure password fields are not empty | Find users with no password"
-        shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
+        ansible.builtin.shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
         changed_when: false
         check_mode: false
         register: ubtu22cis_6_2_2_empty_password_acct
 
       - name: "6.2.2 | PATCH | Ensure password fields are not empty | Lock users with empty password"
-        user:
+        ansible.builtin.user:
             name: "{{ item }}"
             password_lock: true
         with_items:
@@ -59,24 +59,24 @@
 - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group"
   block:
       - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Check /etc/passwd entries"
-        shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
+        ansible.builtin.shell: pwck -r | grep 'no group' | awk '{ gsub("[:\47]",""); print $2}'
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_3_passwd_gid_check
 
       - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print message that all groups match between passwd and group files"
-        debug:
+        ansible.builtin.debug:
             msg: "Good News! There are no users that have non-existent GUIDs (Groups)"
         when: ubtu22cis_6_2_3_passwd_gid_check.stdout | length == 0
 
       - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Print warning about users with invalid GIDs missing GID entries in /etc/group"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ ubtu22cis_6_2_3_passwd_gid_check.stdout_lines | join (', ') }}"
         when: ubtu22cis_6_2_3_passwd_gid_check.stdout | length > 0
 
       - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.3' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_3_passwd_gid_check.stdout | length > 0
@@ -95,7 +95,7 @@
       - name: capture audit task for missing homedirs
         block: &u20s_homedir_audit
             - name: "6.2.4 | PATCH | Ensure all users' home directories exist | Find users missing home directories"
-              shell: pwck -r | grep -vF -e "'/nonexistent'" | grep -P {{ ld_regex | quote }}
+              ansible.builtin.shell: pwck -r | grep -vF -e "'/nonexistent'" | grep -P {{ ld_regex | quote }}
               check_mode: false
               register: ubtu22cis_users_missing_home
               changed_when: ubtu22cis_6_2_4_audit | length > 0
@@ -104,7 +104,7 @@
 
       ### NOTE: due to https://github.com/ansible/ansible/issues/24862 This is a shell command, and is quite frankly less than ideal.
       - name: "6.2.4 | PATCH | Ensure all users' home directories exist| Creates home directories"
-        command: "mkhomedir_helper {{ item }}"
+        ansible.builtin.shell: "mkhomedir_helper {{ item }}"
         # check_mode: "{{ ubtu22cis_disruptive_check_mode }}"
         with_items: "{{ ubtu22cis_6_2_4_audit | map(attribute='id') | list }}"
         when:
@@ -119,7 +119,7 @@
       # CAUTION: debug loops don't show changed since 2.4:
       # Fix: https://github.com/ansible/ansible/pull/59958
       - name: "6.2.4 | PATCH | Ensure all users' home directories exist | Warn about correcting owner and group"
-        debug: msg="You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
+        ansible.builtin.debug: msg="You will need to mkdir -p {{ item }} and chown properly to the correct owner and group."
         with_items: "{{ ubtu22cis_6_2_4_audit | map(attribute='dir') | list }}"
         changed_when: ubtu22cis_audit_complex
         when:
@@ -140,7 +140,7 @@
       - user
 
 - name: "6.2.5 | PATCH | Ensure users own their home directories"
-  file:
+  ansible.builtin.file:
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
       state: directory
@@ -163,14 +163,14 @@
 - name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive"
   block:
       - name: "6.2.6 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive | Get home directories"
-        stat:
+        ansible.builtin.stat:
             path: "{{ item }}"
         with_items: "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | selectattr('uid', '!=', 65534) | map(attribute='dir') | list }}"
         check_mode: false
         register: ubtu22cis_6_2_6_audit
 
       - name: "6.2.6 | AUDIT | Ensure users' home directories permissions are 750 or more restrictive | Find home directories more 750"
-        command: find -H {{ item.0 | quote }} -not -type l -perm /027
+        ansible.builtin.shell: find -H {{ item.0 | quote }} -not -type l -perm /027
         register: ubtu22cis_6_2_6_patch_audit
         changed_when: ubtu22cis_6_2_6_patch_audit.stdout | length > 0
         check_mode: false
@@ -183,7 +183,7 @@
             label: "{{ item.0 }}"
 
       - name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set home perms"
-        file:
+        ansible.builtin.file:
             path: "{{ item.0 }}"
             recurse: true
             mode: a-st,g-w,o-rwx
@@ -229,14 +229,14 @@
 - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world writable"
   block:
       - name: "6.2.7 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
-        shell: find /home/ -name "\.*" -perm /g+w,o+w
+        ansible.builtin.shell: find /home/ -name "\.*" -perm /g+w,o+w
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_7_audit
 
       - name: "6.2.7 | AUDIT | Ensure users' dot files are not group or world-writable | Warning on files found"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have group or world-writable dot files on your system and have configured for manual intervention"
         when:
@@ -244,7 +244,7 @@
             - ubtu22cis_dotperm_ansiblemanaged
 
       - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world writable | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.7' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when:
@@ -252,7 +252,7 @@
             - ubtu22cis_dotperm_ansiblemanaged
 
       - name: "6.2.7 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"
-        file:
+        ansible.builtin.file:
             path: '{{ item }}'
             mode: go-w
         with_items: "{{ ubtu22cis_6_2_7_audit.stdout_lines }}"
@@ -271,7 +271,7 @@
       - user
 
 - name: "6.2.8 | PATCH | Ensure no users have .netrc files"
-  file:
+  ansible.builtin.file:
       dest: "~{{ item }}/.netrc"
       state: absent
   with_items:
@@ -288,7 +288,7 @@
       - user
 
 - name: "6.2.9 | PATCH | Ensure no users have .forward files"
-  file:
+  ansible.builtin.file:
       dest: "~{{ item }}/.forward"
       state: absent
   with_items:
@@ -305,7 +305,7 @@
       - user
 
 - name: "6.2.10 | PATCH | Ensure no users have .rhosts files"
-  file:
+  ansible.builtin.file:
       dest: "~{{ item }}/.rhosts"
       state: absent
   with_items:
@@ -324,14 +324,14 @@
 - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account"
   block:
       - name: "6.2.11 | AUDIT | Ensure root is the only UID 0 account | Get non-root users with UID of 0"
-        shell: awk -F":" '($3 == 0 && $1 != \"root\") {i++;print $1 }' /etc/passwd
+        ansible.builtin.shell: awk -F":" '($3 == 0 && $1 != \"root\") {i++;print $1 }' /etc/passwd
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_11_uid_0_notroot
 
       - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account | Lock UID 0 users"
-        user:
+        ansible.builtin.user:
             name: "{{ item }}"
             password_lock: true
         with_items:
@@ -341,7 +341,7 @@
             - ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
 
       - name: "6.2.11 | AUDIT | Ensure root is the only UID 0 account | Warning about accounts disruption high"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have non-root users with a UID of 0 and ubtu18cis_disruption_high enabled"
                 - "This means the following accounts were password locked and will need to have the UID's manually adjusted"
@@ -351,7 +351,7 @@
             - ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
 
       - name: "6.2.11 | AUDIT | Ensure root is the only UID 0 account | Warning about accounts disruption low"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have non-root users with a UID of 0 and ubtu18cis_disruption_high disabled"
                 - "This means no action was taken, you will need to have the UID's of the users below manually adjusted"
@@ -361,7 +361,7 @@
             - ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
 
       - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.11' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_11_uid_0_notroot.stdout | length > 0
@@ -377,32 +377,32 @@
       - root
 
 - name: "6.2.12 | PATCH | Ensure root PATH Integrity"
-  command: /bin/true
+  ansible.builtin.shell: /bin/true
   changed_when: false
   failed_when: false
   check_mode: false
   # block:
   #     - name: "6.2.12 | PATCH | Ensure root PATH Integrity | Determine empty value"
-  #       shell: 'echo $PATH | grep ::'
+  #       ansible.builtin.shell: 'echo $PATH | grep ::'
   #       changed_when: False
   #       failed_when: ubtu22cis_6_2_12_path_colon.rc == 0
   #       check_mode: false
   #       register: ubtu22cis_6_2_12_path_colon
 
   #     - name: "6.2.12 | PATCH | Ensure root PATH Integrity | Determine colon end"
-  #       shell: 'echo $PATH | grep :$'
+  #       ansible.builtin.shell: 'echo $PATH | grep :$'
   #       changed_when: False
   #       failed_when: ubtu22cis_6_2_12_path_colon_end.rc == 0
   #       check_mode: false
   #       register: ubtu22cis_6_2_12_path_colon_end
 
   #     - name: "6.2.12 | PATCH | Ensure root PATH Integrity | Determine working dir"
-  #       shell: echo "$PATH"
+  #       ansible.builtin.shell: echo "$PATH"
   #       changed_when: False
   #       failed_when: '"." in ubtu22cis_6_2_12_working_dir.stdout_lines'
   #       check_mode: false
   #       register: ubtu22cis_6_2_12_working_dir
-  #     - debug: var=ubtu22cis_6_2_12_working_dir
+  #     - ansible.builtin.debug: var=ubtu22cis_6_2_12_working_dir
 
   #     - name: "6.2.12 | PATCH | Ensure root PATH Integrity | Check paths"
   #       stat:
@@ -412,15 +412,15 @@
   #       with_items:
   #           - "{{ ubtu22cis_6_2_12_working_dir.stdout.split(':') }}"
 
-  #     - debug: var=ubtu22cis_6_2_12_path_stat
+  #     - ansible.builtin.debug: var=ubtu22cis_6_2_12_path_stat
 
   #     - name: "6.2.12 | PATCH | Ensure root PATH Integrity | Warn on empty value, colon end, and no working dir"
-  #       debug:
+  #       ansible.builtin.debug:
   #           msg:
   #               - "The following paths have no working directory: {{ ubtu22cis_6_2_12_path_stat.results | selectattr('stat.exists','==','false') | map(attribute='item') | list }}"
 
   #     # - name: "6.2.12 | PATCH | Ensure root PATH Integrity | Set permissions"
-  #     #   file:
+  #     #   ansible.builtin.file:
   #     #       path: "{{ item }}"
   #     #       owner: root
   #     #       mode: 'o-w,g-w'
@@ -443,24 +443,24 @@
 - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist"
   block:
       - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Check for duplicate UIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
+        ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in uid) print $1 ; else uid[$3]}' /etc/passwd"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_13_user_uid_check
 
       - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Print message that no duplicate UIDs exist"
-        debug:
+        ansible.builtin.debug:
             msg: "Good News! There are no duplicate UID's in the system"
         when: ubtu22cis_6_2_13_user_uid_check.stdout | length == 0
 
       - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following users have UIDs that are duplicates: {{ ubtu22cis_6_2_13_user_uid_check.stdout_lines }}"
         when: ubtu22cis_6_2_13_user_uid_check.stdout | length > 0
 
       - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.13' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_13_user_uid_check.stdout | length > 0
@@ -477,24 +477,24 @@
 - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist"
   block:
       - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
-        shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
+        ansible.builtin.shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_14_user_user_check
 
       - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-        debug:
+        ansible.builtin.debug:
             msg: "Good News! There are no duplicate GIDs in the system"
         when: ubtu22cis_6_2_14_user_user_check.stdout | length == 0
 
       - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following groups have duplicate GIDs: {{ ubtu22cis_6_2_14_user_user_check.stdout_lines }}"
         when: ubtu22cis_6_2_14_user_user_check.stdout | length > 0
 
       - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.14' ] "
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_14_user_user_check.stdout | length > 0
@@ -511,24 +511,24 @@
 - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist"
   block:
       - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
-        shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
+        ansible.builtin.shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_15_user_username_check
 
       - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
-        debug:
+        ansible.builtin.debug:
             msg: "Good News! There are no duplicate user names in the system"
         when: ubtu22cis_6_2_15_user_username_check.stdout | length == 0
 
       - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following user names are duplicates: {{ ubtu22cis_6_2_15_user_username_check.stdout_lines }}"
         when: ubtu22cis_6_2_15_user_username_check.stdout | length > 0
 
       - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.15' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_15_user_username_check.stdout | length > 0
@@ -545,24 +545,24 @@
 - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist"
   block:
       - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Check for duplicate group names"
-        shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
+        ansible.builtin.shell: 'getent passwd | cut -d: -f1 | sort -n | uniq -d'
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_16_group_group_check
 
       - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
-        debug:
+        ansible.builtin.debug:
             msg: "Good News! There are no duplicate group names in the system"
         when: ubtu22cis_6_2_16_group_group_check.stdout | length == 0
 
       - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! The following group names are duplicates: {{ ubtu22cis_6_2_16_group_group_check.stdout_lines }}"
         when: ubtu22cis_6_2_16_group_group_check.stdout | length > 0
 
       - name: "6.2.16 | AUDIT | Ensure no duplicate group names exist | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.16' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_16_group_group_check.stdout | length > 0
@@ -579,26 +579,26 @@
 - name: "6.2.17 | AUDIT | Ensure shadow group is empty"
   block:
       - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Get Shadow GID"
-        shell: grep ^shadow /etc/group | cut -f3 -d":"
+        ansible.builtin.shell: grep ^shadow /etc/group | cut -f3 -d":"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_17_shadow_gid
 
       - name: "6.2.17 | AUDIT | Ensure shadow group is empty | List of users with Shadow GID"
-        shell: awk -F":" '($4 == "{{ ubtu22cis_6_2_17_shadow_gid.stdout }}") { print }' /etc/passwd | cut -f1 -d":"
+        ansible.builtin.shell: awk -F":" '($4 == "{{ ubtu22cis_6_2_17_shadow_gid.stdout }}") { print }' /etc/passwd | cut -f1 -d":"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_17_users_shadow_gid
 
       - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Message on no users"
-        debug:
+        ansible.builtin.debug:
             msg: "Good News! There are no users with the Shadow GID on your system"
         when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length == 0
 
       - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Message on users with Shadow GID"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! There are users that are in the Shadow group"
                 - "To conform to CIS standards no users should be in this group"
@@ -607,7 +607,7 @@
         when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length > 0
 
       - name: "6.2.17 | AUDIT | Ensure shadow group is empty | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.2.17' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_2_17_users_shadow_gid.stdout | length > 0

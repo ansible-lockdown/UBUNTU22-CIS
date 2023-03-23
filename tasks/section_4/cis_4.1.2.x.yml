@@ -1,7 +1,7 @@
 ---
 
 - name: "4.1.2.1 | PATCH | Ensure audit log storage size is configured"
-  lineinfile:
+  ansible.builtin.lineinfile:
       dest: /etc/audit/auditd.conf
       regexp: "^max_log_file( |=)"
       line: "max_log_file = {{ ubtu22cis_max_log_file_size }}"
@@ -19,7 +19,7 @@
       - auditd
 
 - name: "4.1.2.2 | PATCH | Ensure audit logs are not automatically deleted"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/audit/auditd.conf
       regexp: '^max_log_file_action'
       line: "max_log_file_action = {{ ubtu22cis_auditd['max_log_file_action'] }}"
@@ -36,7 +36,7 @@
       - auditd
 
 - name: "4.1.2.3 | PATCH | Ensure system is disabled when audit logs are full"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/audit/auditd.conf
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"

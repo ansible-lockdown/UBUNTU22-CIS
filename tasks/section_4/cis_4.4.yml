@@ -1,7 +1,7 @@
 ---
 
 - name: "4.4 | PATCH | Ensure logrotate assigns appropriate permissions"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/logrotate.conf
       regexp: '^create'
       line: ' create {{ ubtu22cis_logrotate_create_settings }}'

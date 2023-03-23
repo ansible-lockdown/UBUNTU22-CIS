@@ -3,14 +3,14 @@
 - name: "6.1.1 | AUDIT | Audit system file permissions"
   block:
       - name: "6.1.1 | AUDIT | Audit system file permissions | Register package list"
-        command: ls -a /bin/
+        ansible.builtin.shell: ls -a /bin/
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_6_1_1_packages
 
       # - name: "NOTSCORED | 6.1.1 | AUDIT | Audit system file permissions | Audit the packages"
-      #   command: dpkg --verify {{ item }}
+      #   ansible.builtin.shell: dpkg --verify {{ item }}
       #   changed_when: false
       #   failed_when: false
       #   check_mode: false
@@ -19,14 +19,14 @@
       #   register: ubtu18cis_6_1_1_packages_audited
 
       - name: "6.1.1 | AUDIT | Audit system file permissions | Message out packages results for review"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the packages that need to be reviewed."
                 - "You can run dpkg --verify <package name> and if nothing is returned the package is installed correctly"
                 - "{{ ubtu22cis_6_1_1_packages.stdout_lines }}"
 
       - name: "6.1.1 | AUDIT | Audit system file permissions | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.1'"
             warn_count: "{{ warn_count | int + 1 }}"
   when:
@@ -40,7 +40,7 @@
       - permissions
 
 - name: "6.1.2 | PATCH | Ensure permissions on /etc/passwd are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/passwd
       owner: root
       group: root
@@ -56,7 +56,7 @@
       - permissions
 
 - name: "6.1.3 | PATCH | Ensure permissions on /etc/passwd- are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/passwd-
       owner: root
       group: root
@@ -72,7 +72,7 @@
       - permissions
 
 - name: "6.1.4 | PATCH | Ensure permissions on /etc/group are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/group
       owner: root
       group: root
@@ -88,7 +88,7 @@
       - permissions
 
 - name: "6.1.5 | PATCH | Ensure permissions on /etc/group- are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/group-
       owner: root
       group: root
@@ -104,7 +104,7 @@
       - permissions
 
 - name: "6.1.6 | PATCH | Ensure permissions on /etc/shadow are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/shadow
       owner: root
       group: shadow
@@ -120,7 +120,7 @@
       - permissions
 
 - name: "6.1.7 | PATCH | Ensure permissions on /etc/shadow- are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/shadow-
       owner: root
       group: shadow
@@ -136,7 +136,7 @@
       - permissions
 
 - name: "6.1.8 | PATCH | Ensure permissions on /etc/gshadow are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/gshadow
       owner: root
       group: shadow
@@ -152,7 +152,7 @@
       - permissions
 
 - name: "6.1.9 | PATCH | Ensure permissions on /etc/gshadow- are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/gshadow-
       owner: root
       group: shadow
@@ -170,7 +170,7 @@
 - name: "6.1.10 | PATCH | Ensure no world writable files exist"
   block:
       - name: "6.1.10 | AUDIT | Ensure no world writable files exist | Get list of world-writable files"
-        shell: find {{ item.mount }} -xdev -type f -perm -0002 -not -fstype nfs
+        ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -0002 -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
@@ -181,7 +181,7 @@
             label: "{{ item.mount }}"
 
       - name: "6.1.10 | PATCH | Ensure no world writable files exist | Adjust world-writable files if they exist"
-        file:
+        ansible.builtin.file:
             path: "{{ item }}"
             mode: o-w
         with_items:
@@ -200,7 +200,7 @@
 - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist"
   block:
       - name: "6.1.11 | AUDIT | Ensure no unowned files or directories exist | Get unowned files or directories"
-        shell: find {{ item.mount }} -xdev -nouser -not -fstype nfs
+        ansible.builtin.shell: find {{ item.mount }} -xdev -nouser -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
@@ -211,7 +211,7 @@
             label: "{{ item.mount }}"
 
       - name: "6.1.11 | AUDIT | Ensure no unowned files or directories exist | Warn on unowned files and directories"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
                 - "Please review the files/directories below and assign an owner"
@@ -221,7 +221,7 @@
             - ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
 
       - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.11' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when:
@@ -229,7 +229,7 @@
             - ubtu22cis_6_1_11_no_user_items.results | map(attribute='stdout_lines') | flatten | length > 0
 
       - name: "6.1.11 | PATCH | Ensure no unowned files or directories exist | Set unowned files/directories to configured owner"
-        file:
+        ansible.builtin.file:
             path: "{{ item }}"
             owner: "{{ ubtu22cis_unowned_owner }}"
         with_items:
@@ -250,7 +250,7 @@
 - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist"
   block:
       - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Get ungrouped fiels or directories"
-        shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
+        ansible.builtin.shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
@@ -261,7 +261,7 @@
             label: "{{ item.mount }}"
 
       - name: "6.1.12 | AUDIT | Ensure no ungrouped files or directories exist | Warn on ungrouped files and directories"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
                 - "Please review the files/directories below and assign a group"
@@ -271,7 +271,7 @@
             - ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
 
       - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.12' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when:
@@ -279,7 +279,7 @@
             - ubtu22cis_6_1_12_ungrouped_items.results | map(attribute='stdout_lines') | flatten | length > 0
 
       - name: "6.1.12 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
-        file:
+        ansible.builtin.file:
             path: "{{ item }}"
             group: "{{ ubtu22cis_ungrouped_group }}"
         with_items:
@@ -300,8 +300,8 @@
 - name: "6.1.13 | AUDIT | Audit SUID executables"
   block:
       - name: "6.1.13 | AUDIT | Audit SUID executables | Find SUID executables"
-        # shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -4000
-        shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
+        # ansible.builtin.shell: df --local -P | awk '{if (NR!=1) print $6}' | xargs -I '{}' find '{}' -xdev -type f -perm -4000
+        ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
@@ -312,7 +312,7 @@
             label: "{{ item.mount }}"
 
       - name: "6.1.13 | AUDIT | Audit SUID executables | Warn SUID executables exist"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! You have SUID executables"
                 - "The files are listed below, please confirm the integrity of these binaries"
@@ -322,7 +322,7 @@
             - not ubtu22cis_suid_adjust
 
       - name: "6.1.13 | AUDIT | Audit SUID executables | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.13' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when:
@@ -330,7 +330,7 @@
             - not ubtu22cis_suid_adjust
 
       - name: "6.1.13 | PATCH | Audit SUID executables | Remove SUID bit"
-        file:
+        ansible.builtin.file:
             path: "{{ item }}"
             mode: 'u-s'
         with_items:
@@ -351,7 +351,7 @@
 - name: "6.1.14 | AUDIT | Audit SGID executables"
   block:
       - name: "6.1.14 | AUDIT | Audit SGID executables | Find SGID executables"
-        shell: find {{ item }} -xdev -type f -perm -2000 -not -fstype nfs
+        ansible.builtin.shell: find {{ item }} -xdev -type f -perm -2000 -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
@@ -362,11 +362,11 @@
             label: "{{ item.mount }}"
 
       - name: "6.1.14 | AUDIT | Audit SGID executables | Flatten sgid_executables results for easier use"
-        set_fact:
+        ansible.builtin.set_fact:
             ubtu22cis_6_1_14_sgid_executables_flatten: "{{ ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
 
       - name: "6.1.14 | AUDIT | Audit SGID executables | Warn SGID executables exist"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!!!!You have SGID executables"
                 - "The files are listed below, please review the integrity of these binaries"
@@ -374,7 +374,7 @@
         when: ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0
 
       - name: "6.1.14 | AUDIT | Audit SGID executables | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_6.1.14' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_6_1_14_sgid_executables.results | map(attribute='stdout_lines') | flatten | length > 0

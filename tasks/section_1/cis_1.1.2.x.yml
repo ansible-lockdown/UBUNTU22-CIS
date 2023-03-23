@@ -1,7 +1,7 @@
 ---
 
 - name: 1.1.2.1 | PATCH | Ensure /tmp is configured | tmp_systemd
-  systemd:
+  ansible.builtin.systemd:
       name: tmp.mount
       masked: false
       enabled: true
@@ -52,7 +52,7 @@
     "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition | fstab"
     "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | fstab"
     "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | fstab"
-  mount:
+  ansible.builtin.mount:
       name: "{{ item.device }}"
       src: "{{ item.fstype }}"
       state: present

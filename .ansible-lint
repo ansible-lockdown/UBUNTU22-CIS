@@ -8,7 +8,7 @@ skip_list:
     - 'name[play]'
     - 'name[casing]'
     - 'name[template]'
-    - 'fqcn[action]'
+#    - 'fqcn[action]'
     - '204'
     - '305'
     - '303'

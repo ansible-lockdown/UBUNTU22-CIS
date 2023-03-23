@@ -3,19 +3,18 @@
 - name: "1.3.1 | PATCH | Ensure AIDE is installed"
   block:
       - name: "1.3.1 | PATCH | Ensure AIDE is installed"
-        apt:
+        ansible.builtin.package:
             name: ['aide', 'aide-common']
             state: present
             update_cache: true
 
       - name: "1.3.1 | PATCH | Ensure AIDE is installed | Recapture packages"
-        package_facts:
+        ansible.builtin.package_facts:
             manager: auto
 
       - name: "1.3.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
-        shell: aideinit && mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+        ansible.builtin.shell: aide init && mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
         args:
-            warn: false
             creates: /var/lib/aide/aide.db
         changed_when: false
         failed_when: false
@@ -36,7 +35,7 @@
       - aide
 
 - name: "1.3.2 | PATCH | Ensure filesystem integrity is regularly checked"
-  cron:
+  ansible.builtin.cron:
       name: Run AIDE integrity check
       cron_file: "{{ ubtu22cis_aide_cron['cron_file'] }}"
       user: "{{ ubtu22cis_aide_cron['cron_user'] }}"

@@ -3,19 +3,19 @@
 - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured"
   block:
       - name: "5.5.1.1 | AUDIT | Ensure minimum days between password changes is configured | Get users"
-        shell: "awk -F : '(/^[^:]+:[^!*]/ && $4 < {{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F : '(/^[^:]+:[^!*]/ && $4 < {{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_1_pass_min_days_users
 
       - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured | Set /etc/login.defs PASS_MIN_DAYS"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/login.defs
             regexp: '^PASS_MIN_DAYS|^#PASS_MIN_DAYS'
             line: 'PASS_MIN_DAYS {{ ubtu22cis_pass.min_days }}'
 
       - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured | Set existing users PASS_MIN_DAYS"
-        command: chage --mindays {{ ubtu22cis_pass.min_days }} {{ item }}
+        ansible.builtin.shell: chage --mindays {{ ubtu22cis_pass.min_days }} {{ item }}
         failed_when: false
         with_items:
             - "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | map(attribute='id') | list | intersect(ubtu22cis_5_5_1_1_pass_min_days_users.stdout_lines) | list }}"
@@ -34,20 +34,20 @@
 - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less"
   block:
       - name: "5.5.1.2 | AUDIT | Ensure password expiration is 365 days or less | Get users"
-        shell: "awk -F: '(/^[^:]+:[^!*]/ && $5>365 || $5<{{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && $5>365 || $5<{{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_2_pass_max_days_users
 
       - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Set /etc/login.defs PASS_MAX_DAYS"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/login.defs
             regexp: '^PASS_MAX_DAYS|^#PASS_MAX_DAYS'
             line: 'PASS_MAX_DAYS {{ ubtu22cis_pass.max_days }}'
             insertafter: '# Password aging controls'
 
       - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Set existing users PASS_MAX_DAYS"
-        shell: chage --maxdays {{ ubtu22cis_pass.max_days }} {{ item }}
+        ansible.builtin.shell: chage --maxdays {{ ubtu22cis_pass.max_days }} {{ item }}
         failed_when: false
         with_items:
             - "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | map(attribute='id') | list | intersect(ubtu22cis_5_5_1_2_pass_max_days_users.stdout_lines) | list }}"
@@ -68,19 +68,19 @@
 - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
   block:
       - name: "5.5.1.3 | AUDIT | Ensure password expiration warning days is 7 or more | Get users"
-        command: "awk -F: '(/^[^:]+:[^!*]/ && $6<7){print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && $6<7){print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_3_warn_age_users
 
       - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | Set /etc/login.defs PASS_WARN_AGE"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/login.defs
             regexp: '^PASS_WARN_AGE|^#PASS_WARN_AGE'
             line: 'PASS_WARN_AGE {{ ubtu22cis_pass.warn_age }}'
 
       - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more | Set existing users PASS_WARN_AGE"
-        command: chage --warndays {{ ubtu22cis_pass.warn_age }} {{ item }}
+        ansible.builtin.shell: chage --warndays {{ ubtu22cis_pass.warn_age }} {{ item }}
         failed_when: false
         with_items:
             - "{{ ubtu22cis_5_5_1_3_warn_age_users.stdout_lines }}"
@@ -101,24 +101,24 @@
 - name: "5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less"
   block:
       - name: "5.5.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | General setting"
-        shell: useradd -D | grep INACTIVE | cut -d= -f2
+        ansible.builtin.shell: useradd -D | grep INACTIVE | cut -d= -f2
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_4_inactive_setting
 
       - name: "5.5.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | Individual users"
-        shell: "awk -F: '(/^[^:]+:[^!*]/ && ($7<1 || $7>30)){print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($7<1 || $7>30)){print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_4_inactive_users
 
       - name: "5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set inactive period for new users"
-        shell: useradd -D -f {{ ubtu22cis_pass.inactive }}
+        ansible.builtin.shell: useradd -D -f {{ ubtu22cis_pass.inactive }}
         failed_when: false
         when: ubtu22cis_5_5_1_4_inactive_setting.stdout != ubtu22cis_pass.inactive | string
 
       - name: "5.5.1.4 | PATCH | Ensure inactive password lock is 30 days or less | Set inactive period for existing users"
-        shell: chage --inactive {{ ubtu22cis_pass.inactive }} {{ item }}
+        ansible.builtin.shell: chage --inactive {{ ubtu22cis_pass.inactive }} {{ item }}
         failed_when: false
         with_items:
             - "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | map(attribute='id') | list | intersect(ubtu22cis_5_5_1_4_inactive_users.stdout_lines) | list }}"
@@ -139,34 +139,34 @@
 - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past"
   block:
       - name: "5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
-        shell: echo $(($(date --utc --date "$1" +%s)/86400))
+        ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_5_5_1_5_current_time
 
       - name: "5.5.1.5 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed PW date in future"
-        shell: "cat /etc/shadow | awk -F: '{if($3>{{ ubtu22cis_5_5_1_5_current_time.stdout }})print$1}'"
+        ansible.builtin.shell: "cat /etc/shadow | awk -F: '{if($3>{{ ubtu22cis_5_5_1_5_current_time.stdout }})print$1}'"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_5_5_1_5_user_list
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Warn about users"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "WARNING!! The following accounts have the last PW change date in the future"
                 - "{{ ubtu22cis_5_5_1_5_user_list.stdout_lines }}"
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_5.5.1.5' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
-        shell: passwd --expire {{ item }}
+        ansible.builtin.shell: passwd --expire {{ item }}
         failed_when: false
         with_items:
             - "{{ ubtu22cis_5_5_1_5_user_list.stdout_lines }}"
@@ -187,9 +187,9 @@
 - name: "5.5.2 | PATCH | Ensure system accounts are secured"
   block:
       - name: "5.5.2 | PATCH | Ensure system accounts are secured | Set system accounts to login"
-        user:
+        ansible.builtin.user:
             name: "{{ item }}"
-            shell: /sbin/nologin
+            ansible.builtin.shell: /sbin/nologin
         with_items:
             - "{{ ubtu22cis_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
         when:
@@ -199,7 +199,7 @@
             - item != "halt"
 
       - name: "5.5.2 | PATCH | Ensure system accounts are secured | Lock non-root system accounts"
-        user:
+        ansible.builtin.user:
             name: "{{ item }}"
             password_lock: true
         with_items:
@@ -221,12 +221,12 @@
 - name: "5.5.3 | PATCH | Ensure default group for the root account is GID 0"
   block:
       - name: "5.5.3 | PATCH | Ensure default group for the root account is GID 0 | Set root group to GUID 0"
-        group:
+        ansible.builtin.group:
             name: root
             gid: 0
 
       - name: "5.5.3 | PATCH | Ensure default group for the root account is GID 0 | Set root user to root group"
-        user:
+        ansible.builtin.user:
             name: root
             group: root
   when:
@@ -243,21 +243,21 @@
 - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
   block:
       - name: "5.5.4 | AUDIT | Ensure default user umask is 027 or more restrictive"
-        shell: grep -E '^session\s+optional\s+pam_umask.so' /etc/pam.d/common-session
+        ansible.builtin.shell: grep -E '^session\s+optional\s+pam_umask.so' /etc/pam.d/common-session
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_5_5_4_umask_pam_status
 
       - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/pam.d/common-session
             line: 'session optional                        pam_umask.so'
             insertbefore: '^# end of pam-auth-update config'
         when: ubtu22cis_5_5_4_umask_pam_status.stdout | length == 0
 
       - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: "{{ item }}"
             regexp: '^umask '
             line: "umask {{ ubtu22cis_bash_umask }}"
@@ -267,7 +267,7 @@
             - /etc/login.defs
 
       - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/login.defs
             regexp: '^USERGROUPS_ENAB'
             line: USERGROUPS_ENAB no
@@ -282,7 +282,7 @@
       - user
 
 - name: "5.5.5 | PATCH | Ensure default user shell timeout is 900 seconds or less"
-  blockinfile:
+  ansible.builtin.blockinfile:
       create: true
       mode: 0644
       dest: "{{ item.dest }}"

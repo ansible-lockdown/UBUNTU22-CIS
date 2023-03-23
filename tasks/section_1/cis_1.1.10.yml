@@ -3,14 +3,14 @@
 - name: "1.1.10 | PATCH | Disable USB Storage"
   block:
       - name: "1.1.10 | PATCH | Disable USB Storage | Set modprobe config"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/modprobe.d/usb_storage.conf
             regexp: '^install usb-storage'
             line: 'install usb-storage /bin/true'
             create: true
 
       - name: "1.1.10 | PATCH | Disable USB Storage | Remove usb-storage module"
-        modprobe:
+        community.general.modprobe:
             name: usb-storage
             state: absent
         when: ansible_connection != 'docker'

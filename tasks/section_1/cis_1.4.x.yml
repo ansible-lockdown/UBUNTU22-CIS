@@ -1,7 +1,7 @@
 ---
 
 - name: "1.4.1 | PATCH | Ensure bootloader password is set"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: "{{ ubtu22cis_grub_user_file }}"
       regexp: '^(password_pbkdf2 {{ ubtu22cis_grub_user }}) grub.pbkdf2.*'
       line: '\1 {{ ubtu22cis_bootloader_password_hash }}'
@@ -22,13 +22,13 @@
 - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
   block:
       - name: "1.4.2 | AUDIT | Ensure permissions on bootloader config are configured | Check for Grub file"
-        stat:
+        ansible.builtin.stat:
             path: "{{ ubtu22cis_grub_file }}"
         check_mode: false
         register: ubtu22cis_1_4_2_grub_cfg_status
 
       - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured | Set permissions"
-        file:
+        ansible.builtin.file:
             path: "{{ ubtu22cis_grub_file }}"
             owner: root
             group: root
@@ -46,7 +46,7 @@
       - grub
 
 - name: "1.4.3 | PATCH | Ensure authentication required for single user mode"
-  user:
+  ansible.builtin.user:
       name: "{{ ubtu22cis_grub_user }}"
       password: "{{ ubtu22cis_root_pw }}"
   when:

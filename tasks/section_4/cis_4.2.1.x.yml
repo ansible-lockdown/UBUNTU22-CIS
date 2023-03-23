@@ -1,7 +1,7 @@
 ---
 
 - name: "4.2.1.1 | PATCH | Ensure rsyslog is installed"
-  apt:
+  ansible.builtin.package:
       name: rsyslog
       state: present
   when:
@@ -17,7 +17,7 @@
       - apt
 
 - name: "4.2.1.2 | PATCH | Ensure rsyslog Service is enabled"
-  service:
+  ansible.builtin.systemd:
       name: rsyslog
       enabled: true
   when:
@@ -33,34 +33,34 @@
 - name: "4.2.1.3 | PATCH | Ensure logging is configured"
   block:
       - name: "4.2.1.3 | AUDIT | Ensure logging is configured | Find configuration file"
-        shell: grep -r "*.emerg" /etc/* | cut -f1 -d":"
+        ansible.builtin.shell: grep -r "*.emerg" /etc/* | cut -f1 -d":"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_4_2_1_3_rsyslog_config_path
 
       - name: "4.2.1.3 | AUDIT | Ensure logging is configured | Gather rsyslog current config"
-        command: "cat {{ ubtu22cis_4_2_1_3_rsyslog_config_path.stdout }}"
+        ansible.builtin.shell: "cat {{ ubtu22cis_4_2_1_3_rsyslog_config_path.stdout }}"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_4_2_1_3_rsyslog_config
 
       - name: "4.2.1.3 | AUDIT | Ensure logging is configured | Message out config"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! Below is the current logging configurations for rsyslog, please review"
                 - "{{ ubtu22cis_4_2_1_3_rsyslog_config.stdout_lines }}"
         when: not ubtu22cis_rsyslog_ansible_managed
 
       - name: "4.2.1.3 | PATCH | Ensure logging is configured | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_4.2.1.4' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: not ubtu22cis_rsyslog_ansible_managed
 
       - name: "4.2.1.3 | PATCH | Ensure logging is configured | Automated rsyslog configuration"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: "{{ ubtu22cis_4_2_1_3_rsyslog_config_path.stdout }}"
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
@@ -97,7 +97,7 @@
       - rsyslog
 
 - name: "4.2.1.4 | PATCH | Ensure rsyslog default file permissions configured"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/rsyslog.conf
       regexp: '^\$FileCreateMode|^#\$FileCreateMode'
       line: '$FileCreateMode 0640'
@@ -113,7 +113,7 @@
       - rsyslog
 
 - name: "4.2.1.5 | PATCH | Ensure rsyslog is configured to send logs to a remote log host"
-  blockinfile:
+  ansible.builtin.blockinfile:
       path: /etc/rsyslog.conf
       block: |
           ##Enable sending of logs over TCP add the following line:
@@ -132,7 +132,7 @@
 - name: "4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts"
   block:
       - name: "4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts | When not a log host"
-        replace:
+        ansible.builtin.replace:
             path: /etc/rsyslog.conf
             regexp: '({{ item }})'
             replace: '#\1'
@@ -143,7 +143,7 @@
         when: not ubtu22cis_system_is_log_server
 
       - name: "4.2.1.6 | PATCH | Ensure remote rsyslog messages are only accepted on designated log hosts | When a log server"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/rsyslog.conf
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"

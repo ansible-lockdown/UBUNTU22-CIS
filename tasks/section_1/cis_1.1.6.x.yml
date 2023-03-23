@@ -3,7 +3,7 @@
 - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
   block:
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Gather /var/log/audit partition"
-        shell: mount | grep "on /var/log/audit\s"
+        ansible.builtin.shell: mount | grep "on /var/log/audit\s"
         changed_when: false
         failed_when: false
         check_mode: false
@@ -12,14 +12,14 @@
         register: ubtu22cis_1_1_6_1_varlogaudit_mounted
 
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if /var/log/audit partition does not exist"
-        debug:
+        ansible.builtin.debug:
             msg:
                 - "Warning!! There is no separate partition for /var/log/audit"
                 - "Please create a separate partition for /var/log/audit"
         when: ubtu22cis_1_1_6_1_varlogaudit_mounted.stdout | length == 0
 
       - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
-        set_fact:
+        ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_1.1.6.1' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_1_1_6_1_varlogaudit_mounted.stdout | length == 0
@@ -37,7 +37,7 @@
     "1.1.6.2 | PATCH | Ensure /var/log/audit partition includes the noexec option"
     "1.1.6.3 | PATCH | Ensure /var/log/audit partition includes the nodev option"
     "1.1.6.4 | PATCH | Ensure /var/log/audit partition includes the nosuid option"
-  mount:
+  ansible.builtin.mount:
       name: "{{ item.device }}"
       src: "{{ item.fstype }}"
       state: present

@@ -1,7 +1,7 @@
 ---
 
 - name: "1.8.1 | PATCH | Ensure GNOME Display Manager is removed"
-  apt:
+  ansible.builtin.package:
       name: gdm3
       state: absent
   when:
@@ -17,7 +17,7 @@
       - gnome
 
 - name: "1.8.2 | PATCH | Ensure GDM login banner is configured"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/gdm3/greeter.dconf-defaults
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
@@ -43,7 +43,7 @@
       - gnome
 
 - name: "1.8.3 | PATCH | Ensure disable-user-list is enabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/gdm3/greeter.dconf-default
       regexp: '^disable-user-list='
       line: 'disable-user-list=true'
@@ -250,7 +250,7 @@
       - gnome
 
 - name: "1.8.10 | PATCH | Ensure XDCMP is not enabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/gdm3/custom.conf
       regexp: '^Enable.*=.*true'
       state: absent

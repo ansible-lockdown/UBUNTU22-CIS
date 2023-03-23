@@ -1,7 +1,7 @@
 ---
 
 - name: "3.4.1 | PATCH | Ensure DCCP is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/dccp.conf
       regexp: '^(#)?install dccp(\\s|$)'
       line: 'install dccp /bin/true'
@@ -17,7 +17,7 @@
       - dccp
 
 - name: "3.4.2 | PATCH | Ensure SCTP is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/sctp.conf
       regexp: "^(#)?install sctp(\\s|$)"
       line: 'install sctp /bin/true'
@@ -33,7 +33,7 @@
       - sctp
 
 - name: "3.4.3 | PATCH | Ensure RDS is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/rds.conf
       regexp: '^(#)?install rds(\\s|$)'
       line: 'install rds /bin/true'
@@ -49,7 +49,7 @@
       - rds
 
 - name: "3.4.4 | PATCH | Ensure TIPC is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/tipc.conf
       regexp: '^(#)?install tipc(\\s|$)'
       line: install tipc /bin/true

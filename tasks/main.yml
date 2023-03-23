@@ -5,7 +5,7 @@
   # - hardware for ansible_mounts
   # - platform for ansible_architecture (ansible internal)
   # - virtual for ansible_virtualization_type
-  setup:
+  ansible.builtin.setup:
       gather_subset: distribution,hardware,platform,virtual,!all,!min
   when:
       - ansible_distribution is not defined
@@ -13,7 +13,7 @@
       - always
 
 - name: Check OS version and family
-  fail:
+  ansible.builtin.fail:
       msg: "This role can only be run against Ubuntu 22. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
   when:
       - ansible_distribution == 'Ubuntu'
@@ -22,14 +22,14 @@
       - always
 
 - name: Check ansible version
-  fail:
+  ansible.builtin.fail:
       msg: You must use ansible 2.1 or greater
   when: not ansible_version.full is version_compare('2.1', '>=')
   tags:
       - always
 
 - name: Check ubtu22cis_bootloader_password_hash variable has been changed
-  assert:
+  ansible.builtin.assert:
       that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
       msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
   when:
@@ -39,93 +39,96 @@
       - always
 
 - name: Gather the package facts before prelim
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
   tags:
       - always
 
-- import_tasks: prelim.yml
+- name: Run prelim tasks
+  ansible.builtin.import_tasks: prelim.yml
   tags:
       - prelim_tasks
       - run_audit
 
 - name: Gather the package facts after prelim
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
   tags:
       - always
 
-- import_tasks: pre_remediation_audit.yml
+- name: Run pre-remediation audit
+  ansible.builtin.import_tasks: pre_remediation_audit.yml
   when:
       - run_audit
   tags:
       - run_audit
 
-- include: parse_etc_password.yml
+- name: Run parse /etc/passwd
+  ansible.builtin.import_tasks: parse_etc_password.yml
   when:
       - ubtu22cis_section5_patch or
         ubtu22cis_section6_patch
 
 - name: Gather the package facts
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
   tags:
       - always
 
 - name: Include section 1 patches
-  import_tasks: section_1/main.yml
+  ansible.builtin.import_tasks: section_1/main.yml
   when: ubtu22cis_section1_patch
   tags:
       - section1
 
 - name: Include section 2 patches
-  import_tasks: section_2/main.yml
+  ansible.builtin.import_tasks: section_2/main.yml
   when: ubtu22cis_section2_patch
   tags:
       - section2
 
 - name: Include section 3 patches
-  import_tasks: section_3/main.yml
+  ansible.builtin.import_tasks: section_3/main.yml
   when: ubtu22cis_section3_patch
   tags:
       - section3
 
 - name: Include section 4 patches
-  import_tasks: section_4/main.yml
+  ansible.builtin.import_tasks: section_4/main.yml
   when: ubtu22cis_section4_patch
   tags:
       - section4
 
 - name: Include section 5 patches
-  import_tasks: section_5/main.yml
+  ansible.builtin.import_tasks: section_5/main.yml
   when: ubtu22cis_section5_patch
   tags:
       - section5
 
 - name: Include section 6 patches
-  import_tasks: section_6/main.yml
+  ansible.builtin.import_tasks: section_6/main.yml
   when: ubtu22cis_section6_patch
   tags:
       - section6
 
 - name: run auditd logic
-  import_tasks: auditd.yml
+  ansible.builtin.import_tasks: auditd.yml
   when: update_audit_template
   tags:
       - always
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: ansible.builtin.flush_handlers
 
 - name: reboot system
   block:
       - name: reboot system if not skipped
-        reboot:
+        ansible.builtin.reboot:
         when:
             - not skip_reboot
 
       - name: Warning a reboot required but skip option set
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results"
         changed_when: true
         when:
@@ -136,7 +139,7 @@
       - run_audit
 
 - name: Show Audit Summary
-  debug:
+  ansible.builtin.debug:
       msg: "{{ audit_results.split('\n') }}"
   when:
       - run_audit
@@ -144,7 +147,7 @@
       - run_audit
 
 - name: Display warning counts and related control IDs
-  debug:
+  ansible.builtin.debug:
       msg: "You have {{ warn_count }} Warning(s) that require investigation that are related to the following control ID(s) {{ control_number }}"
   when: warn_count != 0
   tags:

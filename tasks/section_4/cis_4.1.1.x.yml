@@ -1,7 +1,7 @@
 ---
 
 - name: "4.1.1.1 | PATCH | Ensure auditd is installed"
-  apt:
+  ansible.builtin.package:
       name: ['auditd', 'audispd-plugins']
       state: present
   when:
@@ -17,7 +17,7 @@
       - auditd
 
 - name: "4.1.1.2 | PATCH | Ensure auditd service is enabled"
-  service:
+  ansible.builtin.service:
       name: auditd
       state: started
       enabled: true
@@ -34,14 +34,14 @@
 - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled"
   block:
       - name: "4.1.1.3 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
-        shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+        ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_4_1_1_3_cmdline_settings
 
       - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Add setting if doesn't exist"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/default/grub
             regexp: '^GRUB_CMDLINE_LINUX='
             line: 'GRUB_CMDLINE_LINUX="{{ ubtu22cis_4_1_1_3_cmdline_settings.stdout }} audit=1"'
@@ -49,7 +49,7 @@
         notify: grub update
 
       - name: "4.1.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Update setting if exists"
-        replace:
+        ansible.builtin.replace:
             dest: /etc/default/grub
             regexp: 'audit=([0-9]+)'
             replace: 'audot=1'
@@ -70,14 +70,14 @@
 - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient"
   block:
       - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Get current GRUB_CMDLINE_LINUX"
-        shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+        ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_4_1_1_4_cmdline_settings
 
       - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Add setting if doesn't exist"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/default/grub
             regexp: '^GRUB_CMDLINE_LINUX='
             line: 'GRUB_CMDLINE_LINUX="{{ ubtu22cis_4_1_1_4_cmdline_settings.stdout }} audit_backlog_limit={{ ubtu22cis_audit_back_log_limit }}"'
@@ -85,7 +85,7 @@
         when: "'audit_backlog_limit=' not in ubtu22cis_4_1_1_4_cmdline_settings.stdout"
 
       - name: "4.1.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Update setting if exists"
-        replace:
+        ansible.builtin.replace:
             dest: /etc/default/grub
             regexp: 'audit_backlog_limit=([0-9]+)'
             replace: 'audit_backlog_limit={{ ubtu22cis_audit_back_log_limit }}'

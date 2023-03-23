@@ -3,13 +3,13 @@
 - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
   block:
       - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set ASLR settings"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/sysctl.conf
             regexp: '^kernel.randomize_va_space'
             line: 'kernel.randomize_va_space = 2'
 
       - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
-        sysctl:
+        ansible.builtin.sysctl:
             name: kernel.randomize_va_space
             value: '2'
   when:
@@ -25,12 +25,12 @@
 - name: "1.5.2 | PATCH | Ensure prelink is not installed"
   block:
       - name: "1.5.2 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
-        command: prelink -ua
+        ansible.builtin.shell: prelink -ua
         changed_when: false
         failed_when: false
 
       - name: "1.5.2 | PATCH | Ensure prelink is not installed| Remove prelink package"
-        apt:
+        ansible.builtin.package:
             name: prelink
             state: absent
   when:
@@ -47,7 +47,7 @@
 - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled"
   block:
       - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | disable"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/default/apport
             regexp: ^enabled
             line: enabled=0
@@ -57,7 +57,7 @@
             mode: 0644
 
       - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
-        package:
+        ansible.builtin.package:
             name: apport
             state: absent
         when:
@@ -75,7 +75,7 @@
 - name: "1.5.4 | PATCH | Ensure core dumps are restricted"
   block:
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | kernel sysctl"
-        sysctl:
+        ansible.builtin.sysctl:
             name: fs.suid_dumpable
             value: '0'
             state: present
@@ -84,7 +84,7 @@
             ignoreerrors: true
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | security limits"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/security/limits.d/99_zero_core.conf
             regexp: '^\* hard core'
             line: '* hard core 0'
@@ -94,7 +94,7 @@
             mode: '0644'
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | sysctl.conf"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/sysctl.conf
             regexp: '^fs.suid_dumpable'
             line: fs.suid_dumpable=0
@@ -104,7 +104,7 @@
         notify: Reload_systemctl
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | coredump.conf"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/systemd/coredump.conf
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"

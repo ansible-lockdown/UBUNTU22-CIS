@@ -2,7 +2,7 @@
 
 
 - name: "1.1.9 | PATCH | Disable Automounting"
-  service:
+  ansible.builtin.service:
       name: autofs
       state: stopped
       enabled: false
