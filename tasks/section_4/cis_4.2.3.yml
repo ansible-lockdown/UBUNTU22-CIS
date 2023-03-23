@@ -5,7 +5,7 @@
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
         find:
             paths: /var/log
-            recurse: yes
+            recurse: true
         register: ubtu22cis_4_2_3_logfiles
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions"
