@@ -1,6 +1,6 @@
 ---
 
-- name: grub update
+- name: Grub update
   ansible.builtin.shell: update-grub
   failed_when: false
 
@@ -9,7 +9,7 @@
     name: "{{ ubtu22cis_time_sync_tool }}"
     state: restarted
 
-- name: Reload_systemctl
+- name: Reload systemctl
   ansible.builtin.systemd:
       daemon_reload: true
 
@@ -17,19 +17,26 @@
   ansible.builtin.shell: dconf update
   failed_when: false
 
-- name: restart postfix
+- name: Restart postfix
   ansible.builtin.service:
       name: postfix
       state: restarted
 
-- name: restart exim4
+- name: Restart exim4
   ansible.builtin.service:
       name: exim4
       state: restarted
 
-- name: sysctl flush ipv4 route table
+- name: Flush ipv4 route table
   ansible.builtin.sysctl:
       name: net.ipv4.route.flush
+      value: '1'
+      sysctl_set: true
+  when: ansible_virtualization_type != "docker"
+
+- name: Flush ipv6 route table
+  ansible.builtin.sysctl:
+      name: net.ipv6.route.flush
       value: '1'
       sysctl_set: true
   when: ansible_virtualization_type != "docker"
@@ -49,13 +56,6 @@
   changed_when: ubtu22cis_ip6tables_save.rc == 0
   failed_when: ubtu22cis_ip6tables_save.rc > 0
   register: ubtu22cis_ip6tables_save
-
-- name: sysctl flush ipv6 route table
-  ansible.builtin.sysctl:
-      name: net.ipv6.route.flush
-      value: '1'
-      sysctl_set: true
-  when: ansible_virtualization_type != "docker"
 
 - name: auditd_immutable_check
   ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
