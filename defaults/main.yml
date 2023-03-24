@@ -447,12 +447,16 @@ ubtu22cis_time_servers:
 # ubtu22_cis_mail_transfer_agent: "other"
 
 # Section 3 Control Variables
+# Control 3.1.1
+# How to disable ipv6 either via grub or sysctl settings options: grub or sysctl
+ubuntu22cis_ipv6_disable: grub
+
 # Control 3.1.2
 # ubtu22cis_install_network_manager determines if this role can install network manager
 ubtu22cis_install_network_manager: true
 
 # ubtu22cis_firewall_package is the toggle for which firewall system is in use
-# The valid options to use are ufw, nftables, or iptables
+# The valid options to use are ufw, nftables, or iptables Laternative set to 'none' if excluded
 # Warning!! nftables is not supported in this role and will only message out if nftables is selected
 # If using nftables please manually adjust firewall settings
 ubtu22cis_firewall_package: "iptables"
