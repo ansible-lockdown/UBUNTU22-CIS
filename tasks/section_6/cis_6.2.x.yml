@@ -34,14 +34,14 @@
   block:
       - name: "6.2.2 | AUDIT | Ensure password fields are not empty | Find users with no password"
         shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
-        changed_when: no
+        changed_when: false
         check_mode: false
         register: ubtu22cis_6_2_2_empty_password_acct
 
       - name: "6.2.2 | PATCH | Ensure password fields are not empty | Lock users with empty password"
         user:
             name: "{{ item }}"
-            password_lock: yes
+            password_lock: true
         with_items:
             - "{{ ubtu22cis_6_2_2_empty_password_acct.stdout_lines }}"
         when: ubtu22cis_6_2_2_empty_password_acct.stdout | length > 0
@@ -185,7 +185,7 @@
       - name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set home perms"
         file:
             path: "{{ item.0 }}"
-            recurse: yes
+            recurse: true
             mode: a-st,g-w,o-rwx
         register: ubtu22cis_6_2_6_patch
         when:
@@ -201,9 +201,9 @@
       - name: "6.2.6 | PATCH | Ensure users' home directories permissions are 750 or more restrictive | Set ACL's"
         acl:
             path: "{{ item.0 }}"
-            default: yes
+            default: true
             state: present
-            recursive: yes
+            recursive: true
             etype: "{{ item.1.etype }}"
             permissions: "{{ item.1.mode }}"
         when: not ubtu22cis_system_is_container
@@ -230,8 +230,8 @@
   block:
       - name: "6.2.7 | AUDIT | Ensure users' dot files are not group or world-writable | Check for files"
         shell: find /home/ -name "\.*" -perm /g+w,o+w
-        changed_when: no
-        failed_when: no
+        changed_when: false
+        failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_7_audit
 
@@ -333,7 +333,7 @@
       - name: "6.2.11 | PATCH | Ensure root is the only UID 0 account | Lock UID 0 users"
         user:
             name: "{{ item }}"
-            password_lock: yes
+            password_lock: true
         with_items:
             - "{{ ubtu22cis_6_2_11_uid_0_notroot.stdout_lines }}"
         when:
@@ -424,7 +424,7 @@
   #     #       path: "{{ item }}"
   #     #       owner: root
   #     #       mode: 'o-w,g-w'
-  #     #       follow: yes
+  #     #       follow: true
   #     #       state: directory
   #     #   with_items:
   #     #       - "{{ ubtu18cis_6_2_12_path_stat | selectattr('exists','==','true') | map(attribute='path') }}"
@@ -478,8 +478,8 @@
   block:
       - name: "6.2.14 | AUDIT | Ensure no duplicate GIDs exist | Check for duplicate GIDs"
         shell: "pwck -r | awk -F: '{if ($3 in users) print $1 ; else users[$3]}' /etc/group"
-        changed_when: no
-        failed_when: no
+        changed_when: false
+        failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_14_user_user_check
 
@@ -512,8 +512,8 @@
   block:
       - name: "6.2.15 | AUDIT | Ensure no duplicate user names exist | Check for duplicate User Names"
         shell: "pwck -r | awk -F: '{if ($1 in users) print $1 ; else users[$1]}' /etc/passwd"
-        changed_when: no
-        failed_when: no
+        changed_when: false
+        failed_when: false
         check_mode: false
         register: ubtu22cis_6_2_15_user_username_check
 

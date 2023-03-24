@@ -21,7 +21,7 @@
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
       insertafter: "{{ item.insertafter }}"
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644
@@ -47,7 +47,7 @@
       regexp: '^disable-user-list='
       line: 'disable-user-list=true'
       insertafter: 'banner-message-text='
-      create: yes
+      create: true
       owner: root
       group: root
       mode: 0644

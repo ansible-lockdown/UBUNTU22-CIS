@@ -34,7 +34,8 @@
   tags:
       - always
 
-- import_tasks: prelim.yml
+- name: Gather Prelim Data
+  import_tasks: prelim.yml
   tags:
       - prelim_tasks
       - run_audit
@@ -45,13 +46,15 @@
   tags:
       - always
 
-- import_tasks: pre_remediation_audit.yml
+- name: Gather Pre-Remediation For Audit
+  import_tasks: pre_remediation_audit.yml
   when:
       - run_audit
   tags:
       - run_audit
 
-- include: parse_etc_password.yml
+- name: Parse Password.
+  ansible.builtin.include_tasks: parse_etc_password.yml
   when:
       - ubtu22cis_section5_patch or
         ubtu22cis_section6_patch
@@ -121,7 +124,8 @@
         when:
             - ubtu22_skip_reboot
 
-- import_tasks: post_remediation_audit.yml
+- name: Post Remediation
+  import_tasks: post_remediation_audit.yml
   when:
       - run_audit
 
