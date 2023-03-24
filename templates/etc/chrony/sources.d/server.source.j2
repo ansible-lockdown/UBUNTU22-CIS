@@ -1,0 +1,7 @@
+## Ansible controlled file
+# Added as part of ansible-lockdown CIS baseline
+# provided by MindPointGroup LLC
+
+{% for server in ubtu22cis_time_servers %}
+server {{ server.name }} {{ server.options }}
+{% endfor %}
