@@ -13,7 +13,7 @@
         with_items:
             - net.ipv4.conf.all.accept_source_route
             - net.ipv4.conf.default.accept_source_route
-        notify: sysctl flush ipv4 route table
+        notify: Flush ipv4 route table
 
       - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | IPv6 settings"
         ansible.builtin.sysctl:
@@ -26,7 +26,7 @@
         with_items:
             - net.ipv6.conf.all.accept_source_route
             - net.ipv6.conf.default.accept_source_route
-        notify: sysctl flush ipv6 route table
+        notify: Flush ipv6 route table
         when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_3_1
@@ -53,7 +53,7 @@
         with_items:
             - net.ipv4.conf.all.accept_redirects
             - net.ipv4.conf.default.accept_redirects
-        notify: sysctl flush ipv4 route table
+        notify: Flush ipv4 route table
 
       - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | IPv6 settings"
         ansible.builtin.sysctl:
@@ -66,7 +66,7 @@
         with_items:
             - net.ipv6.conf.all.accept_redirects
             - net.ipv6.conf.default.accept_redirects
-        notify: sysctl flush ipv6 route table
+        notify: Flush ipv6 route table
         when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_3_2
@@ -90,7 +90,7 @@
   with_items:
       - net.ipv4.conf.all.secure_redirects
       - net.ipv4.conf.default.secure_redirects
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_3_3
   tags:
@@ -113,7 +113,7 @@
   with_items:
       - net.ipv4.conf.all.log_martians
       - net.ipv4.conf.default.log_martians
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_3_4
   tags:
@@ -133,7 +133,7 @@
       state: present
       reload: true
       ignoreerrors: true
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_3_5
   tags:
@@ -153,7 +153,7 @@
       state: present
       reload: true
       ignoreerrors: true
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_3_6
   tags:
@@ -176,7 +176,7 @@
   with_items:
       - net.ipv4.conf.all.rp_filter
       - net.ipv4.conf.default.rp_filter
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_3_7
   tags:
@@ -196,7 +196,7 @@
       state: present
       reload: true
       ignoreerrors: true
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_3_8
   tags:
@@ -219,7 +219,7 @@
   with_items:
       - net.ipv6.conf.all.accept_ra
       - net.ipv6.conf.default.accept_ra
-  notify: sysctl flush ipv6 route table
+  notify: Flush ipv6 route table
   when:
       - ubtu22cis_rule_3_3_9
       - ubtu22cis_ipv6_required

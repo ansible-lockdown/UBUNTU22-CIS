@@ -1,42 +1,32 @@
 ---
 
-- name: "3.1.1 | PATCH | Disable IPv6"
+- name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled"
   block:
-      - name: "3.1.1 | AUDIT | Disable IPv6 | Get current GRUB_CMDLINE_LINUX settings"
-        ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_3_1_1_grub_cmdline_linux_settings
-
-      - name: "3.1.1 | PATCH | Disable IPv6 | Add ipv6.disable if does not exist"
+      - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Add ipv6.disable if does not exist"
         ansible.builtin.lineinfile:
             path: /etc/default/grub
-            regexp: '^GRUB_CMDLINE_LINUX'
-            line: 'GRUB_CMDLINE_LINUX="{{ ubtu22cis_3_1_1_grub_cmdline_linux_settings.stdout }} ipv6.disable=1"'
-        when: "'ipv6.disable' not in ubtu22cis_3_1_1_grub_cmdline_linux_settings.stdout"
-        notify: grub update
+            regexp: '^(GRUB_CMDLINE_LINUX=.*)ipv6.disable=(0|1)(.*$)'
+            line: '\g<1>\g<3> ipv6.disable=1'
+            backrefs: true
+        when: ubuntu22cis_ipv6_disable == 'grub'
+        notify: Grub update
 
-      - name: "3.1.1 | PATCH | Disable IPv6 | Set ipv6.disable to 1 if exists"
-        ansible.builtin.replace:
-            path: /etc/default/grub
-            regexp: 'ipv6\.disable=.'
-            replace: 'ipv6.disable=1'
-        when: "'ipv6.disable' in ubtu22cis_3_1_1_grub_cmdline_linux_settings.stdout"
-        notify: grub update
-
-      - name: "3.1.1 | PATCH | Disable IPv6 | Remove net.ipv6.conf.all.disable_ipv6"
-        ansible.builtin.lineinfile:
-            path: /etc/sysctl.conf
-            regexp: '^net.ipv6.conf.all.disable_ipv6.*'
-            state: absent
+      - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Remove net.ipv6.conf.all.disable_ipv6"
+        ansible.builtin.template:
+            src: "{{ item }}.j2"
+            dest: "{{ item }}"
+            owner: root
+            group: root
+            mode: 0640
+        notify: Flush ipv6 route table
+        loop: etc/sysctl.d/60-disable_ipv6.conf
+        when: ubuntu22cis_ipv6_disable == 'sysctl'
   when:
       - ubtu22cis_rule_3_1_1
       - not ubtu22cis_ipv6_required
   tags:
       - level2-server
       - level2-workstation
-      - manual
       - patch
       - rule_3.1.1
       - ipv6
@@ -51,6 +41,14 @@
         register: ubtu22cis_3_1_2_wifi_status
         when: "'network-manager' in ansible_facts.packages"
 
+      - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"
+        ansible.builtin.shell: nmcli radio all off
+        changed_when: ubtu22cis_3_1_2_nmcli_radio_off.rc == 0
+        register: ubtu22cis_3_1_2_nmcli_radio_off
+        when:
+            - "'network-manager' in ansible_facts.packages"
+            - "'enabled' in ubtu22cis_3_1_2_wifi_status.stdout"
+
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Warn about wireless if network-manager not installed"
         ansible.builtin.debug:
             msg: "Warning!! You need to disable wireless interfaces manually since network-manager is not installed"
@@ -62,13 +60,6 @@
             warn_count: "{{ warn_count | int +1 }}"
         when: "'network-manager' not in ansible_facts.packages"
 
-      - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"
-        ansible.builtin.shell: nmcli radio all off
-        changed_when: ubtu22cis_3_1_2_nmcli_radio_off.rc == 0
-        register: ubtu22cis_3_1_2_nmcli_radio_off
-        when:
-            - "'network-manager' in ansible_facts.packages"
-            - "'enabled' in ubtu22cis_3_1_2_wifi_status.stdout"
   when:
       - ubtu22cis_rule_3_1_2
   tags:

@@ -11,7 +11,7 @@
   with_items:
       - net.ipv4.conf.all.send_redirects
       - net.ipv4.conf.default.send_redirects
-  notify: sysctl flush ipv4 route table
+  notify: Flush ipv4 route table
   when:
       - ubtu22cis_rule_3_2_1
       - not ubtu22cis_is_router
@@ -35,7 +35,7 @@
             reload: true
             ignoreerrors: true
         notify:
-            - sysctl flush ipv4 route table
+            - Flush ipv4 route table
 
       - name: "3.2.2 | PATCH | Ensure IP forwarding is disabled | IPv6 settings"
         ansible.builtin.sysctl:
@@ -46,7 +46,7 @@
             reload: true
             ignoreerrors: true
         notify:
-            - sysctl flush ipv6 route table
+            - Flush ipv6 route table
         when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_2_2

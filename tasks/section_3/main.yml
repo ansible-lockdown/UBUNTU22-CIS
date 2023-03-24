@@ -12,5 +12,14 @@
 - name: "SECTION | 3.4 | Uncommon Network Protocols"
   ansible.builtin.import_tasks: cis_3.4.x.yml
 
-- name: "SECTION | 3.5 | Firewall Configuration"
-  ansible.builtin.import_tasks: cis_3.5.x.yml
+- name: "SECTION | 3.5.1 | UFW Firewall Configuration"
+  ansible.builtin.import_tasks: cis_3.5.1.x.yml
+  when: ubtu22cis_firewall_package == "ufw"
+
+- name: "SECTION | 3.5.2 | nftables Firewall Configuration"
+  ansible.builtin.import_tasks: cis_3.5.2.x.yml
+  when: ubtu22cis_firewall_package == "nftables"
+
+- name: "SECTION | 3.5.3 | iptables Firewall Configuration"
+  ansible.builtin.import_tasks: cis_3.5.3.x.yml
+  when: ubtu22cis_firewall_package == "iptables"

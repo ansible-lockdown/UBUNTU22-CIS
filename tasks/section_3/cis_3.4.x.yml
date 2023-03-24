@@ -4,8 +4,11 @@
   ansible.builtin.lineinfile:
       path: /etc/modprobe.d/dccp.conf
       regexp: '^(#)?install dccp(\\s|$)'
-      line: 'install dccp /bin/true'
+      line: "{{ item }}"
       create: true
+  loop:
+      - install dccp /bin/true
+      - blacklist dccp
   when:
       - ubtu22cis_rule_3_4_1
   tags:
@@ -20,8 +23,11 @@
   ansible.builtin.lineinfile:
       path: /etc/modprobe.d/sctp.conf
       regexp: "^(#)?install sctp(\\s|$)"
-      line: 'install sctp /bin/true'
+      line: "{{ item }}"
       create: true
+  loop:
+      - install sctp /bin/true
+      - blacklist sctp
   when:
       - ubtu22cis_rule_3_4_2
   tags:
@@ -36,8 +42,11 @@
   ansible.builtin.lineinfile:
       path: /etc/modprobe.d/rds.conf
       regexp: '^(#)?install rds(\\s|$)'
-      line: 'install rds /bin/true'
+      line: "{{ item }}"
       create: true
+  loop:
+      - install rds /bin/true
+      - blacklist rds
   when:
       - ubtu22cis_rule_3_4_3
   tags:
@@ -52,8 +61,11 @@
   ansible.builtin.lineinfile:
       path: /etc/modprobe.d/tipc.conf
       regexp: '^(#)?install tipc(\\s|$)'
-      line: install tipc /bin/true
+      line: "{{ item }}"
       create: true
+  loop:
+      - install tipc /bin/true
+      - blacklist tipc
   when:
       - ubtu22cis_rule_3_4_4
   tags:
