@@ -2,7 +2,7 @@
 
 - name: "PRELIM | Run apt update"
   apt:
-      update_cache: true
+      update_cache: yes
   when:
       - ubtu22cis_rule_1_3_1 or
         ubtu22cis_rule_1_9

@@ -20,7 +20,7 @@
   service:
       name: auditd
       state: started
-      enabled: true
+      enabled: yes
   when:
       - ubtu22cis_rule_4_1_1_2
   tags:

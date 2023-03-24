@@ -4,7 +4,7 @@
   service:
       name: cron
       state: started
-      enabled: true
+      enabled: yes
   when:
       - ubtu22cis_rule_5_1_1
   tags:

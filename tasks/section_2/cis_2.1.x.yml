@@ -37,8 +37,8 @@
         systemd:
             name: systemd-timesyncd.service
             state: started
-            enabled: true
-            masked: false
+            enabled: yes
+            masked: no
 
       - name: "2.1.1.2 | PATCH | Ensure systemd-timesyncd is configured | Set timedatectl to ntp"
         command: timedatectl set-ntp true
@@ -66,8 +66,8 @@
         systemd:
             name: systemd-timesyncd
             state: stopped
-            enabled: false
-            masked: true
+            enabled: no
+            masked: yes
 
       - name: "2.1.1.3 | AUDIT | Ensure chrony is configured | Check for chrony user"
         shell: grep {{ ubtu22cis_chrony_user }} /etc/passwd
@@ -118,8 +118,8 @@
         systemd:
             name: systemd-timesyncd
             state: stopped
-            enabled: false
-            masked: true
+            enabled: no
+            masked: yes
 
       - name: "2.1.1.4 | PATCH | Ensure ntp is configured | Set ntp.conf settings"
         template:
@@ -134,7 +134,7 @@
             path: /etc/sysconfig/ntpd
             regexp: "{{ item.regexp }}"
             line: "{{ item. line }}"
-            create: true
+            create: yes
         with_items:
             - { regexp: '^OPTIONS', line: 'OPTIONS="-u ntp:ntp"'}
             - { regexp: '^NTPD_OPTIONS', line: 'NTPD_OPTIONS="-u ntp:ntp"' }
@@ -175,14 +175,14 @@
         service:
             name: avahi-daemon.service
             state: stopped
-            enabled: false
+            enabled: no
         when: avahi_service_status.stdout == "loaded"
 
       - name: "2.1.3 | PATCH | Ensure Avahi Server is not installed | Stop/Disable avahi-daemon.socket"
         service:
             name: avahi-daemon.socket
             state: stopped
-            enabled: false
+            enabled: no
         when: avahi_service_status.stdout == "loaded"
 
       - name: "2.1.3 | PATCH | Ensure Avahi Server is not installed | Remove avahi-daemon"

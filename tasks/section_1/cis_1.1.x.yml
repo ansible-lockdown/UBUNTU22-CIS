@@ -7,7 +7,7 @@
             dest: /etc/modprobe.d/cramfs.conf
             regexp: "^(#)?install cramfs(\\s|$)"
             line: install cramfs /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Disable cramfs"
         modprobe:
@@ -31,7 +31,7 @@
             dest: /etc/modprobe.d/freevxfs.conf
             regexp: "^(#)?install freevxfs(\\s|$)"
             line: install freevxfs /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.2 | PATCH | Ensure mounting of freevxfs filesystems is disabled | Disable freevxfs"
         modprobe:
@@ -55,7 +55,7 @@
             dest: /etc/modprobe.d/jffs2.conf
             regexp: "^(#)?install jffs2(\\s|$)"
             line: install jffs2 /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.3 | PATCH | Ensure mounting of jffs2 filesystems is disabled | Disable jffs2"
         modprobe:
@@ -79,7 +79,7 @@
             dest: /etc/modprobe.d/hfs.conf
             regexp: "^(#)?install hfs(\\s|$)"
             line: install hfs /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.4 | PATCH | Ensure mounting of hfs filesystems is disabled | Disable hfs"
         modprobe:
@@ -103,7 +103,7 @@
             dest: /etc/modprobe.d/hfsplus.conf
             regexp: "^(#)?install hfsplus(\\s|$)"
             line: install hfsplus /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.5 | PATCH | Ensure mounting of hfsplus filesystems is disabled | Disable hfsplus"
         modprobe:
@@ -127,13 +127,13 @@
             dest: /etc/modprobe.d/squashfs.conf
             regexp: "^(#)?install squashfs(\\s|$)"
             line: install squashfs /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.6 | PATCH | Ensure mounting of squashfs filesystems is disabled | Disable squashfs"
         modprobe:
             name: squashfs
             state: absent
-        ignore_errors: true
+        ignore_errors: yes
         when: ansible_connection != 'docker'
   when:
       - ubtu22cis_rule_1_1_1_6
@@ -152,7 +152,7 @@
             dest: /etc/modprobe.d/udf.conf
             regexp: "^(#)?install udf(\\s|$)"
             line: install udf /bin/true
-            create: true
+            create: yes
 
       - name: "1.1.1.7 | PATCH | Ensure mounting of udf filesystems is disabled | Disable udf"
         modprobe:
@@ -508,7 +508,7 @@
   service:
       name: autofs
       state: stopped
-      enabled: false
+      enabled: no
   when:
       - ubtu22cis_rule_1_1_23
       - ubtu22cis_autofs_service_status.stdout == "loaded"
@@ -528,7 +528,7 @@
             path: /etc/modprobe.d/usb_storage.conf
             regexp: '^install usb-storage'
             line: 'install usb-storage /bin/true'
-            create: true
+            create: yes
 
       - name: "1.1.24 | PATCH | Disable USB Storage | Remove usb-storage module"
         modprobe:

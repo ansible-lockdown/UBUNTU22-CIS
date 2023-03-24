@@ -3,7 +3,7 @@
 # If you would like a report at the end accordin to OpenSCAP as to the report results
 # then you should set ubtu22cis_oscap_scan to true/yes.
 # NOTE: This requires the python_xmltojson package on the control host.
-ubtu22cis_oscap_scan: false
+ubtu22cis_oscap_scan: no
 ubtu22cis_report_dir: /tmp
 
 ubtu22cis_section1_patch: true
@@ -59,7 +59,7 @@ ubtu22cis_disruption_high: true
 
 # Show "changed" for disruptive items not remediated per disruption-high
 # setting to make them stand out.
-ubtu22cis_audit_disruptive: true
+ubtu22cis_audit_disruptive: yes
 
 ubtu22cis_skip_for_travis: false
 

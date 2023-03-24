@@ -1,24 +1,14 @@
----
-
 parseable: true
 quiet: true
 skip_list:
-    - 'schema'
-    - 'no-changed-when'
-    - 'fqcn-builtins'
-    - 'experimental'
-    - 'fqcn[action-core]'
-    - 'fqcn[action]'
-    - 'name[casing]'
-    - 'name[template]'
-    - 'jinja[spacing]'
-    - 'var-naming'  # Older playbook no new release
-    - '204'
-    - '208'
-    - '305'
-    - '303'
-    - '403'
-    - '306'
-    - '602'
+  - '204'
+  - '208'
+  - '305'
+  - '303'
+  - '403'
+  - '306'
+  - '602'
+  - 'fqcn-builtins'
+  - 'ignore-errors'
 use_default_rules: true
 verbosity: 0

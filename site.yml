@@ -1,6 +1,6 @@
 ---
 
-- hosts: all  # noqa: name[play]
+- hosts: all
   become: true
 
   roles:
