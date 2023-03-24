@@ -7,7 +7,7 @@
       line: '\1 {{ ubtu22cis_bootloader_password_hash }}'
       insertafter: set superusers="{{ ubtu22cis_grub_user }}"
       state: present
-  notify: grub update
+  notify: Grub update
   when:
       - ubtu22cis_set_boot_pass
       - ubtu22cis_rule_1_4_1

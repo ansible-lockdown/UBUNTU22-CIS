@@ -275,7 +275,7 @@
             - { regexp: '^dc_hide_mailname', line: "dc_hide_mailname=''" }
             - { regexp: '^dc_mailname_in_oh', line: "dc_mailname_in_oh='true'" }
             - { regexp: '^dc_localdelivery', line: "dc_localdelivery='mail_spool'" }
-        notify: restart exim4
+        notify: Restart exim4
         when: "'exim4' in ansible_facts.packages"
 
       - name: "2.2.15 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if postfix is installed"
@@ -283,7 +283,7 @@
             path: /etc/postfix/main.cf
             regexp: '^(#)?inet_interfaces'
             line: 'inet_interfaces = loopback-only'
-        notify: restart postfix
+        notify: Restart postfix
         when: "'postfix' in ansible_facts.packages"
 
       - name: "2.2.15 | PATCH | Ensure mail transfer agent is configured for local-only mode | Message out other main agents"

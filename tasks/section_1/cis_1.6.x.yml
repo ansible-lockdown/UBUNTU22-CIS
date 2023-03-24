@@ -34,7 +34,7 @@
         when:
             - "'apparmor' not in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
             - "'security' not in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
-        notify: grub update
+        notify: Grub update
 
       - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist | Replace apparmor settings when exists"
         ansible.builtin.replace:
@@ -47,7 +47,7 @@
         when:
             - "'apparmor' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
             - "'security' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
-        notify: grub update
+        notify: Grub update
   when:
       - ubtu22cis_rule_1_6_1_2
   tags:
