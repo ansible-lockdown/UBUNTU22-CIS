@@ -1,32 +1,32 @@
 ---
 
-- name: "2.3 | AUDIT | Ensure nonessential services are removed or masked"
+- name: "2.4 | AUDIT | Ensure nonessential services are removed or masked"
   block:
-      - name: "2.3 | AUDIT | Ensure nonessential services are removed or masked | Check for services"
+      - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Check for services"
         ansible.builtin.shell: lsof -i -P -n | grep -v "(ESTABLISHED)"
         changed_when: false
         failed_when: false
         check_mode: false
         register: ubtu22cis_2_3_services
 
-      - name: "2.3 | AUDIT | Ensure nonessential services are removed or masked | Message out running services"
+      - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Message out running services"
         ansible.builtin.debug:
             msg:
                 - "Warning!! Below are the running services. Please review and remove as well as mask un-needed services"
                 - "{{ ubtu22cis_2_3_services.stdout_lines }}"
         when: ubtu22cis_2_3_services.stdout | length > 0
 
-      - name: "2.3 | AUDIT | Ensure nonessential services are removed or masked | Set warning count"
+      - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Set warning count"
         ansible.builtin.set_fact:
             control_number: "{{ control_number }} + [ 'rule_2.3' ]"
             warn_count: "{{ warn_count | int + 1 }}"
         when: ubtu22cis_2_3_services.stdout | length > 0
   when:
-      - ubtu22cis_rule_2_3
+      - ubtu22cis_rule_2_4
   tags:
       - level1-server
       - level1-workstation
       - manual
       - audit
-      - rule_2.3
+      - rule_2.4
       - services

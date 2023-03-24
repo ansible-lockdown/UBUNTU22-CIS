@@ -4,6 +4,11 @@
   ansible.builtin.shell: update-grub
   failed_when: false
 
+- name: Restart timeservice
+  ansible.builtin.systemd:
+    name: "{{ ubtu22cis_time_sync_tool }}"
+    state: restarted
+
 - name: Reload_systemctl
   ansible.builtin.systemd:
       daemon_reload: true

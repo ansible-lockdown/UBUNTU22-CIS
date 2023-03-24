@@ -119,32 +119,46 @@ ubtu22cis_rule_1_9: true
 # Section 2 Fixes
 # Section 2 is Services (Special Purpose Services, and service clients)
 ubtu22cis_rule_2_1_1_1: true
-ubtu22cis_rule_2_1_1_2: true
-ubtu22cis_rule_2_1_1_3: true
-ubtu22cis_rule_2_1_1_4: true
-ubtu22cis_rule_2_1_2: true
-ubtu22cis_rule_2_1_3: true
-ubtu22cis_rule_2_1_4: true
-ubtu22cis_rule_2_1_5: true
-ubtu22cis_rule_2_1_6: true
-ubtu22cis_rule_2_1_7: true
-ubtu22cis_rule_2_1_8: true
-ubtu22cis_rule_2_1_9: true
-ubtu22cis_rule_2_1_10: true
-ubtu22cis_rule_2_1_11: true
-ubtu22cis_rule_2_1_12: true
-ubtu22cis_rule_2_1_13: true
-ubtu22cis_rule_2_1_14: true
-ubtu22cis_rule_2_1_15: true
-ubtu22cis_rule_2_1_16: true
-ubtu22cis_rule_2_1_17: true
+# Chrony
+ubtu22cis_rule_2_1_2_1: true
+ubtu22cis_rule_2_1_2_2: true
+ubtu22cis_rule_2_1_2_3: true
+# systemd-timesyncd
+ubtu22cis_rule_2_1_3_1: true
+ubtu22cis_rule_2_1_3_2: true
+
+# ntp
+ubtu22cis_rule_2_1_4_1: true
+ubtu22cis_rule_2_1_4_2: true
+ubtu22cis_rule_2_1_4_3: true
+ubtu22cis_rule_2_1_4_4: true
+# Services
 ubtu22cis_rule_2_2_1: true
 ubtu22cis_rule_2_2_2: true
 ubtu22cis_rule_2_2_3: true
 ubtu22cis_rule_2_2_4: true
 ubtu22cis_rule_2_2_5: true
 ubtu22cis_rule_2_2_6: true
-ubtu22cis_rule_2_3: true
+ubtu22cis_rule_2_2_7: true
+ubtu22cis_rule_2_2_8: true
+ubtu22cis_rule_2_2_9: true
+ubtu22cis_rule_2_2_10: true
+ubtu22cis_rule_2_2_11: true
+ubtu22cis_rule_2_2_12: true
+ubtu22cis_rule_2_2_13: true
+ubtu22cis_rule_2_2_14: true
+ubtu22cis_rule_2_2_15: true
+ubtu22cis_rule_2_2_16: true
+ubtu22cis_rule_2_2_17: true
+# Service Client
+ubtu22cis_rule_2_3_1: true
+ubtu22cis_rule_2_3_2: true
+ubtu22cis_rule_2_3_3: true
+ubtu22cis_rule_2_3_4: true
+ubtu22cis_rule_2_3_5: true
+ubtu22cis_rule_2_3_6: true
+# Non-essential services
+ubtu22cis_rule_2_4: true
 
 # Section 3 Fixes
 # Section 3 is Network Configuration (Disable Unused Networks, Network Parameters (Host Only), Network Parameters (Host and Router), Uncommon Network Protocols, and Firewall Configuration)
@@ -405,25 +419,20 @@ ubtu22cis_screensaver_lock_delay: 5  # Set max value for lock-delay in seconds (
 # The two options are chrony, ntp, or systemd-timesyncd
 ubtu22cis_time_sync_tool: "ntp"
 
-# Control 2.1.1.2
-# ubtu22cis_ntp_server_list is the list ntp servers
-# ubtu22cis_ntp_fallback_server_list is the list of fallback NTP servers
-ubtu22cis_ntp_server_list: "0.debian.pool.ntp.org 1.debian.pool.ntp.org"
-ubtu22cis_ntp_fallback_server_list: "2.debian.pool.ntp.org 3.debian.pool.ntp.org"
+# Control 2.1.2.1 2.1.3.1
+# Time settings used for all versions
+ubtu22cis_time_pool:
+  - name: time.nist.gov
+    options: iburst maxsources 4
 
-# Control 2.1.1.3/2.1.1.4
-# ubtu22cis_chrony_server_options is the server options for chrony
-ubtu22cis_chrony_server_options: "minpoll 8"
-# ubtu22cis_time_synchronization_servers are the synchronization servers
-ubtu22cis_time_synchronization_servers:
-    - 0.pool.ntp.org
-    - 1.pool.ntp.org
-    - 2.pool.ntp.org
-    - 3.pool.ntp.org
-# ubtu22cis_chrony_user is the user that chrony will use, default is _chrony
-ubtu22cis_chrony_user: "_chrony"
-# ubtu22cis_ntp_server_options is the server options for ntp
-ubtu22cis_ntp_server_options: "iburst"
+ubtu22cis_time_servers:
+  - name: time-a-g.nist.gov
+    options: iburst
+  - name: time-b-g.nist.gov
+    options: iburst
+  - name: time-c-g.nist.gov
+    options: iburst
+
 
 # Control 2.1.15
 # ubtu22_cis_mail_transfer_agent is the mail transfer agent in use
