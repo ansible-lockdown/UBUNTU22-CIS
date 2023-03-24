@@ -160,12 +160,14 @@ ubtu22cis_rule_2_3_6: true
 # Non-essential services
 ubtu22cis_rule_2_4: true
 
-# Section 3 Fixes
-# Section 3 is Network Configuration (Disable Unused Networks, Network Parameters (Host Only), Network Parameters (Host and Router), Uncommon Network Protocols, and Firewall Configuration)
+# Section 3 Network Configuration
+# Disable Unused Network
 ubtu22cis_rule_3_1_1: true
 ubtu22cis_rule_3_1_2: true
+# Network Parameters (Host Only)
 ubtu22cis_rule_3_2_1: true
 ubtu22cis_rule_3_2_2: true
+# Network Parameters (Host and Router)
 ubtu22cis_rule_3_3_1: true
 ubtu22cis_rule_3_3_2: true
 ubtu22cis_rule_3_3_3: true
@@ -175,10 +177,13 @@ ubtu22cis_rule_3_3_6: true
 ubtu22cis_rule_3_3_7: true
 ubtu22cis_rule_3_3_8: true
 ubtu22cis_rule_3_3_9: true
+# Uncommon Network Protocols
 ubtu22cis_rule_3_4_1: true
 ubtu22cis_rule_3_4_2: true
 ubtu22cis_rule_3_4_3: true
 ubtu22cis_rule_3_4_4: true
+# Firewall Configuration
+# UFW
 ubtu22cis_rule_3_5_1_1: true
 ubtu22cis_rule_3_5_1_2: true
 ubtu22cis_rule_3_5_1_3: true
@@ -186,6 +191,7 @@ ubtu22cis_rule_3_5_1_4: true
 ubtu22cis_rule_3_5_1_5: true
 ubtu22cis_rule_3_5_1_6: true
 ubtu22cis_rule_3_5_1_7: true
+# nftables
 ubtu22cis_rule_3_5_2_1: true
 ubtu22cis_rule_3_5_2_2: true
 ubtu22cis_rule_3_5_2_3: true
@@ -196,6 +202,7 @@ ubtu22cis_rule_3_5_2_7: true
 ubtu22cis_rule_3_5_2_8: true
 ubtu22cis_rule_3_5_2_9: true
 ubtu22cis_rule_3_5_2_10: true
+#iptables
 ubtu22cis_rule_3_5_3_1_1: true
 ubtu22cis_rule_3_5_3_1_2: true
 ubtu22cis_rule_3_5_3_1_3: true
@@ -469,7 +476,7 @@ ubtu22cis_ufw_allow_out_ports:
 # Controls 3.5.3.2.1 through 3.5.3.3.4
 # The iptables module only writes to memory which means a reboot could revert settings
 # The below toggle will install iptables-persistent and save the rules in memory (/etc/iptables/rules.v4 or rules.v6)
-# This makes the CIS role changes permenant
+# This makes the CIS role changes permenant and is managed via a handler
 ubtu22cis_save_iptables_cis_rules: true
 
 # Section 4 Control Variables
