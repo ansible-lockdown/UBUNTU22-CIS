@@ -16,7 +16,7 @@
 ![Devel Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/ubuntu22-cis/linux_benchmark_testing.yml?label=Devel%20Build%20Status)
 ![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/ubuntu22-cis/devel?color=dark%20green&label=Devel%20Branch%20commits)
 
-![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen) 
+![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
 ![Main Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/ubuntu22-cis/linux_benchmark_testing.yml?label=Build%20Status)
 ![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/ubuntu22-cis?label=Release%20Date)
 ![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/ubuntu22-cis?label=Release%20Tag&&color=success)
