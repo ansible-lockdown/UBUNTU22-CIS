@@ -98,10 +98,6 @@
             split: ':'
             key: shadow
 
-      - ansible.builtin.debug:
-            msg:
-                - "{{ getent_group.shadow[2] }}"
-
       - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
         ansible.builtin.debug:
             msg: "Warning!! - You have users in the shadow group"
