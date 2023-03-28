@@ -31,9 +31,11 @@
 -w /etc/network/ -p wa -k system-locale
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_6 %}
+{% if priv_procs is defined %}
 {% for proc in priv_procs.stdout_lines -%} 
 -a always,exit -F path={{ proc }} -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
 {% endfor %}
+{% endif %}
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_7 %}
 -a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=4294967295 -k access
