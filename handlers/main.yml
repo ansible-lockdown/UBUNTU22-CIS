@@ -57,7 +57,7 @@
   failed_when: ubtu22cis_ip6tables_save.rc > 0
   register: ubtu22cis_ip6tables_save
 
-- name: Auditd rule reload
+- name: Auditd rules reload
   ansible.builtin.shell: augenrules --load
   when:
       - '"No change" not in ubtu22cis_rule_4_1_3_21_augen_check.stdout'
