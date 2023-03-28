@@ -224,27 +224,52 @@ ubtu22cis_rule_4_1_1_4: true
 ubtu22cis_rule_4_1_2_1: true
 ubtu22cis_rule_4_1_2_2: true
 ubtu22cis_rule_4_1_2_3: true
-ubtu22cis_rule_4_1_3: true
-ubtu22cis_rule_4_1_4: true
-ubtu22cis_rule_4_1_5: true
-ubtu22cis_rule_4_1_6: true
-ubtu22cis_rule_4_1_7: true
-ubtu22cis_rule_4_1_8: true
-ubtu22cis_rule_4_1_9: true
-ubtu22cis_rule_4_1_10: true
-ubtu22cis_rule_4_1_11: true
-ubtu22cis_rule_4_1_12: true
-ubtu22cis_rule_4_1_13: true
-ubtu22cis_rule_4_1_14: true
-ubtu22cis_rule_4_1_15: true
-ubtu22cis_rule_4_1_16: true
-ubtu22cis_rule_4_1_17: true
+# Auditd rules
+ubtu22cis_rule_4_1_3_1: true
+ubtu22cis_rule_4_1_3_2: true
+ubtu22cis_rule_4_1_3_3: true
+ubtu22cis_rule_4_1_3_4: true
+ubtu22cis_rule_4_1_3_5: true
+ubtu22cis_rule_4_1_3_6: true
+ubtu22cis_rule_4_1_3_7: true
+ubtu22cis_rule_4_1_3_8: true
+ubtu22cis_rule_4_1_3_9: true
+ubtu22cis_rule_4_1_3_10: true
+ubtu22cis_rule_4_1_3_11: true
+ubtu22cis_rule_4_1_3_12: true
+ubtu22cis_rule_4_1_3_13: true
+ubtu22cis_rule_4_1_3_14: true
+ubtu22cis_rule_4_1_3_15: true
+ubtu22cis_rule_4_1_3_16: true
+ubtu22cis_rule_4_1_3_17: true
+ubtu22cis_rule_4_1_3_18: true
+ubtu22cis_rule_4_1_3_19: true
+ubtu22cis_rule_4_1_3_20: true
+# Auditd file access
+ubtu22cis_rule_4_1_4_1: true
+ubtu22cis_rule_4_1_4_2: true
+ubtu22cis_rule_4_1_4_3: true
+ubtu22cis_rule_4_1_4_4: true
+ubtu22cis_rule_4_1_4_5: true
+ubtu22cis_rule_4_1_4_6: true
+ubtu22cis_rule_4_1_4_7: true
+ubtu22cis_rule_4_1_4_8: true
+ubtu22cis_rule_4_1_4_9: true
+ubtu22cis_rule_4_1_4_10: true
+ubtu22cis_rule_4_1_4_11: true
+# Configure Logging
+## journald
+ubtu22cis_rule_4_2_1_1_1: true
+ubtu22cis_rule_4_2_1_1_2: true
+ubtu22cis_rule_4_2_1_1_3: true
+ubtu22cis_rule_4_2_1_1_4: true
 ubtu22cis_rule_4_2_1_1: true
 ubtu22cis_rule_4_2_1_2: true
 ubtu22cis_rule_4_2_1_3: true
 ubtu22cis_rule_4_2_1_4: true
 ubtu22cis_rule_4_2_1_5: true
 ubtu22cis_rule_4_2_1_6: true
+# rsyslog
 ubtu22cis_rule_4_2_2_1: true
 ubtu22cis_rule_4_2_2_2: true
 ubtu22cis_rule_4_2_2_3: true
@@ -455,11 +480,19 @@ ubuntu22cis_ipv6_disable: grub
 # ubtu22cis_install_network_manager determines if this role can install network manager
 ubtu22cis_install_network_manager: true
 
+# Control 3.3.x
+# Ability to change the default file that sysctl saves config to for network changes
+ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
+
+
 # ubtu22cis_firewall_package is the toggle for which firewall system is in use
 # The valid options to use are ufw, nftables, or iptables Laternative set to 'none' if excluded
 # Warning!! nftables is not supported in this role and will only message out if nftables is selected
 # If using nftables please manually adjust firewall settings
 ubtu22cis_firewall_package: "iptables"
+
+# If UFW force to use syctl settings now UFW
+ubtu22cis_ufw_use_sysctl: true
 
 # Control 3.5.1.5
 # ubtu22cis_ufw_allow_out_ports are the ports for the firewall to allow
@@ -505,11 +538,15 @@ ubtu22cis_auditd:
     admin_space_left_action: halt
     max_log_file_action: keep_logs
 
+# Control 4.1.x
+# Set to be rsyslog or journald dependent on what you are using
+ubtu22cis_syslog_service: rsyslog
 # Control 4.2.1.3
 # ubtu22cis_rsyslog_ansible_managed will toggle ansible automated configurations of rsyslog
 # You should set the rsyslog to your side specific needs. This toggle will use the example from
 # page 347 to set rsyslog loggin based on those configuration suggestions. Settings can be seen
 # in control 4.2.1.3
+
 ubtu22cis_rsyslog_ansible_managed: true
 
 # Control 4.2.1.5

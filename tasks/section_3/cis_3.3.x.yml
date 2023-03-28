@@ -3,10 +3,11 @@
 - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted"
   block:
       - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | IPv4 settings"
-        ansible.builtin.sysctl:
+        ansible.posix.sysctl:
             name: "{{ item }}"
             value: '0'
             sysctl_set: true
+            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
             state: present
             reload: true
             ignoreerrors: true
@@ -16,10 +17,11 @@
         notify: Flush ipv4 route table
 
       - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | IPv6 settings"
-        ansible.builtin.sysctl:
+        ansible.posix.sysctl:
             name: "{{ item }}"
             value: '0'
             sysctl_set: true
+            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
             state: present
             reload: true
             ignoreerrors: true
@@ -43,10 +45,11 @@
 - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted"
   block:
       - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | IPv4 settings"
-        ansible.builtin.sysctl:
+        ansible.posix.sysctl:
             name: "{{ item }}"
             value: '0'
             sysctl_set: true
+            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
             state: present
             reload: true
             ignoreerrors: true
@@ -56,10 +59,11 @@
         notify: Flush ipv4 route table
 
       - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | IPv6 settings"
-        ansible.builtin.sysctl:
+        ansible.posix.sysctl:
             name: "{{ item }}"
             value: '0'
             sysctl_set: true
+            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
             state: present
             reload: true
             ignoreerrors: true
@@ -80,10 +84,11 @@
       - sysctl
 
 - name: "3.3.3 | PATCH | Ensure secure ICMP redirects are not accepted"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: "{{ item }}"
       value: '0'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
@@ -103,10 +108,11 @@
       - sysctl
 
 - name: "3.3.4 | PATCH | Ensure suspicious packets are logged"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: "{{ item }}"
       value: '1'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
@@ -126,10 +132,11 @@
       - sysctl
 
 - name: "3.3.5 | PATCH | Ensure broadcast ICMP requests are ignored"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: net.ipv4.icmp_echo_ignore_broadcasts
       value: '1'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
@@ -146,10 +153,11 @@
       - sysctl
 
 - name: "3.3.6 | PATCH | Ensure bogus ICMP responses are ignored"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: net.ipv4.icmp_ignore_bogus_error_responses
       value: '1'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
@@ -166,7 +174,7 @@
       - sysctl
 
 - name: "3.3.7 | PATCH | Ensure Reverse Path Filtering is enabled"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: "{{ item }}"
       value: '1'
       sysctl_set: true
@@ -189,10 +197,11 @@
       - sysctl
 
 - name: "3.3.8 | PATCH | Ensure TCP SYN Cookies is enabled"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: net.ipv4.tcp_syncookies
       value: '1'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
@@ -209,10 +218,11 @@
       - sysctl
 
 - name: "3.3.9 | PATCH | Ensure IPv6 router advertisements are not accepted"
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: "{{ item }}"
       value: '0'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
