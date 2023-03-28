@@ -13,6 +13,7 @@
       - Auditd_immutable_check
       - Audit_immutable_fact
       - Restart auditd
+  when: update_audit_template
 
 - name: POST | Set up auditd user logging exceptions
   ansible.builtin.template:
