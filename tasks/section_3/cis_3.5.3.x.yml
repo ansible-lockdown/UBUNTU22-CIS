@@ -54,7 +54,7 @@
             destination_port: 22
             jump: ACCEPT
             ctstate: 'NEW,ESTABLISHED'
-        notify: iptables presistent
+        notify: Iptables persistent
 
       - name: "3.5.3.2.1 | PATCH | Ensure iptables default deny firewall policy | Configure SSH to be allowed out"
         ansible.builtin.iptables:
@@ -63,20 +63,20 @@
             source_port: 22
             jump: ACCEPT
             ctstate: 'NEW,ESTABLISHED'
-        notify: iptables presistent
+        notify: Iptables persistent
 
       - name: "3.5.3.2.1 | PATCH | Ensure iptables default deny firewall policy | Enable apt traffic"
         ansible.builtin.iptables:
             chain: INPUT
             ctstate: 'ESTABLISHED'
             jump: ACCEPT
-        notify: iptables presistent
+        notify: Iptables persistent
 
       - name: "3.5.3.2.1 | PATCH | Ensure iptables default deny firewall policy | Set drop items"
         ansible.builtin.iptables:
             policy: DROP
             chain: "{{ item }}"
-        notify: iptables presistent
+        notify: Iptables persistent
         with_items:
             - INPUT
             - FORWARD
@@ -101,7 +101,7 @@
             chain: INPUT
             in_interface: lo
             jump: ACCEPT
-        notify: iptables presistent
+        notify: Iptables persistent
 
       - name: "3.5.3.2.2 | PATCH | Ensure iptables loopback traffic is configured | OUTPUT loopback ACCEPT"
         ansible.builtin.iptables:
@@ -109,7 +109,7 @@
             chain: OUTPUT
             out_interface: lo
             jump: ACCEPT
-        notify: iptables presistent
+        notify: Iptables persistent
 
       - name: "3.5.3.2.2 | PATCH | Ensure iptables loopback traffic is configured | OUTPUT loopback ACCEPT"
         ansible.builtin.iptables:
@@ -117,7 +117,7 @@
             chain: INPUT
             source: 127.0.0.0/8
             jump: DROP
-        notify: iptables presistent
+        notify: Iptables persistent
   when:
       - ubtu22cis_rule_3_5_3_2_2
       - ubtu22cis_firewall_package == "iptables"
@@ -138,7 +138,7 @@
       match: state
       ctstate: '{{ item.ctstate }}'
       jump: ACCEPT
-  notify: iptables presistent
+  notify: Iptables persistent
   with_items:
       - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
       - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
@@ -185,9 +185,9 @@
                 - "{{ ubtu22cis_3_5_3_2_4_current_rules.stdout_lines }}"
 
       - name: "3.5.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.3.2.4' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.3.2.4'
   when:
       - ubtu22cis_rule_3_5_3_2_4
       - ubtu22cis_firewall_package == "iptables"
@@ -210,7 +210,7 @@
             jump: ACCEPT
             ctstate: 'NEW,ESTABLISHED'
             ip_version: ipv6
-        notify: ip6tables persistent
+        notify: Ip6tables persistent
 
       - name: "3.5.3.3.1 | PATCH | Ensure ip6tables default deny firewall policy | Enable apt traffic"
         ansible.builtin.iptables:
@@ -218,14 +218,14 @@
             ctstate: 'ESTABLISHED'
             jump: ACCEPT
             ip_version: ipv6
-        notify: ip6tables persistent
+        notify: Ip6tables persistent
 
       - name: "3.5.3.3.1 | PATCH | Ensure ip6tables default deny firewall policy | Set drop items"
         ansible.builtin.iptables:
             policy: DROP
             chain: "{{ item }}"
             ip_version: ipv6
-        notify: ip6tables persistent
+        notify: Ip6tables persistent
         with_items:
             - INPUT
             - FORWARD
@@ -250,7 +250,7 @@
             in_interface: lo
             jump: ACCEPT
             ip_version: ipv6
-        notify: ip6tables persistent
+        notify: Ip6tables persistent
 
       - name: "3.5.3.3.2 | PATCH | Ensure ip6tables loopback traffic is configured | OUTPUT loopback ACCEPT"
         ansible.builtin.iptables:
@@ -259,7 +259,7 @@
             out_interface: lo
             jump: ACCEPT
             ip_version: ipv6
-        notify: ip6tables persistent
+        notify: Ip6tables persistent
 
       - name: "3.5.3.3.2 | PATCH | Ensure ip6tables loopback traffic is configured | INPUT loopback drop"
         ansible.builtin.iptables:
@@ -268,7 +268,7 @@
             source: ::1
             jump: DROP
             ip_version: ipv6
-        notify: ip6tables persistent
+        notify: Ip6tables persistent
   when:
       - ubtu22cis_rule_3_5_3_3_2
       - ubtu22cis_firewall_package == "iptables"
@@ -291,7 +291,7 @@
       ctstate: '{{ item.ctstate }}'
       jump: ACCEPT
       ip_version: ipv6
-  notify: ip6tables persistent
+  notify: Ip6tables persistent
   with_items:
       - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
       - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
@@ -339,9 +339,9 @@
                 - "{{ ubtu22cis_3_5_3_3_4_current_rules.stdout_lines }}"
 
       - name: "3.5.3.3.4 | AUDIT | Ensure ip6tables firewall rules exist for all open ports | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.3.3.4' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.3.3.4'
   when:
       - ubtu22cis_rule_3_5_3_3_4
       - ubtu22cis_firewall_package == "iptables"
