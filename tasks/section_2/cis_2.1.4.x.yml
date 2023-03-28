@@ -24,17 +24,20 @@
         ansible.builtin.lineinfile:
             path: /etc/ntp.conf
             regexp: '^pool.*'
-            line: 'pool {{ ubtu22cis_time_pool }}'
+            line: 'pool {{ item.name }} {{ item.options }}'
         notify: Restart timeservice
+        loop: "{{ ubtu22cis_time_pool }}"
+        loop_control:
+            label: "{{ item.name }}"
 
       - name: "2.1.4.2 | PATCH | Ensure ntp access control is configured | servers"
         ansible.builtin.lineinfile:
             path: /etc/ntp.conf
-            regexp: '^server.*'
-            line: 'server {{ item }}'
-            insertafter: "^server {{ item[0]}}"
-        loop:
-            - "{{ ubtu22cis_time_servers.name }}"
+            insertafter: '^server'
+            line: 'server {{ item.name }} {{ item.options }}'
+        loop: "{{ ubtu22cis_time_servers }}"
+        loop_control:
+            label: "{{ item.name }}"
         notify: Restart timeservice
   when:
       - ubtu22cis_rule_2_1_4_2
