@@ -51,7 +51,7 @@
       path: /etc/rsyslog.conf
       regexp: '^\$FileCreateMode|^#\$FileCreateMode'
       line: '$FileCreateMode 0640'
-  notify: restart rsyslog
+  notify: Restart rsyslog
   when:
       - ubtu22cis_rule_4_2_2_4
   tags:
@@ -72,7 +72,7 @@
         register: ubtu22cis_4_2_2_5_rsyslog_config_path
 
       - name: "4.2.2.5 | AUDIT | Ensure logging is configured | Gather rsyslog current config"
-        ansible.builtin.shell: "cat {{ ubtu22cis_4_2_2_3_rsyslog_config_path.stdout }}"
+        ansible.builtin.shell: "cat {{ ubtu22cis_4_2_2_5_rsyslog_config_path.stdout }}"
         changed_when: false
         failed_when: false
         check_mode: false
@@ -86,9 +86,7 @@
         when: not ubtu22cis_rsyslog_ansible_managed
 
       - name: "4.2.2.5 | PATCH | Ensure logging is configured | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_4.2.2.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: not ubtu22cis_rsyslog_ansible_managed
 
       - name: "4.2.2.5 | PATCH | Ensure logging is configured | Automated rsyslog configuration"
@@ -114,8 +112,10 @@
             - { regexp: '^local6,local7.\*|^#local6,local7.\*', line: 'local6,local7.*                 -/var/log/localmessages', insertafter: '^# First some standard log files' }
         loop_control:
             label: "{{ item.line }}"
-        notify: restart rsyslog
+        notify: Restart rsyslog
         when: ubtu22cis_rsyslog_ansible_managed
+  vars:
+      warn_control_id: '4.2.2.5'
   when:
       - ubtu22cis_rule_4_2_2_5
   tags:
@@ -153,7 +153,7 @@
         with_items:
             - '^(\$ModLoad|module(load="imtcp"))'
             - '^(\$InputTCPServerRun|input(type="imtcp" port="514"))'
-        notify: restart rsyslog
+        notify: Restart rsyslog
         when: not ubtu22cis_system_is_log_server
 
       - name: "4.2.2.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client | When a log server"
@@ -164,7 +164,7 @@
         with_items:
             - { regexp: '^\$ModLoad|^#\$ModLoad', line: '$ModLoad imtcp' }
             - { regexp: '^\$InputTCPServerRun|^#\$InputTCPServerRun', line: '$InputTCPServerRun 514' }
-        notify: restart rsyslog
+        notify: Restart rsyslog
         when: ubtu22cis_system_is_log_server
   when:
       - ubtu22cis_rule_4_2_2_7
