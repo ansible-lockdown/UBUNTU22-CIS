@@ -6,20 +6,22 @@
 - name: "SECTION | 4.1.2 | Configure Data Retention"
   ansible.builtin.import_tasks: cis_4.1.2.x.yml
 
+- name: "SECTION | 4.1.3 | Configure auditd rules"
+  ansible.builtin.import_tasks: cis_4.1.3.x.yml
+
+- name: "SECTION | 4.1.4 | Configure auditd file access"
+  ansible.builtin.import_tasks: cis_4.1.4.x.yml
+
 - name: "SECTION | 4.1.x | Login Settings"
   ansible.builtin.import_tasks: cis_4.1.x.yml
 
-- name: "SECTION | 4.2.1 | Configure rsyslog"
+- name: "SECTION | 4.2.1.x | Configure journald"
   ansible.builtin.import_tasks: cis_4.2.1.x.yml
+  when: ubtu22cis_syslog_service == 'journald'
 
-- name: "SECTION | 4.2.2 | Configure journald"
+- name: "SECTION | 4.2.2.x | Configure rsyslog"
   ansible.builtin.import_tasks: cis_4.2.2.x.yml
+  when: ubtu22cis_syslog_service == 'rsyslog'
 
 - name: "SECTION | 4.2.3 | Ensure permissions on all logfiles are configured"
   ansible.builtin.import_tasks: cis_4.2.3.yml
-
-- name: "SECTION | 4.3 | Ensure logrotate is configured"
-  ansible.builtin.import_tasks: cis_4.3.yml
-
-- name: "SECTION | 4.4 | Ensure logrotate assigns appropriate permissions"
-  ansible.builtin.import_tasks: cis_4.4.yml
