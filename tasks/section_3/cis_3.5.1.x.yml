@@ -151,9 +151,9 @@
                 - "{{ ubtu22cis_3_5_1_6_firewall_rules.stdout_lines }}"
 
       - name: "3.5.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.1.6' ]"
-            warn_count: "{{ warn_count | int +1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.1.6'
   when:
       - ubtu22cis_rule_3_5_1_6
   tags:
