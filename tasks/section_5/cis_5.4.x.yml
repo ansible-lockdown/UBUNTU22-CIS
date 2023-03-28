@@ -69,24 +69,24 @@
             module_path: "{{ item.module_path }}"
             module_arguments: "{{ item.args | default(omit) }}"
         loop:
-            - { type: 'auth', control: 'required', module_path: 'pam_tally2.so', args: 'preauth'}
-            - { type: 'auth', control: 'required', module_path: 'pam_tally2.so', args: 'authfail'}
-            - { type: 'auth', control: 'required', module_path: 'pam_tally2.so', args: 'authsucc'}
+            - { type: 'auth', control: 'required', module_path: 'pam_faillock.so', args: 'preauth'}
+            - { type: 'auth', control: 'required', module_path: 'pam_faillock.so', args: 'authfail'}
+            - { type: 'auth', control: 'required', module_path: 'pam_faillock.so', args: 'authsucc'}
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-account"
         community.general.pamd:
-            name: common-auth
+            name: common-account
             type: "{{ item.type }}"
             control: "{{ item.control }}"
             module_path: "{{ item.module_path }}"
             module_arguments: "{{ item.args | default(omit) }}"
         loop:
-            - { type: 'account', control: 'required', module_path: 'pam_tally2.so'}
+            - { type: 'account', control: 'required', module_path: 'pam_faillock.so'}
 
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_deny.so and pam_tally.so"
         ansible.builtin.lineinfile:
-            path: /etc/security/faillock
+            path: /etc/security/faillock.conf
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
             insertafter: '^# end of pam-auth-update config'
@@ -116,8 +116,6 @@
             module_path: pam_pwhistory.so
             module_arguments: 'remember={{ ubtu22cis_pamd_pwhistory_remember }}'
             state: args_present
-        when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length > 0
-
   when:
       - ubtu22cis_rule_5_4_3
   tags:
@@ -144,7 +142,7 @@
             control: '[success=1 default=ignore]'
             module_path: pam_unix.so
             module_arguments: "{{ ubtu22cis_passwd_hash_algo }}"
-            state: "{{ (ubtu22cis_passwd_setpam_hash_algo) | ternary(args_present,absent) }}"
+            state: "{{ ubtu22cis_passwd_setpam_hash_algo | ternary('args_present', 'absent') }}"
         when:
             - ubtu22cis_5_4_4_pam_unix_state.stdout | length > 0
 
@@ -175,8 +173,14 @@
       # This is only looking for yescrypt if sha512 need to change the $y$ to $6$
       - name: "5.4.5 | AUDIT | Ensure all current passwords uses the configured hashing algorithm | check has found"
         ansible.builtin.debug:
-            msg: "Warning!! Passwords found using alternate algorithm - This required manual intervention"
-        when: "' $y$'' not in ubtu22cis_5_4_5_passwd_hash_used.stdout"
+            msg: "Warning!! Passwords found using not using {{ ubtu22cis_passwd_hash_algo }} algorithm - This required manual intervention"
+        when: "' $y$' not in ubtu22cis_5_4_5_passwd_hash_used.stdout"
+
+      - name: "5.4.5 | WARN | Ensure all current passwords uses the configured hashing algorithm | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
+        when: "' $y$' not in ubtu22cis_5_4_5_passwd_hash_used.stdout"
+  vars:
+      warn_control_id: '5.4.5'
   when:
       - ubtu22cis_rule_5_4_5
   tags:
