@@ -12,8 +12,9 @@
 - name: "SECTION | 4.1.4 | Configure auditd file access"
   ansible.builtin.import_tasks: cis_4.1.4.x.yml
 
-- name: "SECTION | 4.1.x | Login Settings"
-  ansible.builtin.import_tasks: cis_4.1.x.yml
+- name: "SECTION | 4.2.1.1.x | Configure journald"
+  ansible.builtin.import_tasks: cis_4.2.1.1.x.yml
+  when: ubtu22cis_syslog_service == 'journald'
 
 - name: "SECTION | 4.2.1.x | Configure journald"
   ansible.builtin.import_tasks: cis_4.2.1.x.yml

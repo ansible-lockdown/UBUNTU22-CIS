@@ -14,9 +14,3 @@
 
 - name: "SECTION | 5.5.x | User Accounts and Environment"
   ansible.builtin.import_tasks: cis_5.5.x.yml
-
-- name: "SECTION | 5.6 | Ensure root login is restricted to system console"
-  ansible.builtin.import_tasks: cis_5.6.yml
-
-- name: "SECTION | 5.7 | Ensure access to the su command is restricted"
-  ansible.builtin.import_tasks: cis_5.7.yml

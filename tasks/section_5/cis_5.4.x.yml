@@ -27,7 +27,7 @@
         register: ubtu22cis_5_4_1_pam_pwquality_state
 
       - name: "5.4.1 | PATCH | Ensure password creation requirements are configured | Set retry to 3 if pwquality exists"
-        pamd:
+        community.general.pamd:
             name: common-password
             type: password
             control: requisite
@@ -37,7 +37,7 @@
         when: ubtu22cis_5_4_1_pam_pwquality_state.stdout | length > 0
 
       - name: "5.4.1 | PATCH | Ensure password creation requirements are configured | Set retry to 3 if pwquality does not exist"
-        pamd:
+        community.general.pamd:
             name: common-password
             type: password
             control: required
@@ -58,66 +58,42 @@
       - rule_5.4.1
       - pam
 
-# -------------
-# -------------
-# There is a bug in pam_tally2.so where the use of the audit keyword may log credentials in the case of user error during authentication.
-# To work around this bug the CIS documentation has you setting pam_tally2 to the account section.
-# Once bug is fixed please set pam_tally2 to the auth sections. We have those commented out in the task
-# -------------
-# -------------
+- name: "5.4.2 | AUDIT | Ensure lockout for failed password attempts is configured"
+  block:
 
-# -------------
-# -------------
-# figure out why pam_deny kills vagrant user. Below is everything working but the pam_deny.so in the last task with_items
-# -------------
-# -------------
-- name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured"
-  ansible.builtin.shell: /bin/true
-  changed_when: false
-  failed_when: false
-  check_mode: false
-  # block:
-  #     - name: "5.4.2 | AUDIT | Ensure lockout for failed password attempts is configured | Confirm pam_tally2.so module in common-auth"
-  #       # ansible.builtin.shell: grep 'auth.*required.*pam_tally2.so' /etc/pam.d/common-auth
-  #       ansible.builtin.shell: grep 'auth.*required.*pam_tally2.so' /etc/pam.d/common-account
-  #       changed_when: false
-  #       failed_when: false
-  #       check_mode: false
-  #       register: ubtu22cis_5_4_2_pam_tally2_state
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-auth"
+        community.general.pamd:
+            name: common-auth
+            type: "{{ item.type }}"
+            control: "{{ item.control }}"
+            module_path: "{{ item.module_path }}"
+            module_arguments: "{{ item.args | default(omit) }}"
+        loop:
+            - { type: 'auth', control: 'required', module_path: 'pam_tally2.so', args: 'preauth'}
+            - { type: 'auth', control: 'required', module_path: 'pam_tally2.so', args: 'authfail'}
+            - { type: 'auth', control: 'required', module_path: 'pam_tally2.so', args: 'authsucc'}
 
-  #     - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_tally2.so settings if exists"
-  #       pamd:
-  #           # name: common-auth
-  #           name: common-account
-  #           # type: auth
-  #           type: account
-  #           control: required
-  #           module_path: pam_tally2.so
-  #           module_arguments: 'onerr=fail
-  #               audit
-  #               silent
-  #               deny=5
-  #               unlock_time=900'
-  #       when: ubtu22cis_5_4_2_pam_tally2_state.stdout != ""
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-account"
+        community.general.pamd:
+            name: common-auth
+            type: "{{ item.type }}"
+            control: "{{ item.control }}"
+            module_path: "{{ item.module_path }}"
+            module_arguments: "{{ item.args | default(omit) }}"
+        loop:
+            - { type: 'account', control: 'required', module_path: 'pam_tally2.so'}
 
-  #     - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_tally2.so settings if does not exist"
-  #       ansible.builtin.lineinfile:
-  #           # path: /etc/pam.d/common-auth
-  #           path: /etc/pam.d/common-account
-  #           # line: 'auth       required pam_tally2.so onerr=fail audit silent deny=5 unlock_time=900'
-  #           line: 'account       required pam_tally2.so onerr=fail audit silent deny=5 unlock_time=900'
-  #           insertafter: '^# end of pam-auth-update config'
-  #       when: ubtu22cis_5_4_2_pam_tally2_state == ""
 
-  #     - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_deny.so and pam_tally.so"
-  #       ansible.builtin.lineinfile:
-  #           path: /etc/pam.d/common-account
-  #           regexp: "{{ item.regexp }}"
-  #           line: "{{ item.line }}"
-  #           insertafter: '^# end of pam-auth-update config'
-  #       with_items:
-  #           # - { regexp: '^accout.*requisite.*pam_deny.so', line: 'account    requisite pam_george.so' }
-  #           - { regexp: '^account.*required.*pam_tally.so', line: 'account    required pam_tally.so' }
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_deny.so and pam_tally.so"
+        ansible.builtin.lineinfile:
+            path: /etc/security/faillock
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+            insertafter: '^# end of pam-auth-update config'
+        loop:
+            - { regexp: '^deny', line: 'deny = 4' }
+            - { regexp: '^fail_interval', line: 'fail_interval = 900' }
+            - { regexp: '^unlock_time', line: 'unlock_time = 600' }
   when:
       - ubtu22cis_rule_5_4_2
   tags:
@@ -131,15 +107,9 @@
 
 - name: "5.4.3 | PATCH | Ensure password reuse is limited"
   block:
-      - name: "5.4.3 | AUDIT | Ensure password reuse is limited | Confirm pam_pwhistory.so in common-password"
-        ansible.builtin.shell: grep 'password.*required.*pam_pwhistory.so' /etc/pam.d/common-password
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_5_4_3_pam_pwhistory_state
 
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_pwhistory exists"
-        pamd:
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value"
+        community.general.pamd:
             name: common-password
             type: password
             control: required
@@ -148,12 +118,6 @@
             state: args_present
         when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length > 0
 
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_pwhistory does no exist"
-        ansible.builtin.lineinfile:
-            path: /etc/pam.d/common-password
-            line: 'password        required                        pam_pwhistory.so remember={{ ubtu22cis_pamd_pwhistory_remember }}'
-            insertafter: '^# end of pam-auth-update config'
-        when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length == 0
   when:
       - ubtu22cis_rule_5_4_3
   tags:
@@ -164,10 +128,10 @@
       - rule_5.4.3
       - pamd
 
-- name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512"
+- name: "5.4.4 | PATCH | Ensure password hashing algorithm is up to date with the latest standards"
   block:
-      - name: "5.4.4 | AUDIT | Ensure password hashing algorithm is SHA-512 | Confirm pam_unix.so"
-        ansible.builtin.shell: grep -E '^\s*password\s+(\S+\s+)+pam_unix\.so\s+(\S+\s+)*sha512\s*(\S+\s*)*(\s+#.*)?$' /etc/pam.d/common-password
+      - name: "5.4.4 | AUDIT | Ensure password hashing algorithm is up to date with the latest standards | Confirm pam_unix.so"
+        ansible.builtin.shell: grep -v ^# /etc/pam.d/common-password | grep -E "(yescrypt|md5|bigcrypt|sha256|sha512|blowfish)"
         changed_when: false
         failed_when: false
         check_mode: false
@@ -179,16 +143,16 @@
             type: password
             control: '[success=1 default=ignore]'
             module_path: pam_unix.so
-            module_arguments: sha512
-            state: args_present
-        when: ubtu22cis_5_4_4_pam_unix_state.stdout | length > 0
+            module_arguments: "{{ ubtu22cis_passwd_hash_algo }}"
+            state: "{{ (ubtu22cis_passwd_setpam_hash_algo) | ternary(args_present,absent) }}"
+        when:
+            - ubtu22cis_5_4_4_pam_unix_state.stdout | length > 0
 
       - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | Set hashing if pam_unix.so does not exist"
         ansible.builtin.lineinfile:
-            path: /etc/pam.d/common-password
-            line: 'password        [success=1 default=ignore]      pam_unix.so sha512'
-            insertafter: '^# end of pam-auth-update config'
-        when: ubtu22cis_5_4_4_pam_unix_state.stdout | length == 0
+            path: /etc/login.defs
+            line: '^ENCRYPT_METHOD'
+            insertafter: 'ENCRYPT_METHOD={{ ubtu22cis_passwd_hash_algo }}'
   when:
       - ubtu22cis_rule_5_4_4
   tags:
@@ -197,4 +161,28 @@
       - automated
       - patch
       - rule_5.4.4
+      - pamd
+
+- name: "5.4.5 | PATCH | Ensure password hashing algorithm is up to date with the latest standards"
+  block:
+      - name: "5.4.5 | AUDIT | Ensure all current passwords uses the configured hashing algorithm | capture hash"
+        ansible.builtin.shell: cat /etc/shadow | awk -F':' '{print $1" "$2}' | grep -Ev '(!|\*)'
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_5_4_5_passwd_hash_used
+
+      # This is only looking for yescrypt if sha512 need to change the $y$ to $6$
+      - name: "5.4.5 | AUDIT | Ensure all current passwords uses the configured hashing algorithm | check has found"
+        ansible.builtin.debug:
+            msg: "Warning!! Passwords found using alternate algorithm - This required manual intervention"
+        when: "' $y$" not in ubtu22cis_5_4_5_passwd_hash_used.stdout
+  when:
+      - ubtu22cis_rule_5_4_5
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_5.4.5
       - pamd

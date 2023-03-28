@@ -111,19 +111,19 @@
       - rule_5.1.7
       - cron
 
-- name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users"
+- name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users"
   block:
-      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Remove cron.deny"
+      - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Remove cron.deny"
         ansible.builtin.file:
             path: /etc/cron.deny
             state: absent
 
-      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Check for cron.allow"
+      - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Check for cron.allow"
         ansible.builtin.stat:
             path: /etc/cron.allow
         register: ubtu22cis_5_1_8_status
 
-      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users | Create cron.allow if doesn't exist"
+      - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users | Create cron.allow if doesn't exist"
         ansible.builtin.file:
             path: /etc/cron.allow
             owner: root
@@ -132,7 +132,7 @@
             state: touch
         when: not ubtu22cis_5_1_8_status.stat.exists
 
-      - name: "5.1.8 | PATCH | Ensure at/cron is restricted to authorized users |  Update cron.allow if exists"
+      - name: "5.1.8 | PATCH | Ensure cron is restricted to authorized users |  Update cron.allow if exists"
         ansible.builtin.file:
             path: /etc/cron.allow
             owner: root
