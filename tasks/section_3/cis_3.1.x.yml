@@ -19,7 +19,8 @@
             group: root
             mode: 0640
         notify: Flush ipv6 route table
-        loop: etc/sysctl.d/60-disable_ipv6.conf
+        loop:
+            - etc/sysctl.d/60-disable_ipv6.conf
         when: ubuntu22cis_ipv6_disable == 'sysctl'
   when:
       - ubtu22cis_rule_3_1_1
@@ -55,11 +56,10 @@
         when: "'network-manager' not in ansible_facts.packages"
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.1.2' ]"
-            warn_count: "{{ warn_count | int +1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: "'network-manager' not in ansible_facts.packages"
-
+  vars:
+      warn_control_id: '3.1.2'
   when:
       - ubtu22cis_rule_3_1_2
   tags:
