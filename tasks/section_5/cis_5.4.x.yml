@@ -176,7 +176,7 @@
       - name: "5.4.5 | AUDIT | Ensure all current passwords uses the configured hashing algorithm | check has found"
         ansible.builtin.debug:
             msg: "Warning!! Passwords found using alternate algorithm - This required manual intervention"
-        when: "' $y$" not in ubtu22cis_5_4_5_passwd_hash_used.stdout
+        when: "' $y$'' not in ubtu22cis_5_4_5_passwd_hash_used.stdout"
   when:
       - ubtu22cis_rule_5_4_5
   tags:

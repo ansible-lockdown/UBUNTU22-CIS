@@ -45,7 +45,7 @@
       - chrony
 
 - name: "2.1.2.3 | PATCH | Ensure chrony is enabled and running"
-  ansible.buiiltin.systemd:
+  ansible.builtin.systemd:
       name: chrony
       state: started
       enabled: true

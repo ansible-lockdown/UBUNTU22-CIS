@@ -22,4 +22,4 @@
   ansible.builtin.import_tasks: cis_2.2.x.yml
 
 - name: "SECTION | 2.3 | Ensure nonessential services are removed or masked"
-  ansible.builtin.import_tasks: cis_2.3.yml
+  ansible.builtin.import_tasks: cis_2.3.x.yml
