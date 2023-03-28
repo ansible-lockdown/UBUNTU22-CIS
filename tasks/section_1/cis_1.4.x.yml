@@ -48,9 +48,10 @@
 - name: "1.4.3 | PATCH | Ensure authentication required for single user mode"
   ansible.builtin.user:
       name: "{{ ubtu22cis_grub_user }}"
-      password: "{{ ubtu22cis_root_pw }}"
+      password: "{{ ubtu22cis_bootloader_password_hash }}"
   when:
       - ubtu22cis_rule_1_4_3
+      - ubtu22cis_set_boot_pass
   tags:
       - level1-server
       - level1-workstation
