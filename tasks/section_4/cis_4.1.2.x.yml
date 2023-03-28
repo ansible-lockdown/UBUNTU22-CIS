@@ -7,7 +7,7 @@
       line: "max_log_file = {{ ubtu22cis_max_log_file_size }}"
       state: present
   register: rule_4_1_2_1
-  notify: restart auditd
+  notify: Restart auditd
   when:
       - ubtu22cis_rule_4_1_2_1
   tags:
@@ -24,7 +24,7 @@
       regexp: '^max_log_file_action'
       line: "max_log_file_action = {{ ubtu22cis_auditd['max_log_file_action'] }}"
   register: rule_4_1_2_2
-  notify: restart auditd
+  notify: Restart auditd
   when:
       - ubtu22cis_rule_4_1_2_2
   tags:
@@ -41,7 +41,7 @@
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
   register: rule_4_1_2_3
-  notify: restart auditd
+  notify: Restart auditd
   with_items:
       - { regexp: '^space_left_action', line: 'space_left_action = email' }
       - { regexp: '^action_mail_acct', line: 'action_mail_acct = root' }
