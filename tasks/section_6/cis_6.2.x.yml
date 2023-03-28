@@ -15,11 +15,11 @@
                 - "{{ ubtu22cis_6_2_1_nonshadowed_users.stdout_lines }}"
         when: ubtu22cis_6_2_1_nonshadowed_users.stdout | length > 0
 
-      - name: "6.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.1 | WARN | Ensure accounts in /etc/passwd use shadowed passwords | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_6_2_1_nonshadowed_users.stdout | length > 0
+  vars:
+      warn_control_id: '6.2.1'
   when:
       - ubtu22cis_rule_6_2_1
   tags:
@@ -75,11 +75,11 @@
             msg: "Warning!! The following users have non-existent GIDs (Groups): {{ ubtu22cis_6_2_3_passwd_gid_check.stdout_lines | join (', ') }}"
         when: ubtu22cis_6_2_3_passwd_gid_check.stdout | length > 0
 
-      - name: "6.2.3 | AUDIT | Ensure all groups in /etc/passwd exist in /etc/group | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.3' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.3 | WARN | Ensure all groups in /etc/passwd exist in /etc/group | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_6_2_3_passwd_gid_check.stdout | length > 0
+  vars:
+      warn_control_id: '6.2.3'
   when:
       - ubtu22cis_rule_6_2_3
   tags:
@@ -98,10 +98,20 @@
             split: ':'
             key: shadow
 
+      - ansible.builtin.debug:
+            msg:
+                - "{{ getent_group.shadow[2] }}"
+
       - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
         ansible.builtin.debug:
             msg: "Warning!! - You have users in the shadow group"
-        when: getent_group[2] | length > 0
+        when: getent_group.shadow[2] | length > 0
+
+      - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
+        ansible.builtin.import_tasks: warning_facts.yml
+        when: getent_group.shadow[2] | length > 0
+  vars:
+      warn_control_id: '6.2.4'
   when:
       - ubtu22cis_rule_6_2_4
   tags:
@@ -121,16 +131,16 @@
         check_mode: false
         register: ubtu22cis_6_2_5_user_uid_check
 
-      - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
+      - name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist | Print warning about users with duplicate UIDs"
         ansible.builtin.debug:
-            msg: "Warning!! The following users have UIDs that are duplicates: {{ ubtu22cis_6_2_13_user_uid_check.stdout_lines }}"
+            msg: "Warning!! The following users have UIDs that are duplicates: {{ ubtu22cis_6_2_5_user_uid_check.stdout_lines }}"
         when: ubtu22cis_6_2_5_user_uid_check.stdout | length > 0
 
-      - name: "6.2.13 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "6.2.5 | AUDIT | Ensure no duplicate UIDs exist | Set warning count"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_6_2_5_user_uid_check.stdout | length > 0
+  vars:
+      warn_control_id: '6.2.5'
   when:
       - ubtu22cis_rule_6_2_5
   tags:
@@ -150,21 +160,16 @@
         check_mode: false
         register: ubtu22cis_6_2_6_user_user_check
 
-      - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Print message that no duplicate GID's exist"
-        ansible.builtin.debug:
-            msg: "Good News! There are no duplicate GIDs in the system"
-        when: ubtu22cis_6_2_6_user_user_check.stdout | length == 0
-
       - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Print warning about users with duplicate GIDs"
         ansible.builtin.debug:
             msg: "Warning!! The following groups have duplicate GIDs: {{ ubtu22cis_6_2_14_user_user_check.stdout_lines }}"
         when: ubtu22cis_6_2_6_user_user_check.stdout | length > 0
 
       - name: "6.2.6 | AUDIT | Ensure no duplicate GIDs exist | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.6' ] "
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_6_2_6_user_user_check.stdout | length > 0
+  vars:
+      warn_control_id: '6.2.6'
   when:
       - ubtu22cis_rule_6_2_6
   tags:
@@ -184,21 +189,16 @@
         check_mode: false
         register: ubtu22cis_6_2_7_user_username_check
 
-      - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Print message that no duplicate user names exist"
-        ansible.builtin.debug:
-            msg: "Good News! There are no duplicate user names in the system"
-        when: ubtu22cis_6_2_7_user_username_check.stdout | length == 0
-
       - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
         ansible.builtin.debug:
             msg: "Warning!! The following user names are duplicates: {{ ubtu22cis_6_2_7_user_username_check.stdout_lines }}"
         when: ubtu22cis_6_2_7_user_username_check.stdout | length > 0
 
       - name: "6.2.7 | AUDIT | Ensure no duplicate user names exist | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.7' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_6_2_7_user_username_check.stdout | length > 0
+  vars:
+      warn_control_id: '6.2.7'
   when:
       - ubtu22cis_rule_6_2_7
   tags:
@@ -218,21 +218,16 @@
         check_mode: false
         register: ubtu22cis_6_2_8_group_group_check
 
-      - name: "6.2.8 | AUDIT | Ensure no duplicate group names exist | Print message that no duplicate groups exist"
-        ansible.builtin.debug:
-            msg: "Good News! There are no duplicate group names in the system"
-        when: ubtu22cis_6_2_8_group_group_check.stdout | length == 0
-
       - name: "6.2.8 | AUDIT | Ensure no duplicate group names exist | Print warning about users with duplicate group names"
         ansible.builtin.debug:
             msg: "Warning!! The following group names are duplicates: {{ ubtu22cis_6_2_8_group_group_check.stdout_lines }}"
         when: ubtu22cis_6_2_8_group_group_check.stdout | length > 0
 
       - name: "6.2.8 | AUDIT | Ensure no duplicate group names exist | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.8' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_6_2_8_group_group_check.stdout | length > 0
+  vars:
+      warn_control_id: '6.2.8'
   when:
       - ubtu22cis_rule_6_2_8
   tags:
@@ -253,7 +248,7 @@
       - name: "6.2.9 | AUDIT | Ensure root PATH Integrity | Get root paths"
         ansible.builtin.shell: sudo -Hiu root env | grep '^PATH' | cut -d= -f2 | tr ":" "\n"
         changed_when: false
-        register: ubtu22cis_6_2_8_root_paths_split
+        register: ubtu22cis_6_2_9_root_paths_split
 
       - name: "6.2.9 | AUDIT | Ensure root PATH Integrity | Set fact"
         ansible.builtin.set_fact:
@@ -327,7 +322,7 @@
             state: directory
             owner: "{{ item.id }}"
             group: "{{ item.gid }}"
-        register: rhel_09_6_2_10_home_dir
+        register: ubtu22cis_6_2_11_home_dir
         loop: "{{ ubtu22cis_passwd  | selectattr('uid', '>=', min_int_uid | int ) | selectattr('uid', '<=', max_int_uid | int ) | list }}"
         loop_control:
             label: "{{ item.id }}"
@@ -366,7 +361,7 @@
       path: "{{ item.dir }}"
       owner: "{{ item.id }}"
       state: directory
-  loop: "{{ ubtu22cis_passwd  | selectattr('uid', '>=', min_int_uid | int ) | selectattr('uid', '<=', max_int_uid | int ) | list }}"
+  loop: "{{ ubtu22cis_passwd | selectattr('uid', '>=', min_int_uid | int ) | selectattr('uid', '<=', max_int_uid | int ) | list }}"
   loop_control:
       label: "{{ item.id }}"
   when:
@@ -431,12 +426,12 @@
       - permissions
       - rule_6.2.13
 
-- name: "6.2.14 | PATCH | Ensure no users have .netrc files"
+- name: "6.2.14 | PATCH | Ensure no interactive users have .netrc files"
   ansible.builtin.file:
       dest: "~{{ item }}/.netrc"
       state: absent
   with_items:
-      - "{{ ubtu22cis_users.stdout_lines }}"
+      - "{{ interactive_users_home.stdout_lines }}"
   when:
       - ubtu22cis_rule_6_2_14
       - ubtu22cis_disruption_high
@@ -448,12 +443,12 @@
       - rule_6.2.14
       - user
 
-- name: "6.2.15 | PATCH | Ensure no users have .forward files"
+- name: "6.2.15 | PATCH | Ensure no interactive users have .forward files"
   ansible.builtin.file:
       dest: "~{{ item }}/.forward"
       state: absent
   with_items:
-      - "{{ ubtu22cis_users.stdout_lines }}"
+      - "{{ interactive_users_home.stdout_lines }}"
   when:
       - ubtu22cis_rule_6_2_15
       - ubtu22cis_disruption_high
@@ -470,7 +465,7 @@
       dest: "~{{ item }}/.rhosts"
       state: absent
   with_items:
-      - "{{ ubtu22cis_users.stdout_lines }}"
+      - "{{ interactive_users_home.stdout_lines }}"
   when:
       - ubtu22cis_rule_6_2_16
       - ubtu22cis_disruption_high
@@ -500,9 +495,7 @@
             - ubtu22cis_dotperm_ansiblemanaged
 
       - name: "6.2.17 | PATCH | Ensure users' dot files are not group or world writable | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_6.2.17' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when:
             - ubtu22cis_6_2_17_audit.stdout | length == 0
             - ubtu22cis_dotperm_ansiblemanaged
@@ -515,6 +508,8 @@
         when:
             - ubtu22cis_6_2_17_audit.stdout | length > 0
             - ubtu22cis_dotperm_ansiblemanaged
+  vars:
+      warn_control_id: '6.2.17'
   when:
       - ubtu22cis_rule_6_2_17
       - ubtu22cis_disruption_high
