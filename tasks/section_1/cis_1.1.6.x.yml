@@ -1,29 +1,18 @@
 ---
 
-- name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
+- name: "1.1.6.1 | AUDIT | Ensure /var/log/audit is a separate partition"
   block:
-      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Gather /var/log/audit partition"
-        ansible.builtin.shell: mount | grep "on /var/log/audit\s"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        args:
-            warn: false
-        register: ubtu22cis_1_1_6_1_varlogaudit_mounted
-
-      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if /var/log/audit partition does not exist"
+      - name: "1.1.6.1 | AUDIT | Ensure /var/log/audit is a separate partition | Absent"
         ansible.builtin.debug:
-            msg:
-                - "Warning!! There is no separate partition for /var/log/audit"
-                - "Please create a separate partition for /var/log/audit"
-        when: ubtu22cis_1_1_6_1_varlogaudit_mounted.stdout | length == 0
+            msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
 
-      - name: "1.1.6.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.1.6.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_6_1_varlogaudit_mounted.stdout | length == 0
+      - name: "1.1.6.1 | WARN | Ensure /var/log/audit is a separate partition | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '1.1.6.1'
+      required_mount: '/var/log/audit'
   when:
+      - required_mount not in mount_names
       - ubtu22cis_rule_1_1_6_1
   tags:
       - level2-server

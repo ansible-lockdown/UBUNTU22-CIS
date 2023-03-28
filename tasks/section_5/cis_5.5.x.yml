@@ -159,10 +159,8 @@
                 - "{{ ubtu22cis_5_5_1_5_user_list.stdout_lines }}"
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
-      - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_5.5.1.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+      - name: "5.5.1.5 | WARN | Ensure all users last password change date is in the past | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
@@ -173,6 +171,8 @@
         when:
             - ubtu22cis_disruption_high
             - ubtu22cis_5_5_1_5_user_list.stdout | length > 0
+  vars:
+      warn_control_id: '5.5.1.5'
   when:
       - ubtu22cis_rule_5_5_1_5
   tags:
@@ -189,7 +189,7 @@
       - name: "5.5.2 | PATCH | Ensure system accounts are secured | Set system accounts to login"
         ansible.builtin.user:
             name: "{{ item }}"
-            ansible.builtin.shell: /sbin/nologin
+            shell: /sbin/nologin
         with_items:
             - "{{ ubtu22cis_passwd | selectattr('uid', '<', 1000) | map(attribute='id') | list }}"
         when:

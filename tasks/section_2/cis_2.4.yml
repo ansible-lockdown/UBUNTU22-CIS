@@ -17,10 +17,10 @@
         when: ubtu22cis_2_3_services.stdout | length > 0
 
       - name: "2.4 | AUDIT | Ensure nonessential services are removed or masked | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_2.3' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
         when: ubtu22cis_2_3_services.stdout | length > 0
+  vars:
+      warn_control_id: '2.4'
   when:
       - ubtu22cis_rule_2_4
   tags:

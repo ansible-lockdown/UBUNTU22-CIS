@@ -155,13 +155,10 @@
   ansible.builtin.package:
       name: apache2
       state: absent
-  loop:
-      - apache2
-      - nginx
   when:
       - ubtu22cis_rule_2_2_9
       - not ubtu22cis_httpd_server
-      - "{{ item }} in ansible_facts.packages"
+      - "'apache2' in ansible_facts.packages"
   tags:
       - level1-server
       - level1-workstation
@@ -295,13 +292,13 @@
             - "'exim4' not in ansible_facts.packages"
             - "'postfix' not in ansible_facts.packages"
 
-      - name: "2.2.15 | PATCH | Ensure mail transfer agent is configured for local-only mode | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_2.2.15' ]"
-            warn_count: "{{ warn_count | int +1 }}"
+      - name: "2.2.15 | WARN | Ensure mail transfer agent is configured for local-only mode | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
         when:
             - "'exim4' not in ansible_facts.packages"
             - "'postfix' not in ansible_facts.packages"
+  vars:
+      warn_control_id: '2.2.15'
   when:
       - ubtu22cis_rule_2_2_15
   tags:

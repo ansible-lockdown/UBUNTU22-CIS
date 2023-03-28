@@ -1,29 +1,18 @@
 ---
 
-- name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home"
+- name: "1.1.7.1 | AUDIT | Ensure /home is a separate partition"
   block:
-      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Gather /home partition"
-        ansible.builtin.shell: mount | grep "on /home\s"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        args:
-            warn: false
-        register: ubtu22cis_1_1_7_1_home_mounted
-
-      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Warn if /home partition does not exist"
+      - name: "1.1.7.1 | AUDIT | Ensure /home is a separate partition | Absent"
         ansible.builtin.debug:
-            msg:
-                - "Warning!! There is no separate partition for /home"
-                - "Please create a separate partition for /home"
-        when: ubtu22cis_1_1_7_1_home_mounted.stdout | length == 0
+            msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
 
-      - name: "1.1.7.1 | AUDIT | Ensure separate partition exists for /home | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.1.7.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_7_1_home_mounted.stdout | length == 0
+      - name: "1.1.7.1 | WARN | Ensure /home is a separate partition | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '1.1.7.1'
+      required_mount: '/home'
   when:
+      - required_mount not in mount_names
       - ubtu22cis_rule_1_1_7_1
   tags:
       - level2-server

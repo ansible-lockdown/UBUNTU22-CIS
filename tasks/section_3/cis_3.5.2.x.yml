@@ -10,14 +10,11 @@
       - name: "3.5.2.1 | AUDIT | Ensure nftables is installed | Message out warning"
         ansible.builtin.debug:
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
-            # ansible.builtin.package:
-            #     name: nftables
-            #     state: present
 
       - name: "3.5.2.1 | AUDIT | Ensure nftables is installed | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.1' ]"
-            warn_count: "{{ warn_count | int +1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.1'
   when:
       - ubtu22cis_rule_3_5_2_1
       - ubtu22cis_firewall_package == "nftables"
@@ -39,9 +36,9 @@
             #     state: absent
 
       - name: "3.5.2.2 | AUDIT | Ensure ufw is uninstalled or disabled with nftables | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.2' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.2'
   when:
       - ubtu22cis_rule_3_5_2_2
       - ubtu22cis_firewall_package == "nftables"
@@ -62,9 +59,9 @@
             #     flush: yes
 
       - name: "3.5.2.3 | AUDIT | Ensure iptables are flushed with nftables | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.3' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.3'
   when:
       - ubtu22cis_rule_3_5_2_3
       - ubtu22cis_firewall_package == "nftables"
@@ -88,9 +85,9 @@
             # register: ubtu22cis_3_5_2_4_new_table
 
       - name: "3.5.2.4 | AUDIT | Ensure a nftables table exists | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.4' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.4'
   when:
       - ubtu22cis_rule_3_5_2_4
       - ubtu22cis_firewall_package == "nftables"
@@ -109,9 +106,9 @@
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables | Message out warning"
 
       - name: "3.5.2.5 | AUDIT | Ensure nftables base chains exist | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.5' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.5'
   when:
       - ubtu22cis_rule_3_5_2_5
       - ubtu22cis_firewall_package == "nftables"
@@ -130,9 +127,9 @@
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
 
       - name: "3.5.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.6' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.6'
   when:
       - ubtu22cis_rule_3_5_2_6
       - ubtu22cis_firewall_package == "nftables"
@@ -151,9 +148,9 @@
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
 
       - name: "3.5.2.7 | AUDIT | Ensure nftables outbound and established connections are configured | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.7' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.7'
   when:
       - ubtu22cis_rule_3_5_2_7
       - ubtu22cis_firewall_package == "nftables"
@@ -172,9 +169,9 @@
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
 
       - name: "3.5.2.8 | AUDIT | Ensure nftables default deny firewall policy | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.8' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.8'
   when:
       - ubtu22cis_rule_3_5_2_8
       - ubtu22cis_firewall_package == "nftables"
@@ -197,11 +194,11 @@
             #     enabled: yes
 
       - name: "3.5.2.9 | AUDIT | Ensure nftables service is enabled | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.9' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.9'
   when:
-      - ubtu22cis_rule_3_5_2_8
+      - ubtu22cis_rule_3_5_2_9
       - ubtu22cis_firewall_package == "nftables"
   tags:
       - level1-server
@@ -218,9 +215,9 @@
             msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
 
       - name: "3.5.2.10 | AUDIT | Ensure nftables rules are permanent | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.2.10' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.2.10'
   when:
       - ubtu22cis_rule_3_5_2_10
       - ubtu22cis_firewall_package == "nftables"
@@ -419,9 +416,9 @@
                 - "{{ ubtu22cis_3_5_3_2_4_current_rules.stdout_lines }}"
 
       - name: "3.5.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.3.2.4' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.3.2.4'
   when:
       - ubtu22cis_rule_3_5_3_2_4
       - ubtu22cis_firewall_package == "iptables"
@@ -602,9 +599,9 @@
                 - "{{ ubtu22cis_3_5_3_3_4_current_rules.stdout_lines }}"
 
       - name: "3.5.3.3.4 | AUDIT | Ensure ip6tables firewall rules exist for all open ports | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_3.5.3.3.4' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '3.5.3.3.4'
   when:
       - ubtu22cis_rule_3_5_3_3_4
       - ubtu22cis_firewall_package == "iptables"

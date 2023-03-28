@@ -1,29 +1,18 @@
 ---
 
-- name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp"
+- name: "1.1.4.1 | AUDIT | Ensure /var/tmp is a separate partition"
   block:
-      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Gather /var/tmp partition"
-        ansible.builtin.shell: mount | grep "on /var/tmp\s"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        args:
-            warn: false
-        register: ubtu22cis_1_1_4_1_vartmp_mounted
-
-      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Warn if /var/tmp partition does not exist"
+      - name: "1.1.4.1 | AUDIT | Ensure /var/tmp is a separate partition | Absent"
         ansible.builtin.debug:
-            msg:
-                - "Warning!! There is no separate partition for /var/tmp"
-                - "Please create a separate partition for /var/tmp"
-        when: ubtu22cis_1_1_4_1_vartmp_mounted.stdout | length == 0
+            msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
 
-      - name: "1.1.4.1 | AUDIT | Ensure separate partition exists for /var/tmp | Set warning count"
-        ansible.builtin.set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.1.4.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: ubtu22cis_1_1_4_1_vartmp_mounted.stdout | length == 0
+      - name: "1.1.4.1 | WARN | Ensure /var/tmp is a separate partition | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '1.1.4.1'
+      required_mount: '/var/tmp'
   when:
+      - required_mount not in mount_names
       - ubtu22cis_rule_1_1_4_1
   tags:
       - level2-server
