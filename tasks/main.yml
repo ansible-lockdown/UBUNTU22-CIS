@@ -140,7 +140,7 @@
       - always
 
 - name: flush handlers
-  ansible.builtin.meta: ansible.builtin.flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: reboot system
   block:
