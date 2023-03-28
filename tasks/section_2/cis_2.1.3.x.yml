@@ -10,7 +10,8 @@
             mode: 0644
             owner: root
             group: root
-        loop: etc/systemd/timesyncd.conf.d/50-timesyncd.conf
+        loop:
+            - "etc/systemd/timesyncd.conf.d/50-timesyncd.conf"
         notify: Restart timeservice
   when:
       - ubtu22cis_rule_2_1_3_1
