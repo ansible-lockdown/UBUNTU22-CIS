@@ -2,12 +2,6 @@
 
 - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured"
   block:
-      - name: "5.5.1.1 | AUDIT | Ensure minimum days between password changes is configured | Get users"
-        ansible.builtin.shell: "awk -F : '(/^[^:]+:[^!*]/ && $4 < {{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
-        changed_when: false
-        failed_when: false
-        register: ubtu22cis_5_5_1_1_pass_min_days_users
-
       - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured | Set /etc/login.defs PASS_MIN_DAYS"
         ansible.builtin.lineinfile:
             path: /etc/login.defs
@@ -33,12 +27,6 @@
 
 - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less"
   block:
-      - name: "5.5.1.2 | AUDIT | Ensure password expiration is 365 days or less | Get users"
-        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && $5>365 || $5<{{ ubtu22cis_pass.min_days }}){print $1}' /etc/shadow"
-        changed_when: false
-        failed_when: false
-        register: ubtu22cis_5_5_1_2_pass_max_days_users
-
       - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Set /etc/login.defs PASS_MAX_DAYS"
         ansible.builtin.lineinfile:
             path: /etc/login.defs
@@ -290,7 +278,6 @@
       marker: "# {mark} ANSIBLE MANAGED"
       block: |
         # Set session timeout - CIS ID 5.5.5
-        TMOUT={{ ubtu22cis_shell_session_timeout.timeout }}
         # only set TMOUT if it isn't set yet to avoid a shell error
         : ${TMOUT={{ ubtu22cis_shell_session_timeout.timeout }}}
         readonly TMOUT
