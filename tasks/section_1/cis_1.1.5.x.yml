@@ -32,9 +32,8 @@
       state: present
       fstype: xfs
       opts: defaults,{% if ubtu22cis_rule_1_1_5_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_5_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_5_4 %}nosuid{% endif %}
-  notify: remount var
-  with_items:
-      - "{{ ansible_mounts }}"
+  notify: Remount var_log
+  loop: "{{ ansible_mounts }}"
   loop_control:
       label: "{{ item.device }}"
   when:

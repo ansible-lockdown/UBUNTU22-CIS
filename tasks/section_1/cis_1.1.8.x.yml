@@ -7,9 +7,10 @@
   ansible.builtin.mount:
       name: /dev/shm
       src: /dev/shm
-      state: remounted
       fstype: tmpfs
+      state: present
       opts: "defaults,{% if ubtu22cis_rule_1_1_8_1 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_8_2 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_8_3 %}noexec{% endif %}"
+  notify: Remount dev_shm
   when:
       - ubtu22cis_rule_1_1_8_1 or
         ubtu22cis_rule_1_1_8_2 or

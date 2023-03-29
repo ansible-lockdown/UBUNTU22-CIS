@@ -32,7 +32,7 @@
       owner: root
       group: root
       mode: 0644
-  notify: remount tmp
+  notify: Remount tmp
   with_items:
       - "{{ ansible_mounts }}"
   loop_control:
