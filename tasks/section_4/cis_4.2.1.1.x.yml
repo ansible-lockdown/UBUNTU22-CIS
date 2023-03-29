@@ -43,7 +43,7 @@
       state: started
       enabled: true
   when:
-      - ubtu22cis_system_is_log_server
+      - not ubtu22cis_system_is_log_server
       - ubtu22cis_rule_4_2_1_1_3
   tags:
       - level1-server
