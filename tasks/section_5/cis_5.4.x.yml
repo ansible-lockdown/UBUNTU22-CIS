@@ -83,7 +83,6 @@
         loop:
             - { type: 'account', control: 'required', module_path: 'pam_faillock.so'}
 
-
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_deny.so and pam_tally.so"
         ansible.builtin.lineinfile:
             path: /etc/security/faillock.conf

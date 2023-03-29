@@ -388,7 +388,6 @@
       - rule_3.5.3.2.3
       - iptables
 
-
 - name: "3.5.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports"
   block:
       - name: "3.5.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Get list of open ports"

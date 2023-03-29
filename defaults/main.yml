@@ -206,7 +206,7 @@ ubtu22cis_rule_3_5_2_7: true
 ubtu22cis_rule_3_5_2_8: true
 ubtu22cis_rule_3_5_2_9: true
 ubtu22cis_rule_3_5_2_10: true
-#iptables
+# iptables
 ubtu22cis_rule_3_5_3_1_1: true
 ubtu22cis_rule_3_5_3_1_2: true
 ubtu22cis_rule_3_5_3_1_3: true
@@ -275,7 +275,7 @@ ubtu22cis_rule_4_2_1_4: true
 ubtu22cis_rule_4_2_1_5: true
 ubtu22cis_rule_4_2_1_6: true
 ubtu22cis_rule_4_2_1_7: true
-# rsyslog
+# rsyslog
 ubtu22cis_rule_4_2_2_1: true
 ubtu22cis_rule_4_2_2_2: true
 ubtu22cis_rule_4_2_2_3: true
@@ -419,7 +419,6 @@ ubtu22cis_ipv6_required: false
 # false means you do not require a desktop
 ubtu22cis_desktop_required: false
 
-
 # Section 1 Control Variables
 
 # Control 1.3.1 - allow aide to be configured
@@ -484,7 +483,6 @@ ubtu22cis_time_servers:
     - name: time-c-g.nist.gov
       options: iburst
 
-
 # Control 2.1.15
 # ubtu22_cis_mail_transfer_agent is the mail transfer agent in use
 # The options are exim4, postfix or other
@@ -502,7 +500,6 @@ ubtu22cis_install_network_manager: true
 # Control 3.3.x
 # Ability to change the default file that sysctl saves config to for network changes
 ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
-
 
 # ubtu22cis_firewall_package is the toggle for which firewall system is in use
 # The valid options to use are ufw, nftables, or iptables Laternative set to 'none' if excluded
@@ -527,7 +524,6 @@ ubtu22cis_ufw_allow_out_ports:
 # the default nftables table name is inet filter. This variable name will be the one all
 # nftables configs are applied to
 # ubtu22cis_nftables_table_name: "inet filter"
-
 
 # Controls 3.5.3.2.1 through 3.5.3.3.4
 # The iptables module only writes to memory which means a reboot could revert settings
@@ -577,7 +573,6 @@ ubtu22cis_journal_trustedcertificatefile:
 
 ubtu22cis_rsyslog_ansible_managed: true
 
-
 # Control 4.3
 # ubtu22cis_logrotate is the log rotate frequencey. Options are daily, weekly, monthly, and yearly
 ubtu22cis_logrotate: "daily"
@@ -621,7 +616,6 @@ ubtu22cis_sudo_logfile: "/var/log/sudo.log"
 ubtu22cis_sudo_timestamp_timeout: 15
 # Control 5.3.7
 ubtu22cis_sugroup: nosugroup
-
 
 # Control 5.4.3
 # ubtu22cis_pamd_pwhistory_remember is number of password chnage cycles a user can re-use a password

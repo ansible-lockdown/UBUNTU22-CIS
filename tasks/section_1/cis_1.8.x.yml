@@ -132,7 +132,6 @@
       - rule_1.8.5
       - gnome
 
-
 - name: "1.8.6 | PATCH | Ensure GDM screen locks when the user is idle"
   block:
       - name: "1.8.6 | PATCH | Ensure GDM screen locks when the user is idle | make directory"

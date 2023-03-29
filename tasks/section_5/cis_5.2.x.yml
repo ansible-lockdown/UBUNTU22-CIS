@@ -381,7 +381,6 @@
       - rule_5.2.20
       - ssh
 
-
 - name: "5.2.21 | PATCH | Ensure SSH LoginGraceTime is set to one minute or less"
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config

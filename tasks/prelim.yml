@@ -1,6 +1,5 @@
 ---
 
-
 - name: "PRELIM | register if snap being used"
   ansible.builtin.stat:
       path: /snap/bin
