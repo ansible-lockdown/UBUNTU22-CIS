@@ -7,7 +7,7 @@ galaxy_info:
     license: MIT
     namespace: mindpointgroup
     role_name: ubuntu22_cis
-    min_ansible_version: 2.9.0
+    min_ansible_version: 2.10.1
     platforms:
         - name: Ubuntu
           versions:
