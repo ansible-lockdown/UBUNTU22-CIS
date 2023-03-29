@@ -2,7 +2,12 @@
 
 ## Initial ubuntu22cis release
 
+Ansible 2.10.1 minimum
+fqcns added
+
 ### New options
+
+- default firewall now ufw
 
 - If firewall = UFW to use system sysctl settings: default
   - _ubtu22cis_ufw_use_sysctl: true_
