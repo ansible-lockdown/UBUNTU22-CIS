@@ -721,8 +721,8 @@ audit_bin_copy_location: /some/accessible/path
 audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
 audit_git_version: "benchmark-{{ benchmark_version }}"
 
-# archive or ansible.builtin.copy:
-audit_conf_ansible.builtin.copy: "some path to copy from"
+# archive or copy:
+audit_conf_copy: "some path to copy from"
 
 # get_url:
 audit_files_url: "some url maybe s3?"
