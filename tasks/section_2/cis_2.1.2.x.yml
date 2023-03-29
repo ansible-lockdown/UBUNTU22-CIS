@@ -6,7 +6,6 @@
         ansible.builtin.template:
             src: "{{ item }}.j2"
             dest: "/{{ item }}"
-            state: present
             mode: 0644
             owner: root
             group: root
