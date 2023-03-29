@@ -6,6 +6,7 @@
       state: present
   when:
       - ubtu22cis_rule_4_2_1_1_1
+      - not ubtu22cis_system_is_log_server
   tags:
       - level1-server
       - level1-workstation
@@ -21,12 +22,13 @@
       line: "{{ item.line }}"
   notify: Restart journald
   loop:
-      - { regexp: 'URL=', line: 'URL={{ ubtu22cis_journal_upload_url }}'}
+      - { regexp: 'URL=', line: 'URL={{ ubtu22cis_remote_log_server }}'}
       - { regexp: 'ServerKeyFile=', line: 'ServerKeyFile={{ ubtu22cis_journal_upload_serverkeyfile }}'}
       - { regexp: 'ServerCertificateFile=', line: 'ServerCertificateFile={{ ubtu22cis_journal_servercertificatefile }}'}
       - { regexp: 'TrustedCertificateFile=', line: 'TrustedCertificateFile={{ ubtu22cis_journal_trustedcertificatefile }}'}
   when:
       - ubtu22cis_rule_4_2_1_1_2
+      - not ubtu22cis_system_is_log_server
   tags:
       - level1-server
       - level1-workstation

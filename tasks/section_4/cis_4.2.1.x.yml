@@ -2,12 +2,6 @@
 
 - name: "4.2.1.2 | PATCH | Ensure journald service is enabled"
   block:
-      - name: "4.2.1.2 | PATCH | Ensure journald service is enabled | Enable service"
-        ansible.builtin.systemd:
-            name: systemd-journald
-            state: started
-            enabled: true
-
       - name: "4.2.1.2 | AUDIT | Ensure journald service is enabled | Capture status"
         ansible.builtin.shell: systemctl is-enabled systemd-journald.service
         changed_when: false
@@ -86,11 +80,11 @@
       line: "{{ item.line }}"
   notify: Restart journald
   loop:
-      - { regexp: '^#SystemMaxUse=|^SystemMaxUse=', line: 'SystemMaxUse={{ ubtu22cis_journald_systemmaxuse }}'}
-      - { regexp: '^#SystemKeepFree=|^SystemKeepFree=', line: 'SystemKeepFree={{ ubtu22cis_journald_systemkeepfree }}' }
-      - { regexp: '^#RuntimeMaxUse=|^RuntimeMaxUse=', line: 'RuntimeMaxUse={{ ubtu22cis_journald_runtimemaxuse }}'}
-      - { regexp: '^#RuntimeKeepFree=|^RuntimeKeepFree=', line: 'RuntimeKeepFree={{ ubtu22cis_journald_runtimekeepfree }}'}
-      - { regexp: '^#MaxFileSec=|^MaxFileSec=', line: 'MaxFileSec={{ ubtu22cis_journald_maxfilesec }}'}
+      - { regexp: '^#SystemMaxUse=|^SystemMaxUse=', line: '{{ ubtu22cis_journald_systemmaxuse | default ("#SystemMaxUse") }}'}
+      - { regexp: '^#SystemKeepFree=|^SystemKeepFree=', line: '{{ ubtu22cis_journald_systemkeepfree | default ("#SystemKeepFree")}}' }
+      - { regexp: '^#RuntimeMaxUse=|^RuntimeMaxUse=', line: '{{ ubtu22cis_journald_runtimemaxuse | default ("#RuntimeMaxUse") }}'}
+      - { regexp: '^#RuntimeKeepFree=|^RuntimeKeepFree=', line: '{{ ubtu22cis_journald_runtimekeepfree | default ("#RuntimeKeepFree") }}'}
+      - { regexp: '^#MaxFileSec=|^MaxFileSec=', line: '{{ ubtu22cis_journald_maxfilesec | default ("#MaxFileSec") }}'}
   when:
       - ubtu22cis_rule_4_2_1_6
   tags:
