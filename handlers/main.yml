@@ -1,5 +1,41 @@
 ---
 
+- name: Remount tmp
+  ansible.builtin.mount:
+      name: /tmp
+      state: remounted
+
+- name: Remount var
+  ansible.builtin.mount:
+      name: /var
+      state: remounted
+
+- name: Remount var_tmp
+  ansible.builtin.mount:
+      name: /var/tmp
+      state: remounted
+
+- name: Remount var_log
+  ansible.builtin.mount:
+      name: /var/log
+      state: remounted
+
+- name: Remount var_log_audit
+  ansible.builtin.mount:
+      name: /var/log/audit
+      state: remounted
+
+- name: Remount home
+  ansible.builtin.mount:
+      name: /home
+      state: remounted
+
+- name: Remount dev_shm
+  ansible.builtin.mount:
+      name: /dev/shm
+      src: /dev/shm
+      state: remounted
+
 - name: Grub update
   ansible.builtin.shell: update-grub
   failed_when: false
@@ -22,8 +58,18 @@
       name: postfix
       state: restarted
 
+- name: Restart syslog service
+  ansible.builtin.systemd:
+      name: "{{ ubtu22cis_syslog_service }}"
+      state: restarted
+
+- name: Restart journald
+  ansible.builtin.systemd:
+      name: systemd-journald
+      state: restarted
+
 - name: Restart exim4
-  ansible.builtin.service:
+  ansible.builtin.systemd:
       name: exim4
       state: restarted
 
@@ -89,13 +135,8 @@
 - name: remount tmp
   ansible.builtin.shell: mount -o remount /tmp
 
-- name: Restart rsyslog
-  ansible.builtin.service:
-      name: rsyslog
-      state: restarted
-
 - name: restart sshd
-  ansible.builtin.service:
+  ansible.builtin.systemd:
       name: sshd
       state: restarted
 
