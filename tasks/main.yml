@@ -48,7 +48,7 @@
         include_vars:
             file: "{{ container_vars_file }}"
 
-      - name: output if discovered is a container
+      - name: Output if discovered is a container
         debug:
             msg: system has been discovered as a container
         when:
