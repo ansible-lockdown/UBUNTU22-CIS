@@ -448,6 +448,10 @@ ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /boot/grub/grub.cfg
 
+# 1.7.1
+# disable dynamic motd to stop extra sshd message from appearing
+ubtu20cis_disable_dynamic_motd: true
+
 # Control 1.7.2
 # This will be the motd banner must not contain the below items in order to be compliant with Ubuntu 20 CIS
 # \m, \r, \s, \v or references to the OS platform
@@ -604,7 +608,6 @@ ubtu22cis_sshd:
     allow_groups: "vagrant ubuntu"
     # deny_users:
     # deny_groups:
-
 
 # Control 5.3.1
 # ubtu22cis_sudo_package is the name of the sudo package to install
