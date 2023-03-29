@@ -63,28 +63,28 @@
             rule: allow
             direction: in
             interface: lo
-        notify: reload ufw
+        notify: Reload ufw
 
       - name: "3.5.1.4 | PATCH | Ensure loopback traffic is configured | Set allow out ufw rules"
         community.general.ufw:
             rule: allow
             direction: out
             interface: lo
-        notify: reload ufw
+        notify: Reload ufw
 
       - name: "3.5.1.4 | PATCH | Ensure loopback traffic is configured | Set deny ufw rules IPv4"
         community.general.ufw:
             rule: deny
             direction: in
             from_ip: 127.0.0.0/8
-        notify: reload ufw
+        notify: Reload ufw
 
       - name: "3.5.1.4 | PATCH | Ensure loopback traffic is configured | Set deny ufw rules IPv6"
         community.general.ufw:
             rule: deny
             direction: in
             from_ip: "::1"
-        notify: reload ufw
+        notify: Reload ufw
         when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_5_1_4
@@ -105,14 +105,14 @@
             to_port: '{{ item }}'
         with_items:
             - "{{ ubtu22cis_ufw_allow_out_ports }}"
-        notify: reload ufw
+        notify: Reload ufw
         when: ubtu22cis_ufw_allow_out_ports != "all"
 
       - name: "3.5.1.5 | PATCH | Ensure ufw outbound connections are configured | Allow all"
         community.general.ufw:
             rule: allow
             direction: out
-        notify: reload ufw
+        notify: Reload ufw
         when: "'all' in ubtu22cis_ufw_allow_out_ports"
   when:
       - ubtu22cis_rule_3_5_1_5
@@ -168,7 +168,7 @@
   community.general.ufw:
       default: deny
       direction: "{{ item }}"
-  notify: reload ufw
+  notify: Reload ufw
   with_items:
       - incoming
       - outgoing

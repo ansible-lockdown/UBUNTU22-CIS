@@ -35,7 +35,7 @@
       path: /etc/systemd/journald.conf
       regexp: "^ForwardToSyslog="
       line: "ForwardToSyslog=yes"
-  notify: Restart rsyslog
+  notify: Restart syslog service
   when:
       - ubtu22cis_rule_4_2_2_3
   tags:
@@ -51,7 +51,7 @@
       path: /etc/rsyslog.conf
       regexp: '^\$FileCreateMode|^#\$FileCreateMode'
       line: '$FileCreateMode 0640'
-  notify: Restart rsyslog
+  notify: Restart syslog service
   when:
       - ubtu22cis_rule_4_2_2_4
   tags:
@@ -112,7 +112,7 @@
             - { regexp: '^local6,local7.\*|^#local6,local7.\*', line: 'local6,local7.*                 -/var/log/localmessages', insertafter: '^# First some standard log files' }
         loop_control:
             label: "{{ item.line }}"
-        notify: Restart rsyslog
+        notify: Restart syslog service
         when: ubtu22cis_rsyslog_ansible_managed
   vars:
       warn_control_id: '4.2.2.5'
@@ -135,6 +135,7 @@
       insertafter: EOF
   when:
       - ubtu22cis_rule_4_2_2_6
+      - not ubtu22cis_system_is_log_server
   tags:
       - level1-server
       - level1-workstation
@@ -153,7 +154,7 @@
         with_items:
             - '^(\$ModLoad|module(load="imtcp"))'
             - '^(\$InputTCPServerRun|input(type="imtcp" port="514"))'
-        notify: Restart rsyslog
+        notify: Restart syslog service
         when: not ubtu22cis_system_is_log_server
 
       - name: "4.2.2.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client | When a log server"
@@ -164,7 +165,7 @@
         with_items:
             - { regexp: '^\$ModLoad|^#\$ModLoad', line: '$ModLoad imtcp' }
             - { regexp: '^\$InputTCPServerRun|^#\$InputTCPServerRun', line: '$InputTCPServerRun 514' }
-        notify: Restart rsyslog
+        notify: Restart syslog service
         when: ubtu22cis_system_is_log_server
   when:
       - ubtu22cis_rule_4_2_2_7
