@@ -41,15 +41,15 @@
 - name: Setup rules if container
   block:
       - name: Discover and set container variable if required
-        set_fact:
+        ansible.builtin.set_fact:
             system_is_container: true
 
       - name: Load variable for container
-        include_vars:
+        ansible.builtin.include_vars:
             file: "{{ container_vars_file }}"
 
       - name: Output if discovered is a container
-        debug:
+        ansible.builtin.debug:
             msg: system has been discovered as a container
         when:
             - system_is_container
