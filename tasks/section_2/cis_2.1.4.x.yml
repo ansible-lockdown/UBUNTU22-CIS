@@ -63,7 +63,7 @@
       - rule_2.1.4.3
       - ntp
 
-- name: "2.1.4.3 | PATCH | Ensure systemd-timesyncd is enabled and running"
+- name: "2.1.4.3 | PATCH | Ensure ntp is enabled and running"
   ansible.builtin.systemd:
       name: ntp
       state: started
