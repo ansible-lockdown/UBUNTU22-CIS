@@ -177,8 +177,8 @@
 - name: "Optional | Patch | UFW firewall force to use /etc/sysctl.conf settings"
   ansible.builtin.lineinfile:
       path: /etc/default/ufw
-      regexp: ^IPT_SYSCTL=/etc/ufw/sysctl.conf
-      line: IPT_SYSCTL=/etc/ufw/sysctl.conf
+      regexp: ^IPT_SYSCTL=.*
+      line: IPT_SYSCTL=/etc/sysctl.conf
   when:
       - ubtu22cis_firewall_package == "ufw"
       - ubtu22cis_ufw_use_sysctl
