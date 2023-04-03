@@ -22,7 +22,7 @@
 - name: "3.4.2 | PATCH | Ensure SCTP is disabled"
   ansible.builtin.lineinfile:
       path: /etc/modprobe.d/sctp.conf
-      regexp: "^(#)?install sctp(\\s|$)"
+      regexp: '^(#)?install sctp(\\s|$)'
       line: "{{ item }}"
       create: true
   loop:
