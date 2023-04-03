@@ -450,6 +450,11 @@ ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /boot/grub/grub.cfg
 
+## 1.6.1.x apparmor
+
+ubtu22cis_apparmor_disable: false
+ubtu22cis_apparmor_enforce_only: false
+
 # 1.7.1
 # disable dynamic motd to stop extra sshd message from appearing
 ubtu20cis_disable_dynamic_motd: true

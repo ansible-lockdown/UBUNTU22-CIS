@@ -85,6 +85,8 @@
         when: ubtu20cis_1_6_1_3_pre_count.stdout != ubtu20cis_1_6_1_3_post_count.stdout
   when:
       - ubtu22cis_rule_1_6_1_3
+      - not ubtu22cis_apparmor_disable
+      - not ubtu22cis_apparmor_enforce_only
   tags:
       - level1-server
       - level1-workstation
@@ -119,6 +121,8 @@
         when: ubtu20cis_1_6_1_4_pre_count.stdout != ubtu20cis_1_6_1_4_post_count.stdout
   when:
       - ubtu22cis_rule_1_6_1_4
+      - not ubtu22cis_apparmor_disable
+      - ubtu22cis_apparmor_enforce_only
   tags:
       - level2-server
       - level2-workstation
