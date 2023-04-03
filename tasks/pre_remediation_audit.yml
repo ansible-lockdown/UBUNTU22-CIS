@@ -107,12 +107,12 @@
 
 - name: Pre Audit | Capture audit data if documentation format
   block:
-      - name: "capture data {{ pre_audit_outfile }}"
+      - name: "Pre Audit | capture data {{ pre_audit_outfile }} | documentation format"
         ansible.builtin.shell: "tail -2 {{ pre_audit_outfile }}"
         register: pre_audit
         changed_when: false
 
-      - name: Pre Audit | Capture pre-audit result
+      - name: Pre Audit | Capture pre-audit result | documentation format
         ansible.builtin.set_fact:
             pre_audit_summary: "{{ pre_audit.stdout_lines }}"
   when:
