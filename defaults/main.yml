@@ -1,11 +1,11 @@
 ---
 
-ubtu22cis_section1_patch: true
-ubtu22cis_section2_patch: true
-ubtu22cis_section3_patch: true
-ubtu22cis_section4_patch: true
-ubtu22cis_section5_patch: true
-ubtu22cis_section6_patch: true
+ubtu22cis_section1: true
+ubtu22cis_section2: true
+ubtu22cis_section3: true
+ubtu22cis_section4: true
+ubtu22cis_section5: true
+ubtu22cis_section6: true
 
 # System will reboot if false, can give better audit results
 skip_reboot: true
@@ -14,6 +14,9 @@ skip_reboot: true
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
 benchmark_version: v1.0.0
+#Used for audit
+ubtu22cis_level_1: true
+ubtu22cis_level_2: true
 
 ## Run tasks that may have an potential high impact to a running system
 ubtu22cis_disruption_high: true
@@ -483,7 +486,8 @@ ubtu22cis_time_servers:
     - name: time-c-g.nist.gov
       options: iburst
 
-# Control 2.1.15
+# Control 2.2.15
+ubtu22cis_is_mail_server: false
 # ubtu22_cis_mail_transfer_agent is the mail transfer agent in use
 # The options are exim4, postfix or other
 # ubtu22_cis_mail_transfer_agent: "other"
