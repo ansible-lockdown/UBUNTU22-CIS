@@ -183,7 +183,7 @@ ubtu22cis_rule_3_5_2_6: {{ ubtu22cis_rule_3_5_2_6 }}
 ubtu22cis_rule_3_5_2_7: {{ ubtu22cis_rule_3_5_2_7 }}
 ubtu22cis_rule_3_5_2_8: {{ ubtu22cis_rule_3_5_2_8 }}
 ubtu22cis_rule_3_5_2_9: {{ ubtu22cis_rule_3_5_2_9 }}
-ubtu22cis_rule_3_5_2_10: {{ ubtu22cis_rule_3_5_2_0 }}
+ubtu22cis_rule_3_5_2_10: {{ ubtu22cis_rule_3_5_2_10 }}
 # iptables
 ubtu22cis_rule_3_5_3_1_1: {{ ubtu22cis_rule_3_5_3_1_1 }}
 ubtu22cis_rule_3_5_3_1_2: {{ ubtu22cis_rule_3_5_3_1_2 }}
@@ -398,9 +398,9 @@ ubtu22cis_time_sync_tool: {{ ubtu22cis_time_sync_tool }}
 # Control 2.1.2.1 2.1.3.1
 # Time settings used for all versions
 ubtu22cis_time_pool:
-{% for pools in ubtu22cis_time_pool %}
-name: {{ ubtu22cis_time_pool.name }}
-options: {{ ubtu22cis_time_pool.options }}
+{% for pool in ubtu22cis_time_pool %}
+name: {{ pool.name }}
+options: {{ pool.options }}
 {% endfor %}
 
 ubtu22cis_time_servers:
