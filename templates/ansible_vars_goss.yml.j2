@@ -1,4 +1,3 @@
-audit_run: ansible # This is forced to wrapper by running the run_audit wrapper script (placeholder only if run via ansible)
 ## metadata for Audit benchmark
 
 benchmark_version: '1.1.0'
@@ -6,7 +5,6 @@ benchmark_version: '1.1.0'
 
 # Some audit tests may need to scan every filesystem or have an impact on a system 
 # these may need be scheduled to minimise impact also ability to set a timeout if taking too long
-run_heavy_tests: {{ audit_run_heavy_tests }}
 timeout_ms: {{ audit_cmd_timeout }}
 
 
@@ -20,15 +18,14 @@ ubtu22cis_section6: {{ ubtu22cis_section6 }}
 ubtu22cis_level_1: {{ ubtu22cis_level_1 }}
 ubtu22cis_level_2: {{ ubtu22cis_level_2 }}
 
-ubtu22cis_apparmor_disable: true
 
 #  to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
 run_heavy_tests: true
 
 #  True is BIOS based system else set to false
-ubuntu22_legacy_boot: true
+ubtu22_legacy_boot: true
 
-ubuntu22_set_boot_pass: true
+ubtu22_set_boot_pass: true
 
 ## Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
@@ -364,7 +361,7 @@ ubtu22cis_config_aide: {{ ubtu22cis_config_aide }}
 ubtu22cis_aide_scan: cron
 
 # AIDE cron settings
-ubuntu22_aide_cron:
+ubtu22_aide_cron:
   cron_user: {{ ubtu22cis_aide_cron.cron_user }}
   cron_file: {{ ubtu22cis_aide_cron.cron_file }}
   aide_job: {{ ubtu22cis_aide_cron.aide_job }}
@@ -378,29 +375,30 @@ ubuntu22_aide_cron:
 ubtu22cis_allow_autofs: {{ ubtu22cis_allow_autofs }}
 
 # 1.4
-ubtu22cis_grub_conf_file:{{ ubtu22cis_grub_user_file }}
+ubtu22cis_grub_conf_file: {{ ubtu22cis_grub_user_file }}
 ubtu22cis_grub_username: {{ ubtu22cis_grub_user }}
 ubtu22cis_grub_hash: {{ ubtu22cis_bootloader_password_hash }}
 # 1.5.1 Bootloader password
 ubtu22cis_bootloader_password: {{ ubtu22cis_bootloader_password_hash }}
 
 # 1.6 - Only have apparmor enforcing
-ubtu22cis_apparmor_enforce_only: false
+ubtu22cis_apparmor_disable: {{ ubtu22cis_apparmor_disable }}
+ubtu22cis_apparmor_enforce_only: {{ ubtu22cis_apparmor_enforce_only }}
 
 # Warning Banner Content (issue, issue.net, motd)
-ubuntu22_warning_banner: {{ ubtu22cis_warning_banner }}
+ubtu22_warning_banner: {{ ubtu22cis_warning_banner }}
 # End Banner
 
 # Section 2
 # Time sync - can be timesync or chr0ny or ntp
-ubtu22cis_time_sync_tool: {{ ubtu22cis_time_sync_tool }}
+ubtu22cis_time_service: {{ ubtu22cis_time_sync_tool }}
 
 # Control 2.1.2.1 2.1.3.1
 # Time settings used for all versions
 ubtu22cis_time_pool:
 {% for pool in ubtu22cis_time_pool %}
-name: {{ pool.name }}
-options: {{ pool.options }}
+- name: {{ pool.name }}
+  options: {{ pool.options }}
 {% endfor %}
 
 ubtu22cis_time_servers:
@@ -433,7 +431,7 @@ ubtu22cis_mailserver: {{ ubtu22_cis_mail_transfer_agent }}
 {% else %}
 ubtu22cis_mailserver: Not_defined
 {% endif %}
-ubuntu22_exim_conf:
+ubtu22_exim_conf:
   - dc_eximconfig_configtype='local'
   - dc_local_interfaces='127.0.0.1 ; ::1'
   - dc_readhost=''
@@ -445,7 +443,6 @@ ubuntu22_exim_conf:
   - dc_hide_mailname=''
   - dc_mailname_in_oh='true'
   - dc_localdelivery='mail_spool'
-
 
 ubtu22cis_rsyncd_server: {{ ubtu22cis_rsync_server }}
 ubtu22cis_nis_server: {{ ubtu22cis_nis_server }}
@@ -459,7 +456,6 @@ ubtu22cis_telnet_required: {{ ubtu22cis_telnet_required }}
 ubtu22cis_ldap_clients_required: {{ ubtu22cis_ldap_clients_required }}
 ubtu22cis_rpc_required: {{ ubtu22cis_rpc_required }}
 
-
 # Section 3
 # IPv6 required
 ubtu22cis_ipv6_required: {{ ubtu22cis_ipv6_required }}
@@ -467,14 +463,13 @@ ubtu22cis_ipv6_required: {{ ubtu22cis_ipv6_required }}
 # System network parameters (host only OR host and router)
 ubtu22cis_is_router: {{ ubtu22cis_is_router }}
 
-
 ubtu22cis_firewall: {{ ubtu22cis_firewall_package }}
 
-ubuntu22_default_firewall_zone: public
-ubuntu22_firewall_interface:
+ubtu22_default_firewall_zone: public
+ubtu22_firewall_interface:
   - ['ens224']
   - ['ens192']
-ubuntu22_firewall_services:
+ubtu22_firewall_services:
   - ssh
   - dhcpv6-client
 
@@ -489,6 +484,9 @@ ubtu22cis_auditd:
 
 ## syslog
 ubtu22cis_is_syslog_server: {{ ubtu22cis_system_is_log_server }}
+ubtu22cis_syslog_service: "{{ ubtu22cis_syslog_service }}"
+ubtu22cis_remote_log_server: "{{ ubtu22cis_remote_log_server }}"
+
 ### Section 5
 ubtu22cis_sshd_limited: false
 # Note the following to understand precedence and layout
@@ -559,7 +557,7 @@ ubtu22cis_pass:
 ubtu22cis_sugroup: {{ ubtu22cis_su_group }}
 
 # sugroup users list
-ubuntu22_sugroup_users: "root"
+ubtu22_sugroup_users: "root"
 
 # var log location variable
-ubuntu22_varlog_location: {{ ubtu22cis_sudo_logfile }}
+ubtu22_varlog_location: {{ ubtu22cis_sudo_logfile }}
