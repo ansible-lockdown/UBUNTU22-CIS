@@ -14,7 +14,7 @@
       - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Remove net.ipv6.conf.all.disable_ipv6"
         ansible.builtin.template:
             src: "{{ item }}.j2"
-            dest: "{{ item }}"
+            dest: "/{{ item }}"
             owner: root
             group: root
             mode: 0640
