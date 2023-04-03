@@ -88,8 +88,8 @@
 - name: Run parse /etc/passwd
   ansible.builtin.import_tasks: parse_etc_password.yml
   when:
-      - ubtu22cis_section5_patch or
-        ubtu22cis_section6_patch
+      - ubtu22cis_section5 or
+        ubtu22cis_section6
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
