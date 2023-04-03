@@ -52,7 +52,7 @@
         ansible.builtin.replace:
             dest: /etc/default/grub
             regexp: 'audit=([0-9]+)'
-            replace: 'audot=1'
+            replace: 'audit=1'
             after: '^GRUB_CMDLINE_LINUX="'
             before: '"'
         notify: Grub update
