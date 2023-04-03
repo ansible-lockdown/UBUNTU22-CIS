@@ -375,7 +375,7 @@ ubtu22_aide_cron:
 ubtu22cis_allow_autofs: {{ ubtu22cis_allow_autofs }}
 
 # 1.4
-ubtu22cis_grub_conf_file: {{ ubtu22cis_grub_user_file }}
+ubtu22cis_grub_user_file: {{ ubtu22cis_grub_user_file }}
 ubtu22cis_grub_username: {{ ubtu22cis_grub_user }}
 ubtu22cis_grub_hash: {{ ubtu22cis_bootloader_password_hash }}
 # 1.5.1 Bootloader password
@@ -402,7 +402,7 @@ ubtu22cis_time_pool:
 {% endfor %}
 
 ubtu22cis_time_servers:
-{% for server in ubtu22cis_time_pool %}
+{% for server in ubtu22cis_time_servers %}
 - name: {{ server.name }}
   options: {{ server.options }}
 {% endfor %}
