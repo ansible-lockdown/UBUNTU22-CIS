@@ -301,6 +301,7 @@
       warn_control_id: '2.2.15'
   when:
       - ubtu22cis_rule_2_2_15
+      - not ubtu22cis_is_mail_server
   tags:
       - level1-server
       - level1-workstation
