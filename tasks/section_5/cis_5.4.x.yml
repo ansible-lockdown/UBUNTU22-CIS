@@ -110,24 +110,23 @@
         check_mode: false
         register: ubtu22cis_5_4_3_pam_unix_state
 
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does no exist"
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does exist"
         ansible.builtin.lineinfile:
             path: /etc/pam.d/common-password
-            regexp: 'password\s+[success=1 default=ignore]\s+pam_unix(.*)remember={{ ubtu22cis_pamd_pwhistory_remember }}(.*)$'
-            line: 'password    [success=1 default=ignore] pam_unix.so remember={{ ubtu22cis_pamd_pwhistory_remember }}'
+            regexp: '^(password\s*\[success=1 default=ignore\] pam_unix.*)(remember=([0-9]{1,})|)(.*$)'
+            line: '\g<1>\g<2> remember={{ ubtu22cis_pamd_pwhistory_remember }}'
+            backrefs: true
+        when:
+            - ubtu22cis_5_4_3_pam_unix_state.stdout | length > 0
+            - "'remember' not in ubtu22cis_5_4_3_pam_unix_state.stdout"
+
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does not exist"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/common-password
+            regexp: '^password\s*\[success=1 default=ignore\] pam_unix.*'
+            line: 'password [success=1 default=ignore] pam_unix.so obscure use_authtok try_first_pass yescrypt remember={{ ubtu22cis_pamd_pwhistory_remember }}'
             insertafter: '^# end of pam-auth-update config'
         when: ubtu22cis_5_4_3_pam_unix_state.stdout | length == 0
-
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix exists"
-        community.general.pamd:
-            name: common-password
-            type: password
-            control: [success=1 default=ignore]
-            module_path: pam_unix.so
-            module_arguments: 'remember={{ ubtu22cis_pamd_pwhistory_remember }}'
-            state: args_present
-        when: ubtu22cis_5_4_3_pam_unix_state.stdout | length > 0
-
   when:
       - ubtu22cis_rule_5_4_3
   tags:
