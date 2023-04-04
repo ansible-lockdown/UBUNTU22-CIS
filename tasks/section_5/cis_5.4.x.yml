@@ -106,15 +106,30 @@
 
 - name: "5.4.3 | PATCH | Ensure password reuse is limited"
   block:
+      - name: "5.4.3 | AUDIT | Ensure password reuse is limited | Confirm pam_unix.so in common-password"
+        ansible.builtin.shell: grep 'password.*pam_unix.so' /etc/pam.d/common-password
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_5_4_3_pam_pwhistory_state
 
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value"
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix exists"
         community.general.pamd:
             name: common-password
             type: password
-            control: required
-            module_path: pam_pwhistory.so
+            control: [success=1 default=ignore]
+            module_path: pam_unix.so
             module_arguments: 'remember={{ ubtu22cis_pamd_pwhistory_remember }}'
             state: args_present
+        when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length > 0
+
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does no exist"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/common-password
+            regexp: 'password\s+[success=1 default=ignore]\s+pam_unix(.*)remember={{ ubtu22cis_pamd_pwhistory_remember }}(.*)$'
+            line: 'password    [success=1 default=ignore] pam_unix.so remember={{ ubtu22cis_pamd_pwhistory_remember }}'
+            insertafter: '^# end of pam-auth-update config'
+        when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length == 0
   when:
       - ubtu22cis_rule_5_4_3
   tags:
@@ -148,8 +163,8 @@
       - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | Set hashing if pam_unix.so does not exist"
         ansible.builtin.lineinfile:
             path: /etc/login.defs
-            line: '^ENCRYPT_METHOD'
-            insertafter: 'ENCRYPT_METHOD={{ ubtu22cis_passwd_hash_algo }}'
+            regexp: '^ENCRYPT_METHOD'
+            line: 'ENCRYPT_METHOD {{ ubtu22cis_passwd_hash_algo }}'
   when:
       - ubtu22cis_rule_5_4_4
   tags:
