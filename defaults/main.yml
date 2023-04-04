@@ -14,7 +14,7 @@ skip_reboot: true
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
 benchmark_version: v1.0.0
-#Used for audit
+# Used for audit
 ubtu22cis_level_1: true
 ubtu22cis_level_2: true
 
@@ -667,8 +667,6 @@ ubtu22cis_bash_umask: '027'
 ubtu22cis_shell_session_timeout:
     file: /etc/profile.d/tmout.sh
     timeout: 900
-
-
 
 # UID settings for interactive users
 # These are discovered via logins.def if set true
