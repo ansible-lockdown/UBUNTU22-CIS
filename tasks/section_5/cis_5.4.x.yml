@@ -62,26 +62,22 @@
   block:
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-auth"
-        community.general.pamd:
-            name: common-auth
-            type: "{{ item.type }}"
-            control: "{{ item.control }}"
-            module_path: "{{ item.module_path }}"
-            module_arguments: "{{ item.args | default(omit) }}"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/common-auth
+            regexp: '^{{ item.regexp }}'
+            line: "{{ item.line }}"
+            insertbefore: "{{ item.before | default(omit) }}"
+            insertafter: "{{ item.after | default(omit) }}"
         loop:
-            - { type: 'auth', control: 'required', module_path: 'pam_faillock.so', args: 'preauth'}
-            - { type: 'auth', control: 'required', module_path: 'pam_faillock.so', args: 'authfail'}
-            - { type: 'auth', control: 'required', module_path: 'pam_faillock.so', args: 'authsucc'}
+            - { regexp: 'auth\s+required\s+pam_faillock.so', line: 'auth    required            pam_faillock.so preauth', before: '^.*pam_unix.so'}
+            - { regexp: 'auth\s+[default=die]\s+pam_faillock.so', line: 'auth    [default=die]       pam_faillock.so authfail', after: '^.*pam_unix.so'}
+            - { regexp: 'auth\s+sufficient\s+pam_faillock.so', line: 'auth    sufficient          pam_faillock.so authsucc', after: '^.*authfail'}
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-account"
-        community.general.pamd:
-            name: common-account
-            type: "{{ item.type }}"
-            control: "{{ item.control }}"
-            module_path: "{{ item.module_path }}"
-            module_arguments: "{{ item.args | default(omit) }}"
-        loop:
-            - { type: 'account', control: 'required', module_path: 'pam_faillock.so'}
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/common-account
+            regexp: '^account\s+required\s+pam_faillock.so'
+            line: 'account required              pam_faillock.so'
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set pam_deny.so and pam_tally.so"
         ansible.builtin.lineinfile:
@@ -89,6 +85,7 @@
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
             insertafter: '^# end of pam-auth-update config'
+            create: true
         loop:
             - { regexp: '^deny', line: 'deny = 4' }
             - { regexp: '^fail_interval', line: 'fail_interval = 900' }
@@ -111,7 +108,15 @@
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_5_4_3_pam_pwhistory_state
+        register: ubtu22cis_5_4_3_pam_unix_state
+
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does no exist"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/common-password
+            regexp: 'password\s+[success=1 default=ignore]\s+pam_unix(.*)remember={{ ubtu22cis_pamd_pwhistory_remember }}(.*)$'
+            line: 'password    [success=1 default=ignore] pam_unix.so remember={{ ubtu22cis_pamd_pwhistory_remember }}'
+            insertafter: '^# end of pam-auth-update config'
+        when: ubtu22cis_5_4_3_pam_unix_state.stdout | length == 0
 
       - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix exists"
         community.general.pamd:
@@ -121,15 +126,8 @@
             module_path: pam_unix.so
             module_arguments: 'remember={{ ubtu22cis_pamd_pwhistory_remember }}'
             state: args_present
-        when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length > 0
+        when: ubtu22cis_5_4_3_pam_unix_state.stdout | length > 0
 
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does no exist"
-        ansible.builtin.lineinfile:
-            path: /etc/pam.d/common-password
-            regexp: 'password\s+[success=1 default=ignore]\s+pam_unix(.*)remember={{ ubtu22cis_pamd_pwhistory_remember }}(.*)$'
-            line: 'password    [success=1 default=ignore] pam_unix.so remember={{ ubtu22cis_pamd_pwhistory_remember }}'
-            insertafter: '^# end of pam-auth-update config'
-        when: ubtu22cis_5_4_3_pam_pwhistory_state.stdout | length == 0
   when:
       - ubtu22cis_rule_5_4_3
   tags:
