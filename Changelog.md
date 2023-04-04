@@ -4,6 +4,9 @@
 
 Ansible 2.10.1 minimum
 fqcns added
+audit alignment to use corresponding benchamrk version
+many lint improvements
+all required changes for CIS 1.0.0 (very different from original base of ubuntu2004)
 
 ### New options
 
