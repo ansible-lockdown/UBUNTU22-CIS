@@ -668,9 +668,7 @@ ubtu22cis_shell_session_timeout:
     file: /etc/profile.d/tmout.sh
     timeout: 900
 
-# Control 5.7
-# ubtu22cis_su_group is the su group to use with pam_wheel
-ubtu22cis_su_group: "wheel"
+
 
 # UID settings for interactive users
 # These are discovered via logins.def if set true
