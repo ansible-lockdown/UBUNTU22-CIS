@@ -1,9 +1,22 @@
 ---
 
 - name: "1.7.1 | PATCH | Ensure message of the day is configured properly"
-  template:
-      src: etc/motd.j2
-      dest: /etc/motd
+  block:
+      - name: "1.7.1 | PATCH | Ensure message of the day is configured properly | motd"
+        ansible.builtin.template:
+            src: etc/motd.j2
+            dest: /etc/motd
+
+      - name: "1.7.1 | PATCH | Ensure message of the day is configured properly | disable dynamic_motd"
+        ansible.builtin.lineinfile:
+            path: /etc/pam.d/sshd
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+        loop:
+            - { regexp: 'session\s+optional\s+pam_motd.so\s+motd=/run/motd.dynamic', line: '# 1\' }
+            - { regexp: 'session\s+optional\s+pam_motd.so noupdate', line: '# 1\' }
+            - { regexp: '# Pam_motd.so disabled for CIS benchmark', line: '# Pam_motd.so disabled for CIS benchmark' }
+        when: ubtu20cis_disable_dynamic_motd
   when:
       - ubtu22cis_rule_1_7_1
   tags:
@@ -15,7 +28,7 @@
       - motd
 
 - name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
-  template:
+  ansible.builtin.template:
       src: etc/issue.j2
       dest: /etc/issue
   when:
@@ -29,7 +42,7 @@
       - banner
 
 - name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
-  template:
+  ansible.builtin.template:
       src: etc/issue.net.j2
       dest: /etc/issue.net
   when:
@@ -43,7 +56,7 @@
       - banner
 
 - name: "1.7.4 | PATCH | Ensure permissions on /etc/motd are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/motd
       owner: root
       group: root
@@ -60,7 +73,7 @@
       - motd
 
 - name: "1.7.5 | PATCH | Ensure permissions on /etc/issue are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/issue
       owner: root
       group: root
@@ -77,7 +90,7 @@
       - banner
 
 - name: "1.7.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
-  file:
+  ansible.builtin.file:
       path: /etc/issue.net
       owner: root
       group: root

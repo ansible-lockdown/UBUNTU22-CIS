@@ -1,94 +1,90 @@
 ---
 
-- name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled"
+- name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
   block:
-      - name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled | Find status of XD/NX"
-        shell: "journalctl | grep 'protection: active'"
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_1_5_1_xdnx_status
+      - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set ASLR settings"
+        ansible.builtin.lineinfile:
+            path: /etc/sysctl.conf
+            regexp: '^kernel.randomize_va_space'
+            line: 'kernel.randomize_va_space = 2'
 
-      - name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled | Warn if XD/NX is not enabled"
-        debug:
-            msg:
-                - "Warning!! You do not have XD/NX (Execute Disable/No Execute) enabled"
-                - "To conform to CIS standards this needs to be enabled"
-        when: "'active'not in ubtu22cis_1_5_1_xdnx_status.stdout"
-
-      - name: "1.5.1 | AUDIT | Ensure XD/NX support is enabled | Set warning count"
-        set_fact:
-            control_number: "{{ control_number }} + [ 'rule_1.5.1' ]"
-            warn_count: "{{ warn_count | int + 1 }}"
-        when: "'active'not in ubtu22cis_1_5_1_xdnx_status.stdout"
+      - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
+        ansible.builtin.sysctl:
+            name: kernel.randomize_va_space
+            value: '2'
   when:
       - ubtu22cis_rule_1_5_1
   tags:
       - level1-server
       - level1-workstation
-      - manual
-      - audit
-      - rule_1.5.1
-      - xd/nx
-
-- name: "1.5.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
-  block:
-      - name: "1.5.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set ASLR settings"
-        lineinfile:
-            path: /etc/sysctl.conf
-            regexp: '^kernel.randomize_va_space'
-            line: 'kernel.randomize_va_space = 2'
-
-      - name: "1.5.2 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
-        sysctl:
-            name: kernel.randomize_va_space
-            value: '2'
-  when:
-      - ubtu22cis_rule_1_5_2
-  tags:
-      - level1-server
-      - level1-workstation
       - automated
       - patch
-      - rule_1.5.2
+      - rule_1.5.1
       - aslr
 
-- name: "1.5.3 | PATCH | Ensure prelink is not installed"
+- name: "1.5.2 | PATCH | Ensure prelink is not installed"
   block:
-      - name: "1.5.3 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
-        command: prelink -ua
+      - name: "1.5.2 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
+        ansible.builtin.shell: prelink -ua
         changed_when: false
         failed_when: false
 
-      - name: "1.5.3 | PATCH | Ensure prelink is not installed| Remove prelink package"
-        apt:
+      - name: "1.5.2 | PATCH | Ensure prelink is not installed| Remove prelink package"
+        ansible.builtin.package:
             name: prelink
             state: absent
   when:
-      - ubtu22cis_rule_1_5_3
+      - ubtu22cis_rule_1_5_2
       - "'prelink' in ansible_facts.packages"
   tags:
       - level1-server
       - level1-workstation
       - automated
       - patch
-      - rule_1.5.3
+      - rule_1.5.2
       - prelink
 
+- name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled"
+  block:
+      - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | disable"
+        ansible.builtin.lineinfile:
+            path: /etc/default/apport
+            regexp: ^enabled
+            line: enabled=0
+            create: true
+            owner: root
+            group: root
+            mode: 0644
+
+      - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
+        ansible.builtin.package:
+            name: apport
+            state: absent
+        when:
+            - "'apport' in ansible_facts.packages"
+  when:
+      - ubtu22cis_rule_1_5_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.5.3
+      - apport
 
 - name: "1.5.4 | PATCH | Ensure core dumps are restricted"
   block:
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | kernel sysctl"
-        sysctl:
+        ansible.builtin.sysctl:
             name: fs.suid_dumpable
             value: '0'
             state: present
-            reload: yes
-            sysctl_set: yes
-            ignoreerrors: yes
+            reload: true
+            sysctl_set: true
+            ignoreerrors: true
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | security limits"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/security/limits.d/99_zero_core.conf
             regexp: '^\* hard core'
             line: '* hard core 0'
@@ -98,16 +94,17 @@
             mode: '0644'
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | sysctl.conf"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/sysctl.conf
             regexp: '^fs.suid_dumpable'
             line: fs.suid_dumpable=0
             owner: root
             group: root
             mode: '0644'
+        notify: Reload_systemctl
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | coredump.conf"
-        lineinfile:
+        ansible.builtin.lineinfile:
             path: /etc/systemd/coredump.conf
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"

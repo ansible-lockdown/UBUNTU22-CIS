@@ -1,16 +1,43 @@
 # Ubuntu 22 CIS
 
-![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/UBUNTU22-CIS/linux_benchmark_pipeline/devel?label=Devel%20Build%20Status&style=plastic)
-![Build Status](https://img.shields.io/github/workflow/status/ansible-lockdown/UBUNTU22-CIS/linux_benchmark_pipeline/main?label=Main%20Build%20Status&style=plastic)
-![Release](https://img.shields.io/github/v/release/ansible-lockdown/UBUNTU22-CIS?style=plastic)
+## Configure a Ubuntu 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-Configure Ubuntu 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) with ubuntu20 (ubuntu22 not released at this time). There are some intrusive tasks that have a toggle in defaults main.yml to disable to automated fix
+### Based on CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0 [Release](https://learn.cisecurity.org/l/799323/2022-09-15/3l9d2k)
 
-Based on [CIS Ubuntu Linux 20.04 LTS Benchmark v1.1.0 ](https://learn.cisecurity.org/l/799323/2021-04-01/41hcb)
+![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
+![Stars](https://img.shields.io/github/stars/ansible-lockdown/ubuntu22-cis?label=Repo%20Stars&style=social)
+![Forks](https://img.shields.io/github/forks/ansible-lockdown/ubuntu22-cis?style=social)
+![followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
+[![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
 
-## Join us
+![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/56324?label=Quality&&logo=ansible)
+![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
-On our [Discord Server](https://discord.gg/JFxpSgPFEJ) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
+![Devel Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/ubuntu22-cis/linux_benchmark_testing.yml?label=Devel%20Build%20Status)
+![Devel Commits](https://img.shields.io/github/commit-activity/m/ansible-lockdown/ubuntu22-cis/devel?color=dark%20green&label=Devel%20Branch%20commits)
+
+![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
+![Main Build Status](https://img.shields.io/github/actions/workflow/status/ansible-lockdown/ubuntu22-cis/linux_benchmark_testing.yml?label=Build%20Status)
+![Main Release Date](https://img.shields.io/github/release-date/ansible-lockdown/ubuntu22-cis?label=Release%20Date)
+![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/ubuntu22-cis?label=Release%20Tag&&color=success)
+
+![Issues Open](https://img.shields.io/github/issues-raw/ansible-lockdown/ubuntu22-cis?label=Open%20Issues)
+![Issues Closed](https://img.shields.io/github/issues-closed-raw/ansible-lockdown/ubuntu22-cis?label=Closed%20Issues&&color=success)
+![Pull Requests](https://img.shields.io/github/issues-pr/ansible-lockdown/ubuntu22-cis?label=Pull%20Requests)
+
+![License](https://img.shields.io/github/license/ansible-lockdown/ubuntu22-cis?label=License)
+
+---
+
+## Looking for support?
+
+[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UB22_cis)
+
+[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UB22_cis)
+
+### Community
+
+On our [Discord Server](https://discord.io/ansible-lockdown) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
 
 ## Caution(s)
 
@@ -18,18 +45,13 @@ This role **will make changes to the system** that could break things. This is n
 
 This role was developed against a clean install of the Operating System. If you are implimenting to an existing system please review this role for any site specific changes that are needed.
 
-To use release version please point to main branch
-Based on
-[CIS_Ubuntu_Linux_22.04_LTS_Benchmark](https://community.cisecurity.org/collab/public/index.php).
-
 ## Documentation
 
-- [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown)
-- [Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise)
-- [Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration)
-- [Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise)
-- [Wiki](https://github.com/ansible-lockdown/UBUNTU22-CIS/wiki)
-- [Repo GitHub Page](https://ansible-lockdown.github.io/UBUNTU22-CIS/)
+- [Read The Docs](https://ansible-lockdown.readthedocs.io/en/latest/)
+- [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown#GH_AL_UB22_cis)
+- [Customizing Roles](https://www.lockdownenterprise.com/docs/customizing-lockdown-enterprise#GH_AL_UB22_cis)
+- [Per-Host Configuration](https://www.lockdownenterprise.com/docs/per-host-lockdown-enterprise-configuration#GH_AL_UB22_cis)
+- [Getting the Most Out of the Role](https://www.lockdownenterprise.com/docs/get-the-most-out-of-lockdown-enterprise#GH_AL_UB22_cis)
 
 ## Requirements
 
@@ -59,11 +81,11 @@ This audit will not only check the config has the correct setting but aims to ca
 
 Refer to [UBUNTU22-CIS-Audit](https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit).
 
-Further audit documentation can be found at [Audit-Docs](https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit/docs/Security_remediation_and_auditing.md).
+Further audit documentation can be found at [Read The Docs](https://ansible-lockdown.readthedocs.io/en/latest/)
 
 ## Role Variables
 
-This role is designed that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc. These variables can be found [here](https://github.com/ansible-lockdown/UBUNTU22-CIS/wiki/Main-Variables) in the Main Variables Wiki page. All variables are listed there along with descriptions.
+This role is designed that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc.
 
 ## Branches
 
@@ -90,12 +112,3 @@ uses:
 - ansible collections - pulls in the latest version based on requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
-
-## Support
-
-This is a community project at its core and will be managed as such.
-
-If you would are interested in dedicated support to assist or provide bespoke setups
-
-- [Ansible Counselor](https://www.mindpointgroup.com/products/ansible-counselor-on-demand-ansible-services-and-consulting/)
-- [Try us out](https://engage.mindpointgroup.com/try-ansible-counselor)

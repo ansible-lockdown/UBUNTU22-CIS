@@ -1,0 +1,70 @@
+---
+
+- name: "4.2.1.1.1 | PATCH | Ensure systemd-journal-remote is installed"
+  ansible.builtin.package:
+      name: systemd-journal-remote
+      state: present
+  when:
+      - ubtu22cis_rule_4_2_1_1_1
+      - not ubtu22cis_system_is_log_server
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - journald
+      - rule_4.2.1.1.1
+
+- name: "4.2.1.1.2 | PATCH | Ensure systemd-journal-remote is configured"
+  ansible.builtin.lineinfile:
+      path: /etc/systemd/journal-upload.conf
+      regexp: "{{ item.regexp }}"
+      line: "{{ item.line }}"
+  notify: Restart journald
+  loop:
+      - { regexp: 'URL=', line: 'URL={{ ubtu22cis_remote_log_server }}'}
+      - { regexp: 'ServerKeyFile=', line: 'ServerKeyFile={{ ubtu22cis_journal_upload_serverkeyfile }}'}
+      - { regexp: 'ServerCertificateFile=', line: 'ServerCertificateFile={{ ubtu22cis_journal_servercertificatefile }}'}
+      - { regexp: 'TrustedCertificateFile=', line: 'TrustedCertificateFile={{ ubtu22cis_journal_trustedcertificatefile }}'}
+  when:
+      - ubtu22cis_rule_4_2_1_1_2
+      - not ubtu22cis_system_is_log_server
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - journald
+      - rule_4.2.1.1.2
+
+- name: "4.2.1.1.3 | PATCH | Ensure systemd-journal-remote is enabled"
+  ansible.builtin.systemd:
+      name: systemd-journal-upload
+      state: started
+      enabled: true
+  when:
+      - not ubtu22cis_system_is_log_server
+      - ubtu22cis_rule_4_2_1_1_3
+  tags:
+      - level1-server
+      - level1-workstation
+      - manual
+      - patch
+      - journald
+      - rule_4.2.1.1.3
+
+- name: "4.2.1.1.4 | PATCH | Ensure journald is not configured to recieve logs from a remote client"
+  ansible.builtin.systemd:
+      name: systemd-journal-remote.socket
+      state: stopped
+      enabled: false
+      masked: true
+  when:
+      - not ubtu22cis_system_is_log_server
+      - ubtu22cis_rule_4_2_1_1_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - patch
+      - journald
+      - rule_4.2.1.1.4

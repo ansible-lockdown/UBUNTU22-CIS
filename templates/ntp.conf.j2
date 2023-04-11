@@ -18,12 +18,14 @@ filegen clockstats file clockstats type day enable
 # Use servers from the NTP Pool Project. Approved by Ubuntu Technical Board
 # on 2011-02-08 (LP: #104525). See http://www.pool.ntp.org/join.html for
 # more information.
-{% for server in ubtu22cis_time_synchronization_servers -%}
-server {{ server }} {{ ubtu22cis_ntp_server_options }}
+{% for server in ubtu22cis_time_servers -%}
+server {{ server.name }} {{ server.options }}
 {% endfor %}
 
 # Use Ubuntu's ntp server as a fallback.
-pool ntp.ubuntu.com
+{% for pool in ubtu22cis_time_pool %}
+pool {{ pool.name }} {{ pool.options }}
+{% endfor %}
 
 # Access control configuration; see /usr/share/doc/ntp-doc/html/accopt.html for
 # details.  The web page <http://support.ntp.org/bin/view/Support/AccessRestrictions>
