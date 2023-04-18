@@ -121,9 +121,11 @@
       - auditd_immutable_check.stdout == '1'
 
 - name: Restart auditd
-  ansible.builtin.shell: service auditd restart
-  args:
-      warn: false
+  ansible.builtin.systemd:
+    daemon_reload: true
+    name: auditd
+    enabled: true
+    state: restarted
   when:
       - audit_rules_updated.changed or
         rule_4_1_2_1.changed or
