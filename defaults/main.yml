@@ -449,7 +449,7 @@ ubtu22cis_aide_cron:
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
 ubtu22cis_grub_user: root
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
-ubtu22cis_bootloader_password_hash: "vagrant"
+ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
 ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /etc/default/grub.cfg
@@ -552,8 +552,8 @@ ubtu22cis_audit_back_log_limit: 8192
 
 # Control 4.1.2.1
 # ubtu22cis_max_log_file_size is largest the log file will become in MB
-# This shoudl be set based on your sites policy
-ubtu22cis_max_log_file_size: 20
+# This should be set based on your sites policy
+ubtu22cis_max_log_file_size: 10
 ### 4.1.3.x audit template
 update_audit_template: false
 
