@@ -18,9 +18,9 @@
       - rule_2.1.4.1
       - ntp
 
-- name: "2.1.4.2 | PATCH | Ensure ntp access control is configured"
+- name: "2.1.4.2 | PATCH | Ensure ntp is configured with authorized timeserver"
   block:
-      - name: "2.1.4.2 | PATCH | Ensure ntp access control is configured | pool"
+      - name: "2.1.4.2 | PATCH | Ensure ntp is configured with authorized timeserver | pool"
         ansible.builtin.lineinfile:
             path: /etc/ntp.conf
             regexp: '^pool.*'
@@ -30,7 +30,7 @@
         loop_control:
             label: "{{ item.name }}"
 
-      - name: "2.1.4.2 | PATCH | Ensure ntp access control is configured | servers"
+      - name: "2.1.4.2 | PATCH | Ensure ntp is configured with authorized timeserver | servers"
         ansible.builtin.lineinfile:
             path: /etc/ntp.conf
             insertafter: '^server'
@@ -63,7 +63,7 @@
       - rule_2.1.4.3
       - ntp
 
-- name: "2.1.4.3 | PATCH | Ensure ntp is enabled and running"
+- name: "2.1.4.4 | PATCH | Ensure ntp is enabled and running"
   ansible.builtin.systemd:
       name: ntp
       state: started
@@ -74,5 +74,5 @@
   tags:
       - level1-server
       - level1-workstation
-      - rule_2.1.4.3
+      - rule_2.1.4.4
       - ntp

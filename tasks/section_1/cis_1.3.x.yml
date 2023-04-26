@@ -22,6 +22,7 @@
         poll: 0
         when: not ansible_check_mode
   when:
+      - ubtu22cis_rule_1_3_1
       - ubtu22cis_config_aide
       - ubtu22cis_autofs_service_status
       - "'aide' not in ansible_facts.packages or

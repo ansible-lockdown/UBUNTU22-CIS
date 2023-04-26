@@ -9,7 +9,7 @@
             line: 'kernel.randomize_va_space = 2'
 
       - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
-        ansible.builtin.sysctl:
+        ansible.posix.sysctl:
             name: kernel.randomize_va_space
             value: '2'
   when:
@@ -75,7 +75,7 @@
 - name: "1.5.4 | PATCH | Ensure core dumps are restricted"
   block:
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | kernel sysctl"
-        ansible.builtin.sysctl:
+        ansible.posix.sysctl:
             name: fs.suid_dumpable
             value: '0'
             state: present

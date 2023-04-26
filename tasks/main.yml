@@ -29,6 +29,27 @@
   tags:
       - always
 
+- name: "Check password set for connecting user"
+  block:
+      - name: Capture current password state of connecting user"
+        ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ansible_user_password_set
+
+      - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
+        ansible.builtin.assert:
+            that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+            fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
+            success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
+        vars:
+            sudo_password_rule: ubtu22cis_rule_5_3_4
+  when:
+      - ubtu22cis_rule_5_3_4
+  tags:
+      - always
+
 - name: Check ubtu22cis_bootloader_password_hash variable has been changed
   ansible.builtin.assert:
       that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
@@ -157,7 +178,8 @@
         when:
             - skip_reboot
 
-- import_tasks: post_remediation_audit.yml
+- name: run post remediation audit
+  ansible.builtin.import_tasks: post_remediation_audit.yml
   when:
       - run_audit
 

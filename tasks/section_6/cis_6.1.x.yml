@@ -118,7 +118,7 @@
       - level1-workstation
       - patch
       - permissions
-      - rule_6.1.10
+      - rule_6.1.8
 
 - name: "6.1.9 | PATCH | Ensure no world writable files exist"
   block:

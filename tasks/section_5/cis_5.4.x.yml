@@ -147,7 +147,7 @@
         register: ubtu22cis_5_4_4_pam_unix_state
 
       - name: "5.4.4 | PATCH | Ensure password hashing algorithm is SHA-512 | Set hashing if pam_unix.so exists"
-        pamd:
+        community.general.pamd:
             name: common-password
             type: password
             control: '[success=1 default=ignore]'
