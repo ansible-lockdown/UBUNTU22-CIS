@@ -552,9 +552,8 @@ ubtu22cis_audit_back_log_limit: 8192
 
 # Control 4.1.2.1
 # ubtu22cis_max_log_file_size is largest the log file will become in MB
-# This shoudl be set based on your sites policy
+# This should be set based on your sites policy
 ubtu22cis_max_log_file_size: 10
-
 ### 4.1.3.x audit template
 update_audit_template: false
 

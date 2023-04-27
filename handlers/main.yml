@@ -1,37 +1,37 @@
 ---
 
 - name: Remount tmp
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /tmp
       state: remounted
 
 - name: Remount var
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /var
       state: remounted
 
 - name: Remount var_tmp
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /var/tmp
       state: remounted
 
 - name: Remount var_log
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /var/log
       state: remounted
 
 - name: Remount var_log_audit
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /var/log/audit
       state: remounted
 
 - name: Remount home
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /home
       state: remounted
 
 - name: Remount dev_shm
-  ansible.builtin.mount:
+  ansible.posix.mount:
       name: /dev/shm
       src: /dev/shm
       state: remounted
@@ -74,21 +74,21 @@
       state: restarted
 
 - name: Flush ipv4 route table
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: net.ipv4.route.flush
       value: '1'
       sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
 - name: Flush ipv6 route table
-  ansible.builtin.sysctl:
+  ansible.posix.sysctl:
       name: net.ipv6.route.flush
       value: '1'
       sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
 - name: Reload ufw
-  ufw:
+  community.general.ufw:
       state: reloaded
 
 - name: Iptables persistent
@@ -122,8 +122,6 @@
 
 - name: Restart auditd
   ansible.builtin.shell: service auditd restart
-  args:
-      warn: false
   when:
       - audit_rules_updated.changed or
         rule_4_1_2_1.changed or
