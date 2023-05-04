@@ -1,87 +1,127 @@
 ---
 
-- name: grub update
-  command: update-grub
+- name: Remount tmp
+  ansible.posix.mount:
+      name: /tmp
+      state: remounted
+
+- name: Remount var
+  ansible.posix.mount:
+      name: /var
+      state: remounted
+
+- name: Remount var_tmp
+  ansible.posix.mount:
+      name: /var/tmp
+      state: remounted
+
+- name: Remount var_log
+  ansible.posix.mount:
+      name: /var/log
+      state: remounted
+
+- name: Remount var_log_audit
+  ansible.posix.mount:
+      name: /var/log/audit
+      state: remounted
+
+- name: Remount home
+  ansible.posix.mount:
+      name: /home
+      state: remounted
+
+- name: Remount dev_shm
+  ansible.posix.mount:
+      name: /dev/shm
+      src: /dev/shm
+      state: remounted
+
+- name: Grub update
+  ansible.builtin.shell: update-grub
   failed_when: false
 
-- name: reload gdm3
-  command: dpkg-reconfigure gdm3
+- name: Restart timeservice
+  ansible.builtin.systemd:
+      name: "{{ ubtu22cis_time_sync_tool }}"
+      state: restarted
+
+- name: Reload systemctl
+  ansible.builtin.systemd:
+      daemon_reload: true
+
+- name: Update dconf
+  ansible.builtin.shell: dconf update
   failed_when: false
 
-- name: restart postfix
-  service:
+- name: Restart postfix
+  ansible.builtin.service:
       name: postfix
       state: restarted
 
-- name: restart exim4
-  service:
+- name: Restart syslog service
+  ansible.builtin.systemd:
+      name: "{{ ubtu22cis_syslog_service }}"
+      state: restarted
+
+- name: Restart journald
+  ansible.builtin.systemd:
+      name: systemd-journald
+      state: restarted
+
+- name: Restart exim4
+  ansible.builtin.systemd:
       name: exim4
       state: restarted
 
-- name: sysctl flush ipv4 route table
-  sysctl:
+- name: Flush ipv4 route table
+  ansible.posix.sysctl:
       name: net.ipv4.route.flush
       value: '1'
-      sysctl_set: yes
+      sysctl_set: true
   when: ansible_virtualization_type != "docker"
 
-- name: reload ufw
-  ufw:
+- name: Flush ipv6 route table
+  ansible.posix.sysctl:
+      name: net.ipv6.route.flush
+      value: '1'
+      sysctl_set: true
+  when: ansible_virtualization_type != "docker"
+
+- name: Reload ufw
+  community.general.ufw:
       state: reloaded
 
-- name: iptables presistent
-  shell: bash -c "iptables-save > /etc/iptables/rules.v4"
+- name: Iptables persistent
+  ansible.builtin.shell: bash -c "iptables-save > /etc/iptables/rules.v4"
   changed_when: ubtu22cis_iptables_save.rc == 0
   failed_when: ubtu22cis_iptables_save.rc > 0
   register: ubtu22cis_iptables_save
 
-- name: ip6tables persistent
-  shell: bash -c "ip6tables-save > /etc/iptables/rules.v6"
+- name: Ip6tables persistent
+  ansible.builtin.shell: bash -c "ip6tables-save > /etc/iptables/rules.v6"
   changed_when: ubtu22cis_ip6tables_save.rc == 0
   failed_when: ubtu22cis_ip6tables_save.rc > 0
   register: ubtu22cis_ip6tables_save
 
-- name: sysctl flush ipv6 route table
-  sysctl:
-      name: net.ipv6.route.flush
-      value: '1'
-      sysctl_set: yes
-  when: ansible_virtualization_type != "docker"
+- name: Auditd rules reload
+  ansible.builtin.shell: augenrules --load
+  when:
+      - '"No change" not in ubtu22cis_rule_4_1_3_21_augen_check.stdout'
 
-# - name: auditd immutable
-#   block:
-#       # - name: "HANDLER | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Get status"
-#       - name: auditd immutable
-#         shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu22cis_auditd_immutable_check
-
-#       # - name: "HANDLER | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Set reboot required"
-#       - name: auditd immutable
-#         debug:
-#             msg: "Reboot required for auditd to apply new rules as immutable set"
-#         notify: change_requires_reboot
-#         when: ubtu22cis_auditd_immutable_check.stdout == '1'
-
-## Auditd tasks note order for handlers to run
-
-- name: auditd_immutable_check
-  shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
+- name: Auditd_immutable_check
+  ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
   changed_when: false
   register: auditd_immutable_check
 
-- name: audit_immutable_fact
-  debug:
+- name: Audit_immutable_fact
+  ansible.builtin.debug:
       msg: "Reboot required for auditd to apply new rules as immutable set"
   notify: change_requires_reboot
   when:
       - auditd_immutable_check.stdout == '1'
 
-- name: restart auditd
-  shell: service auditd restart
-  args:
-      warn: false
+- name: Restart auditd
+  ansible.builtin.shell: service auditd restart
   when:
       - audit_rules_updated.changed or
         rule_4_1_2_1.changed or
@@ -91,21 +131,16 @@
       - skip_ansible_lint
 
 - name: remount tmp
-  shell: mount -o remount /tmp
-
-- name: restart rsyslog
-  service:
-      name: rsyslog
-      state: restarted
+  ansible.builtin.shell: mount -o remount /tmp
 
 - name: restart sshd
-  service:
+  ansible.builtin.systemd:
       name: sshd
       state: restarted
 
 - name: reload gdm
-  command: dpkg-reconfigure gdm3
+  ansible.builtin.shell: dpkg-reconfigure gdm3
 
 - name: change_requires_reboot
-  set_fact:
+  ansible.builtin.set_fact:
       change_requires_reboot: true

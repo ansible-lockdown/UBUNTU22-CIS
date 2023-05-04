@@ -1,24 +1,32 @@
 ---
 
-# If you would like a report at the end accordin to OpenSCAP as to the report results
-# then you should set ubtu22cis_oscap_scan to true/yes.
-# NOTE: This requires the python_xmltojson package on the control host.
-ubtu22cis_oscap_scan: no
-ubtu22cis_report_dir: /tmp
-
-ubtu22cis_section1_patch: true
-ubtu22cis_section2_patch: true
-ubtu22cis_section3_patch: true
-ubtu22cis_section4_patch: true
-ubtu22cis_section5_patch: true
-ubtu22cis_section6_patch: true
+ubtu22cis_section1: true
+ubtu22cis_section2: true
+ubtu22cis_section3: true
+ubtu22cis_section4: true
+ubtu22cis_section5: true
+ubtu22cis_section6: true
 
 # System will reboot if false, can give better audit results
-ubtu22_skip_reboot: true
+skip_reboot: true
 
 ## Benchmark name used by auditing control role
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
+benchmark_version: v1.0.0
+# Used for audit
+ubtu22cis_level_1: true
+ubtu22cis_level_2: true
+
+## Run tasks that may have an potential high impact to a running system
+ubtu22cis_disruption_high: true
+
+## Setting 1.4.1 will mean a password is required to boot
+## this will allow a system boot when set to false
+ubtu22cis_ask_passwd_to_boot: false
+
+# tweak role to run in a non-privileged container (default value)- dynamically discovered in tasks/main.yml
+system_is_container: false
 
 ### Audit Binary is required on the remote host
 setup_audit: false
@@ -41,31 +49,6 @@ audit_cmd_timeout: 60000
 
 ### End Audit enablements ####
 
-# We've defined complexity-high to mean that we cannot automatically remediate
-# the rule in question.  In the future this might mean that the remediation
-# may fail in some cases.
-ubtu22cis_complexity_high: false
-
-# Show "changed" for complex items not remediated per complexity-high setting
-# to make them stand out.  "changed" items on a second run of the role would
-# indicate items requiring manual review.
-ubtu22cis_audit_complex: true
-
-# We've defined disruption-high to indicate items that are likely to cause
-# disruption in a normal workflow.  These items can be remediated automatically
-# but are disabled by default to avoid disruption.
-# Value of true runs duscruptive tasks, value of false will skip disruptive tasks
-ubtu22cis_disruption_high: true
-
-# Show "changed" for disruptive items not remediated per disruption-high
-# setting to make them stand out.
-ubtu22cis_audit_disruptive: yes
-
-ubtu22cis_skip_for_travis: false
-
-ubtu22cis_workaround_for_disa_benchmark: true
-ubtu22cis_workaround_for_ssg_benchmark: true
-
 # tweak role to run in a chroot, such as in kickstart %post script
 ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 
@@ -75,42 +58,39 @@ ubtu22cis_system_is_container: false
 # skip events for ec2 instance testing pipeline
 system_is_ec2: false
 
-# Whether to skip the reboot
-skip_reboot: true
-
 # Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
 # Additional Process Hardening, Mandatory Access Control, Command Line Warning Banners, and GNOME Display Manager)
 ubtu22cis_rule_1_1_1_1: true
 ubtu22cis_rule_1_1_1_2: true
 ubtu22cis_rule_1_1_1_3: true
-ubtu22cis_rule_1_1_1_4: true
-ubtu22cis_rule_1_1_1_5: true
-ubtu22cis_rule_1_1_1_6: true
-ubtu22cis_rule_1_1_1_7: true
-ubtu22cis_rule_1_1_2: true
-ubtu22cis_rule_1_1_3: true
-ubtu22cis_rule_1_1_4: true
-ubtu22cis_rule_1_1_5: true
-ubtu22cis_rule_1_1_6: true
-ubtu22cis_rule_1_1_7: true
-ubtu22cis_rule_1_1_8: true
+ubtu22cis_rule_1_1_2_1: true
+ubtu22cis_rule_1_1_2_2: true
+ubtu22cis_rule_1_1_2_3: true
+ubtu22cis_rule_1_1_2_4: true
+ubtu22cis_rule_1_1_3_1: true
+ubtu22cis_rule_1_1_3_2: true
+ubtu22cis_rule_1_1_3_3: true
+ubtu22cis_rule_1_1_4_1: true
+ubtu22cis_rule_1_1_4_2: true
+ubtu22cis_rule_1_1_4_3: true
+ubtu22cis_rule_1_1_4_4: true
+ubtu22cis_rule_1_1_5_1: true
+ubtu22cis_rule_1_1_5_2: true
+ubtu22cis_rule_1_1_5_3: true
+ubtu22cis_rule_1_1_5_4: true
+ubtu22cis_rule_1_1_6_1: true
+ubtu22cis_rule_1_1_6_2: true
+ubtu22cis_rule_1_1_6_3: true
+ubtu22cis_rule_1_1_6_4: true
+ubtu22cis_rule_1_1_7_1: true
+ubtu22cis_rule_1_1_7_2: true
+ubtu22cis_rule_1_1_7_3: true
+ubtu22cis_rule_1_1_8_1: true
+ubtu22cis_rule_1_1_8_2: true
+ubtu22cis_rule_1_1_8_3: true
 ubtu22cis_rule_1_1_9: true
 ubtu22cis_rule_1_1_10: true
-ubtu22cis_rule_1_1_11: true
-ubtu22cis_rule_1_1_12: true
-ubtu22cis_rule_1_1_13: true
-ubtu22cis_rule_1_1_14: true
-ubtu22cis_rule_1_1_15: true
-ubtu22cis_rule_1_1_16: true
-ubtu22cis_rule_1_1_17: true
-ubtu22cis_rule_1_1_18: true
-ubtu22cis_rule_1_1_19: true
-ubtu22cis_rule_1_1_20: true
-ubtu22cis_rule_1_1_21: true
-ubtu22cis_rule_1_1_22: true
-ubtu22cis_rule_1_1_23: true
-ubtu22cis_rule_1_1_24: true
 ubtu22cis_rule_1_2_1: true
 ubtu22cis_rule_1_2_2: true
 ubtu22cis_rule_1_3_1: true
@@ -118,7 +98,6 @@ ubtu22cis_rule_1_3_2: true
 ubtu22cis_rule_1_4_1: true
 ubtu22cis_rule_1_4_2: true
 ubtu22cis_rule_1_4_3: true
-ubtu22cis_rule_1_4_4: true
 ubtu22cis_rule_1_5_1: true
 ubtu22cis_rule_1_5_2: true
 ubtu22cis_rule_1_5_3: true
@@ -137,6 +116,12 @@ ubtu22cis_rule_1_8_1: true
 ubtu22cis_rule_1_8_2: true
 ubtu22cis_rule_1_8_3: true
 ubtu22cis_rule_1_8_4: true
+ubtu22cis_rule_1_8_5: true
+ubtu22cis_rule_1_8_6: true
+ubtu22cis_rule_1_8_7: true
+ubtu22cis_rule_1_8_8: true
+ubtu22cis_rule_1_8_9: true
+ubtu22cis_rule_1_8_10: true
 ubtu22cis_rule_1_9: true
 
 # Section 2 Fixes
@@ -145,36 +130,55 @@ ubtu22cis_rule_2_1_1_1: true
 ubtu22cis_rule_2_1_1_2: true
 ubtu22cis_rule_2_1_1_3: true
 ubtu22cis_rule_2_1_1_4: true
-ubtu22cis_rule_2_1_2: true
-ubtu22cis_rule_2_1_3: true
-ubtu22cis_rule_2_1_4: true
-ubtu22cis_rule_2_1_5: true
-ubtu22cis_rule_2_1_6: true
-ubtu22cis_rule_2_1_7: true
-ubtu22cis_rule_2_1_8: true
-ubtu22cis_rule_2_1_9: true
-ubtu22cis_rule_2_1_10: true
-ubtu22cis_rule_2_1_11: true
-ubtu22cis_rule_2_1_12: true
-ubtu22cis_rule_2_1_13: true
-ubtu22cis_rule_2_1_14: true
-ubtu22cis_rule_2_1_15: true
-ubtu22cis_rule_2_1_16: true
-ubtu22cis_rule_2_1_17: true
+# Chrony
+ubtu22cis_rule_2_1_2_1: true
+ubtu22cis_rule_2_1_2_2: true
+ubtu22cis_rule_2_1_2_3: true
+# systemd-timesyncd
+ubtu22cis_rule_2_1_3_1: true
+ubtu22cis_rule_2_1_3_2: true
+
+# ntp
+ubtu22cis_rule_2_1_4_1: true
+ubtu22cis_rule_2_1_4_2: true
+ubtu22cis_rule_2_1_4_3: true
+ubtu22cis_rule_2_1_4_4: true
+# Services
 ubtu22cis_rule_2_2_1: true
 ubtu22cis_rule_2_2_2: true
 ubtu22cis_rule_2_2_3: true
 ubtu22cis_rule_2_2_4: true
 ubtu22cis_rule_2_2_5: true
 ubtu22cis_rule_2_2_6: true
-ubtu22cis_rule_2_3: true
+ubtu22cis_rule_2_2_7: true
+ubtu22cis_rule_2_2_8: true
+ubtu22cis_rule_2_2_9: true
+ubtu22cis_rule_2_2_10: true
+ubtu22cis_rule_2_2_11: true
+ubtu22cis_rule_2_2_12: true
+ubtu22cis_rule_2_2_13: true
+ubtu22cis_rule_2_2_14: true
+ubtu22cis_rule_2_2_15: true
+ubtu22cis_rule_2_2_16: true
+ubtu22cis_rule_2_2_17: true
+# Service Client
+ubtu22cis_rule_2_3_1: true
+ubtu22cis_rule_2_3_2: true
+ubtu22cis_rule_2_3_3: true
+ubtu22cis_rule_2_3_4: true
+ubtu22cis_rule_2_3_5: true
+ubtu22cis_rule_2_3_6: true
+# Non-essential services
+ubtu22cis_rule_2_4: true
 
-# Section 3 Fixes
-# Section 3 is Network Configuration (Disable Unused Networks, Network Parameters (Host Only), Network Parameters (Host and Router), Uncommon Network Protocols, and Firewall Configuration)
+# Section 3 Network Configuration
+# Disable Unused Network
 ubtu22cis_rule_3_1_1: true
 ubtu22cis_rule_3_1_2: true
+# Network Parameters (Host Only)
 ubtu22cis_rule_3_2_1: true
 ubtu22cis_rule_3_2_2: true
+# Network Parameters (Host and Router)
 ubtu22cis_rule_3_3_1: true
 ubtu22cis_rule_3_3_2: true
 ubtu22cis_rule_3_3_3: true
@@ -184,10 +188,13 @@ ubtu22cis_rule_3_3_6: true
 ubtu22cis_rule_3_3_7: true
 ubtu22cis_rule_3_3_8: true
 ubtu22cis_rule_3_3_9: true
+# Uncommon Network Protocols
 ubtu22cis_rule_3_4_1: true
 ubtu22cis_rule_3_4_2: true
 ubtu22cis_rule_3_4_3: true
 ubtu22cis_rule_3_4_4: true
+# Firewall Configuration
+# UFW
 ubtu22cis_rule_3_5_1_1: true
 ubtu22cis_rule_3_5_1_2: true
 ubtu22cis_rule_3_5_1_3: true
@@ -195,6 +202,7 @@ ubtu22cis_rule_3_5_1_4: true
 ubtu22cis_rule_3_5_1_5: true
 ubtu22cis_rule_3_5_1_6: true
 ubtu22cis_rule_3_5_1_7: true
+# nftables
 ubtu22cis_rule_3_5_2_1: true
 ubtu22cis_rule_3_5_2_2: true
 ubtu22cis_rule_3_5_2_3: true
@@ -205,6 +213,7 @@ ubtu22cis_rule_3_5_2_7: true
 ubtu22cis_rule_3_5_2_8: true
 ubtu22cis_rule_3_5_2_9: true
 ubtu22cis_rule_3_5_2_10: true
+# iptables
 ubtu22cis_rule_3_5_3_1_1: true
 ubtu22cis_rule_3_5_3_1_2: true
 ubtu22cis_rule_3_5_3_1_3: true
@@ -226,30 +235,61 @@ ubtu22cis_rule_4_1_1_4: true
 ubtu22cis_rule_4_1_2_1: true
 ubtu22cis_rule_4_1_2_2: true
 ubtu22cis_rule_4_1_2_3: true
-ubtu22cis_rule_4_1_3: true
-ubtu22cis_rule_4_1_4: true
-ubtu22cis_rule_4_1_5: true
-ubtu22cis_rule_4_1_6: true
-ubtu22cis_rule_4_1_7: true
-ubtu22cis_rule_4_1_8: true
-ubtu22cis_rule_4_1_9: true
-ubtu22cis_rule_4_1_10: true
-ubtu22cis_rule_4_1_11: true
-ubtu22cis_rule_4_1_12: true
-ubtu22cis_rule_4_1_13: true
-ubtu22cis_rule_4_1_14: true
-ubtu22cis_rule_4_1_15: true
-ubtu22cis_rule_4_1_16: true
-ubtu22cis_rule_4_1_17: true
+# Auditd rules
+ubtu22cis_rule_4_1_3_1: true
+ubtu22cis_rule_4_1_3_2: true
+ubtu22cis_rule_4_1_3_3: true
+ubtu22cis_rule_4_1_3_4: true
+ubtu22cis_rule_4_1_3_5: true
+ubtu22cis_rule_4_1_3_6: true
+ubtu22cis_rule_4_1_3_7: true
+ubtu22cis_rule_4_1_3_8: true
+ubtu22cis_rule_4_1_3_9: true
+ubtu22cis_rule_4_1_3_10: true
+ubtu22cis_rule_4_1_3_11: true
+ubtu22cis_rule_4_1_3_12: true
+ubtu22cis_rule_4_1_3_13: true
+ubtu22cis_rule_4_1_3_14: true
+ubtu22cis_rule_4_1_3_15: true
+ubtu22cis_rule_4_1_3_16: true
+ubtu22cis_rule_4_1_3_17: true
+ubtu22cis_rule_4_1_3_18: true
+ubtu22cis_rule_4_1_3_19: true
+ubtu22cis_rule_4_1_3_20: true
+ubtu22cis_rule_4_1_3_21: true
+# Auditd file access
+ubtu22cis_rule_4_1_4_1: true
+ubtu22cis_rule_4_1_4_2: true
+ubtu22cis_rule_4_1_4_3: true
+ubtu22cis_rule_4_1_4_4: true
+ubtu22cis_rule_4_1_4_5: true
+ubtu22cis_rule_4_1_4_6: true
+ubtu22cis_rule_4_1_4_7: true
+ubtu22cis_rule_4_1_4_8: true
+ubtu22cis_rule_4_1_4_9: true
+ubtu22cis_rule_4_1_4_10: true
+ubtu22cis_rule_4_1_4_11: true
+# Configure Logging
+## journald
+ubtu22cis_rule_4_2_1_1_1: true
+ubtu22cis_rule_4_2_1_1_2: true
+ubtu22cis_rule_4_2_1_1_3: true
+ubtu22cis_rule_4_2_1_1_4: true
 ubtu22cis_rule_4_2_1_1: true
 ubtu22cis_rule_4_2_1_2: true
 ubtu22cis_rule_4_2_1_3: true
 ubtu22cis_rule_4_2_1_4: true
 ubtu22cis_rule_4_2_1_5: true
 ubtu22cis_rule_4_2_1_6: true
+ubtu22cis_rule_4_2_1_7: true
+# rsyslog
 ubtu22cis_rule_4_2_2_1: true
 ubtu22cis_rule_4_2_2_2: true
 ubtu22cis_rule_4_2_2_3: true
+ubtu22cis_rule_4_2_2_4: true
+ubtu22cis_rule_4_2_2_5: true
+ubtu22cis_rule_4_2_2_6: true
+ubtu22cis_rule_4_2_2_7: true
 ubtu22cis_rule_4_2_3: true
 ubtu22cis_rule_4_3: true
 ubtu22cis_rule_4_4: true
@@ -266,9 +306,29 @@ ubtu22cis_rule_5_1_6: true
 ubtu22cis_rule_5_1_7: true
 ubtu22cis_rule_5_1_8: true
 ubtu22cis_rule_5_1_9: true
+
 ubtu22cis_rule_5_2_1: true
 ubtu22cis_rule_5_2_2: true
 ubtu22cis_rule_5_2_3: true
+ubtu22cis_rule_5_2_4: true
+ubtu22cis_rule_5_2_5: true
+ubtu22cis_rule_5_2_6: true
+ubtu22cis_rule_5_2_7: true
+ubtu22cis_rule_5_2_8: true
+ubtu22cis_rule_5_2_9: true
+ubtu22cis_rule_5_2_10: true
+ubtu22cis_rule_5_2_11: true
+ubtu22cis_rule_5_2_12: true
+ubtu22cis_rule_5_2_13: true
+ubtu22cis_rule_5_2_14: true
+ubtu22cis_rule_5_2_15: true
+ubtu22cis_rule_5_2_16: true
+ubtu22cis_rule_5_2_17: true
+ubtu22cis_rule_5_2_18: true
+ubtu22cis_rule_5_2_19: true
+ubtu22cis_rule_5_2_20: true
+ubtu22cis_rule_5_2_21: true
+ubtu22cis_rule_5_2_22: true
 ubtu22cis_rule_5_3_1: true
 ubtu22cis_rule_5_3_2: true
 ubtu22cis_rule_5_3_3: true
@@ -276,25 +336,11 @@ ubtu22cis_rule_5_3_4: true
 ubtu22cis_rule_5_3_5: true
 ubtu22cis_rule_5_3_6: true
 ubtu22cis_rule_5_3_7: true
-ubtu22cis_rule_5_3_8: true
-ubtu22cis_rule_5_3_9: true
-ubtu22cis_rule_5_3_10: true
-ubtu22cis_rule_5_3_11: true
-ubtu22cis_rule_5_3_12: true
-ubtu22cis_rule_5_3_13: true
-ubtu22cis_rule_5_3_14: true
-ubtu22cis_rule_5_3_15: true
-ubtu22cis_rule_5_3_16: true
-ubtu22cis_rule_5_3_17: true
-ubtu22cis_rule_5_3_18: true
-ubtu22cis_rule_5_3_19: true
-ubtu22cis_rule_5_3_20: true
-ubtu22cis_rule_5_3_21: true
-ubtu22cis_rule_5_3_22: true
 ubtu22cis_rule_5_4_1: true
 ubtu22cis_rule_5_4_2: true
 ubtu22cis_rule_5_4_3: true
 ubtu22cis_rule_5_4_4: true
+ubtu22cis_rule_5_4_5: true
 ubtu22cis_rule_5_5_1_1: true
 ubtu22cis_rule_5_5_1_2: true
 ubtu22cis_rule_5_5_1_3: true
@@ -322,7 +368,6 @@ ubtu22cis_rule_6_1_10: true
 ubtu22cis_rule_6_1_11: true
 ubtu22cis_rule_6_1_12: true
 ubtu22cis_rule_6_1_13: true
-ubtu22cis_rule_6_1_14: true
 ubtu22cis_rule_6_2_1: true
 ubtu22cis_rule_6_2_2: true
 ubtu22cis_rule_6_2_3: true
@@ -383,17 +428,6 @@ ubtu22cis_desktop_required: false
 
 # Section 1 Control Variables
 
-# Control 1.1.12/1.1.13/1.1.14
-# These are the settings for the /var/tmp mount
-# To conform to CIS control 1.1.12 nodev needs to be present in opts
-# To conform to CIS control 1.1.13 nosuid needs to be present in opts
-# To conform to CIS control 1.1.14 noexec needs to be present in opts
-ubtu22cis_vartmp:
-    source: /tmp
-    fstype: none
-    opts: "defaults,nodev,nosuid,noexec,bind"
-    enabled: false
-
 # Control 1.3.1 - allow aide to be configured
 ubtu22cis_config_aide: true
 
@@ -409,17 +443,37 @@ ubtu22cis_aide_cron:
     aide_month: '*'
     aide_weekday: '*'
 
-# Control 1.4.4
+# Control 1.4.1
 # THIS VARAIBLE SHOULD BE CHANGED AND INCORPORATED INTO VAULT
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
-ubtu22cis_root_pw: "Password1"
+ubtu22cis_grub_user: root
+ubtu22cis_grub_user_file: /etc/grub.d/00_user
+ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
+ubtu22cis_set_boot_pass: false
 
-# Control 1.8.2
+ubtu22cis_grub_file: /etc/default/grub.cfg
+
+## 1.6.1.x apparmor
+
+ubtu22cis_apparmor_disable: false
+ubtu22cis_apparmor_enforce_only: false
+
+# 1.7.1
+# disable dynamic motd to stop extra sshd message from appearing
+ubtu20cis_disable_dynamic_motd: true
+
+# Control 1.7.2
 # This will be the motd banner must not contain the below items in order to be compliant with Ubuntu 20 CIS
 # \m, \r, \s, \v or references to the OS platform
 ubtu22cis_warning_banner: |
         Authorized uses only. All activity may be monitored and reported.
+
+# Control 1.8.4
+# Settings for desktop
+ubtu22cis_dconf_db_name: local
+ubtu22cis_screensaver_idle_delay: 900  # Set max value for idle-delay in seconds (between 1 and 900)
+ubtu22cis_screensaver_lock_delay: 5  # Set max value for lock-delay in seconds (between 0 and 5)
 
 # Section 2 Control Variables
 # Control 2.1.1.1
@@ -427,41 +481,47 @@ ubtu22cis_warning_banner: |
 # The two options are chrony, ntp, or systemd-timesyncd
 ubtu22cis_time_sync_tool: "ntp"
 
-# Control 2.1.1.2
-# ubtu22cis_ntp_server_list is the list ntp servers
-# ubtu22cis_ntp_fallback_server_list is the list of fallback NTP servers
-ubtu22cis_ntp_server_list: "0.debian.pool.ntp.org 1.debian.pool.ntp.org"
-ubtu22cis_ntp_fallback_server_list: "2.debian.pool.ntp.org 3.debian.pool.ntp.org"
+# Control 2.1.2.1 2.1.3.1
+# Time settings used for all versions
+ubtu22cis_time_pool:
+    - name: time.nist.gov
+      options: iburst maxsources 4
 
-# Control 2.1.1.3/2.1.1.4
-# ubtu22cis_chrony_server_options is the server options for chrony
-ubtu22cis_chrony_server_options: "minpoll 8"
-# ubtu22cis_time_synchronization_servers are the synchronization servers
-ubtu22cis_time_synchronization_servers:
-    - 0.pool.ntp.org
-    - 1.pool.ntp.org
-    - 2.pool.ntp.org
-    - 3.pool.ntp.org
-# ubtu22cis_chrony_user is the user that chrony will use, default is _chrony
-ubtu22cis_chrony_user: "_chrony"
-# ubtu22cis_ntp_server_options is the server options for ntp
-ubtu22cis_ntp_server_options: "iburst"
+ubtu22cis_time_servers:
+    - name: time-a-g.nist.gov
+      options: iburst
+    - name: time-b-g.nist.gov
+      options: iburst
+    - name: time-c-g.nist.gov
+      options: iburst
 
-# Control 2.1.15
+# Control 2.2.15
+ubtu22cis_is_mail_server: false
 # ubtu22_cis_mail_transfer_agent is the mail transfer agent in use
 # The options are exim4, postfix or other
 # ubtu22_cis_mail_transfer_agent: "other"
 
 # Section 3 Control Variables
+# Control 3.1.1
+# How to disable ipv6 either via grub or sysctl settings options: grub or sysctl
+ubuntu22cis_ipv6_disable: grub
+
 # Control 3.1.2
 # ubtu22cis_install_network_manager determines if this role can install network manager
 ubtu22cis_install_network_manager: true
 
+# Control 3.3.x
+# Ability to change the default file that sysctl saves config to for network changes
+ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
+
 # ubtu22cis_firewall_package is the toggle for which firewall system is in use
-# The valid options to use are ufw, nftables, or iptables
+# The valid options to use are ufw, nftables, or iptables Laternative set to 'none' if excluded
 # Warning!! nftables is not supported in this role and will only message out if nftables is selected
 # If using nftables please manually adjust firewall settings
-ubtu22cis_firewall_package: "iptables"
+ubtu22cis_firewall_package: "ufw"
+
+# If UFW force to use syctl settings now UFW
+ubtu22cis_ufw_use_sysctl: true
 
 # Control 3.5.1.5
 # ubtu22cis_ufw_allow_out_ports are the ports for the firewall to allow
@@ -478,11 +538,10 @@ ubtu22cis_ufw_allow_out_ports:
 # nftables configs are applied to
 # ubtu22cis_nftables_table_name: "inet filter"
 
-
 # Controls 3.5.3.2.1 through 3.5.3.3.4
 # The iptables module only writes to memory which means a reboot could revert settings
 # The below toggle will install iptables-persistent and save the rules in memory (/etc/iptables/rules.v4 or rules.v6)
-# This makes the CIS role changes permenant
+# This makes the CIS role changes permenant and is managed via a handler
 ubtu22cis_save_iptables_cis_rules: true
 
 # Section 4 Control Variables
@@ -493,11 +552,10 @@ ubtu22cis_audit_back_log_limit: 8192
 
 # Control 4.1.2.1
 # ubtu22cis_max_log_file_size is largest the log file will become in MB
-# This shoudl be set based on your sites policy
+# This should be set based on your sites policy
 ubtu22cis_max_log_file_size: 10
-
 ### 4.1.3.x audit template
-update_audit_template: true
+update_audit_template: false
 
 ## Advanced option found in auditd post
 allow_auditd_uid_user_exclusions: false
@@ -507,19 +565,25 @@ ubtu22cis_auditd:
     admin_space_left_action: halt
     max_log_file_action: keep_logs
 
-# Control 4.2.1.3
-# ubtu22cis_rsyslog_ansible_managed will toggle ansible automated configurations of rsyslog
-# You should set the rsyslog to your side specific needs. This toggle will use the example from
-# page 347 to set rsyslog loggin based on those configuration suggestions. Settings can be seen
-# in control 4.2.1.3
-ubtu22cis_rsyslog_ansible_managed: true
-
-# Control 4.2.1.5
-# ubtu22cis_remote_log_server is the remote logging server
+# Control 4.2.x
+# Set to be rsyslog or journald dependent on what you are using
+ubtu22cis_syslog_service: rsyslog
 ubtu22cis_remote_log_server: 192.168.2.100
-
-# Control 4.2.1.6
 ubtu22cis_system_is_log_server: true
+
+# Control 4.2.1.1.x & 4.2.1.x journald
+ubtu22cis_journal_upload_serverkeyfile:
+ubtu22cis_journal_servercertificatefile:
+ubtu22cis_journal_trustedcertificatefile:
+# ubtu22cis_journald_systemmaxuse: SystemMaxUse=
+# ubtu22cis_journald_systemkeepfree: SystemKeepFree=
+# ubtu22cis_journald_runtimemaxuse: RuntimeMaxUse=
+# ubtu22cis_journald_runtimekeepfree: RuntimeKeepFree
+# ubtu22cis_journald_maxfilesec: MaxFileSec=
+
+# Control 4.2.2.x Rsyslog
+
+ubtu22cis_rsyslog_ansible_managed: true
 
 # Control 4.3
 # ubtu22cis_logrotate is the log rotate frequencey. Options are daily, weekly, monthly, and yearly
@@ -533,44 +597,9 @@ ubtu22cis_logrotate: "daily"
 ubtu22cis_logrotate_create_settings: "0640"
 
 # Section 5 Control Variables
-# Control 5.2.1
-# ubtu22cis_sudo_package is the name of the sudo package to install
-# The possible values are "sudo" or "sudo-ldap"
-ubtu22cis_sudo_package: "sudo"
 
-# Control 5.2.3
-# ubtu22cis_sudo_logfile is the path and file name of the sudo log file
-ubtu22cis_sudo_logfile: "/var/log/sudo.log"
+# ubtu22cis_sshd will contain all sshd variables where possible.
 
-# ubtu22cis_sshd will contain all sshd variables. The task association and variable descriptions for each section are listed below
-# Control 5.3.4
-# allow_users, allow_groups, deny_users, and deny_groups. These are lists of users and groups to allow or deny ssh access to
-# These are lists that are just space delimited, for example allow_users: "vagrant ubuntu" for the vagrant and ubuntu users
-# Control 5.3.5
-# log_level is the log level variable. This needs to be set to VERBOSE or INFO to conform to CIS standards
-# Control 5.3.7
-# max_auth_tries is the max number of authentication attampts per connection.
-# This value should be 4 or less to conform to CIS standards
-# Control 5.3.13
-# ciphers is a comma seperated list of site approved ciphers
-# ONLY USE STRONG CIPHERS. Weak ciphers are listed below
-# DO NOT USE: 3des-cbc, aes128-cbc, aes192-cbc, and aes256-cbc
-# Control 5.3.14
-# MACs is the comma seperated list of site approved MAC algorithms that SSH can use during communication
-# ONLY USE STRONG ALGORITHMS. Weak algorithms are listed below
-# DO NOT USE: hmac-md5, hmac-md5-96, hmac-ripemd160, hmac-sha1, hmac-sha1-96, umac-64@openssh.com, umac-128@openssh.com, hmac-md5-etm@openssh.com,
-# hmac-md5-96-etm@openssh.com, hmac-ripemd160-etm@openssh.com, hmac-sha1-etm@openssh.com, hmac-sha1-96-etm@openssh.com, umac-64-etm@openssh.com, umac-128-etm@openssh.com
-# Control 5.3.15
-# kex_algorithms is comma seperated list of the algorithms for key exchange methods
-# ONLY USE STRONG ALGORITHMS. Weak algorithms are listed below
-# DO NOT USE: diffie-hellman-group1-sha1, diffie-hellman-group14-sha1, diffie-hellman-group-exchange-sha1
-# Control 5.3.16
-# client_alive_interval is the amount of time idle before ssh session terminated. Set to 300 or less to conform to CIS standards
-# client_alive_count_max will send client alive messages at the configured interval. Set to 3 or less to conform to CIS standards
-# Control 5.3.17
-# login_grace_time is the time allowed for successful authentication to the SSH server. This needs to be set to 60 seconds or less to conform to CIS standards
-# Control 5.3.22
-# max_sessions is the max number of open sessions permitted. Set the value to 4 or less to conform to CIS standards
 ubtu22cis_sshd:
     log_level: "INFO"
     max_auth_tries: 4
@@ -580,17 +609,36 @@ ubtu22cis_sshd:
     client_alive_interval: 300
     client_alive_count_max: 3
     login_grace_time: 60
-    max_sessions: 4
+    max_sessions: 8
     # WARNING: make sure you understand the precedence when working with these values!!
     allow_users: "vagrant ubuntu"
     allow_groups: "vagrant ubuntu"
     # deny_users:
     # deny_groups:
 
+# Control 5.3.1
+# ubtu22cis_sudo_package is the name of the sudo package to install
+# The possible values are "sudo" or "sudo-ldap"
+ubtu22cis_sudo_package: "sudo"
+
+# Control 5.3.3
+# ubtu22cis_sudo_logfile is the path and file name of the sudo log file
+ubtu22cis_sudo_logfile: "/var/log/sudo.log"
+#### 5.3.6
+ubtu22cis_sudo_timestamp_timeout: 15
+# Control 5.3.7
+ubtu22cis_sugroup: nosugroup
+
 # Control 5.4.3
 # ubtu22cis_pamd_pwhistory_remember is number of password chnage cycles a user can re-use a password
 # This needs to be 5 or more to conform to CIS standards
 ubtu22cis_pamd_pwhistory_remember: 5
+
+# Control 5.4.4
+# ubtu22cis_passwd_hash_algo is the hashing algorithm used
+ubtu22cis_passwd_hash_algo: yescrypt
+# Set pam as well as login defs if PAM is required
+ubtu22cis_passwd_setpam_hash_algo: false
 
 # ubtu22cis_pass will be password based variables
 # Control 5.5.1.1
@@ -619,9 +667,11 @@ ubtu22cis_shell_session_timeout:
     file: /etc/profile.d/tmout.sh
     timeout: 900
 
-# Control 5.7
-# ubtu22cis_su_group is the su group to use with pam_wheel
-ubtu22cis_su_group: "wheel"
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+discover_int_uid: false
+min_int_uid: 1000
+max_int_uid: 65533
 
 # Section 6 Control Variables
 # Control 6.1.10
@@ -659,14 +709,14 @@ ubtu22cis_dotperm_ansiblemanaged: true
 
 ### Audit binary settings ###
 audit_bin_version:
-    release: v0.3.18
-    checksum: 'sha256:432308ebca0caf8165d45bd27e3262126aad9d15572ac8cb3149b3c91f75aace'
+    release: v0.3.21
+    checksum: 'sha256:9a9200779603acf0353d2c0e85ae46e083596c10838eaf4ee050c924678e4fe3'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json
 
 # if get_audit_binary_method == download change accordingly
-audit_bin_url: "https://github.com/aelsabbahy/goss/releases/download/{{ audit_bin_version.release }}/goss-linux-amd64"
+audit_bin_url: "https://github.com/goss-org/goss/releases/download/{{ audit_bin_version.release }}/goss-linux-amd64"
 
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
 ## it is expected that it will be copied from somewhere accessible to the control node
@@ -677,7 +727,7 @@ audit_bin_copy_location: /some/accessible/path
 ## managed by the control audit_content
 # git
 audit_file_git: "https://github.com/ansible-lockdown/{{ benchmark }}-Audit.git"
-audit_git_version: main
+audit_git_version: "benchmark-{{ benchmark_version }}"
 
 # archive or copy:
 audit_conf_copy: "some path to copy from"
@@ -687,13 +737,13 @@ audit_files_url: "some url maybe s3?"
 
 ## Goss configuration information
 # Where the goss configs and outputs are stored
-audit_out_dir: '/var/tmp'
+audit_out_dir: '/opt'
 # Where the goss audit configuration will be stored
 audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
 
 # If changed these can affect other products
-pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
-post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
+post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
 audit_control_file: "{{ audit_conf_dir }}goss.yml"

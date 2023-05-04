@@ -1,35 +1,73 @@
 ---
 
+- name: "PRELIM | register if snap being used"
+  ansible.builtin.stat:
+      path: /snap/bin
+  register: snap_pkg_mgr
+  tags:
+      - rule_1.1.1.2
+      - section1
+
+- name: "PRELIM | Section 1.1 | Create list of mount points"
+  ansible.builtin.set_fact:
+      mount_names: "{{ ansible_mounts | map(attribute='mount') | list }}"
+  tags:
+      - always
+
+- name: PRELIM | Capture tmp mount type | discover mount tmp type
+  when:
+      - "'/tmp' in mount_names"
+      - ubtu22cis_rule_1_1_2_1 or
+        ubtu22cis_rule_1_1_2_2 or
+        ubtu22cis_rule_1_1_2_3 or
+        ubtu22cis_rule_1_1_2_4
+  block:
+      - name: PRELIM | Capture tmp mount type | discover mount tmp type
+        ansible.builtin.shell: systemctl is-enabled tmp.mount
+        register: tmp_mnt_type
+        changed_when: false
+        failed_when: tmp_mnt_type.rc not in [ 0, 1 ]
+
+      - name: PRELIM | Capture tmp mount type | Set fstab
+        ansible.builtin.set_fact:
+            tmp_mnt_type: fstab
+        when: "'generated' in tmp_mnt_type.stdout"
+
+      - name: PRELIM | Capture tmp mount type | Set systemd service
+        ansible.builtin.set_fact:
+            tmp_mnt_type: tmp_systemd
+        when: "'generated' not in tmp_mnt_type.stdout"
+
 - name: "PRELIM | Run apt update"
-  apt:
-      update_cache: yes
+  ansible.builtin.package:
+      update_cache: true
   when:
       - ubtu22cis_rule_1_3_1 or
         ubtu22cis_rule_1_9
 
 - name: "PRELIM | Check for autofs service"
-  shell: "systemctl show autofs | grep LoadState | cut -d = -f 2"
+  ansible.builtin.shell: "systemctl show autofs | grep LoadState | cut -d = -f 2"
   register: ubtu22cis_autofs_service_status
   changed_when: false
   check_mode: false
   when:
-      - ubtu22cis_rule_1_1_23
+      - ubtu22cis_rule_1_1_9
   tags:
       - skip_ansible_lint
       - section1
 
 - name: "PRELIM | Check for avahi-daemon service"
-  shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
+  ansible.builtin.shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
   register: avahi_service_status
   changed_when: false
   check_mode: false
   when:
-      - ubtu22cis_rule_2_1_3
+      - ubtu22cis_rule_2_2_2
   tags:
       - skip_ansible_lint
 
 - name: "PRELIM | Install Network-Manager"
-  apt:
+  ansible.builtin.package:
       name: network-manager
       state: present
   when:
@@ -37,8 +75,84 @@
       - not ubtu22cis_system_is_container
       - "'network-manager' not in ansible_facts.packages"
 
+- name: "PRELIM | PATCH | Ensure auditd is installed"
+  block:
+      - name: "PRELIM | PATCH | Ensure auditd is installed"
+        ansible.builtin.package:
+            name: ['auditd', 'audispd-plugins']
+            state: present
+
+      - name: "PRELIM | 4.1.4.5 | Audit conf and rules files | list files"
+        ansible.builtin.find:
+            path: /etc/audit/
+            file_type: file
+            recurse: true
+            patterns: '*.conf,*.rules'
+        register: auditd_conf_files
+  when:
+      - ubtu22cis_rule_4_1_1_1
+      - "'auditd' not in ansible_facts.packages or
+        'auditd-plugins' not in ansible_facts.packages"
+      - ubtu22cis_rule_4_1_4_5 or
+        ubtu22cis_rule_4_1_4_6 or
+        ubtu22cis_rule_4_1_4_7
+  tags:
+      - level2-server
+      - level2-workstation
+      - patch
+      - auditd
+      - rule_4.1.1.1
+      - rule_4.1.4.5
+      - rule_4.1.4.6
+      - rule_4.1.4.7
+
+- name: "PRELIM | 5.3.4 | Find all sudoers files."
+  ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  register: ubtu22cis_sudoers_files
+  when:
+      - ubtu22cis_rule_5_3_4 or
+        ubtu22cis_rule_5_3_5
+  tags:
+      - rule_5.3.4
+      - rule_5.3.5
+
+- name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
+  block:
+      - name: "PRELIM | Capture UID_MIN information from logins.def"
+        ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
+        changed_when: false
+        register: uid_min_id
+
+      - name: "PRELIM | Capture UID_MAX information from logins.def"
+        ansible.builtin.shell: grep -w "^UID_MAX" /etc/login.defs | awk '{print $NF}'
+        changed_when: false
+        register: uid_max_id
+
+      - name: "PRELIM | Capture GID_MIN information from logins.def"
+        ansible.builtin.shell: grep -w "^GID_MIN" /etc/login.defs | awk '{print $NF}'
+        changed_when: false
+        register: gid_min_id
+
+      - name: "PRELIM | set_facts for interactive uid/gid"
+        ansible.builtin.set_fact:
+            min_int_uid: "{{ uid_min_id.stdout }}"
+            max_int_uid: "{{ uid_max_id.stdout }}"
+            min_int_gid: "{{ gid_min_id.stdout }}"
+  when:
+      - not discover_int_uid
+
+- name: "PRELIM | Interactive User accounts"
+  ansible.builtin.shell: 'cat /etc/passwd | grep -Ev "nologin|/sbin|/bin" | cut -d: -f6'
+  changed_when: false
+  register: interactive_users_home
+  tags:
+      - always
+
 - name: "PRELIM | Install ACL"
-  apt:
+  ansible.builtin.package:
       name: acl
       state: present
   when:
@@ -46,34 +160,36 @@
       - ubtu22cis_install_network_manager
       - "'acl' not in ansible_facts.packages"
 
-- name: "PRELIM | Install iptables-persistent"
-  apt:
-      name: iptables-persistent
-      state: present
-  when:
-      - "'iptables-persistent' not in ansible_facts.packages"
-      - ubtu22cis_save_iptables_cis_rules
-      - ubtu22cis_firewall_package == "iptables"
-      - not ubtu22cis_ipv4_required
-      - ubtu22cis_rule_3_5_3_2_1 or
-        ubtu22cis_rule_3_5_3_2_2 or
-        ubtu22cis_rule_3_5_3_2_3 or
-        ubtu22cis_rule_3_5_3_2_4 or
-        ubtu22cis_rule_3_5_3_3_1 or
-        ubtu22cis_rule_3_5_3_3_2 or
-        ubtu22cis_rule_3_5_3_3_3 or
-        ubtu22cis_rule_3_5_3_3_4
+- name: "PRELIM | Gather UID 0 accounts other than root"
+  ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
+  changed_when: false
+  check_mode: false
+  register: ubtu22cis_uid_zero_accounts_except_root
+  tags:
+      - rule_6.2.10
+      - level1-server
+      - level1-workstation
+      - users
 
 - name: "PRELIM | List users accounts"
-  command: "awk -F: '{print $1}' /etc/passwd"
+  ansible.builtin.shell: "awk -F: '{print $1}' /etc/passwd"
   changed_when: false
   check_mode: false
   register: ubtu22cis_users
   when:
-      - ubtu22cis_rule_6_2_8 or
-        ubtu22cis_rule_6_2_9 or
-        ubtu22cis_rule_6_2_10
+      - ubtu22cis_rule_6_2_14 or
+        ubtu22cis_rule_6_2_15 or
+        ubtu22cis_rule_6_2_16
 
 - name: "PRELIM | Recapture packages"
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
+
+- name: "Optional | Patch | UFW firewall force to use /etc/sysctl.conf settings"
+  ansible.builtin.lineinfile:
+      path: /etc/default/ufw
+      regexp: ^IPT_SYSCTL=.*
+      line: IPT_SYSCTL=/etc/sysctl.conf
+  when:
+      - ubtu22cis_firewall_package == "ufw"
+      - ubtu22cis_ufw_use_sysctl

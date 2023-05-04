@@ -1,0 +1,88 @@
+---
+
+- name: "1.1.2.1 | AUDIT | Ensure /tmp is a separate partition"
+  block:
+      - name: "1.1.2.1 | AUDIT | Ensure /tmp is a separate partition | Absent"
+        ansible.builtin.debug:
+            msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
+
+      - name: "1.1.2.1 | WARN | Ensure /tmp is a separate partition | warn_count"
+        ansible.builtin.import_tasks: warning_facts.yml
+  vars:
+      warn_control_id: '1.1.2.1'
+      required_mount: '/tmp'
+  when:
+      - required_mount not in mount_names
+      - ubtu22cis_rule_1_1_2_1
+  tags:
+      - level1-server
+      - level1-workstation
+      - audit
+      - mounts
+      - rule_1.1.2.1
+      - tmp
+
+- name: |
+    "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition | tmp_systemd"
+    "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | tmp_systemd"
+    "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | tmp_systemd"
+  ansible.builtin.template:
+      src: etc/systemd/system/tmp.mount.j2
+      dest: /etc/systemd/system/tmp.mount
+      owner: root
+      group: root
+      mode: 0644
+  notify: Remount tmp
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - tmp_mnt_type == 'tmp_systemd'
+      - item.mount == "/tmp"
+      - ubtu22cis_rule_1_1_2_1 or
+        ubtu22cis_rule_1_1_2_2 or
+        ubtu22cis_rule_1_1_2_3 or
+        ubtu22cis_rule_1_1_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.2.2
+      - rule_1.1.2.3
+      - rule_1.1.2.4
+      - tmp
+
+- name: |
+    "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition | fstab"
+    "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | fstab"
+    "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | fstab"
+  ansible.posix.mount:
+      name: "{{ item.device }}"
+      src: "{{ item.fstype }}"
+      state: present
+      fstype: tmpfs
+      opts: defaults,{% if ubtu22cis_rule_1_1_2_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_2_4 %}nosuid{% endif %}
+  notify: remount tmp
+  with_items:
+      - "{{ ansible_mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - tmp_mnt_type == 'fstab'
+      - item.mount == "/tmp"
+      - ubtu22cis_rule_1_1_2_1 or
+        ubtu22cis_rule_1_1_2_2 or
+        ubtu22cis_rule_1_1_2_3 or
+        ubtu22cis_rule_1_1_2_4
+  tags:
+      - level1-server
+      - level1-workstation
+      - automated
+      - patch
+      - rule_1.1.1.2
+      - rule_1.1.2.2
+      - rule_1.1.2.3
+      - rule_1.1.2.4
+      - tmp

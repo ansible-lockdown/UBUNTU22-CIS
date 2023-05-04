@@ -5,7 +5,7 @@
   # - hardware for ansible_mounts
   # - platform for ansible_architecture (ansible internal)
   # - virtual for ansible_virtualization_type
-  setup:
+  ansible.builtin.setup:
       gather_subset: distribution,hardware,platform,virtual,!all,!min
   when:
       - ansible_distribution is not defined
@@ -13,7 +13,7 @@
       - always
 
 - name: Check OS version and family
-  fail:
+  ansible.builtin.fail:
       msg: "This role can only be run against Ubuntu 22. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
   when:
       - ansible_distribution == 'Ubuntu'
@@ -22,120 +22,178 @@
       - always
 
 - name: Check ansible version
-  fail:
-      msg: You must use ansible 2.1 or greater
-  when: not ansible_version.full is version_compare('2.1', '>=')
+  ansible.builtin.assert:
+      that: ansible_version.full is version_compare(min_ansible_version, '>=')
+      fail_msg: "You must use Ansible {{ min_ansible_version }} or greater"
+      success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
   tags:
       - always
 
+- name: "Check password set for connecting user"
+  block:
+      - name: Capture current password state of connecting user"
+        ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+        changed_when: false
+        failed_when: false
+        check_mode: false
+        register: ansible_user_password_set
+
+      - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
+        ansible.builtin.assert:
+            that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+            fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
+            success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
+        vars:
+            sudo_password_rule: ubtu22cis_rule_5_3_4
+  when:
+      - ubtu22cis_rule_5_3_4
+  tags:
+      - always
+
+- name: Check ubtu22cis_bootloader_password_hash variable has been changed
+  ansible.builtin.assert:
+      that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
+      msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
+  when:
+      - ubtu22cis_set_boot_pass
+      - ubtu22cis_rule_1_4_1
+  tags:
+      - always
+
+- name: Setup rules if container
+  block:
+      - name: Discover and set container variable if required
+        ansible.builtin.set_fact:
+            system_is_container: true
+
+      - name: Load variable for container
+        ansible.builtin.include_vars:
+            file: "{{ container_vars_file }}"
+
+      - name: Output if discovered is a container
+        ansible.builtin.debug:
+            msg: system has been discovered as a container
+        when:
+            - system_is_container
+  when:
+      - ansible_connection == 'docker' or
+        ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+  tags:
+      - container_discovery
+      - always
+
 - name: Gather the package facts before prelim
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
   tags:
       - always
 
-- import_tasks: prelim.yml
+- name: Run prelim tasks
+  ansible.builtin.import_tasks: prelim.yml
   tags:
       - prelim_tasks
       - run_audit
 
 - name: Gather the package facts after prelim
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
   tags:
       - always
 
-- import_tasks: pre_remediation_audit.yml
+- name: Run pre-remediation audit
+  ansible.builtin.import_tasks: pre_remediation_audit.yml
   when:
       - run_audit
   tags:
       - run_audit
 
-- include: parse_etc_password.yml
+- name: Run parse /etc/passwd
+  ansible.builtin.import_tasks: parse_etc_password.yml
   when:
-      - ubtu22cis_section5_patch or
-        ubtu22cis_section6_patch
+      - ubtu22cis_section5 or
+        ubtu22cis_section6
 
 - name: Gather the package facts
-  package_facts:
+  ansible.builtin.package_facts:
       manager: auto
   tags:
       - always
 
 - name: Include section 1 patches
-  import_tasks: section_1/main.yml
-  when: ubtu22cis_section1_patch
+  ansible.builtin.import_tasks: section_1/main.yml
+  when: ubtu22cis_section1
   tags:
       - section1
 
 - name: Include section 2 patches
-  import_tasks: section_2/main.yml
-  when: ubtu22cis_section2_patch
+  ansible.builtin.import_tasks: section_2/main.yml
+  when: ubtu22cis_section2
   tags:
       - section2
 
 - name: Include section 3 patches
-  import_tasks: section_3/main.yml
-  when: ubtu22cis_section3_patch
+  ansible.builtin.import_tasks: section_3/main.yml
+  when: ubtu22cis_section3
   tags:
       - section3
 
 - name: Include section 4 patches
-  import_tasks: section_4/main.yml
-  when: ubtu22cis_section4_patch
+  ansible.builtin.import_tasks: section_4/main.yml
+  when: ubtu22cis_section4
   tags:
       - section4
 
 - name: Include section 5 patches
-  import_tasks: section_5/main.yml
-  when: ubtu22cis_section5_patch
+  ansible.builtin.import_tasks: section_5/main.yml
+  when: ubtu22cis_section5
   tags:
       - section5
 
 - name: Include section 6 patches
-  import_tasks: section_6/main.yml
-  when: ubtu22cis_section6_patch
+  ansible.builtin.import_tasks: section_6/main.yml
+  when: ubtu22cis_section6
   tags:
       - section6
 
 - name: run auditd logic
-  import_tasks: auditd.yml
+  ansible.builtin.import_tasks: auditd.yml
   when: update_audit_template
   tags:
       - always
 
 - name: flush handlers
-  meta: flush_handlers
+  ansible.builtin.meta: flush_handlers
 
 - name: reboot system
   block:
       - name: reboot system if not skipped
-        reboot:
+        ansible.builtin.reboot:
         when:
-            - not ubtu22_skip_reboot
+            - not skip_reboot
 
       - name: Warning a reboot required but skip option set
-        debug:
+        ansible.builtin.debug:
             msg: "Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results"
         changed_when: true
         when:
-            - ubtu22_skip_reboot
+            - skip_reboot
 
-- import_tasks: post_remediation_audit.yml
+- name: run post remediation audit
+  ansible.builtin.import_tasks: post_remediation_audit.yml
   when:
       - run_audit
 
 - name: Show Audit Summary
-  debug:
+  ansible.builtin.debug:
       msg: "{{ audit_results.split('\n') }}"
   when:
       - run_audit
   tags:
       - run_audit
 
-- name: Display warning counts and related control IDs
-  debug:
-      msg: "You have {{ warn_count }} Warning(s) that require investigation that are related to the following control ID(s) {{ control_number }}"
+- name: If Warnings found Output count and control IDs affected
+  ansible.builtin.debug:
+      msg: "You have {{ warn_count }} Warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"
   when: warn_count != 0
   tags:
       - always

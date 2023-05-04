@@ -1,11 +1,14 @@
 ---
 
 - name: "3.4.1 | PATCH | Ensure DCCP is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/dccp.conf
       regexp: '^(#)?install dccp(\\s|$)'
-      line: 'install dccp /bin/true'
-      create: yes
+      line: "{{ item }}"
+      create: true
+  loop:
+      - install dccp /bin/true
+      - blacklist dccp
   when:
       - ubtu22cis_rule_3_4_1
   tags:
@@ -17,11 +20,14 @@
       - dccp
 
 - name: "3.4.2 | PATCH | Ensure SCTP is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/sctp.conf
-      regexp: "^(#)?install sctp(\\s|$)"
-      line: 'install sctp /bin/true'
-      create: yes
+      regexp: '^(#)?install sctp(\\s|$)'
+      line: "{{ item }}"
+      create: true
+  loop:
+      - install sctp /bin/true
+      - blacklist sctp
   when:
       - ubtu22cis_rule_3_4_2
   tags:
@@ -33,11 +39,14 @@
       - sctp
 
 - name: "3.4.3 | PATCH | Ensure RDS is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/rds.conf
       regexp: '^(#)?install rds(\\s|$)'
-      line: 'install rds /bin/true'
-      create: yes
+      line: "{{ item }}"
+      create: true
+  loop:
+      - install rds /bin/true
+      - blacklist rds
   when:
       - ubtu22cis_rule_3_4_3
   tags:
@@ -49,11 +58,14 @@
       - rds
 
 - name: "3.4.4 | PATCH | Ensure TIPC is disabled"
-  lineinfile:
+  ansible.builtin.lineinfile:
       path: /etc/modprobe.d/tipc.conf
       regexp: '^(#)?install tipc(\\s|$)'
-      line: install tipc /bin/true
-      create: yes
+      line: "{{ item }}"
+      create: true
+  loop:
+      - install tipc /bin/true
+      - blacklist tipc
   when:
       - ubtu22cis_rule_3_4_4
   tags:

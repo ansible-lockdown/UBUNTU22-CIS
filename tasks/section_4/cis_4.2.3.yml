@@ -2,27 +2,29 @@
 
 - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured"
   block:
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Find log files"
-        find:
-            paths: /var/log
-            recurse: yes
-        register: ubtu22cis_4_2_3_logfiles
+      - name: "4.2.3 | AUDIT | Ensure permissions on all logfiles are configured | find files"
+        ansible.builtin.find:
+            paths: "/var/log"
+            file_type: file
+            recurse: true
+        register: logfiles
 
-      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | Apply permissions"
-        file:
+      - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
+        ansible.builtin.file:
             path: "{{ item.path }}"
-            mode: g-w,o-rwx
-        with_items:
-            - "{{ ubtu22cis_4_2_3_logfiles.files }}"
+            mode: 0640
+        loop: "{{ logfiles.files }}"
         loop_control:
             label: "{{ item.path }}"
+        when:
+            - item.path != "/var/log/btmp"
+            - item.path != "/var/log/utmp"
+            - item.path != "/var/log/wtmp"
   when:
       - ubtu22cis_rule_4_2_3
   tags:
       - level1-server
       - level1-workstation
-      - automated
       - patch
-      - rule_4.2.3
       - logfiles
-      - permissions
+      - rule_4.2.3

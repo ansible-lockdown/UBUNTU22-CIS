@@ -1,10 +1,28 @@
 ---
 
-- name: "SECTION | 2.1 | Special Purpose Services"
-  include: cis_2.1.x.yml
+- name: "SECTION | 2.1.1.x | time service "
+  ansible.builtin.import_tasks: cis_2.1.1.x.yml
 
-- name: "SECTION | 2.2 | Service Clients"
-  include: cis_2.2.x.yml
+- name: "SECTION | 2.1.2.x | chrony time service"
+  ansible.builtin.import_tasks: cis_2.1.2.x.yml
+  when:
+      - ubtu22cis_time_sync_tool == "chrony"
 
-- name: "SECTION | 2.3 | Ensure nonessential services are removed or masked"
-  include: cis_2.3.yml
+- name: "SECTION | 2.1.3.x | systemd-timesyncd time service"
+  ansible.builtin.import_tasks: cis_2.1.3.x.yml
+  when:
+      - ubtu22cis_time_sync_tool == "systemd-timesyncd"
+
+- name: "SECTION | 2.1.4.x | ntp time service "
+  ansible.builtin.import_tasks: cis_2.1.4.x.yml
+  when:
+      - ubtu22cis_time_sync_tool == "ntp"
+
+- name: "SECTION | 2.1.x | Services"
+  ansible.builtin.import_tasks: cis_2.2.x.yml
+
+- name: "SECTION | 2.2.x | Service Clients"
+  ansible.builtin.import_tasks: cis_2.3.x.yml
+
+- name: "SECTION | 2.3.x | Ensure nonessential services are removed or masked"
+  ansible.builtin.import_tasks: cis_2.4.yml
