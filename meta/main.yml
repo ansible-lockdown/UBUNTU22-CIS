@@ -2,7 +2,7 @@
 
 galaxy_info:
     author: "George Nalen, Mark Bolwell, and DFed"
-    description: "Apply the Ubuntu 22 CIS benmarks"
+    description: "Apply the Ubuntu 22 CIS benchmarks"
     company: "MindPoint Group"
     license: MIT
     namespace: mindpointgroup
