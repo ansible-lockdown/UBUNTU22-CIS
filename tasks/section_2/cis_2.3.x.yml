@@ -40,7 +40,7 @@
       - level1-workstation
       - automated
       - patch
-      - rule_2.2.3
+      - rule_2.3.3
       - talk
 
 - name: "2.3.4 | PATCH | Ensure telnet client is not installed"
