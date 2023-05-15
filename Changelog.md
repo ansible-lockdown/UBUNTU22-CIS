@@ -1,9 +1,23 @@
-# v0.9 Ubuntu22cis v1.0.0
+# Ubuntu22CIS
+
+## V1.0 based on v1.0.0
+
+Issues:
+
+- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
+- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
+
+PRs incorporated
+
+- [#5] (https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
+
+## v0.9 based on v1.0.0
 
 ## April 2023 Updates
+
 - Yamllint Check
 - Ansible-lint Check
-- Fqcn[canonical] module name 
+- Fqcn[canonical] module name
 - PR's Addressed
   - [#21](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/21) - #Thanks @IdrisDose
 - Bugs Fixed

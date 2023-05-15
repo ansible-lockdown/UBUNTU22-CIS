@@ -72,6 +72,7 @@
       state: present
   when:
       - ubtu22cis_rule_3_1_2
+      - ubtu22cis_install_network_manager
       - not ubtu22cis_system_is_container
       - "'network-manager' not in ansible_facts.packages"
 
@@ -157,7 +158,6 @@
       state: present
   when:
       - ubtu22cis_rule_6_2_6
-      - ubtu22cis_install_network_manager
       - "'acl' not in ansible_facts.packages"
 
 - name: "PRELIM | Gather UID 0 accounts other than root"
