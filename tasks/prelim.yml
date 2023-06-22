@@ -7,6 +7,7 @@
   tags:
       - rule_1.1.1.2
       - section1
+      - always
 
 - name: "PRELIM | Section 1.1 | Create list of mount points"
   ansible.builtin.set_fact:
@@ -15,12 +16,6 @@
       - always
 
 - name: PRELIM | Capture tmp mount type | discover mount tmp type
-  when:
-      - "'/tmp' in mount_names"
-      - ubtu22cis_rule_1_1_2_1 or
-        ubtu22cis_rule_1_1_2_2 or
-        ubtu22cis_rule_1_1_2_3 or
-        ubtu22cis_rule_1_1_2_4
   block:
       - name: PRELIM | Capture tmp mount type | discover mount tmp type
         ansible.builtin.shell: systemctl is-enabled tmp.mount
@@ -37,6 +32,14 @@
         ansible.builtin.set_fact:
             tmp_mnt_type: tmp_systemd
         when: "'generated' not in tmp_mnt_type.stdout"
+  when:
+      - "'/tmp' in mount_names"
+      - ubtu22cis_rule_1_1_2_1 or
+        ubtu22cis_rule_1_1_2_2 or
+        ubtu22cis_rule_1_1_2_3 or
+        ubtu22cis_rule_1_1_2_4
+  tags:
+      - always
 
 - name: "PRELIM | Run apt update"
   ansible.builtin.package:
@@ -44,6 +47,8 @@
   when:
       - ubtu22cis_rule_1_3_1 or
         ubtu22cis_rule_1_9
+  tags:
+      - always
 
 - name: "PRELIM | Check for autofs service"
   ansible.builtin.shell: "systemctl show autofs | grep LoadState | cut -d = -f 2"
@@ -55,6 +60,7 @@
   tags:
       - skip_ansible_lint
       - section1
+      - always
 
 - name: "PRELIM | Check for avahi-daemon service"
   ansible.builtin.shell: "systemctl show avahi-daemon | grep LoadState | cut -d = -f 2"
@@ -65,6 +71,7 @@
       - ubtu22cis_rule_2_2_2
   tags:
       - skip_ansible_lint
+      - always
 
 - name: "PRELIM | Install Network-Manager"
   ansible.builtin.package:
@@ -75,6 +82,8 @@
       - ubtu22cis_install_network_manager
       - not ubtu22cis_system_is_container
       - "'network-manager' not in ansible_facts.packages"
+  tags:
+      - always
 
 - name: "PRELIM | PATCH | Ensure auditd is installed"
   block:
@@ -102,10 +111,7 @@
       - level2-workstation
       - patch
       - auditd
-      - rule_4.1.1.1
-      - rule_4.1.4.5
-      - rule_4.1.4.6
-      - rule_4.1.4.7
+      - always
 
 - name: "PRELIM | 5.3.4 | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
@@ -117,8 +123,7 @@
       - ubtu22cis_rule_5_3_4 or
         ubtu22cis_rule_5_3_5
   tags:
-      - rule_5.3.4
-      - rule_5.3.5
+      - always
 
 - name: "PRELIM | Discover Interactive UID MIN and MIN from logins.def"
   block:
@@ -144,6 +149,8 @@
             min_int_gid: "{{ gid_min_id.stdout }}"
   when:
       - not discover_int_uid
+  tags:
+      - always
 
 - name: "PRELIM | Interactive User accounts"
   ansible.builtin.shell: 'cat /etc/passwd | grep -Ev "nologin|/sbin|/bin" | cut -d: -f6'
@@ -159,6 +166,8 @@
   when:
       - ubtu22cis_rule_6_2_6
       - "'acl' not in ansible_facts.packages"
+  tags:
+      - always
 
 - name: "PRELIM | Gather UID 0 accounts other than root"
   ansible.builtin.shell: "cat /etc/passwd | awk -F: '($3 == 0 && $1 != \"root\") {i++;print $1 } END {exit i}'"
@@ -170,6 +179,7 @@
       - level1-server
       - level1-workstation
       - users
+      - always
 
 - name: "PRELIM | List users accounts"
   ansible.builtin.shell: "awk -F: '{print $1}' /etc/passwd"
@@ -180,10 +190,14 @@
       - ubtu22cis_rule_6_2_14 or
         ubtu22cis_rule_6_2_15 or
         ubtu22cis_rule_6_2_16
+  tags:
+      - always
 
 - name: "PRELIM | Recapture packages"
   ansible.builtin.package_facts:
       manager: auto
+  tags:
+      - always
 
 - name: "Optional | Patch | UFW firewall force to use /etc/sysctl.conf settings"
   ansible.builtin.lineinfile:
@@ -193,3 +207,5 @@
   when:
       - ubtu22cis_firewall_package == "ufw"
       - ubtu22cis_ufw_use_sysctl
+  tags:
+      - always
