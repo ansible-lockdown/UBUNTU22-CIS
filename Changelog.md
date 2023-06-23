@@ -18,6 +18,8 @@ Thank to the discord community for feedback on these and the following issues
 
 Thanks to @treyperonne for the PR [#29](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/29/files) integrated to this PR
 
+Update to the issue [#13](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/13) improvements to the prelim checks
+
 ## V1.0 based on v1.0.0
 
 Issues:
