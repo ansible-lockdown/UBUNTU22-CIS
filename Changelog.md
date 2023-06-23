@@ -1,5 +1,23 @@
 # Ubuntu22CIS
 
+## Based on CIS V1.0.0
+
+### v1.0.1
+
+Issues:
+Thank to the discord community for feedback on these and the following issues
+
+- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
+  - thanks to @bgro
+- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
+  - thanks to @FaisalAli92
+- [#30](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/30)
+  - thanks to @zac90
+- [#31](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/31)
+  - thanks to @zac90
+
+Thanks to @treyperonne for the PR [#29](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/29/files) integrated to this PR
+
 ## V1.0 based on v1.0.0
 
 Issues:
@@ -9,7 +27,7 @@ Issues:
 
 PRs incorporated
 
-- [#5] (https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
+- [#5](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
 
 ## v0.9 based on v1.0.0
 
