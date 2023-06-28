@@ -33,7 +33,7 @@
   ansible.builtin.lineinfile:
       path: /etc/chrony/chrony.conf
       regexp: '^user _chrony'
-      line: "user _chrony"
+      line: 'user _chrony'
   when:
       - ubtu22cis_rule_2_1_2_2
   tags:

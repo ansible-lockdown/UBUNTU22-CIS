@@ -101,7 +101,7 @@
             owner: root
             group: root
             mode: '0644'
-        notify: Reload_systemctl
+        notify: Reload systemctl
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | coredump.conf"
         ansible.builtin.lineinfile:

@@ -487,13 +487,13 @@
             msg:
                 - "Warning!! You have group or world-writable dot files on your system and have configured for manual intervention"
         when:
-            - ubtu22cis_6_2_17_audit.stdout | length == 0
+            - ubtu22cis_6_2_17_audit.stdout | length > 0
             - ubtu22cis_dotperm_ansiblemanaged
 
       - name: "6.2.17 | PATCH | Ensure users' dot files are not group or world writable | Set warning count"
         ansible.builtin.import_tasks: warning_facts.yml
         when:
-            - ubtu22cis_6_2_17_audit.stdout | length == 0
+            - ubtu22cis_6_2_17_audit.stdout | length > 0
             - ubtu22cis_dotperm_ansiblemanaged
 
       - name: "6.2.17 | PATCH | Ensure users' dot files are not group or world-writable | Changes files if configured"

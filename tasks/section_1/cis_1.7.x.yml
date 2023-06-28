@@ -16,7 +16,7 @@
             - { regexp: 'session\s+optional\s+pam_motd.so\s+motd=/run/motd.dynamic', line: '# 1\' }
             - { regexp: 'session\s+optional\s+pam_motd.so noupdate', line: '# 1\' }
             - { regexp: '# Pam_motd.so disabled for CIS benchmark', line: '# Pam_motd.so disabled for CIS benchmark' }
-        when: ubtu20cis_disable_dynamic_motd
+        when: ubtu22cis_disable_dynamic_motd
   when:
       - ubtu22cis_rule_1_7_1
   tags:

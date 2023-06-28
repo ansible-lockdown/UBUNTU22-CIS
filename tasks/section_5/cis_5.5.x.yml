@@ -247,8 +247,8 @@
       - name: "5.5.4 | PATCH | Ensure default user umask is 027 or more restrictive"
         ansible.builtin.lineinfile:
             path: "{{ item }}"
-            regexp: '^umask '
-            line: "umask {{ ubtu22cis_bash_umask }}"
+            regexp: '^UMASK '
+            line: "UMASK {{ ubtu22cis_bash_umask }}"
         with_items:
             - /etc/bash.bashrc
             - /etc/profile

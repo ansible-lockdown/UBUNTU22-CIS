@@ -147,107 +147,158 @@
       - permissions
       - rule_6.1.9
 
-- name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist"
+- name: "6.1.10 | PATCH | Ensure no unowned files or directories exist"
   block:
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Finding all unowned files or directories"
-        ansible.builtin.shell: find "{{ item.mount }}" -xdev -nouser
+      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Get unowned files or directories"
+        ansible.builtin.shell: find {{ item.mount }} -xdev -nouser -not -fstype nfs
         changed_when: false
         failed_when: false
         check_mode: false
-        register: rhel_09_6_1_10_audit
-        loop: "{{ ansible_mounts }}"
+        register: ubtu22cis_6_1_10_no_user_items
+        with_items:
+            - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
-        when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Displaying any unowned files or directories"
+      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Flatten no_user_items results for easier use"
+        ansible.builtin.set_fact:
+            ubtu22cis_6_1_10_no_user_items_flatten: "{{ ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
+
+      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Alert on unowned files and directories"
         ansible.builtin.debug:
-            msg: "Warning !! Manual intervention is required -- missing owner on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
-        loop: "{{ rhel_09_6_1_10_audit.results }}"
+            msg:
+                - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
+                - "Please review the files/directories below and assign an owner"
+                - "{{ ubtu22cis_6_1_10_no_user_items_flatten }}"
         when:
-            - item.stdout_lines is defined
-            - item.stdout_lines | length > 0
+            - not ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
 
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | warning"
+      - name: "6.1.10 | PATCH | Ensure no unowned files or directories exist | Set unowned files/directories to configured owner"
+        ansible.builtin.file:
+            path: "{{ item }}"
+            owner: "{{ ubtu22cis_unowned_owner }}"
+        with_items:
+            - "{{ ubtu22cis_6_1_10_no_user_items_flatten }}"
+        when:
+            - ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
+
+      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
+        when:
+            - not ubtu22cis_no_owner_adjust
+            - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
         vars:
             warn_control_id: '6.1.10'
-        when:
-            - item.stdout_lines is defined
-            - item.stdout_lines | length > 0
-
   when:
       - ubtu22cis_rule_6_1_10
   tags:
       - level1-server
       - level1-workstation
-      - audit
-      - files
-      - permissions
+      - automated
+      - patch
       - rule_6.1.10
+      - permissions
 
-- name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist"
+- name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist"
   block:
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Finding all ungrouped files or directories"
-        ansible.builtin.shell: find "{{ item.mount }}" -xdev -nogroup
-        check_mode: false
-        failed_when: false
+      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Get ungrouped files or directories"
+        ansible.builtin.shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
         changed_when: false
-        register: rhel_09_6_1_11_audit
-        loop: "{{ ansible_mounts }}"
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_1_11_ungrouped_items
+        with_items:
+            - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
-        when: item['device'].startswith('/dev') and not 'bind' in item['options']
 
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Displaying all ungrouped files or directories"
+      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Flatten ungrouped_items results for easier use"
+        ansible.builtin.set_fact:
+            ubtu22cis_6_1_11_ungrouped_items_flatten: "{{ ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
+
+      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Alert on ungrouped files and directories"
         ansible.builtin.debug:
-            msg: "Warning !! Manual intervention is required -- missing group on items in {{ item.item.mount }}: {{ item.stdout_lines | join(', ') }}"
-        loop: "{{ rhel_09_6_1_11_audit.results }}"
+            msg:
+                - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
+                - "Please review the files/directories below and assign a group"
+                - "{{ ubtu22cis_6_1_11_ungrouped_items_flatten }}"
         when:
-            - item.stdout_lines is defined
-            - item.stdout_lines | length > 0
+            - not ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
 
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | warning"
+      - name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
+        ansible.builtin.file:
+            path: "{{ item }}"
+            group: "{{ ubtu22cis_ungrouped_group }}"
+        with_items:
+            - "{{ ubtu22cis_6_1_11_ungrouped_items_flatten }}"
+        when:
+            - ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
+
+      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
+        when:
+            - not ubtu22cis_no_group_adjust
+            - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
         vars:
             warn_control_id: '6.1.11'
-        when:
-            - item.stdout_lines is defined
-            - item.stdout_lines | length > 0
   when:
       - ubtu22cis_rule_6_1_11
   tags:
       - level1-server
       - level1-workstation
-      - audit
-      - files
-      - permissions
+      - automated
+      - patch
       - rule_6.1.11
+      - permissions
 
 - name: "6.1.12 | AUDIT | Audit SUID executables"
   block:
-      - name: "6.1.12 | AUDIT | Audit SUID executables | Find all SUID executables"
-        ansible.builtin.shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -4000
-        failed_when: false
+      - name: "6.1.12 | AUDIT | Audit SUID executables | Find SUID executables"
+        ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
         changed_when: false
-        register: rhel_09_6_1_12_perms_results
-        loop: "{{ ansible_mounts }}"
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_1_12_suid_executables
+        with_items:
+            - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
+      - name: "6.1.12 | AUDIT | Audit SUID executables | Flatten suid_executables results for easier use"
+        ansible.builtin.set_fact:
+            ubtu22cis_6_1_12_suid_executables_flatten: "{{ ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
+
       - name: "6.1.12 | AUDIT | Audit SUID executables | Alert SUID executables exist"
         ansible.builtin.debug:
-            msg: "Warning!! Manual intervention is required -- SUID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
-        loop: "{{ rhel_09_6_1_12_perms_results.stdout_lines }}"
+            msg:
+                - "Warning!! You have SUID executables"
+                - "The files are listed below, please confirm the integrity of these binaries"
+                - "{{ ubtu22cis_6_1_12_suid_executables_flatten }}"
         when:
-            - rhel_09_6_1_12_perms_results.stdout is defined
+            - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
+            - not ubtu22cis_suid_adjust
 
-      - name: "6.1.12 | AUDIT | Audit SUID executables | Alert SUID executables exist | warning"
+      - name: "6.1.12 | PATCH | Audit SUID executables | Remove SUID bit"
+        ansible.builtin.file:
+            path: "{{ item }}"
+            mode: 'u-s'
+        with_items:
+            - "{{ ubtu22cis_6_1_12_suid_executables_flatten }}"
+        when:
+            - ubtu22cis_suid_adjust
+            - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
+
+      - name: "6.1.12 | AUDIT | Audit SUID executables | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
+        when:
+            - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
+            - not ubtu22cis_suid_adjust
         vars:
             warn_control_id: '6.1.12'
-        when:
-            - rhel_09_6_1_12_perms_results.stdout is defined
   when:
       - ubtu22cis_rule_6_1_12
   tags:
@@ -255,33 +306,53 @@
       - level1-workstation
       - manual
       - audit
-      - files
       - rule_6.1.12
+      - permissions
 
 - name: "6.1.13 | AUDIT | Audit SGID executables"
   block:
-      - name: "6.1.13 | AUDIT | Audit SGID executables | Find all SGID executables"
-        ansible.builtin.shell: df {{ item.mount }} -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -2000
-        failed_when: false
+      - name: "6.1.13 | AUDIT | Audit SGID executables | Find SGID executables"
+        ansible.builtin.shell: find {{ item }} -xdev -type f -perm -2000 -not -fstype nfs
         changed_when: false
-        register: rhel_09_6_1_13_perms_results
-        loop: "{{ ansible_mounts }}"
+        failed_when: false
+        check_mode: false
+        register: ubtu22cis_6_1_13_sgid_executables
+        with_items:
+            - "{{ ansible_mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
+      - name: "6.1.13 | AUDIT | Audit SGID executables | Flatten sgid_executables results for easier use"
+        ansible.builtin.set_fact:
+            ubtu22cis_6_1_13_sgid_executables_flatten: "{{ ubtu22cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
+
       - name: "6.1.13 | AUDIT | Audit SGID executables | Alert SGID executables exist"
         ansible.builtin.debug:
-            msg: "Manual intervention is required -- SGID set on items in {{ item.item.mount }}: {{ item.stout_lines | join(', ') }}"
-        loop: "{{ rhel_09_6_1_13_perms_results.stdout_lines }}"
+            msg:
+                - "Warning!! You have SGID executables"
+                - "The files are listed below, please review the integrity of these binaries"
+                - "{{ ubtu22cis_6_1_13_sgid_executables_flatten }}"
         when:
-            - rhel_09_6_1_13_perms_results.stdout is defined
+            - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
+            - not ubtu22cis_sgid_adjust
 
-      - name: "6.1.13 | AUDIT | Audit SGID executables| warning"
+      - name: "6.1.13 | AUDIT | Audit SGID executables | Warn Count"
         ansible.builtin.import_tasks: warning_facts.yml
-        vars:
-            warn_control_id: '6.1.13'
         when:
-            - rhel_09_6_1_13_perms_results.stdout is defined
+            - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
+            - not ubtu22cis_sgid_adjust
+
+      - name: "6.1.13 | PATCH | Audit SGID executables | Remove SGID bit"
+        ansible.builtin.file:
+            path: "{{ item }}"
+            mode: 'g-s'
+        with_items:
+            - "{{ ubtu22cis_6_1_13_sgid_executables_flatten }}"
+        when:
+            - ubtu22cis_sgid_adjust
+            - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
+  vars:
+      warn_control_id: '6.1.13'
   when:
       - ubtu22cis_rule_6_1_13
   tags:
@@ -289,5 +360,5 @@
       - level1-workstation
       - manual
       - audit
-      - files
       - rule_6.1.13
+      - permissions

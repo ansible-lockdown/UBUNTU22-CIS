@@ -1,5 +1,28 @@
 # Ubuntu22CIS
 
+## Based on CIS V1.0.0
+
+### v1.0.1
+
+Issues:
+Thank to the discord community for feedback on these and the following issues
+
+- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
+  - thanks to @bgro
+- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
+  - thanks to @FaisalAli92
+- [#30](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/30)
+- [#31](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/31)
+- [#33](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/33)
+  - thanks to @zac90
+
+- [[#32](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/32)
+  - thanks to @twadelij
+
+Thanks to @treyperonne for the PR [#29](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/29/files) integrated to this PR
+
+Update to the issue [#13](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/13) improvements to the prelim checks
+
 ## V1.0 based on v1.0.0
 
 Issues:
@@ -9,7 +32,7 @@ Issues:
 
 PRs incorporated
 
-- [#5] (https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
+- [#5](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
 
 ## v0.9 based on v1.0.0
 

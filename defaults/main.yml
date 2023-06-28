@@ -461,7 +461,7 @@ ubtu22cis_apparmor_enforce_only: false
 
 # 1.7.1
 # disable dynamic motd to stop extra sshd message from appearing
-ubtu20cis_disable_dynamic_motd: true
+ubtu22cis_disable_dynamic_motd: true
 
 # Control 1.7.2
 # This will be the motd banner must not contain the below items in order to be compliant with Ubuntu 20 CIS
@@ -656,7 +656,7 @@ ubtu22cis_pass:
     inactive: 30
 
 # Control 5.5.4
-# ubtu120cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
+# ubtu22cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
 # The value needs to be 027 or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 
@@ -674,32 +674,33 @@ min_int_uid: 1000
 max_int_uid: 65533
 
 # Section 6 Control Variables
-# Control 6.1.10
+# Control 6.1.9
 # ubtu22cis_no_world_write_adjust will toggle the automated fix to remove world-writable perms from all files
 # Setting to true will remove all world-writable permissions, and false will leave as-is
 ubtu22cis_no_world_write_adjust: true
 
-# Control 6.1.11
+# Control 6.1.10
 # ubtu22cis_un_owned_owner is the owner to set files to that have no owner
 ubtu22cis_unowned_owner: root
 # ubtu22cis_no_owner_adjust will toggle the automated fix to give a user to unowned files/directories
 # true will give the owner from ubtu22cis_un_owned_owner to all unowned files/directories and false will skip
 ubtu22cis_no_owner_adjust: true
-# Control 6.1.12
+# Control 6.1.11
 # ubtu22cis_ungrouped_group is the group to set files to that have no group
 ubtu22cis_ungrouped_group: root
 # ubtu22cis_no_group_adjust will toggle the automated fix to give a group to ungrouped files/directories
 # true will give the group from ubtu22cis_un_owned_group to all ungrouped files/directories and false will skip
 ubtu22cis_no_group_adjust: true
 
-# Cotnrol 6.1.13
+# Control 6.1.12
 # ubtu22cis_suid_adjust is the toggle to remove the SUID bit from all files on all mounts
 # Set to true this role will remove that bit, set to false we will just warn about the files
 ubtu22cis_suid_adjust: false
 
-# Control 6.2.5 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
-# ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
+# Control 6.1.13
+# ubtu22cis_sgid_adjust is the toggle to remove the SGID bit from all files on all mounts
+# Set to true this role will remove that bit, set to false we will just warn about the files
+ubtu22cis_sgid_adjust: false
 
 # Control 6.2.7
 # ubtu22cis_dotperm_ansiblemanaged is a toggle to allow this role to modify permissions on dot files
