@@ -12,9 +12,11 @@ Thank to the discord community for feedback on these and the following issues
 - [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
   - thanks to @FaisalAli92
 - [#30](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/30)
-  - thanks to @zac90
 - [#31](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/31)
   - thanks to @zac90
+
+- [[#32](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/32)
+  - thanks to @twadelij
 
 Thanks to @treyperonne for the PR [#29](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/29/files) integrated to this PR
 
