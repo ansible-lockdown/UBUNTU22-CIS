@@ -13,6 +13,7 @@ Thank to the discord community for feedback on these and the following issues
   - thanks to @FaisalAli92
 - [#30](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/30)
 - [#31](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/31)
+- [#33](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/33)
   - thanks to @zac90
 
 - [[#32](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/32)
