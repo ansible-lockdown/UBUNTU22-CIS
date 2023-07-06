@@ -428,6 +428,9 @@ ubtu22cis_desktop_required: false
 
 # Section 1 Control Variables
 
+# This will force the tmp_mnt type if not correctly discovered
+expected_tmp_mnt: fstab
+
 # Control 1.3.1 - allow aide to be configured
 ubtu22cis_config_aide: true
 

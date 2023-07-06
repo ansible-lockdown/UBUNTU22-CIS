@@ -25,7 +25,7 @@
 
       - name: PRELIM | Capture tmp mount type | Set fstab
         ansible.builtin.set_fact:
-            tmp_mnt_type: fstab
+            tmp_mnt_type: "{{ expected_tmp_mnt }}"
         when: "'generated' in tmp_mnt_type.stdout"
 
       - name: PRELIM | Capture tmp mount type | Set systemd service
