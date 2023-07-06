@@ -95,6 +95,7 @@
   tags:
       - prelim_tasks
       - run_audit
+      - always
 
 - name: Gather the package facts after prelim
   ansible.builtin.package_facts:
@@ -108,12 +109,15 @@
       - run_audit
   tags:
       - run_audit
+      - always
 
 - name: Run parse /etc/passwd
   ansible.builtin.import_tasks: parse_etc_password.yml
   when:
       - ubtu22cis_section5 or
         ubtu22cis_section6
+  tags:
+      - always
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
@@ -184,6 +188,8 @@
   ansible.builtin.import_tasks: post_remediation_audit.yml
   when:
       - run_audit
+  tags:
+      - always
 
 - name: Show Audit Summary
   ansible.builtin.debug:
@@ -192,6 +198,7 @@
       - run_audit
   tags:
       - run_audit
+      - always
 
 - name: If Warnings found Output count and control IDs affected
   ansible.builtin.debug:
