@@ -59,7 +59,7 @@
     "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | fstab"
     "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | fstab"
   ansible.posix.mount:
-      name: "{{ item.device }}"
+      path: "{{ item.device }}"
       src: "{{ item.fstype }}"
       state: present
       fstype: tmpfs

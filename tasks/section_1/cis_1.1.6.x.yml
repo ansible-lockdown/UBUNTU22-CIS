@@ -27,7 +27,7 @@
     "1.1.6.3 | PATCH | Ensure /var/log/audit partition includes the nodev option"
     "1.1.6.4 | PATCH | Ensure /var/log/audit partition includes the nosuid option"
   ansible.posix.mount:
-      name: "{{ item.device }}"
+      path: "{{ item.device }}"
       src: "{{ item.fstype }}"
       state: present
       fstype: xfs
