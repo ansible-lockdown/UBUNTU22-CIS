@@ -19,19 +19,19 @@
   block:
       - name: PRELIM | Capture tmp mount type | discover mount tmp type
         ansible.builtin.shell: systemctl is-enabled tmp.mount
-        register: tmp_mnt_type
+        register: discover_tmp_mnt_type
         changed_when: false
-        failed_when: tmp_mnt_type.rc not in [ 0, 1 ]
+        failed_when: discover_tmp_mnt_type.rc not in [ 0, 1 ]
 
-      - name: PRELIM | Capture tmp mount type | Set fstab
+      - name: PRELIM | Capture tmp mount type | Set to expected_tmp_mnt variable
         ansible.builtin.set_fact:
             tmp_mnt_type: "{{ expected_tmp_mnt }}"
-        when: "'generated' in tmp_mnt_type.stdout"
+        when: "'generated' in discover_tmp_mnt_type.stdout"
 
       - name: PRELIM | Capture tmp mount type | Set systemd service
         ansible.builtin.set_fact:
             tmp_mnt_type: tmp_systemd
-        when: "'generated' not in tmp_mnt_type.stdout"
+        when: "'generated' not in discover_tmp_mnt_type.stdout"
   when:
       - "'/tmp' in mount_names"
       - ubtu22cis_rule_1_1_2_1 or
