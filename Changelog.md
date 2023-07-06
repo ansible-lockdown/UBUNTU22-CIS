@@ -2,6 +2,21 @@
 
 ## Based on CIS V1.0.0
 
+## v1.0.2
+
+- issues addressed
+  - thanks to @zac90
+    - [#35](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/35)
+    - [#36](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/36)
+    - [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
+    - [#39](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/39)
+    - [#40](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/40)
+    - [#41](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/41)
+    - [#42](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/42)
+
+Improvements to the mount commands and fstype usage as part of [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
+section 5.4 tags updated
+
 ### v1.0.1
 
 Issues:
