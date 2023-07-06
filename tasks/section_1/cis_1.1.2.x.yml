@@ -59,10 +59,10 @@
     "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | fstab"
     "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | fstab"
   ansible.posix.mount:
-      path: "{{ item.device }}"
-      src: "{{ item.fstype }}"
+      path: /tmp
+      src: "{{ item.device }}"
       state: present
-      fstype: tmpfs
+      fstype: "{{ item.fstype }}"
       opts: defaults,{% if ubtu22cis_rule_1_1_2_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_2_4 %}nosuid{% endif %}
   notify: remount tmp
   with_items:
