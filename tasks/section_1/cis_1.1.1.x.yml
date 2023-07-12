@@ -6,7 +6,7 @@
         ansible.builtin.lineinfile:
             dest: /etc/modprobe.d/cramfs.conf
             regexp: '^(#)?install cramfs(\\s|$)'
-            line: install cramfs /bin/false
+            line: install cramfs /bin/true
             create: true
 
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Disable cramfs"
@@ -30,7 +30,7 @@
         ansible.builtin.lineinfile:
             dest: /etc/modprobe.d/squashfs.conf
             regexp: '^(#)?install squashfs(\\s|$)'
-            line: install squashfs /bin/false
+            line: install squashfs /bin/true
             create: true
 
       - name: "1.1.1.2 | PATCH | Ensure mounting of squashfs filesystems is disabled | Disable squashfs"
