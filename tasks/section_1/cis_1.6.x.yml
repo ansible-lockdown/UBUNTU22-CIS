@@ -28,7 +28,7 @@
       - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
         ansible.builtin.lineinfile:
             path: /etc/default/grub
-            regexp: '^GRUB_CMDLINE_LINUX'
+            regexp: '^GRUB_CMDLINE_LINUX='
             line: 'GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor {{ ubtu22cis_1_6_1_2_cmdline_settings.stdout }}"'
             insertafter: '^GRUB_'
         when:
