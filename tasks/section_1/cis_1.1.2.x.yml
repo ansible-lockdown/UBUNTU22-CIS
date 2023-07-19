@@ -38,8 +38,8 @@
   loop_control:
       label: "{{ item.device }}"
   when:
-      - tmp_mnt_type == 'tmp_systemd'
       - item.mount == "/tmp"
+      - tmp_mnt_type == 'tmp_systemd'
       - ubtu22cis_rule_1_1_2_1 or
         ubtu22cis_rule_1_1_2_2 or
         ubtu22cis_rule_1_1_2_3 or
