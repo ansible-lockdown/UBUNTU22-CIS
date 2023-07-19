@@ -65,24 +65,31 @@
     "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition | fstab"
     "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | fstab"
     "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | fstab"
-  ansible.posix.mount:
-      name: "{{ item.device }}"
-      src: "{{ item.fstype }}"
-      state: present
-      fstype: tmpfs
-      opts: defaults,{% if ubtu22cis_rule_1_1_2_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_2_4 %}nosuid{% endif %}
-  notify: remount tmp
-  with_items:
-      - "{{ ansible_mounts }}"
-  loop_control:
-      label: "{{ item.device }}"
+  block:
+      - name: |
+          "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition | fstab"
+          "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition | fstab"
+          "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition | fstab"
+        ansible.posix.mount:
+            name: "{{ item.device }}"
+            src: "{{ item.fstype }}"
+            state: present
+            fstype: tmpfs
+            opts: defaults,{% if ubtu22cis_rule_1_1_2_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_2_4 %}nosuid{% endif %}
+        notify: remount tmp
+        with_items:
+            - "{{ ansible_mounts }}"
+        loop_control:
+            label: "{{ item.device }}"
+        when:
+            - tmp_mnt_type == 'fstab'
+            - item.mount == "/tmp"
   when:
-      - tmp_mnt_type == 'fstab'
-      - item.mount == "/tmp"
-      - ubtu22cis_rule_1_1_2_1 or
-        ubtu22cis_rule_1_1_2_2 or
-        ubtu22cis_rule_1_1_2_3 or
-        ubtu22cis_rule_1_1_2_4
+    - "'/tmp' in mount_names"
+    - ubtu22cis_rule_1_1_2_1 or
+      ubtu22cis_rule_1_1_2_2 or
+      ubtu22cis_rule_1_1_2_3 or
+      ubtu22cis_rule_1_1_2_4
   tags:
       - level1-server
       - level1-workstation
