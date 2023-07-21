@@ -63,7 +63,7 @@
       path: /etc/systemd/journald.conf
       regexp: '^ForwardToSyslog='
       line: '#ForwardToSyslog=yes'
-      notify: Restart journald
+  notify: Restart journald
   when:
       - ubtu22cis_rule_4_2_1_5
   tags:
