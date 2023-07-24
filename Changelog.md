@@ -14,6 +14,7 @@
     - [#41](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/41)
     - [#42](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/42)
     - [#44](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/44)
+    - [#45](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/45)
 
 Improvements to the mount commands and fstype usage as part of [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
 section 5.4 tags updated
