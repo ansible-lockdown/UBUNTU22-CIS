@@ -48,7 +48,7 @@
 - name: Pre Audit Setup | unarchive audit content files on server
   ansible.builtin.unarchive:
       src: "{{ audit_conf_copy  }}"
-      dest: "{{ audit_conf_dest }}"
+      dest: "{{ audit_conf_dir }}"
   when:
       - audit_content == 'archived'
 
@@ -88,8 +88,10 @@
 - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
   ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
   changed_when: true
-  vars:
-      warn: false
+  environment:
+      AUDIT_BIN: "{{ audit_bin }}"
+      AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+      AUDIT_FILE: "goss.yml"
 
 - name: Pre Audit | Capture audit data if json format
   block:

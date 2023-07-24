@@ -744,14 +744,13 @@ audit_files_url: "some url maybe s3?"
 # Where the goss configs and outputs are stored
 audit_out_dir: '/opt'
 # Where the goss audit configuration will be stored
-audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
+audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
 
 # If changed these can affect other products
 pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
-audit_control_file: "{{ audit_conf_dir }}goss.yml"
 audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_hostname }}.yml"
 audit_results: |
       The pre remediation results are: {{ pre_audit_summary }}.

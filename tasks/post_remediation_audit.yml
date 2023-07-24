@@ -3,8 +3,10 @@
 - name: "Post Audit | Run post_remediation {{ benchmark }} audit"
   ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ post_audit_outfile }} -g {{ group_names }}"
   changed_when: true
-  vars:
-      warn: false
+  environment:
+    AUDIT_BIN: "{{ audit_bin }}"
+    AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+    AUDIT_FILE: "goss.yml"
 
 - name: Post Audit | ensure audit files readable by users
   ansible.builtin.file:

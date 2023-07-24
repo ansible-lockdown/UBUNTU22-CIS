@@ -13,6 +13,7 @@
     - [#40](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/40)
     - [#41](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/41)
     - [#42](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/42)
+    - [#43](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/43)
     - [#44](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/44)
     - [#45](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/45)
 
