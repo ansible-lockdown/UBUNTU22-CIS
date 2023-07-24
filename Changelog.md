@@ -17,6 +17,7 @@
 Improvements to the mount commands and fstype usage as part of [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
 section 5.4 tags updated
 .ansible-lint updated
+improvements to 5.5.4 for umask
 
 ### v1.0.1
 
