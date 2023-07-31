@@ -40,7 +40,7 @@
         when: ansible_connection != 'docker'
   when:
       - ubtu22cis_rule_1_1_1_2
-      - not snap_pkg_mgr.stat.exists
+      - snap_pkg_mgr.stdout | length == 0
   tags:
       - level2-server
       - level2-workstation

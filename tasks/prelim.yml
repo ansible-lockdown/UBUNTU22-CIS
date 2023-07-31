@@ -1,12 +1,12 @@
 ---
 
-- name: "PRELIM | register if snap being used"
-  ansible.builtin.stat:
-      path: /snap/bin
+- name: "PRELIM | Register if snap being used"
+  ansible.builtin.shell: df -h | grep -wc "/snap"
+  changed_when: false
+  failed_when: snap_pkg_mgr.rc not in [ 0, 1 ]
   register: snap_pkg_mgr
   tags:
       - rule_1.1.1.2
-      - section1
       - always
 
 - name: "PRELIM | Section 1.1 | Create list of mount points"
