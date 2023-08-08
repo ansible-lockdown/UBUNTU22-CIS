@@ -149,7 +149,7 @@
       - name: "4.2.2.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client | When not a log host"
         ansible.builtin.replace:
             path: /etc/rsyslog.conf
-            regexp: '({{ item }}|)'
+            regexp: '({{ item }})'
             replace: '#\1'
         with_items:
             - '^(\$ModLoad|module(load="imtcp"))'
