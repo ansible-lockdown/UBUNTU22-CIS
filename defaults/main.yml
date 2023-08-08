@@ -436,7 +436,7 @@ ubtu22cis_config_aide: true
 ubtu22cis_aide_cron:
     cron_user: root
     cron_file: /etc/cron.d/aide_cron
-    aide_job: '/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check'
+    aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
     aide_minute: 0
     aide_hour: 5
     aide_day: '*'
