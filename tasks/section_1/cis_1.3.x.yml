@@ -58,3 +58,4 @@
       - patch
       - rule_1.3.2
       - cron
+      - aide
