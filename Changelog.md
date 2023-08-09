@@ -2,6 +2,21 @@
 
 ## Based on CIS V1.0.0
 
+### v1.0.2
+
+Issues:
+Thanks to zac90
+
+- [#53](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/53)
+- [#54](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/54)
+- [#55](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/55)
+
+Updates to workflow now using centralised config
+
+lint file updates
+readme updates to badges and layout
+added secrets-baseline in preperation for pre-commit
+
 ### v1.0.1
 
 Issues:
