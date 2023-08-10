@@ -153,7 +153,7 @@
             replace: '#\1'
         with_items:
             - '^(\$ModLoad|module(load="imtcp"))'
-            - '^(\$InputTCPServerRun|input(type="imtcp" port="514"))'
+            - '^(\$(InputTCP|InputRELP|UDP)ServerRun|input(type="imtcp" port=".*"))'
         notify: Restart syslog service
         when: not ubtu22cis_system_is_log_server
 

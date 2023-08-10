@@ -62,6 +62,32 @@
   tags:
       - always
 
+- name: Check ubtu22cis_grub_user password variable has been changed
+  block:
+      - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
+        ansible.builtin.shell: "grep ^{{ ubtu22cis_grub_user }} /etc/shadow | awk -F : '{print $2}'"
+        changed_when: false
+        register: ubtu22cis_password_set_grub_user
+
+      - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
+        ansible.builtin.assert:
+            that: ubtu22cis_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
+            msg: "This role will not set the {{ ubtu22cis_grub_user }} user password is not set or ubtu22cis_grub_user_passwd variable has not been set correctly"
+        when:
+            - "'$y$' in ubtu22cis_password_set_grub_user.stdout"
+            - ubtu22cis_set_grub_user_pass
+            - ubtu22cis_rule_1_4_3
+
+      - name: Check ubtu22cis_grub_user password variable has been changed | if password blank or incorrect type and not being set
+        ansible.builtin.assert:
+            that: ( ubtu22cis_password_set_grub_user.stdout | length > 10 ) and '$y$' in ubtu22cis_password_set_grub_user.stdout
+            fail_msg: "Grub User {{ ubtu22cis_grub_user }} has no password set or incorrect encryption"
+            success_msg: "Grub User {{ ubtu22cis_grub_user }} has a valid password set to be used in single user mode"
+        when:
+            - not ubtu22cis_set_grub_user_pass
+  tags:
+      - always
+
 - name: Setup rules if container
   block:
       - name: Discover and set container variable if required

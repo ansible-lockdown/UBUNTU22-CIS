@@ -1,9 +1,12 @@
+---
+
 parseable: true
 quiet: true
 skip_list:
     - 'schema'
     - 'no-changed-when'
     - 'var-spacing'
+    - 'fqcn-builtins'
     - 'experimental'
     - 'name[play]'
     - 'name[casing]'

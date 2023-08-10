@@ -440,7 +440,7 @@ ubtu22cis_config_aide: true
 ubtu22cis_aide_cron:
     cron_user: root
     cron_file: /etc/cron.d/aide_cron
-    aide_job: '/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check'
+    aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
     aide_minute: 0
     aide_hour: 5
     aide_day: '*'
@@ -452,9 +452,11 @@ ubtu22cis_aide_cron:
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
 ubtu22cis_grub_user: root
+ubtu22cis_set_grub_user_pass: false
+ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
 ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
-ubtu22cis_set_boot_pass: false
+ubtu22cis_set_boot_pass: true
 
 ubtu22cis_grub_file: /etc/default/grub.cfg
 
@@ -573,7 +575,7 @@ ubtu22cis_auditd:
 # Set to be rsyslog or journald dependent on what you are using
 ubtu22cis_syslog_service: rsyslog
 ubtu22cis_remote_log_server: 192.168.2.100
-ubtu22cis_system_is_log_server: true
+ubtu22cis_system_is_log_server: false
 
 # Control 4.2.1.1.x & 4.2.1.x journald
 ubtu22cis_journal_upload_serverkeyfile:
