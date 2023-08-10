@@ -113,3 +113,11 @@ uses:
 - ansible collections - pulls in the latest version based on requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
+
+## Added Extras
+
+- [pre-commit](https://pre-commit.com) can be tested and can be run from within the directory
+
+```sh
+pre-commit run
+```
