@@ -17,6 +17,8 @@ thanks to @rspataru
 - [#50](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/50)
 
 Updates to workflow now using centralised config
+templates removed as inherited from org
+legacy workflow files removed
 
 lint file updates
 readme updates to badges and layout
