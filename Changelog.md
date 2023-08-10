@@ -2,7 +2,6 @@
 
 ## Based on CIS V1.0.0
 
-<<<<<<< HEAD
 ### v1.0.2
 
 Issues:
@@ -17,27 +16,6 @@ Updates to workflow now using centralised config
 lint file updates
 readme updates to badges and layout
 added secrets-baseline in preperation for pre-commit
-=======
-## v1.0.2
-
-- issues addressed
-  - thanks to @zac90
-    - [#35](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/35)
-    - [#36](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/36)
-    - [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
-    - [#39](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/39)
-    - [#40](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/40)
-    - [#41](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/41)
-    - [#42](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/42)
-    - [#43](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/43)
-    - [#44](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/44)
-    - [#45](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/45)
-
-Improvements to the mount commands and fstype usage as part of [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
-section 5.4 tags updated
-.ansible-lint updated
-improvements to 5.5.4 for umask
->>>>>>> devel
 
 ### v1.0.1
 
