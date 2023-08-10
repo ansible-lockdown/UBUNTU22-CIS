@@ -2,37 +2,37 @@
 
 - name: Remount tmp
   ansible.posix.mount:
-      name: /tmp
+      path: /tmp
       state: remounted
 
 - name: Remount var
   ansible.posix.mount:
-      name: /var
+      path: /var
       state: remounted
 
 - name: Remount var_tmp
   ansible.posix.mount:
-      name: /var/tmp
+      path: /var/tmp
       state: remounted
 
 - name: Remount var_log
   ansible.posix.mount:
-      name: /var/log
+      path: /var/log
       state: remounted
 
 - name: Remount var_log_audit
   ansible.posix.mount:
-      name: /var/log/audit
+      path: /var/log/audit
       state: remounted
 
 - name: Remount home
   ansible.posix.mount:
-      name: /home
+      path: /home
       state: remounted
 
 - name: Remount dev_shm
   ansible.posix.mount:
-      name: /dev/shm
+      path: /dev/shm
       src: /dev/shm
       state: remounted
 

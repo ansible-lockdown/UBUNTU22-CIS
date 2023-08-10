@@ -5,7 +5,7 @@
     "1.1.8.2 | PATCH | Ensure nosuid option set on /dev/shm partition"
     "1.1.8.3 | PATCH | Ensure noexec option set on /dev/shm partition"
   ansible.posix.mount:
-      name: /dev/shm
+      path: /dev/shm
       src: /dev/shm
       fstype: tmpfs
       state: present
