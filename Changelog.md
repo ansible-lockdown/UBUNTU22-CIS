@@ -1,9 +1,89 @@
-# v0.9 Ubuntu22cis v1.0.0
+# Ubuntu22CIS
+
+## Based on CIS V1.0.0
+
+### v1.0.3
+
+Issues:
+Thanks to @zac90
+
+- [#53](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/53)
+- [#54](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/54)
+- [#55](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/55)
+
+PR:
+thanks to @rspataru
+
+- [#50](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/50)
+
+Updates to workflow now using centralised config
+templates removed as inherited from org
+legacy workflow files removed
+
+lint file updates
+readme updates to badges and layout
+added secrets-baseline in preperation for pre-commit
+readme tidy up
+
+## v1.0.2
+
+- issues addressed
+  - thanks to @zac90
+    - [#35](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/35)
+    - [#36](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/36)
+    - [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
+    - [#39](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/39)
+    - [#40](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/40)
+    - [#41](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/41)
+    - [#42](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/42)
+    - [#43](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/43)
+    - [#44](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/44)
+    - [#45](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/45)
+
+Improvements to the mount commands and fstype usage as part of [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
+section 5.4 tags updated
+.ansible-lint updated
+improvements to 5.5.4 for umask
+
+### v1.0.1
+
+Issues:
+Thank to the discord community for feedback on these and the following issues
+
+- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
+  - thanks to @bgro
+- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
+  - thanks to @FaisalAli92
+- [#30](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/30)
+- [#31](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/31)
+- [#33](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/33)
+  - thanks to @zac90
+
+- [[#32](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/32)
+  - thanks to @twadelij
+
+Thanks to @treyperonne for the PR [#29](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/29/files) integrated to this PR
+
+Update to the issue [#13](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/13) improvements to the prelim checks
+
+## V1.0 based on v1.0.0
+
+Issues:
+
+- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
+- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
+
+PRs incorporated
+
+- [#5](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
+
+## v0.9 based on v1.0.0
 
 ## April 2023 Updates
+
 - Yamllint Check
 - Ansible-lint Check
-- Fqcn[canonical] module name 
+- Fqcn[canonical] module name
 - PR's Addressed
   - [#21](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/21) - #Thanks @IdrisDose
 - Bugs Fixed

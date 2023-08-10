@@ -5,8 +5,8 @@
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Edit modprobe config"
         ansible.builtin.lineinfile:
             dest: /etc/modprobe.d/cramfs.conf
-            regexp: "^(#)?install cramfs(\\s|$)"
-            line: install cramfs /bin/false
+            regexp: '^(#)?install cramfs(\\s|$)'
+            line: install cramfs /bin/true
             create: true
 
       - name: "1.1.1.1 | PATCH | Ensure mounting of cramfs filesystems is disabled | Disable cramfs"
@@ -29,8 +29,8 @@
       - name: "1.1.1.2 | PATCH | Ensure mounting of squashfs filesystems is disabled | Edit modprobe config"
         ansible.builtin.lineinfile:
             dest: /etc/modprobe.d/squashfs.conf
-            regexp: "^(#)?install squashfs(\\s|$)"
-            line: install squashfs /bin/false
+            regexp: '^(#)?install squashfs(\\s|$)'
+            line: install squashfs /bin/true
             create: true
 
       - name: "1.1.1.2 | PATCH | Ensure mounting of squashfs filesystems is disabled | Disable squashfs"
@@ -40,7 +40,7 @@
         when: ansible_connection != 'docker'
   when:
       - ubtu22cis_rule_1_1_1_2
-      - not snap_pkg_mgr.stat.exists
+      - snap_pkg_mgr.stdout | length == 0
   tags:
       - level2-server
       - level2-workstation
@@ -54,7 +54,7 @@
       - name: "1.1.1.3 | PATCH | Ensure mounting of udf filesystems is disabled | Edit modprobe config"
         ansible.builtin.lineinfile:
             dest: /etc/modprobe.d/udf.conf
-            regexp: "^(#)?install udf(\\s|$)"
+            regexp: '^(#)?install udf(\\s|$)'
             line: install udf /bin/true
             create: true
 

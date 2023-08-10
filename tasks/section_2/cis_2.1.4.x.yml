@@ -70,7 +70,7 @@
       enabled: true
       masked: false
   when:
-      - ubtu22cis_rule_2_1_4_3
+      - ubtu22cis_rule_2_1_4_4
   tags:
       - level1-server
       - level1-workstation

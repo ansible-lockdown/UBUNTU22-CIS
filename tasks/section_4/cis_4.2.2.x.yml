@@ -33,8 +33,8 @@
 - name: "4.2.2.3 | PATCH | Ensure journald is configured to send logs to rsyslog"
   ansible.builtin.lineinfile:
       path: /etc/systemd/journald.conf
-      regexp: "^ForwardToSyslog="
-      line: "ForwardToSyslog=yes"
+      regexp: ^ForwardToSyslog=
+      line: ForwardToSyslog=yes
   notify: Restart syslog service
   when:
       - ubtu22cis_rule_4_2_2_3
@@ -149,11 +149,11 @@
       - name: "4.2.2.7 | PATCH | Ensure rsyslog is not configured to receive logs from a remote client | When not a log host"
         ansible.builtin.replace:
             path: /etc/rsyslog.conf
-            regexp: '({{ item }}|)'
+            regexp: '({{ item }})'
             replace: '#\1'
         with_items:
             - '^(\$ModLoad|module(load="imtcp"))'
-            - '^(\$InputTCPServerRun|input(type="imtcp" port="514"))'
+            - '^(\$(InputTCP|InputRELP|UDP)ServerRun|input(type="imtcp" port=".*"))'
         notify: Restart syslog service
         when: not ubtu22cis_system_is_log_server
 

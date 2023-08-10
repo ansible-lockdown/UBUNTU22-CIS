@@ -1,17 +1,9 @@
 ---
 
-- name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled"
-  block:
-      - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set ASLR settings"
-        ansible.builtin.lineinfile:
-            path: /etc/sysctl.conf
-            regexp: '^kernel.randomize_va_space'
-            line: 'kernel.randomize_va_space = 2'
-
-      - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
-        ansible.posix.sysctl:
-            name: kernel.randomize_va_space
-            value: '2'
+- name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
+  ansible.posix.sysctl:
+      name: kernel.randomize_va_space
+      value: '2'
   when:
       - ubtu22cis_rule_1_5_1
   tags:
@@ -101,7 +93,7 @@
             owner: root
             group: root
             mode: '0644'
-        notify: Reload_systemctl
+        notify: Reload systemctl
 
       - name: "1.5.4 | PATCH | Ensure core dumps are restricted | coredump.conf"
         ansible.builtin.lineinfile:

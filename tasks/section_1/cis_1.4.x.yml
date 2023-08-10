@@ -3,12 +3,12 @@
 - name: "1.4.1 | PATCH | Ensure bootloader password is set"
   block:
       - name: "1.4.1 | PATCH | Ensure bootloader password is set"
-        ansible.builtin.lineinfile:
-            path: "{{ ubtu22cis_grub_user_file }}"
-            regexp: '^(password_pbkdf2 {{ ubtu22cis_grub_user }}) grub.pbkdf2.*'
-            line: '\1 {{ ubtu22cis_bootloader_password_hash }}'
-            insertafter: set superusers="{{ ubtu22cis_grub_user }}"
-            state: present
+        ansible.builtin.template:
+            src: etc/grub.d/00_user.j2
+            dest: "{{ ubtu22cis_grub_user_file }}"
+            owner: root
+            group: root
+            mode: 0755
         notify: Grub update
 
       - name: "1.4.1 | PATCH | Ensure bootloader password is set | allow unrestricted boot"
@@ -59,10 +59,10 @@
 - name: "1.4.3 | PATCH | Ensure authentication required for single user mode"
   ansible.builtin.user:
       name: "{{ ubtu22cis_grub_user }}"
-      password: "{{ ubtu22cis_bootloader_password_hash }}"
+      password: "{{ ubtu22cis_grub_user_passwd }}"
   when:
       - ubtu22cis_rule_1_4_3
-      - ubtu22cis_set_boot_pass
+      - ubtu22cis_set_grub_user_pass
   tags:
       - level1-server
       - level1-workstation
@@ -70,3 +70,4 @@
       - patch
       - rule_1.4.3
       - passwd
+      - grub

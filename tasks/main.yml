@@ -29,6 +29,7 @@
   tags:
       - always
 
+#  This control should always run as this can pass on unintended issues.
 - name: "Check password set for connecting user"
   block:
       - name: Capture current password state of connecting user"
@@ -47,6 +48,7 @@
             sudo_password_rule: ubtu22cis_rule_5_3_4
   when:
       - ubtu22cis_rule_5_3_4
+      - ansible_env.SUDO_USER is defined
   tags:
       - always
 
@@ -57,6 +59,32 @@
   when:
       - ubtu22cis_set_boot_pass
       - ubtu22cis_rule_1_4_1
+  tags:
+      - always
+
+- name: Check ubtu22cis_grub_user password variable has been changed
+  block:
+      - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
+        ansible.builtin.shell: "grep ^{{ ubtu22cis_grub_user }} /etc/shadow | awk -F : '{print $2}'"
+        changed_when: false
+        register: ubtu22cis_password_set_grub_user
+
+      - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
+        ansible.builtin.assert:
+            that: ubtu22cis_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
+            msg: "This role will not set the {{ ubtu22cis_grub_user }} user password is not set or ubtu22cis_grub_user_passwd variable has not been set correctly"
+        when:
+            - "'$y$' in ubtu22cis_password_set_grub_user.stdout"
+            - ubtu22cis_set_grub_user_pass
+            - ubtu22cis_rule_1_4_3
+
+      - name: Check ubtu22cis_grub_user password variable has been changed | if password blank or incorrect type and not being set
+        ansible.builtin.assert:
+            that: ( ubtu22cis_password_set_grub_user.stdout | length > 10 ) and '$y$' in ubtu22cis_password_set_grub_user.stdout
+            fail_msg: "Grub User {{ ubtu22cis_grub_user }} has no password set or incorrect encryption"
+            success_msg: "Grub User {{ ubtu22cis_grub_user }} has a valid password set to be used in single user mode"
+        when:
+            - not ubtu22cis_set_grub_user_pass
   tags:
       - always
 
@@ -93,6 +121,7 @@
   tags:
       - prelim_tasks
       - run_audit
+      - always
 
 - name: Gather the package facts after prelim
   ansible.builtin.package_facts:
@@ -106,12 +135,15 @@
       - run_audit
   tags:
       - run_audit
+      - always
 
 - name: Run parse /etc/passwd
   ansible.builtin.import_tasks: parse_etc_password.yml
   when:
       - ubtu22cis_section5 or
         ubtu22cis_section6
+  tags:
+      - always
 
 - name: Gather the package facts
   ansible.builtin.package_facts:
@@ -182,6 +214,8 @@
   ansible.builtin.import_tasks: post_remediation_audit.yml
   when:
       - run_audit
+  tags:
+      - always
 
 - name: Show Audit Summary
   ansible.builtin.debug:
@@ -190,6 +224,7 @@
       - run_audit
   tags:
       - run_audit
+      - always
 
 - name: If Warnings found Output count and control IDs affected
   ansible.builtin.debug:

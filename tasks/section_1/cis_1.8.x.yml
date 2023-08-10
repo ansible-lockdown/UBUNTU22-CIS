@@ -83,6 +83,7 @@
             group: root
             mode: 0755
             state: directory
+        notify: Update dconf
 
       - name: "1.8.4 | PATCH | Ensure GDM screen locks when the user is idle | session script"
         ansible.builtin.template:
@@ -91,7 +92,7 @@
             owner: root
             group: root
             mode: '0644'
-  notify: Update dconf
+        notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_4
       - ubtu22cis_desktop_required
@@ -112,6 +113,7 @@
             group: root
             mode: 0755
             state: directory
+        notify: Update dconf
 
       - name: "1.8.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lockfile"
         ansible.builtin.template:
@@ -120,7 +122,7 @@
             owner: root
             group: root
             mode: 0644
-  notify: Update dconf
+        notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_5
       - ubtu22cis_desktop_required
@@ -141,6 +143,7 @@
             group: root
             mode: 0755
             state: directory
+        notify: Update dconf
 
       - name: "1.8.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled | session script"
         ansible.builtin.template:
@@ -149,7 +152,7 @@
             owner: root
             group: root
             mode: '0644'
-  notify: Update dconf
+        notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_6
       - ubtu22cis_desktop_required
@@ -170,6 +173,7 @@
             group: root
             mode: 0755
             state: directory
+        notify: Update dconf
 
       - name: "1.8.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lockfile"
         ansible.builtin.template:
@@ -178,7 +182,7 @@
             owner: root
             group: root
             mode: 0644
-  notify: Update dconf
+        notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_7
       - ubtu22cis_desktop_required
@@ -199,6 +203,7 @@
             group: root
             mode: 0755
             state: directory
+        notify: Update dconf
 
       - name: "1.8.8 | PATCH | Ensure GDM autorun-never is enabled | session script"
         ansible.builtin.template:
@@ -207,7 +212,7 @@
             owner: root
             group: root
             mode: '0644'
-  notify: Update dconf
+        notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_8
       - ubtu22cis_desktop_required
@@ -228,6 +233,7 @@
             group: root
             mode: 0755
             state: directory
+        notify: Update dconf
 
       - name: "1.8.9 | PATCH | Ensure GDM autorun-never is not overridden | make lockfile"
         ansible.builtin.template:
@@ -236,7 +242,7 @@
             owner: root
             group: root
             mode: 0644
-  notify: Update dconf
+        notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_9
       - ubtu22cis_desktop_required

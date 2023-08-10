@@ -354,7 +354,7 @@ ubtu22cis_rule_5_6: true
 ubtu22cis_rule_5_7: true
 
 # Section 6 Fixes
-# Section is Systme Maintenance (System File Permissions and User and Group Settings)
+# Section is System Maintenance (System File Permissions and User and Group Settings)
 ubtu22cis_rule_6_1_1: true
 ubtu22cis_rule_6_1_2: true
 ubtu22cis_rule_6_1_3: true
@@ -428,6 +428,10 @@ ubtu22cis_desktop_required: false
 
 # Section 1 Control Variables
 
+# This will force the tmp_mnt type if not correctly discovered
+# either tmp_systemd or fstab
+expected_tmp_mnt: fstab
+
 # Control 1.3.1 - allow aide to be configured
 ubtu22cis_config_aide: true
 
@@ -436,7 +440,7 @@ ubtu22cis_config_aide: true
 ubtu22cis_aide_cron:
     cron_user: root
     cron_file: /etc/cron.d/aide_cron
-    aide_job: '/usr/bin/aide.wrapper --config /etc/aide/aide.conf --check'
+    aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
     aide_minute: 0
     aide_hour: 5
     aide_day: '*'
@@ -448,9 +452,11 @@ ubtu22cis_aide_cron:
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
 ubtu22cis_grub_user: root
+ubtu22cis_set_grub_user_pass: false
+ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
 ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
-ubtu22cis_set_boot_pass: false
+ubtu22cis_set_boot_pass: true
 
 ubtu22cis_grub_file: /etc/default/grub.cfg
 
@@ -461,7 +467,7 @@ ubtu22cis_apparmor_enforce_only: false
 
 # 1.7.1
 # disable dynamic motd to stop extra sshd message from appearing
-ubtu20cis_disable_dynamic_motd: true
+ubtu22cis_disable_dynamic_motd: true
 
 # Control 1.7.2
 # This will be the motd banner must not contain the below items in order to be compliant with Ubuntu 20 CIS
@@ -569,7 +575,7 @@ ubtu22cis_auditd:
 # Set to be rsyslog or journald dependent on what you are using
 ubtu22cis_syslog_service: rsyslog
 ubtu22cis_remote_log_server: 192.168.2.100
-ubtu22cis_system_is_log_server: true
+ubtu22cis_system_is_log_server: false
 
 # Control 4.2.1.1.x & 4.2.1.x journald
 ubtu22cis_journal_upload_serverkeyfile:
@@ -656,7 +662,7 @@ ubtu22cis_pass:
     inactive: 30
 
 # Control 5.5.4
-# ubtu120cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
+# ubtu22cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
 # The value needs to be 027 or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 
@@ -674,32 +680,33 @@ min_int_uid: 1000
 max_int_uid: 65533
 
 # Section 6 Control Variables
-# Control 6.1.10
+# Control 6.1.9
 # ubtu22cis_no_world_write_adjust will toggle the automated fix to remove world-writable perms from all files
 # Setting to true will remove all world-writable permissions, and false will leave as-is
 ubtu22cis_no_world_write_adjust: true
 
-# Control 6.1.11
+# Control 6.1.10
 # ubtu22cis_un_owned_owner is the owner to set files to that have no owner
 ubtu22cis_unowned_owner: root
 # ubtu22cis_no_owner_adjust will toggle the automated fix to give a user to unowned files/directories
 # true will give the owner from ubtu22cis_un_owned_owner to all unowned files/directories and false will skip
 ubtu22cis_no_owner_adjust: true
-# Control 6.1.12
+# Control 6.1.11
 # ubtu22cis_ungrouped_group is the group to set files to that have no group
 ubtu22cis_ungrouped_group: root
 # ubtu22cis_no_group_adjust will toggle the automated fix to give a group to ungrouped files/directories
 # true will give the group from ubtu22cis_un_owned_group to all ungrouped files/directories and false will skip
 ubtu22cis_no_group_adjust: true
 
-# Cotnrol 6.1.13
+# Control 6.1.12
 # ubtu22cis_suid_adjust is the toggle to remove the SUID bit from all files on all mounts
 # Set to true this role will remove that bit, set to false we will just warn about the files
 ubtu22cis_suid_adjust: false
 
-# Control 6.2.5 Allow ansible to adjust world-writable files. False will just display world-writable files, True will remove world-writable
-# ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
-ubtu22cis_passwd_label: "{{ (this_item | default(item)).id }}: {{ (this_item | default(item)).dir }}"
+# Control 6.1.13
+# ubtu22cis_sgid_adjust is the toggle to remove the SGID bit from all files on all mounts
+# Set to true this role will remove that bit, set to false we will just warn about the files
+ubtu22cis_sgid_adjust: false
 
 # Control 6.2.7
 # ubtu22cis_dotperm_ansiblemanaged is a toggle to allow this role to modify permissions on dot files
@@ -739,14 +746,13 @@ audit_files_url: "some url maybe s3?"
 # Where the goss configs and outputs are stored
 audit_out_dir: '/opt'
 # Where the goss audit configuration will be stored
-audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit/"
+audit_conf_dir: "{{ audit_out_dir }}/{{ benchmark }}-Audit"
 
 # If changed these can affect other products
 pre_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 post_audit_outfile: "{{ audit_out_dir }}/{{ ansible_hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_{{ ansible_date_time.epoch }}.{{ audit_format }}"
 
 ## The following should not need changing
-audit_control_file: "{{ audit_conf_dir }}goss.yml"
 audit_vars_path: "{{ audit_conf_dir }}/vars/{{ ansible_hostname }}.yml"
 audit_results: |
       The pre remediation results are: {{ pre_audit_summary }}.
