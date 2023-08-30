@@ -197,7 +197,8 @@
       - /sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512
       - /sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
   when:
-      - ubtu22cis_rule_4_1_4_11
+      - ubtu22cis_rule_4_1_4_11 and
+        ubtu22cis_config_aide
   tags:
       - level2-server
       - level2-workstation
