@@ -85,6 +85,7 @@
             success_msg: "Grub User {{ ubtu22cis_grub_user }} has a valid password set to be used in single user mode"
         when:
             - not ubtu22cis_set_grub_user_pass
+  when: ubtu22cis_rule_1_4_3
   tags:
       - always
 
