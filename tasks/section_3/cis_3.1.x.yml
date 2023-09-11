@@ -8,7 +8,7 @@
             regexp: '^(GRUB_CMDLINE_LINUX=.*)ipv6.disable=(0|1)(.*$)'
             line: '\g<1>\g<3> ipv6.disable=1'
             backrefs: true
-        when: ubuntu22cis_ipv6_disable == 'grub'
+        when: ubtu22cis_ipv6_disable == 'grub'
         notify: Grub update
 
       - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Remove net.ipv6.conf.all.disable_ipv6"
@@ -21,7 +21,7 @@
         notify: Flush ipv6 route table
         loop:
             - etc/sysctl.d/60-disable_ipv6.conf
-        when: ubuntu22cis_ipv6_disable == 'sysctl'
+        when: ubtu22cis_ipv6_disable == 'sysctl'
   when:
       - ubtu22cis_rule_3_1_1
       - not ubtu22cis_ipv6_required
