@@ -8,7 +8,7 @@
             dest: "{{ ubtu22cis_grub_user_file }}"
             owner: root
             group: root
-            mode: 0755
+            mode: '0755'
         notify: Grub update
 
       - name: "1.4.1 | PATCH | Ensure bootloader password is set | allow unrestricted boot"
@@ -43,7 +43,7 @@
             path: "{{ ubtu22cis_grub_file }}"
             owner: root
             group: root
-            mode: 0400
+            mode: '0400'
         when:
             - ubtu22cis_1_4_2_grub_cfg_status.stat.exists
   when:
