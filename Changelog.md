@@ -2,6 +2,20 @@
 
 ## Based on CIS V1.0.0
 
+### v1.0.4
+
+Several issues addressed
+Version of goss updated along with associated audit content
+linting update
+pre-commit added
+
+- #59
+- #61
+- #62
+- #64
+- #67
+- #69
+
 ### v1.0.3
 
 Issues:
