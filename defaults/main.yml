@@ -510,7 +510,7 @@ ubtu22cis_is_mail_server: false
 # Section 3 Control Variables
 # Control 3.1.1
 # How to disable ipv6 either via grub or sysctl settings options: grub or sysctl
-ubuntu22cis_ipv6_disable: grub
+ubtu22cis_ipv6_disable: grub
 
 # Control 3.1.2
 # ubtu22cis_install_network_manager determines if this role can install network manager
@@ -716,8 +716,8 @@ ubtu22cis_dotperm_ansiblemanaged: true
 
 ### Audit binary settings ###
 audit_bin_version:
-    release: v0.3.21
-    checksum: 'sha256:9a9200779603acf0353d2c0e85ae46e083596c10838eaf4ee050c924678e4fe3'
+    release: v0.4.0
+    checksum: 'sha256:9cb37863d3d25e2af80cb5cf55198c0c115b2477724153ba9afd0a2e544cb46e'
 audit_bin_path: /usr/local/bin/
 audit_bin: "{{ audit_bin_path }}goss"
 audit_format: json

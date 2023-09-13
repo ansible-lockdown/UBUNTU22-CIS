@@ -68,8 +68,9 @@ This role was developed against a clean install of the Operating System. If you 
 
 **Technical Dependencies:**
 
-- Running Ansible/Tower setup (this role is tested against Ansible version 2.9.1 and newer)
+- Running Ansible/Tower setup (this role is tested against Ansible version 2.10.1 and newer)
 - Python3 Ansible run environment
+- goss >= 0.4.0 (If using for audit)
 
 ## Auditing (new)
 
