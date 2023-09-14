@@ -1,5 +1,8 @@
 ---
-
+# These variables specify to the role if it should include the tasks from a particular section.
+# E.g: If you want to execute the tasks that are included in Section 1 you should set the "ubtu22cis_section1"
+# to "true". If you do not want the tasks from that section to get executed you simply set the variable to "false".
+# This helps to filter out any tasks from sections you consider unnecessary or unrelated to your machine.
 ubtu22cis_section1: true
 ubtu22cis_section2: true
 ubtu22cis_section3: true
@@ -18,44 +21,84 @@ benchmark_version: v1.0.0
 ubtu22cis_level_1: true
 ubtu22cis_level_2: true
 
-## Run tasks that may have an potential high impact to a running system
+## This variable states if tasks with a potential high impact on your system
+# should be run or not. If you set this variable to "true" the role will apply
+# the tasks to your system. If you set it to "false" no tasks with a possible
+# high impact will be applied!
 ubtu22cis_disruption_high: true
 
 ## Setting 1.4.1 will mean a password is required to boot
 ## this will allow a system boot when set to false
 ubtu22cis_ask_passwd_to_boot: false
 
-# tweak role to run in a non-privileged container (default value)- dynamically discovered in tasks/main.yml
+# Tweak role to run in a non-privileged container (default value)- dynamically discovered in tasks/main.yml
+# This variable is used to specify if you want this Ansible role to be containerized or not.
+# Privilege containers have an elevated access to the host system and can perform sensitive tasks. Non-privileged
+# containers run with restricted access to prevent potential misuse or damage.
+# Running this role in a non-privileged container offers several benefits such as increased security,
+# portability, and efficient resource managing. *? But applying sensitive configurations and settings will no
+# longer be possible ?*
 system_is_container: false
 
 ### Audit Binary is required on the remote host
+
+# This variable states if the setup for auditing shall get done.
+# Binary auditing is the process of inspecting and evaluating the security of
+# the code, when access to the source code is not granted. It involves analyzing
+# the executable files directly to identify vulnerabilities, security weaknesses or potential threats.
 setup_audit: false
-# How to retrieve audit binary
+# How to retrieve audit binary:
 # Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already dowmloaded
+# You will need to access to either github or the file already downloaded
 get_audit_binary_method: download
 
-# how to get audit files onto host options
-# options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
+# How to get audit files onto host options:
+# The options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
 audit_content: git
 
-# enable audits to run - this  runs the audit and get the latest content
+# Enable audits to run
+# This variable, if set to true, runs the audit and gets the latest content
 run_audit: false
 
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
+# Run heavy tests
+# If set to true, the role will run heavy tests.
+# Keep in mind, that some tests can have more impact on a system,
+# therefore, enabling these can have a greater impact on a system!
 audit_run_heavy_tests: true
 # Timeout for those cmds that take longer to run where timeout set
+# This variable sets a timeout value in order to limit the execution
+# time of audit commands. This ensures that if a command takes too
+# long to complete, it will be forcefully terminated after the specified
+# duration, found in the value of the following variable.
 audit_cmd_timeout: 60000
 
 ### End Audit enablements ####
 
-# tweak role to run in a chroot, such as in kickstart %post script
+# Tweak role to run in a chroot, such as in kickstart %post script.
+# The %post script in kickstart refers to a section that allows someone
+# to specify a shell script to be executed after the installation of the
+# OS is complete. The script runs in the context of the newly installed
+# system and it provides an opportunity to perform additional configurations
+# or execute custom tasks that need to be done after the installation.
+# *? why is kickstart needed ?*
+# Chroot stands for "change root" which is a Unix command, allowing
+# someone to change the apparent root directory for a process.
+# Running the role inside a "chroot" environment creates a separate
+# directory (the new root), and sets it as the apparent root for the
+# commands executed by the role. This can be useful for specific tasks
+# that need isolation, but it can also limit the role's ability to make
+# changes to the broader system.
 ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 
-# tweak role to run in a non-privileged container
+# Tweak role to run in a non-privileged container
+# This has the same explanation as the "system_is_container"
+# variable
 ubtu22cis_system_is_container: false
 
-# skip events for ec2 instance testing pipeline
+# Skip events for EC2 instance testing pipeline
+# This variable states if the system is an EC2 or not.
+# Based on this, different configurations and tasks will be
+# applied to your system, in order to suit its needs.
 system_is_ec2: false
 
 # Section 1 Fixes
@@ -407,23 +450,40 @@ ubtu22cis_nfs_client: false
 # rpcbind is required by nfs-common which is required on client and server
 ubtu22cis_rpc_required: "{{ ubtu22cis_nfs_server or ubtu22cis_nfs_client }}"
 
-# Clients in use variables
+# Clients in use variables, these variables are set
+# to true, if you want to keep these client packages.
+# If you want them to be uninstalled, set them to false!
 ubtu22cis_nis_required: false
 ubtu22cis_rsh_required: false
 ubtu22cis_talk_required: false
 ubtu22cis_telnet_required: false
 ubtu22cis_ldap_clients_required: false
+
+# This variable is used in order to determine whether you
+# want to use you system as a router or not.
+# If your system's purpose is not the one of a router
+# then set this to false, and all the needed security configs
+# will be made. This configs will stop your system from
+# acting as a router, in order to minimize its area of exposure,
+# and therefore make it more secure.
+# If you will use your system as a router, set this to true,
+# so as the role will not make changes that might interfere with your
+# system's desired functionality!
 ubtu22cis_is_router: false
 
 # IPv4 requirement toggle
+# This variable states if your machine requires ipv4
 ubtu22cis_ipv4_required: true
 
 # IPv6 requirement toggle
+# This variable states if your machine requires ipv6
 ubtu22cis_ipv6_required: false
 
 # Other system wide variables
-# ubtu22cis_desktop_required is the toggle for requiring desktop environments. True means you use a desktop and will not disable/remove needed items to run a desktop (not recommented for servers)
-# false means you do not require a desktop
+# This particular variable is the toggle for requiring desktop environments.
+# True means you use a desktop and will not disable/remove needed items
+# to run a desktop (not recommended for servers).
+# False means you do not require a desktop
 ubtu22cis_desktop_required: false
 
 # Section 1 Control Variables
@@ -433,18 +493,37 @@ ubtu22cis_desktop_required: false
 expected_tmp_mnt: fstab
 
 # Control 1.3.1 - allow aide to be configured
+# AIDE is a file integrity checking tool, similar in nature to Tripwire.
+# While it cannot prevent intrusions, it can detect unauthorized changes
+# to configuration files by alerting when the files are changed. Review
+# the AIDE quick start guide and AIDE documentation before proceeding.
+# By setting this variable all of the settings related to AIDE will be applied!
 ubtu22cis_config_aide: true
 
 # Control 1.3.2
-# These are the crontab settings for file system integrity enforcement
+# These are the crontab settings for periodical checking of the filesystem's integrity.
+# The following represents a dictionary with 8 keys. These keys' values are used for
+# the parameters needed to define the cron job on the remote system.
+# Cron is a time-based job scheduling program in Unix OS, which allows tasks to be scheduled
+# and executed automatically at a certain point in time.
 ubtu22cis_aide_cron:
+    # The following key represents the user account under which the cron job will run
     cron_user: root
+    # The following key represents the path to the crontab file to be managed
     cron_file: /etc/cron.d/aide_cron
+    # The following key represents the actual command or script that the cron job will execute
     aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
+    # The following keys define the schedule for the cron job
+    # The minute key can have values between 0-59
     aide_minute: 0
+    # The hour key can have values between 0-23
     aide_hour: 5
+    # The day key can have values between 1-31
     aide_day: '*'
+    # The month key can have values between 1-12
     aide_month: '*'
+    # The weekday key, represent the day of the week, and it can have values between 0-7
+    # (both 0 and 7 represent Sunday)
     aide_weekday: '*'
 
 # Control 1.4.1
@@ -457,16 +536,27 @@ ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5N
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
 ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
 ubtu22cis_set_boot_pass: true
-
+# ========================================
+# This variable is used to specify the path to the file that needs to
+# have permissions modified in order to comply to the CIS-CAT rule 1.4.2
 ubtu22cis_grub_file: /etc/default/grub.cfg
 
 ## 1.6.1.x apparmor
+# AppArmor security policies define what system resources applications can access and their privileges.
+# This automatically limits the damage that the software can do to files accessible by the calling user.
+# The following variables are related to the set of rules from section 1.6.1.x
 
+# This variable disables the rule regarding enforcing profiles or putting them in complain mode
 ubtu22cis_apparmor_disable: false
+# This variable chooses how the profiles will comply to rule 1.6.1.3.
+# If it is set to true the profiles will be in enforce mode
+# If it is set to false the profiles will be in complain mode
+# *? The role has two tasks that do the same thing no matter what boolean
+# value is set to this variable *?
 ubtu22cis_apparmor_enforce_only: false
 
 # 1.7.1
-# disable dynamic motd to stop extra sshd message from appearing
+# This variable disables dynamic motd to stop extra sshd message from appearing
 ubtu22cis_disable_dynamic_motd: true
 
 # Control 1.7.2
@@ -477,24 +567,50 @@ ubtu22cis_warning_banner: |
 
 # Control 1.8.4
 # Settings for desktop
+# Dconf db (database) refers to the configuration database used in GNOME-based systems
 ubtu22cis_dconf_db_name: local
-ubtu22cis_screensaver_idle_delay: 900  # Set max value for idle-delay in seconds (between 1 and 900)
-ubtu22cis_screensaver_lock_delay: 5  # Set max value for lock-delay in seconds (between 0 and 5)
+# Number of seconds of inactivity before the screen goes blank
+# Set max value for idle-delay in seconds (between 1 and 900)
+ubtu22cis_screensaver_idle_delay: 900
+# Number of seconds after the screen is blank before locking the screen
+# Set max value for lock-delay in seconds (between 0 and 5)
+ubtu22cis_screensaver_lock_delay: 5
 
 # Section 2 Control Variables
 # Control 2.1.1.1
-# ubtu22cis_time_sync_tool is the tool in which to synchronize time
-# The two options are chrony, ntp, or systemd-timesyncd
+# This variable sets the tool used for time synchronization
+# The three options are chrony, ntp, or systemd-timesyncd
 ubtu22cis_time_sync_tool: "ntp"
 
-# Control 2.1.2.1 2.1.3.1
+# Control 2.1.2.1 2.1.3.1  *? (2.1.4.1) ?*
 # Time settings used for all versions
+# The following variables are dictionaries that contain keys.These dictionaries refer
+# to different ways of specifying time servers for synchronization. The keys' values represent
+# the parameters inside the task.
+# The first dictionary refers to "pool" which is a group of NTP servers that are part of a
+# larger network. When one uses "pool", its system will automatically select one or more servers
+# from the pool to synchronize time.
 ubtu22cis_time_pool:
+      # This variable represents the name of the time servers one would want to synchronize its
+      # machine with. The NIST time servers are providing accurate time synchronization services
+      # over the Network Time Protocol (NTP). "time.nist.gov" is a domain of such time servers
+      # and it is used as a reliable source of accurate time information
     - name: time.nist.gov
+      # The following variable represents the "iburst" option. This option is used to initiate an
+      # initial burst of packets for quicker synchroniation. The "maxsources" option limits the number
+      # of sources used for synchronization. In this case from the "time.nist.gov" domain only 4 such
+      # servers will be selected for synchronization.
       options: iburst maxsources 4
-
+# The second dictionary refers to specific "servers" used in time synchronization
 ubtu22cis_time_servers:
+      # The "name" variables, as specified above, have to do with the name of the time servers needed. With the
+      # "server" procedure, as opposed to the "pool" procedure, one explicitly provides the unique identifier of
+      # a time server in order to synchronize its machine with it. Each and every server named here is a specific
+      # server from the "time.nist.gov" domain.
     - name: time-a-g.nist.gov
+      # The following variable is, as explained later, the "iburst" option. In this particular scenario, the "iburst"
+      # option is strictly used to improve the initial synchronization process by sending (from the client) a burst
+      # of 8 packets in rapid succession to the server.
       options: iburst
     - name: time-b-g.nist.gov
       options: iburst
@@ -502,6 +618,10 @@ ubtu22cis_time_servers:
       options: iburst
 
 # Control 2.2.15
+# This variable is used to determine whether you intend to use your machine as a mail server or not.
+# If you do not intend to use it as such, the mail transfer agent (MTA) will be configured to only
+# process local mail, in order to reduce chances of security risks. Set to "false" if your machine
+# is not a mail server or to "true" if it is!
 ubtu22cis_is_mail_server: false
 # ubtu22_cis_mail_transfer_agent is the mail transfer agent in use
 # The options are exim4, postfix or other
@@ -509,77 +629,128 @@ ubtu22cis_is_mail_server: false
 
 # Section 3 Control Variables
 # Control 3.1.1
-# How to disable ipv6 either via grub or sysctl settings options: grub or sysctl
-ubtu22cis_ipv6_disable: grub
+# This variable offers information to the role over how the disabling of IPV6 should be
+# handled. The task uses two methods, each to be chosen by the value of this variable.
+# One can choose to disable IPV6 via "grub" or via "sysctl" by simply adding one of this
+# values to the variable below.
+ubuntu22cis_ipv6_disable: grub
 
 # Control 3.1.2
-# ubtu22cis_install_network_manager determines if this role can install network manager
+# This variable is used for a preliminary task regarding the installation of Network Manager
+# If it is set to "true" Network Manager shall be installed during the "prelim" section of
+# the role. If set to "false", Network Manager shall not be installed. Bear in mind that without
+# it, ensuring that wireless interfaces are disabled will not be possible!
 ubtu22cis_install_network_manager: true
 
 # Control 3.3.x
-# Ability to change the default file that sysctl saves config to for network changes
+# This variable contains the path to the file in which, sysctl saves its configurations.
 ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
 
-# ubtu22cis_firewall_package is the toggle for which firewall system is in use
-# The valid options to use are ufw, nftables, or iptables Laternative set to 'none' if excluded
+# This variable represents the toggle for which tools are in use, to manage the firewall system.
+# The valid options to use are ufw, nftables, or iptables, alternatively set to 'none' if excluded.
 # Warning!! nftables is not supported in this role and will only message out if nftables is selected
 # If using nftables please manually adjust firewall settings
 ubtu22cis_firewall_package: "ufw"
 
-# If UFW force to use syctl settings now UFW
+# This variable is used in a preliminary task that forces the UFW firewall to use /etc/sysctl.conf
+# settings. If set to "true" the task will get done in the prelim section of the role.
 ubtu22cis_ufw_use_sysctl: true
 
 # Control 3.5.1.5
-# ubtu22cis_ufw_allow_out_ports are the ports for the firewall to allow
-# if you want to allow out on all ports set variable to "all", example ubtu22cis_ufw_allow_out_ports: "all"
+# The value of this variable represents the ports for the firewall to allow.
+# If you want to allow out on all ports, set the variable to "all", example ubtu22cis_ufw_allow_out_ports: "all".
 ubtu22cis_ufw_allow_out_ports:
     - 53
     - 80
     - 443
 
 # Control 3.5.2.4
-# nftables is not supported in this role. Some tasks have the task commented out, this is one of them
-# ubtu22cis_nftables_table_name is the name of the table in nftables you want to create
-# the default nftables table name is inet filter. This variable name will be the one all
-# nftables configs are applied to
+# Nftables is not supported in this role. Some tasks have parts of them commented out, this is one example
+# of such a task.
+# "ubtu22cis_nftables_table_name" is the name of the table in nftables you want to create.
+# The default nftables table name is "inet filter". This variable name will be the one all
+# nftables configs are applied to.
 # ubtu22cis_nftables_table_name: "inet filter"
 
 # Controls 3.5.3.2.1 through 3.5.3.3.4
-# The iptables module only writes to memory which means a reboot could revert settings
+# The iptables module only writes to memory which means a reboot could revert settings.
 # The below toggle will install iptables-persistent and save the rules in memory (/etc/iptables/rules.v4 or rules.v6)
-# This makes the CIS role changes permenant and is managed via a handler
+# This makes the CIS role changes permanent and is managed via a handler
 ubtu22cis_save_iptables_cis_rules: true
 
 # Section 4 Control Variables
 # Control 4.1.1.4
-# ubtu22cis_audit_back_log_limit is the audit_back_log limit and should be set to a sufficient value
-# The example from CIS uses 8192
+# This variable represents the audit_back_log limit which refers to a configuration parameter that sets the
+# maximum number of audit records that the system can buffer in memory, if the audit subsystem is unable to
+# process them in real-time. This parameter helps manage situations where the audit system is overwhelmed
+# with incoming audit events, and needs to temporarily store them until they can be processed.
+# This variable should be set to a sufficient value. The example from CIS uses "8192"
 ubtu22cis_audit_back_log_limit: 8192
 
 # Control 4.1.2.1
-# ubtu22cis_max_log_file_size is largest the log file will become in MB
+# This variable refers to the maximum size that an audit log file can reach before it is archived or cleared
+# to make space for the new audit data
+# The bigger the value of this variable is, the larger the log file will become in terms of MB.
 # This should be set based on your sites policy
 ubtu22cis_max_log_file_size: 10
 ### 4.1.3.x audit template
+# This variable sets if the audit template should be updated or not. While updating the template is a good practice
+# in terms of security enhancement, this action might lead to modifications to the rules, settings or parameters.
+# This could involve adding new rules, adjusting them or removing them completely. Tread carefully!
 update_audit_template: false
 
 ## Advanced option found in auditd post
 allow_auditd_uid_user_exclusions: false
 
 # Control 4.1.2.2
+# This is a dictionary used to control how the audit system behaves
 ubtu22cis_auditd:
+    # The "admin_space_left_action" variable determines the action the audit system should take when disk
+    # space runs low.
+    # The options for setting this variable are as follows:
+    # "ignore" - the system does nothing when presented with the aforementioned issue;
+    # "syslog" -  a message is sent to the system log about disk space running low;
+    # "suspend" - the system suspends recording audit events until more space is available;
+    # "halt" -the system is halted when disk space is critically low.
     admin_space_left_action: halt
+    # The "max_log_file_action" variable determines what action the audit system should take when the maximum
+    # size of a log file is reached.
+    # The options for setting this variable are as follows:
+    # "ignore" - the system does nothing when the size of a log file is full;
+    # "syslog" -  a message is sent to the system log indicating the problem;
+    # "suspend" - the system suspends recording audit events until the log file is cleared or rotated;
+    # "rotate" - the log file is rotated (archived) and a new empty log file is created;
+    # "keep_logs" - the system attempts to keep as many logs as possible without violating disk space constraints.
     max_log_file_action: keep_logs
 
 # Control 4.2.x
-# Set to be rsyslog or journald dependent on what you are using
+# The following variable sets what type of logging system you would
+# like your machine to use. The options for this variable are "rsyslog" or "journald".
+# Based on the value you set for this variable the required rules are applied in direct
+# relation with the type of logging system specified. Bear in mind that, for example,
+# if you want your system to use rsyslog,  only the rules for rsyslog will apply. Following a further
+# assessment you will notice the "fail" result appears only for the rules
+# related to the other type of logging system, as they are not applied.
+# Idem if you choose journald.
 ubtu22cis_syslog_service: rsyslog
+# This variable represents the remote log host where logs are being sent
 ubtu22cis_remote_log_server: 192.168.2.100
+# This variable states if your system will be used as a log server or not.
+# Based on this, various tasks will be applied in order to ensure the system's security,
+# considering your choice.
 ubtu22cis_system_is_log_server: false
 
 # Control 4.2.1.1.x & 4.2.1.x journald
+# This variable specifies the path to the private key file used by the remote journal
+# server to authenticate itself to the client. This key is used alongside the server's
+# public certificate to establish secure communication.
 ubtu22cis_journal_upload_serverkeyfile:
+# This variable specifies the path to the public certificate file of the remote journal
+# server. This certificate is used to verify the authenticity of the remote server.
 ubtu22cis_journal_servercertificatefile:
+# This variable specifies the path to a file containing one or more public certificates
+# of certificate authorities (CAs) that the client trusts. These trusted certificates are used
+# to validate the authenticity of the remote server's certificate.
 ubtu22cis_journal_trustedcertificatefile:
 # ubtu22cis_journald_systemmaxuse: SystemMaxUse=
 # ubtu22cis_journald_systemkeepfree: SystemKeepFree=
@@ -588,128 +759,165 @@ ubtu22cis_journal_trustedcertificatefile:
 # ubtu22cis_journald_maxfilesec: MaxFileSec=
 
 # Control 4.2.2.x Rsyslog
-
+# This variable states if the rsyslog configuration should be automated or not.
 ubtu22cis_rsyslog_ansible_managed: true
 
 # Control 4.3
-# ubtu22cis_logrotate is the log rotate frequencey. Options are daily, weekly, monthly, and yearly
+# This variable sets the log rotate frequency. Options are daily, weekly, monthly, and yearly.
 ubtu22cis_logrotate: "daily"
 
 # Control 4.3
-# ubtu22cis_logrotate_create_settings are the settings for the create parameter in /etc/logrotate.conf
+# This variable represents the settings for the create parameter in /etc/logrotate.conf
 # The permissions need to be 640 or more restrictive.
-# If you would like to include user/group settings to this parameter format the var as below
+# If you would like to include user/group settings to this parameter, format the var as below
 # ubtu22cis_logrotate_create_settings: "0640 root utmp"
 ubtu22cis_logrotate_create_settings: "0640"
 
 # Section 5 Control Variables
-
-# ubtu22cis_sshd will contain all sshd variables where possible.
-
+# The following dictionary will contain all sshd variables where possible.
 ubtu22cis_sshd:
+    # This variable is used to control the verbosity of the logging produced by the SSH server.
+    # The options for setting it are as follows:
+    # "QUIET" - minimal logging;
+    # "FATAL" - logs only fatal errors;
+    # "ERROR" - logs error messages;
+    # "INFO" - logs informational messages in addition to errors;
+    # "VERBOSE" - logs a higher level of detail, including login attempts and key exchanges;
+    # "DEBUG" - generates very detailed debugging information including sensitive information.
     log_level: "INFO"
+    # This variable specifies the maximum number of authentication attempts that are allowed for a single SSH session.
     max_auth_tries: 4
+    # This variable specifies the encryption algorithms that can be used for securing data transmission.
     ciphers: "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
+    # This variable specifies a list of message authentication code algorithms (MACs) that are allowed for verifying
+    # the integrity of data exchanged.
     macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
+    # This variable is used to state the key exchange algorithms used to establish secure encryption keys during the
+    # initial connection setup.
     kex_algorithms: "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
+    # This variable sets the time interval in seconds between sending "keep-alive" messages from the server to the client.
+    # These types of messages are intended to keep the connection alive and prevent it being terminated due to inactivity.
     client_alive_interval: 300
+    # This variable sets the maximum number of unresponsive "keep-alive" messages that can be sent from the server to the
+    # client before the connection is considered inactive and thus, closed.
     client_alive_count_max: 3
+    # This variable specifies the amount of time allowed for succesful authentication to the SSH server.
     login_grace_time: 60
+    # This variables is used to set the maximum number of open sessions per connection.
     max_sessions: 8
     # WARNING: make sure you understand the precedence when working with these values!!
-    allow_users: "vagrant ubuntu"
-    allow_groups: "vagrant ubuntu"
+    # The following variable specifies a list of local accounts that may accept SSH connections.
+    allow_users: "admin"
+    # If this variable is specified, login is allowed only for users whose primary group or supplementary group
+    # list matches one of the patterns. Only group names are valid, a numerical group ID is not recognized.
+    allow_groups: "sshadmins"
+    # The following variables do the exact opposite of the two variables above them, such as they
+    # deny users and groups instead of allowing them.
     # deny_users:
     # deny_groups:
 
 # Control 5.3.1
-# ubtu22cis_sudo_package is the name of the sudo package to install
+# This variable represents the name of the sudo package to install
 # The possible values are "sudo" or "sudo-ldap"
 ubtu22cis_sudo_package: "sudo"
 
 # Control 5.3.3
-# ubtu22cis_sudo_logfile is the path and file name of the sudo log file
+# This variable defines the path and file name of the sudo log file
 ubtu22cis_sudo_logfile: "/var/log/sudo.log"
 #### 5.3.6
+# This variable sets the duration during which a user's authentication credentials are cached after
+# successfully authenticating using "sudo". This allows the user to execute multiple commands with
+# elevated privileges without needing to re-enter their password for each command within the specified
+# time period.
 ubtu22cis_sudo_timestamp_timeout: 15
 # Control 5.3.7
+# This is a variable that allows one to specify a group that is allowed to use the "su" command. This role
+# uses this variable to restrict access to the "su" command.
 ubtu22cis_sugroup: nosugroup
 
 # Control 5.4.3
-# ubtu22cis_pamd_pwhistory_remember is number of password chnage cycles a user can re-use a password
+# This variable represents the number of password change cycles when a user can re-use a password
 # This needs to be 5 or more to conform to CIS standards
 ubtu22cis_pamd_pwhistory_remember: 5
 
 # Control 5.4.4
-# ubtu22cis_passwd_hash_algo is the hashing algorithm used
+# This variable specifies the hashing algorithm used
 ubtu22cis_passwd_hash_algo: yescrypt
-# Set pam as well as login defs if PAM is required
+# Set pam as well as login defs if PAM is required *? what login defs ?*
 ubtu22cis_passwd_setpam_hash_algo: false
 
-# ubtu22cis_pass will be password based variables
-# Control 5.5.1.1
-# pass_min_days is the min number of days allowed between changing passwords. Set to 1 or more to conform to CIS standards
-# Control 5.5.1.2
-# max_days forces passwords to expire in configured number of days. Set to 365 or less to conform to CIS standards
-# Control 5.5.1.3
-# warn_age is how many days before pw expiry the user will be warned. Set to 7 or more to conform to CIS standards
-# Control 5.5.1.4
-# inactive the number of days of inactivity before the account will lock. Set to 30 day sor less to conform to CIS standards
 ubtu22cis_pass:
+    # Control 5.5.1.2
+    # This variable forces passwords to expire in a configured number of days. Set to 365 or less to conform to CIS standards
     max_days: 365
+    # Control 5.5.1.1
+    # This variable represents the min number of days allowed between changing passwords. Set to 1 or more to conform to CIS standards
     min_days: 1
+    # Control 5.5.1.3
+    # This variable sets how many days before the pw expires the user will be warned. Set to 7 or more to conform to CIS standards
     warn_age: 7
+    # Control 5.5.1.4
+    # This variable refers to the number of days of inactivity before the account will lock. Set to 30 day or less to conform to CIS standards
     inactive: 30
 
 # Control 5.5.4
-# ubtu22cis_bash_umask is the umask to set in the /etc/bash.bashrc and /etc/profile.
+# The following variable represents the "umask" to set in the /etc/bash.bashrc and /etc/profile.
 # The value needs to be 027 or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 
 # Control 5.5.5
-# Session timeout setting file (TMOUT setting can be set in multiple files)
-# Timeout value is in seconds. Set value to 900 seconds or less
+# This dictionary is related to ensuring the rule about user shell timeout
 ubtu22cis_shell_session_timeout:
+    # This variable sets the path to the timeout setting file.
+    # This file needs modifications in order for the system to comply to the rule.
+    # TMOUT setting can be set in multiple files, but only one is required for the
+    # rule to pass. Options are: "/etc/profile.d/tmout.sh", "/etc/profile" or "/etc/bash.bashrc."
     file: /etc/profile.d/tmout.sh
+    # This variable represents the amount of time a command or process is allowed to run before being
+    # forcefully terminated. Its value is in seconds. It is required to set this value to 900 seconds or less.
     timeout: 900
 
 # UID settings for interactive users
 # These are discovered via logins.def if set true
 discover_int_uid: false
+# This variable sets the minimum bumber from which to search for UID
 min_int_uid: 1000
+# This variable sets the maximum number at which the search stops for UID
 max_int_uid: 65533
 
 # Section 6 Control Variables
 # Control 6.1.9
-# ubtu22cis_no_world_write_adjust will toggle the automated fix to remove world-writable perms from all files
+# The following variable will toggle the automated fix to remove world-writable permissions from all files
 # Setting to true will remove all world-writable permissions, and false will leave as-is
 ubtu22cis_no_world_write_adjust: true
 
 # Control 6.1.10
-# ubtu22cis_un_owned_owner is the owner to set files to that have no owner
+# The value of this variable will represent the owner that will be set to the files that do not have any owner specified
 ubtu22cis_unowned_owner: root
-# ubtu22cis_no_owner_adjust will toggle the automated fix to give a user to unowned files/directories
-# true will give the owner from ubtu22cis_un_owned_owner to all unowned files/directories and false will skip
+# This variable will toggle the automated fix to give a user to unowned files/directories
+# If the value is set to "true", it will give the owner from ubtu22cis_unowned_owner to all unowned files/directories.
+# If the value is set to "false", it will give a warning to inform the user that he or she needs to assign an owner.
 ubtu22cis_no_owner_adjust: true
 # Control 6.1.11
-# ubtu22cis_ungrouped_group is the group to set files to that have no group
+# This variable represents the group that will be set for files that have no group.
 ubtu22cis_ungrouped_group: root
-# ubtu22cis_no_group_adjust will toggle the automated fix to give a group to ungrouped files/directories
-# true will give the group from ubtu22cis_un_owned_group to all ungrouped files/directories and false will skip
+# This variable will toggle the automated fix to give a group to ungrouped files/directories
+# If the value is set to "true", it will give the group from ubtu22cis_un_owned_group to all ungrouped files/directories.
+# If the value is set to "false", it will skip.
 ubtu22cis_no_group_adjust: true
 
 # Control 6.1.12
-# ubtu22cis_suid_adjust is the toggle to remove the SUID bit from all files on all mounts
-# Set to true this role will remove that bit, set to false we will just warn about the files
+# This variable is the toggle to remove the SUID bit from all files on all mounts.
+# Setting this to true, the role will remove that bit, setting this to false, the role will just warn about the files.
 ubtu22cis_suid_adjust: false
 
 # Control 6.1.13
-# ubtu22cis_sgid_adjust is the toggle to remove the SGID bit from all files on all mounts
-# Set to true this role will remove that bit, set to false we will just warn about the files
+# This variable is the toggle to remove the SGID bit from all files on all mounts
+# Setting this to true, the role will remove that bit, setting this to false, the role will just warn about the files.
 ubtu22cis_sgid_adjust: false
 
 # Control 6.2.7
-# ubtu22cis_dotperm_ansiblemanaged is a toggle to allow this role to modify permissions on dot files
+# This variable represents a toggle to allow this role to modify permissions on dot files
 ubtu22cis_dotperm_ansiblemanaged: true
 
 #### Audit Configuration Settings ####
