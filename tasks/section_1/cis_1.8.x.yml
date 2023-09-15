@@ -72,9 +72,9 @@
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
             insertafter: "{{ item.after | default(omit) }}"
-            loop:
-                - "{ regexp: 'user-db: user', line: 'user' }"
-                - "{ regexp: 'system-db: {{ ubtu22cis_dconf_db_name }}'', after: '^user-db.*' }"
+        loop:
+            - "{ regexp: 'user-db: user', line: 'user' }"
+            - "{ regexp: 'system-db: {{ ubtu22cis_dconf_db_name }}'', after: '^user-db.*' }"
 
       - name: "1.8.4 | PATCH | Ensure GDM screen locks when the user is idle | make directory"
         ansible.builtin.file:
