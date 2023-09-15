@@ -81,12 +81,10 @@ audit_cmd_timeout: 60000
 # The correct value of this variable is auto-determined.
 ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 
-# tweak role to run in a non-privileged container
-ubtu22cis_system_is_container: false
-
 # Skip events for EC2 instance testing pipeline.
 # This variable is set to true for automated tests
 # carried out for this role by the role maintainers.
+# skip events for ec2 instance testing pipeline
 system_is_ec2: false
 
 # Section 1 Fixes
