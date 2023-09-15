@@ -52,9 +52,6 @@ audit_cmd_timeout: 60000
 # tweak role to run in a chroot, such as in kickstart %post script
 ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 
-# tweak role to run in a non-privileged container
-ubtu22cis_system_is_container: false
-
 # skip events for ec2 instance testing pipeline
 system_is_ec2: false
 
