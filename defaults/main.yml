@@ -1,8 +1,7 @@
 ---
-# These variables specify to the role if it should include the tasks from a particular section.
-# E.g: If you want to execute the tasks that are included in Section 1 you should set the "ubtu22cis_section1"
+# These variables govern whether the tasks of a particular section are to be executed when running the role.
+# E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
 # to "true". If you do not want the tasks from that section to get executed you simply set the variable to "false".
-# This helps to filter out any tasks from sections you consider unnecessary or unrelated to your machine.
 ubtu22cis_section1: true
 ubtu22cis_section2: true
 ubtu22cis_section3: true
@@ -21,84 +20,73 @@ benchmark_version: v1.0.0
 ubtu22cis_level_1: true
 ubtu22cis_level_2: true
 
-## This variable states if tasks with a potential high impact on your system
-# should be run or not. If you set this variable to "true" the role will apply
-# the tasks to your system. If you set it to "false" no tasks with a possible
-# high impact will be applied!
+# This variable governs whether tasks of a potentially disruptive nature on your system
+# (e.g., removing .forward and .netrc files for interactive users) are carried out.
+# If you set this variable to "true", the role will carry such tasks; if you set it to
+# "false", these tasks will be skipped.
 ubtu22cis_disruption_high: true
 
-## Setting 1.4.1 will mean a password is required to boot
-## this will allow a system boot when set to false
+# Setting this variable to false enables the system to
+# boot *without* querying for the bootloader password
+# of control 1.4.1.
 ubtu22cis_ask_passwd_to_boot: false
 
-# Tweak role to run in a non-privileged container (default value)- dynamically discovered in tasks/main.yml
-# This variable is used to specify if you want this Ansible role to be containerized or not.
-# Privilege containers have an elevated access to the host system and can perform sensitive tasks. Non-privileged
-# containers run with restricted access to prevent potential misuse or damage.
-# Running this role in a non-privileged container offers several benefits such as increased security,
-# portability, and efficient resource managing. *? But applying sensitive configurations and settings will no
-# longer be possible ?*
+# The role discovers dynamically (in tasks/main.yml) whether it
+# is executed on a container image and sets the variable
+# system_is_container the true. Otherwise, the default value
+# 'false' is left unchanged. 
 system_is_container: false
 
-### Audit Binary is required on the remote host
+### 
+### Settings for associated Audit role using Goss
+###
 
-# This variable states if the setup for auditing shall get done.
-# Binary auditing is the process of inspecting and evaluating the security of
-# the code, when access to the source code is not granted. It involves analyzing
-# the executable files directly to identify vulnerabilities, security weaknesses or potential threats.
+# Audits are carried out using Goss. This variable
+# determines whether execution of the role prepares for auditing
+# by installing the required binary.
 setup_audit: false
 # How to retrieve audit binary:
-# Options are copy or download - detailed settings at the bottom of this file
-# You will need to access to either github or the file already downloaded
+# Options are copy or download, using either the path
+# provided in variable `audit_conf_copy` for copying or
+# the url given in variable `audit_files_url` for downloading. 
 get_audit_binary_method: download
 
-# How to get audit files onto host options:
-# The options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
+# The role for auditing is maintained separately.
+# This variable specifies the method of how to get the audit role
+# onto the system. The options are as follows:
+# - git: clone from git repository as specified in variable `audit_file_git` in 
+#   the version specified by variable `audit_git_version`
+# - copy: copy from path as specified in variable `audit_conf_copy`
+# - download: Download from url as specified in variable `audit_files_url`
 audit_content: git
 
 # Enable audits to run
-# This variable, if set to true, runs the audit and gets the latest content
+# This variable governs whether the audit using the 
+# separately maintained audit role using Goss
+# is carried out.
 run_audit: false
 
-# Run heavy tests
-# If set to true, the role will run heavy tests.
-# Keep in mind, that some tests can have more impact on a system,
-# therefore, enabling these can have a greater impact on a system!
+# This variable governs whether resource-intensive audit tests are carried out
 audit_run_heavy_tests: true
-# Timeout for those cmds that take longer to run where timeout set
-# This variable sets a timeout value in order to limit the execution
-# time of audit commands. This ensures that if a command takes too
-# long to complete, it will be forcefully terminated after the specified
-# duration, found in the value of the following variable.
+# This variable specifies the timeout (in ms) for audit commands that
+# take a very long time: if a command takes too long to complete,
+# it will be forcefully terminated after the specified duration.
 audit_cmd_timeout: 60000
 
-### End Audit enablements ####
+###
+### End Audit Settings for associcated Audit role using Goss
+###
 
-# Tweak role to run in a chroot, such as in kickstart %post script.
-# The %post script in kickstart refers to a section that allows someone
-# to specify a shell script to be executed after the installation of the
-# OS is complete. The script runs in the context of the newly installed
-# system and it provides an opportunity to perform additional configurations
-# or execute custom tasks that need to be done after the installation.
-# *? why is kickstart needed ?*
-# Chroot stands for "change root" which is a Unix command, allowing
-# someone to change the apparent root directory for a process.
-# Running the role inside a "chroot" environment creates a separate
-# directory (the new root), and sets it as the apparent root for the
-# commands executed by the role. This can be useful for specific tasks
-# that need isolation, but it can also limit the role's ability to make
-# changes to the broader system.
+# Tweak role to run in a chroot, such as in a kickstart %post script.
+# The correct value of this variable is auto-determined.
 ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 
-# Tweak role to run in a non-privileged container
-# This has the same explanation as the "system_is_container"
-# variable
+# tweak role to run in a non-privileged container
 ubtu22cis_system_is_container: false
 
-# Skip events for EC2 instance testing pipeline
-# This variable states if the system is an EC2 or not.
-# Based on this, different configurations and tasks will be
-# applied to your system, in order to suit its needs.
+# Skip events for EC2 instance testing pipeline.
+# This variable is set to true for automated tests
+# carried out for this role by the role maintainers.
 system_is_ec2: false
 
 # Section 1 Fixes
