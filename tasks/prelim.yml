@@ -80,7 +80,7 @@
   when:
       - ubtu22cis_rule_3_1_2
       - ubtu22cis_install_network_manager
-      - not ubtu22cis_system_is_container
+      - not system_is_container
       - "'network-manager' not in ansible_facts.packages"
   tags:
       - always
