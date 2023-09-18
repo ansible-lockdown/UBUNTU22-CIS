@@ -84,8 +84,13 @@ ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
 # Skip events for EC2 instance testing pipeline.
 # This variable is set to true for automated tests
 # carried out for this role by the role maintainers.
-# skip events for ec2 instance testing pipeline
 system_is_ec2: false
+
+##
+## Rule-specific switches
+##
+## Use the switches below to disable specific rules independently of the chosen profile
+##
 
 # Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
@@ -415,7 +420,13 @@ ubtu22cis_rule_6_2_15: true
 ubtu22cis_rule_6_2_16: true
 ubtu22cis_rule_6_2_17: true
 
-# Service configuration variables, set to true to keep service
+##
+## Service configuration variables.
+##
+## Set the respective variable to true to keep the service.
+## otherwise the service is stopped and disabled
+##
+
 ubtu22cis_allow_autofs: false
 ubtu22cis_allow_usb_storage: false
 ubtu22cis_avahi_server: false
@@ -433,48 +444,57 @@ ubtu22cis_snmp_server: false
 ubtu22cis_rsync_server: false
 ubtu22cis_nis_server: false
 ubtu22cis_nfs_client: false
+
 # rpcbind is required by nfs-common which is required on client and server
+# The value of the variable is determined automatically, based on the variables
+# for NFS server and NFS client.
 ubtu22cis_rpc_required: "{{ ubtu22cis_nfs_server or ubtu22cis_nfs_client }}"
 
-# Clients in use variables, these variables are set
-# to true, if you want to keep these client packages.
-# If you want them to be uninstalled, set them to false!
+##
+## Client package configuration variables.
+##
+## Set the respective variable to `true` to keep the 
+## client package, otherwise it is uninstalled.
+##
+
 ubtu22cis_nis_required: false
 ubtu22cis_rsh_required: false
 ubtu22cis_talk_required: false
 ubtu22cis_telnet_required: false
 ubtu22cis_ldap_clients_required: false
 
-# This variable is used in order to determine whether you
-# want to use you system as a router or not.
-# If your system's purpose is not the one of a router
-# then set this to false, and all the needed security configs
-# will be made. This configs will stop your system from
-# acting as a router, in order to minimize its area of exposure,
-# and therefore make it more secure.
-# If you will use your system as a router, set this to true,
-# so as the role will not make changes that might interfere with your
-# system's desired functionality!
+##
+## System functionality configuration variables
+##
+## There are certain functionalities of a system
+## that may require either to skip certain CIS rules
+## or install certain packages. 
+## Set the respective variable to `true` in order to
+## enable a certain functionality on the system
+
+# This variable governs whether specific CIS rules
+# concerned with acceptance and routing of packages
+# are skipped.
 ubtu22cis_is_router: false
 
 # IPv4 requirement toggle
-# This variable states if your machine requires ipv4
+# This variable governs whether ipv4 is enabled or disabled.
 ubtu22cis_ipv4_required: true
 
 # IPv6 requirement toggle
-# This variable states if your machine requires ipv6
+# This variable governs whether ipv6 is enabled or disabled.
 ubtu22cis_ipv6_required: false
 
-# Other system wide variables
-# This particular variable is the toggle for requiring desktop environments.
-# True means you use a desktop and will not disable/remove needed items
-# to run a desktop (not recommended for servers).
-# False means you do not require a desktop
+# Desktop requirement toggle
+# This variable governs, whether CIS rules regarding GDM
+# and X-Windows are carried out.
 ubtu22cis_desktop_required: false
 
-# Section 1 Control Variables
+##
+## Section 1 Control Variables
+##
 
-# This will force the tmp_mnt type if not correctly discovered
+# TODO This will force the tmp_mnt type if not correctly discovered
 # either tmp_systemd or fstab
 expected_tmp_mnt: fstab
 
@@ -483,36 +503,49 @@ expected_tmp_mnt: fstab
 # While it cannot prevent intrusions, it can detect unauthorized changes
 # to configuration files by alerting when the files are changed. Review
 # the AIDE quick start guide and AIDE documentation before proceeding.
-# By setting this variable all of the settings related to AIDE will be applied!
+# By setting this variable to `true`, all of the settings related to AIDE will be applied!
 ubtu22cis_config_aide: true
 
 # Control 1.3.2
-# These are the crontab settings for periodical checking of the filesystem's integrity.
-# The following represents a dictionary with 8 keys. These keys' values are used for
-# the parameters needed to define the cron job on the remote system.
+# These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
+# The sub-settings of this variable provide the parameters required to configure
+# the cron job on the target system.
 # Cron is a time-based job scheduling program in Unix OS, which allows tasks to be scheduled
 # and executed automatically at a certain point in time.
 ubtu22cis_aide_cron:
-    # The following key represents the user account under which the cron job will run
+    # This variable represents the user account under which the cron job for AIDE will run.
     cron_user: root
-    # The following key represents the path to the crontab file to be managed
+    # This variable represents the path to the AIDE crontab file.
     cron_file: /etc/cron.d/aide_cron
-    # The following key represents the actual command or script that the cron job will execute
+    # This variable represents the actual command or script that the cron job
+    # will execute for running AIDE.
     aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
-    # The following keys define the schedule for the cron job
-    # The minute key can have values between 0-59
+    # These variables define the schedule for the cron job
+    # This variable governs the minute of the time of day when the AIDE cronjob is run.
+    # It must be in the range `0-59`.
     aide_minute: 0
-    # The hour key can have values between 0-23
+    # This variable governs the hour of the time of day when the AIDE cronjob is run.
+    # It must be in the range `0-23`.
     aide_hour: 5
-    # The day key can have values between 1-31
+    # This variable governs the day of the month when the AIDE cronjob is run.
+    # `*` signifies that the job is run on all days; furthermore, specific days
+    # can be given in the range `1-31`; several days can be concatenated with a comma.
+    # The specified day(s) can must be in the range  `1-31`.
     aide_day: '*'
-    # The month key can have values between 1-12
+    # This variable governs months when the AIDE cronjob is run.
+    # `*` signifies that the job is run in every month; furthermore, specific months
+    # can be given in the range `1-12`; several months can be concatenated with commas.
+    # The specified month(s) can must be in the range  `1-12`.
     aide_month: '*'
-    # The weekday key, represent the day of the week, and it can have values between 0-7
-    # (both 0 and 7 represent Sunday)
+    # This variable governs the weekdays, when the AIDE cronjob is run.
+    # `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
+    # can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
+    # can be concatenated with commas.
     aide_weekday: '*'
 
-# Control 1.4.1
+## TODO
+## Controls 1.4.x - Boot password
+#
 # THIS VARAIBLE SHOULD BE CHANGED AND INCORPORATED INTO VAULT
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
@@ -526,8 +559,10 @@ ubtu22cis_set_boot_pass: true
 # This variable is used to specify the path to the file that needs to
 # have permissions modified in order to comply to the CIS-CAT rule 1.4.2
 ubtu22cis_grub_file: /etc/default/grub.cfg
+## TODO ENDE
 
-## 1.6.1.x apparmor
+## Controls 1.6.1.x - apparmor
+#
 # AppArmor security policies define what system resources applications can access and their privileges.
 # This automatically limits the damage that the software can do to files accessible by the calling user.
 # The following variables are related to the set of rules from section 1.6.1.x
@@ -541,80 +576,73 @@ ubtu22cis_apparmor_disable: false
 # value is set to this variable *?
 ubtu22cis_apparmor_enforce_only: false
 
-# 1.7.1
-# This variable disables dynamic motd to stop extra sshd message from appearing
-ubtu22cis_disable_dynamic_motd: true
-
-# Control 1.7.2
-# This will be the motd banner must not contain the below items in order to be compliant with Ubuntu 20 CIS
-# \m, \r, \s, \v or references to the OS platform
+## Controls 1.7.x  - Warning banners
+# The controls 1.7.x set various warning banners and protect the respective files
+# by tightening the access rights
+#
+# This variable specifies the warning banner displayed to the user
+# after local login, remote login, and as motd (message of the day)
+# Noe that the banner text must not contain the below items in order to be
+# compliant with CIS: \m, \r, \s, \v or references to the OS platform
 ubtu22cis_warning_banner: |
         Authorized uses only. All activity may be monitored and reported.
 
-# Control 1.8.4
-# Settings for desktop
-# Dconf db (database) refers to the configuration database used in GNOME-based systems
+# This variable governs, whether dynamic motd is disabled (as required by control 1.7.1)
+ubtu22cis_disable_dynamic_motd: true
+
+## Controls 1.8.x - Settings for GDM
+# This variable specifies the GNOME configuration database file to which configurations are written.
+# (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en) 
+# The default database is `local`.
 ubtu22cis_dconf_db_name: local
-# Number of seconds of inactivity before the screen goes blank
-# Set max value for idle-delay in seconds (between 1 and 900)
+# This variable governs the number of seconds of inactivity before the screen goes blank.
 ubtu22cis_screensaver_idle_delay: 900
-# Number of seconds after the screen is blank before locking the screen
-# Set max value for lock-delay in seconds (between 0 and 5)
+# This variable governs the number of seconds the screen remains blank before it is locked.
 ubtu22cis_screensaver_lock_delay: 5
 
-# Section 2 Control Variables
-# Control 2.1.1.1
-# This variable sets the tool used for time synchronization
-# The three options are chrony, ntp, or systemd-timesyncd
+##
+## Section 2 Control Variables
+##
+
+## Control 2.1.1.1
+# This variable choses the tool used for time synchronization
+# The three options are `chrony`, `ntp`, and `systemd-timesyncd`.
 ubtu22cis_time_sync_tool: "ntp"
 
-# Control 2.1.2.1 2.1.3.1  *? (2.1.4.1) ?*
-# Time settings used for all versions
-# The following variables are dictionaries that contain keys.These dictionaries refer
-# to different ways of specifying time servers for synchronization. The keys' values represent
-# the parameters inside the task.
-# The first dictionary refers to "pool" which is a group of NTP servers that are part of a
-# larger network. When one uses "pool", its system will automatically select one or more servers
-# from the pool to synchronize time.
+## Controls 2.1.2.1 2.1.3.1, 2.1.4.1 - Configure time pools & servers for chrony, timesyncd, and ntp
+# The following variable represents a list of of time server pools used
+# for configuring chrony, timesyncd, and ntp.
+# Each list item contains two settings, `name` (the domain name of the pool) and synchronization `options`.
+# The default setting for the `options` is `iburst maxsources 4` -- please refer to the documentation
+# of the time synchronization mechanism you are using.
 ubtu22cis_time_pool:
-      # This variable represents the name of the time servers one would want to synchronize its
-      # machine with. The NIST time servers are providing accurate time synchronization services
-      # over the Network Time Protocol (NTP). "time.nist.gov" is a domain of such time servers
-      # and it is used as a reliable source of accurate time information
     - name: time.nist.gov
-      # The following variable represents the "iburst" option. This option is used to initiate an
-      # initial burst of packets for quicker synchroniation. The "maxsources" option limits the number
-      # of sources used for synchronization. In this case from the "time.nist.gov" domain only 4 such
-      # servers will be selected for synchronization.
       options: iburst maxsources 4
-# The second dictionary refers to specific "servers" used in time synchronization
+# The following variable represents a list of of time servers used
+# for configuring chrony, timesyncd, and ntp.
+# Each list item contains two settings, `name` (the domain name of the pool) and synchronization `options`.
+# The default setting for the `options` is `iburst` -- please refer to the documentation
+# of the time synchronization mechanism you are using.
 ubtu22cis_time_servers:
-      # The "name" variables, as specified above, have to do with the name of the time servers needed. With the
-      # "server" procedure, as opposed to the "pool" procedure, one explicitly provides the unique identifier of
-      # a time server in order to synchronize its machine with it. Each and every server named here is a specific
-      # server from the "time.nist.gov" domain.
     - name: time-a-g.nist.gov
-      # The following variable is, as explained later, the "iburst" option. In this particular scenario, the "iburst"
-      # option is strictly used to improve the initial synchronization process by sending (from the client) a burst
-      # of 8 packets in rapid succession to the server.
       options: iburst
     - name: time-b-g.nist.gov
       options: iburst
     - name: time-c-g.nist.gov
       options: iburst
 
-# Control 2.2.15
+## Control 2.2.15 - Local only mode for mail server
 # This variable is used to determine whether you intend to use your machine as a mail server or not.
 # If you do not intend to use it as such, the mail transfer agent (MTA) will be configured to only
-# process local mail, in order to reduce chances of security risks. Set to "false" if your machine
-# is not a mail server or to "true" if it is!
+# process local mail, in order to reduce chances of security risks. Set to `false` if your machine
+# is not a mail server or to `true` if it is!
 ubtu22cis_is_mail_server: false
-# ubtu22_cis_mail_transfer_agent is the mail transfer agent in use
-# The options are exim4, postfix or other
-# ubtu22_cis_mail_transfer_agent: "other"
 
-# Section 3 Control Variables
-# Control 3.1.1
+##
+## Section 3 Control Variables
+##
+
+## Control 3.1.1
 # This variable offers information to the role over how the disabling of IPV6 should be
 # handled. The task uses two methods, each to be chosen by the value of this variable.
 # One can choose to disable IPV6 via "grub" or via "sysctl" by simply adding one of this
