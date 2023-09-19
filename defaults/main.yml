@@ -692,65 +692,64 @@ ubtu22cis_ufw_allow_out_ports:
 ## Section 4 Control Variables
 ## 
 
-##  Control 4.1.1.4
-# This variable represents the audit backlog limit, which refers to a configuration parameter that sets the
-# maximum number of audit records that the system can buffer in memory, if the audit subsystem is unable to
-# process them in real-time. This parameter helps manage situations where the audit system is overwhelmed
+##  Control 4.1.1.4 - Ensure audit_backlog_limit is sufficient
+# This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
+# system can buffer in memory, if the audit subsystem is unable to process them in real-time.
+# Buffering in memory is useful in situations, where the audit system is overwhelmed
 # with incoming audit events, and needs to temporarily store them until they can be processed.
-# This variable should be set to a sufficient value. The example from CIS uses "8192"
+# This variable should be set to a sufficient value. The CIS baseline recommends at least `8192` as value.
 ubtu22cis_audit_back_log_limit: 8192
 
-# Control 4.1.2.1
-# This variable refers to the maximum size that an audit log file can reach before it is archived or cleared
-# to make space for the new audit data
-# The bigger the value of this variable is, the larger the log file will become in terms of MB.
-# This should be set based on your sites policy
+## Control 4.1.2.1 - Ensure audit log storage size is configured
+# This variable specifies the maximum size in MB that an audit log file can reach
+# before it is archived or deleted to make space for the new audit data.
+# This should be set based on your sites policy. CIS does not provide a specific value.
 ubtu22cis_max_log_file_size: 10
-### 4.1.3.x audit template
-# This variable sets if the audit template should be updated or not. While updating the template is a good practice
-# in terms of security enhancement, this action might lead to modifications to the rules, settings or parameters.
-# This could involve adding new rules, adjusting them or removing them completely. Tread carefully!
+
+## 4.1.3.x - Audit template
+# This variable is set to true by tasks 4.1.3.1 to 4.1.3.20. As a result, the
+# audit settings are overwritten with the role's template. In order to exclude
+# specific rules, you must set the variable of form `ubtu22cis_rule_4_1_3_x` above
+# to `false`.
 update_audit_template: false
 
 ## Advanced option found in auditd post
 allow_auditd_uid_user_exclusions: false
 
-# Control 4.1.2.2
-# This is a dictionary used to control how the audit system behaves
+## Controls 4.1.2.2 and 4.1.2.3 - What to do when log files fill up 
+# This variable controls how the audit system behaves when
+# log files are getting too full and space is getting too low.
 ubtu22cis_auditd:
-    # The "admin_space_left_action" variable determines the action the audit system should take when disk
+    # This variable determines the action the audit system should take when disk
     # space runs low.
     # The options for setting this variable are as follows:
-    # "ignore" - the system does nothing when presented with the aforementioned issue;
-    # "syslog" -  a message is sent to the system log about disk space running low;
-    # "suspend" - the system suspends recording audit events until more space is available;
-    # "halt" -the system is halted when disk space is critically low.
+    # - `ignore`: the system does nothing when presented with the aforementioned issue;
+    # - `syslog`: a message is sent to the system log about disk space running low;
+    # - `suspend`: the system suspends recording audit events until more space is available;
+    # - `halt`: the system is halted when disk space is critically low.
+    # - `single`: the audit daemon will put the computer system in single user mode
+    # CIS prescribes either `halt` or `single`. 
     admin_space_left_action: halt
-    # The "max_log_file_action" variable determines what action the audit system should take when the maximum
+    # This variable determines what action the audit system should take when the maximum
     # size of a log file is reached.
     # The options for setting this variable are as follows:
-    # "ignore" - the system does nothing when the size of a log file is full;
-    # "syslog" -  a message is sent to the system log indicating the problem;
-    # "suspend" - the system suspends recording audit events until the log file is cleared or rotated;
-    # "rotate" - the log file is rotated (archived) and a new empty log file is created;
-    # "keep_logs" - the system attempts to keep as many logs as possible without violating disk space constraints.
+    # - `ignore`: the system does nothing when the size of a log file is full;
+    # - `syslog`: a message is sent to the system log indicating the problem;
+    # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
+    # - `rotate`: the log file is rotated (archived) and a new empty log file is created;
+    # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
+    # CIS prescribes the value `keep_logs`.
     max_log_file_action: keep_logs
 
-# Control 4.2.x
+## Controls 4.2.1.x (`journald`) and 4.2.2.x (`rsyslog`)
 # The following variable sets what type of logging system you would
-# like your machine to use. The options for this variable are "rsyslog" or "journald".
-# Based on the value you set for this variable the required rules are applied in direct
-# relation with the type of logging system specified. Bear in mind that, for example,
-# if you want your system to use rsyslog,  only the rules for rsyslog will apply. Following a further
-# assessment you will notice the "fail" result appears only for the rules
-# related to the other type of logging system, as they are not applied.
-# Idem if you choose journald.
+# like your machine to use. The options for this variable are `rsyslog` or `journald`.
 ubtu22cis_syslog_service: rsyslog
 # This variable represents the remote log host where logs are being sent
 ubtu22cis_remote_log_server: 192.168.2.100
-# This variable states if your system will be used as a log server or not.
-# Based on this, various tasks will be applied in order to ensure the system's security,
-# considering your choice.
+# This variable expresses whether the system is used as a log server or not.
+# If set to `true`, those controls not suitable for a log server are modified
+# or skipped.
 ubtu22cis_system_is_log_server: false
 
 # Control 4.2.1.1.x & 4.2.1.x journald
