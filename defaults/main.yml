@@ -642,43 +642,45 @@ ubtu22cis_is_mail_server: false
 ## Section 3 Control Variables
 ##
 
-## Control 3.1.1
-# This variable offers information to the role over how the disabling of IPV6 should be
-# handled. The task uses two methods, each to be chosen by the value of this variable.
-# One can choose to disable IPV6 via "grub" or via "sysctl" by simply adding one of this
-# values to the variable below.
-ubuntu22cis_ipv6_disable: grub
+## Control 3.1.1 - Ensure system is checked to determine if IPv6 is enabled
+# This variable governs the mechanism of how the disabling of IPV6 is carried out.
+# Its possible values are `grub` and `sysctl`.
+ubtu22cis_ipv6_disable: grub
 
-# Control 3.1.2
+## Control 3.1.2 - Ensure wireless interfaces are disabled
 # This variable is used for a preliminary task regarding the installation of Network Manager
-# If it is set to "true" Network Manager shall be installed during the "prelim" section of
-# the role. If set to "false", Network Manager shall not be installed. Bear in mind that without
+# If it is set to `true`, Network Manager is installed during the "prelim" section of
+# the role. If set to `false`, Network Manager is not installed. Bear in mind that without
 # it, ensuring that wireless interfaces are disabled will not be possible!
 ubtu22cis_install_network_manager: true
 
-# Control 3.3.x
+## Control 3.3.x - Networking configuration
 # This variable contains the path to the file in which, sysctl saves its configurations.
+# Its default value is `/etc/sysctl.conf`.
 ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
 
-# This variable represents the toggle for which tools are in use, to manage the firewall system.
-# The valid options to use are ufw, nftables, or iptables, alternatively set to 'none' if excluded.
-# Warning!! nftables is not supported in this role and will only message out if nftables is selected
-# If using nftables please manually adjust firewall settings
+## Controls 3.5.1.x, 3.5.2.x, and 3.5.3.x - Firewall configuration
+# This variable represents the toggle for which firewall package is used.
+# The options that have an effect on the system are `ufw` and `iptables`.
+# The option `nftables` is also possible, but will only result in a message,
+# that `nftables` has been chosen; all settings have to be carried out manually.
+# Any other value, e.g. `none` will skip all firewall-related controls.
 ubtu22cis_firewall_package: "ufw"
 
 # This variable is used in a preliminary task that forces the UFW firewall to use /etc/sysctl.conf
 # settings. If set to "true" the task will get done in the prelim section of the role.
 ubtu22cis_ufw_use_sysctl: true
 
-# Control 3.5.1.5
-# The value of this variable represents the ports for the firewall to allow.
-# If you want to allow out on all ports, set the variable to "all", example ubtu22cis_ufw_allow_out_ports: "all".
+## Control 3.5.1.5 - Ensure ufw outbound connections are configured
+# The value of this variable represents the ports for the firewall to allow oubound traffic from.
+# If you want to allow outbound traffic on all ports, set the variable to  `all`, e.g.,
+`ubtu22cis_ufw_allow_out_ports: "all"`.
 ubtu22cis_ufw_allow_out_ports:
     - 53
     - 80
     - 443
 
-# Control 3.5.2.4
+## Controls 3.5.2.x - nftables
 # Nftables is not supported in this role. Some tasks have parts of them commented out, this is one example
 # of such a task.
 # "ubtu22cis_nftables_table_name" is the name of the table in nftables you want to create.
@@ -686,15 +688,18 @@ ubtu22cis_ufw_allow_out_ports:
 # nftables configs are applied to.
 # ubtu22cis_nftables_table_name: "inet filter"
 
-# Controls 3.5.3.2.1 through 3.5.3.3.4
+## Controls 3.5.3.x - iptables 
 # The iptables module only writes to memory which means a reboot could revert settings.
 # The below toggle will install iptables-persistent and save the rules in memory (/etc/iptables/rules.v4 or rules.v6)
 # This makes the CIS role changes permanent and is managed via a handler
 ubtu22cis_save_iptables_cis_rules: true
 
-# Section 4 Control Variables
-# Control 4.1.1.4
-# This variable represents the audit_back_log limit which refers to a configuration parameter that sets the
+##
+## Section 4 Control Variables
+## 
+
+##  Control 4.1.1.4
+# This variable represents the audit backlog limit, which refers to a configuration parameter that sets the
 # maximum number of audit records that the system can buffer in memory, if the audit subsystem is unable to
 # process them in real-time. This parameter helps manage situations where the audit system is overwhelmed
 # with incoming audit events, and needs to temporarily store them until they can be processed.
