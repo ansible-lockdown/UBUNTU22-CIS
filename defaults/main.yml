@@ -452,7 +452,7 @@ ubtu22cis_grub_user: root
 ubtu22cis_set_grub_user_pass: false
 ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
-ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
+ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"  # pragma: allowlist secret
 ubtu22cis_set_boot_pass: true
 
 ubtu22cis_grub_file: /etc/default/grub.cfg
@@ -637,7 +637,7 @@ ubtu22cis_pamd_pwhistory_remember: 5
 
 # Control 5.4.4
 # ubtu22cis_passwd_hash_algo is the hashing algorithm used
-ubtu22cis_passwd_hash_algo: yescrypt
+ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
 # Set pam as well as login defs if PAM is required
 ubtu22cis_passwd_setpam_hash_algo: false
 

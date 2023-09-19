@@ -45,7 +45,7 @@
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
         vars:
-            sudo_password_rule: ubtu22cis_rule_5_3_4
+            sudo_password_rule: ubtu22cis_rule_5_3_4  # pragma: allowlist secret
   when:
       - ubtu22cis_rule_5_3_4
       - ansible_env.SUDO_USER is defined
@@ -54,7 +54,7 @@
 
 - name: Check ubtu22cis_bootloader_password_hash variable has been changed
   ansible.builtin.assert:
-      that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
+      that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
       msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
   when:
       - ubtu22cis_set_boot_pass
