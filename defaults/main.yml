@@ -688,12 +688,6 @@ ubtu22cis_ufw_allow_out_ports:
 # nftables configs are applied to.
 # ubtu22cis_nftables_table_name: "inet filter"
 
-## Controls 3.5.3.x - iptables 
-# The iptables module only writes to memory which means a reboot could revert settings.
-# The below toggle will install iptables-persistent and save the rules in memory (/etc/iptables/rules.v4 or rules.v6)
-# This makes the CIS role changes permanent and is managed via a handler
-ubtu22cis_save_iptables_cis_rules: true
-
 ##
 ## Section 4 Control Variables
 ## 
