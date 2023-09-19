@@ -555,7 +555,11 @@ ubtu22cis_max_log_file_size: 10
 update_audit_template: false
 
 ## Advanced option found in auditd post
-allow_auditd_uid_user_exclusions: false
+## users whose actions are not logged by auditd
+ubtu22cis_allow_auditd_uid_user_exclusions: false
+# add a list of uids
+ubtu22cis_auditd_uid_exclude:
+    - 1999
 
 # Control 4.1.2.2
 ubtu22cis_auditd:

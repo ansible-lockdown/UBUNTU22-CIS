@@ -24,8 +24,7 @@
       mode: 0600
   notify: Restart auditd
   when:
-      - allow_auditd_uid_user_exclusions
-      - ubtu22cis_auditd_uid_exclude | length > 0
+      - ubtu22cis_allow_auditd_uid_user_exclusions
 
 # - name: "POST | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable"
 #   block:
