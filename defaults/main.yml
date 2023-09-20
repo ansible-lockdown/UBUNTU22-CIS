@@ -687,7 +687,7 @@ ubtu22cis_ufw_use_sysctl: true
 ## Control 3.5.1.5 - Ensure ufw outbound connections are configured
 # The value of this variable represents the ports for the firewall to allow oubound traffic from.
 # If you want to allow outbound traffic on all ports, set the variable to  `all`, e.g.,
-`ubtu22cis_ufw_allow_out_ports: "all"`.
+# `ubtu22cis_ufw_allow_out_ports: "all"`.
 ubtu22cis_ufw_allow_out_ports:
     - 53
     - 80
