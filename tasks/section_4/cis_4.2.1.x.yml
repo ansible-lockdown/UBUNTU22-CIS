@@ -15,7 +15,8 @@
         when: "'static' not in ubtu22cis_4_2_1_2_status.stdout"
 
       - name: "4.2.2.2 | AUDIT | Ensure journald service is enabled | Warn Count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when: "'static' not in ubtu22cis_4_2_1_2_status.stdout"
   vars:
       warn_control_id: '4.2.1.2'

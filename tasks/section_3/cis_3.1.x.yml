@@ -56,7 +56,8 @@
         when: "'network-manager' not in ansible_facts.packages"
 
       - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when: "'network-manager' not in ansible_facts.packages"
   vars:
       warn_control_id: '3.1.2'
