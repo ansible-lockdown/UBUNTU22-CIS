@@ -136,7 +136,6 @@
       - run_audit
   tags:
       - run_audit
-      - always
 
 - name: Run parse /etc/passwd
   ansible.builtin.import_tasks: parse_etc_password.yml
@@ -216,7 +215,7 @@
   when:
       - run_audit
   tags:
-      - always
+      - run_audit
 
 - name: Show Audit Summary
   ansible.builtin.debug:
@@ -225,7 +224,6 @@
       - run_audit
   tags:
       - run_audit
-      - always
 
 - name: If Warnings found Output count and control IDs affected
   ansible.builtin.debug:
