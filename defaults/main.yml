@@ -788,35 +788,43 @@ ubtu22cis_logrotate: "daily"
 # ubtu22cis_logrotate_create_settings: "0640 root utmp"
 ubtu22cis_logrotate_create_settings: "0640"
 
-# Section 5 Control Variables
-# The following dictionary will contain all sshd variables where possible.
+##
+## Section 5 Control Variables
+##
+
+## Controls 5.2.4/5/13/14/15/18/20/21/22 -- various sshd settings
 ubtu22cis_sshd:
     # This variable is used to control the verbosity of the logging produced by the SSH server.
     # The options for setting it are as follows:
-    # "QUIET" - minimal logging;
-    # "FATAL" - logs only fatal errors;
-    # "ERROR" - logs error messages;
-    # "INFO" - logs informational messages in addition to errors;
-    # "VERBOSE" - logs a higher level of detail, including login attempts and key exchanges;
-    # "DEBUG" - generates very detailed debugging information including sensitive information.
+    # - `QUIET`: Minimal logging;
+    # - `FATAL`: logs only fatal errors;
+    # - `ERROR`: logs error messages;
+    # - `INFO`: logs informational messages in addition to errors;
+    # - `VERBOSE`: logs a higher level of detail, including login attempts and key exchanges;
+    # - `DEBUG`: generates very detailed debugging information including sensitive information.
     log_level: "INFO"
-    # This variable specifies the maximum number of authentication attempts that are allowed for a single SSH session.
+    # This variable specifies the maximum number of authentication attempts that are
+    # allowed for a single SSH session.
     max_auth_tries: 4
-    # This variable specifies the encryption algorithms that can be used for securing data transmission.
+    # This variable specifies the encryption algorithms that can be used for securing
+    # data transmission.
     ciphers: "chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr"
     # This variable specifies a list of message authentication code algorithms (MACs) that are allowed for verifying
     # the integrity of data exchanged.
     macs: "hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256"
-    # This variable is used to state the key exchange algorithms used to establish secure encryption keys during the
-    # initial connection setup.
+    # This variable is used to state the key exchange algorithms used to establish secure encryption
+    # keys during the initial connection setup.
     kex_algorithms: "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
-    # This variable sets the time interval in seconds between sending "keep-alive" messages from the server to the client.
-    # These types of messages are intended to keep the connection alive and prevent it being terminated due to inactivity.
+    # This variable sets the time interval in seconds between sending "keep-alive" 
+    # messages from the server to the client. These types of messages are intended to
+    # keep the connection alive and prevent it being terminated due to inactivity.
     client_alive_interval: 300
-    # This variable sets the maximum number of unresponsive "keep-alive" messages that can be sent from the server to the
-    # client before the connection is considered inactive and thus, closed.
+    # This variable sets the maximum number of unresponsive "keep-alive" messages
+    # that can be sent from the server to the client before the connection is considered
+    # inactive and thus, closed.
     client_alive_count_max: 3
-    # This variable specifies the amount of time allowed for succesful authentication to the SSH server.
+    # This variable specifies the amount of seconds allowed for successful authentication to
+    # the SSH server.
     login_grace_time: 60
     # This variables is used to set the maximum number of open sessions per connection.
     max_sessions: 8
@@ -831,65 +839,75 @@ ubtu22cis_sshd:
     # deny_users:
     # deny_groups:
 
-# Control 5.3.1
+## Control 5.3.1
 # This variable represents the name of the sudo package to install
-# The possible values are "sudo" or "sudo-ldap"
+# CIS recommends `sudo` or, if LDAP functionality is required, `sudo-ldap`.
 ubtu22cis_sudo_package: "sudo"
 
-# Control 5.3.3
-# This variable defines the path and file name of the sudo log file
+## Control 5.3.3
+# This variable defines the path and file name of the sudo log file.
 ubtu22cis_sudo_logfile: "/var/log/sudo.log"
-#### 5.3.6
-# This variable sets the duration during which a user's authentication credentials are cached after
-# successfully authenticating using "sudo". This allows the user to execute multiple commands with
-# elevated privileges without needing to re-enter their password for each command within the specified
-# time period.
+##  Control 5.3.6
+# This variable sets the duration (in minutes) during which a user's authentication credentials
+# are cached after successfully authenticating using "sudo". This allows the user to execute
+# multiple commands with elevated privileges without needing to re-enter their password for each
+# command within the specified time period. CIS requires a value of at most 15 minutes.
 ubtu22cis_sudo_timestamp_timeout: 15
-# Control 5.3.7
-# This is a variable that allows one to specify a group that is allowed to use the "su" command. This role
-# uses this variable to restrict access to the "su" command.
+## Control 5.3.7
+# This variable determines the group of users that are allowed to use the su command.
+# one to specify a user group that is allowed to use the "su" command.
+# CIS requires that such a group be created (named according to site policy) and be kept empty. 
 ubtu22cis_sugroup: nosugroup
 
-# Control 5.4.3
-# This variable represents the number of password change cycles when a user can re-use a password
-# This needs to be 5 or more to conform to CIS standards
+## Control 5.4.3
+# This variable represents the number of password change cycles, after which
+# a user can re-use a password.
+# CIS requires a value of 5 or more.
 ubtu22cis_pamd_pwhistory_remember: 5
 
-# Control 5.4.4
-# This variable specifies the hashing algorithm used
+## Control 5.4.4
+# This variable specifies the hashing algorithm used. CIS demands `yescrypt` as algorithm.
 ubtu22cis_passwd_hash_algo: yescrypt
-# Set pam as well as login defs if PAM is required *? what login defs ?*
+# Set pam as well as login defs if PAM is required
 ubtu22cis_passwd_setpam_hash_algo: false
 
+## Controls 5.5.1.x - Password settings
 ubtu22cis_pass:
-    # Control 5.5.1.2
-    # This variable forces passwords to expire in a configured number of days. Set to 365 or less to conform to CIS standards
+    ## Control 5.5.1.2
+    # This variable governs after how many days a  password expires. 
+    # CIS requires a value of 365 or less.
     max_days: 365
-    # Control 5.5.1.1
-    # This variable represents the min number of days allowed between changing passwords. Set to 1 or more to conform to CIS standards
+    ## Control 5.5.1.1
+    # This variable specifies the minimum number of days allowed between changing passwords.
+    # CIS requires a value of at least 1.
     min_days: 1
-    # Control 5.5.1.3
-    # This variable sets how many days before the pw expires the user will be warned. Set to 7 or more to conform to CIS standards
+    ## Control 5.5.1.3
+    # This variable governs, how many days before a password expires, the user will be warned.
+    # CIS requires a value of at least 7.
     warn_age: 7
-    # Control 5.5.1.4
-    # This variable refers to the number of days of inactivity before the account will lock. Set to 30 day or less to conform to CIS standards
+    ## Control 5.5.1.4
+    # This variable specifies the number of days of inactivity before an account will be locked.
+    # CIS requires a value of 30 days or less.
     inactive: 30
 
-# Control 5.5.4
-# The following variable represents the "umask" to set in the /etc/bash.bashrc and /etc/profile.
-# The value needs to be 027 or more restrictive to comply with CIS standards
+## Control 5.5.4 - Default user mask
+# The following variable specifies the "umask" to set in the `/etc/bash.bashrc` and `/etc/profile`.
+# The value needs to be `027` or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 
 # Control 5.5.5
 # This dictionary is related to ensuring the rule about user shell timeout
 ubtu22cis_shell_session_timeout:
-    # This variable sets the path to the timeout setting file.
-    # This file needs modifications in order for the system to comply to the rule.
-    # TMOUT setting can be set in multiple files, but only one is required for the
-    # rule to pass. Options are: "/etc/profile.d/tmout.sh", "/etc/profile" or "/etc/bash.bashrc."
+    # This variable specifies the path of the timeout setting file.
+    # (TMOUT setting can be set in multiple files, but only one is required for the
+    # rule to pass. Options are: 
+    # - a file in `/etc/profile.d/` ending in `.s`,
+    # - `/etc/profile`, or 
+    # - `/etc/bash.bashrc`.
     file: /etc/profile.d/tmout.sh
-    # This variable represents the amount of time a command or process is allowed to run before being
-    # forcefully terminated. Its value is in seconds. It is required to set this value to 900 seconds or less.
+    # This variable represents the amount of seconds a command or process is allowed to
+    # run before being forcefully terminated.
+    # CIS requires a value of at most 900 seconds.
     timeout: 900
 
 # UID settings for interactive users
