@@ -588,17 +588,6 @@ ubtu22cis_journal_trustedcertificatefile:
 
 ubtu22cis_rsyslog_ansible_managed: true
 
-# Control 4.3
-# ubtu22cis_logrotate is the log rotate frequencey. Options are daily, weekly, monthly, and yearly
-ubtu22cis_logrotate: "daily"
-
-# Control 4.3
-# ubtu22cis_logrotate_create_settings are the settings for the create parameter in /etc/logrotate.conf
-# The permissions need to be 640 or more restrictive.
-# If you would like to include user/group settings to this parameter format the var as below
-# ubtu22cis_logrotate_create_settings: "0640 root utmp"
-ubtu22cis_logrotate_create_settings: "0640"
-
 # Section 5 Control Variables
 
 # ubtu22cis_sshd will contain all sshd variables where possible.
