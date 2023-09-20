@@ -832,10 +832,10 @@ ubtu22cis_sshd:
     max_sessions: 8
     # WARNING: make sure you understand the precedence when working with these values!!
     # The following variable specifies a list of local accounts that may accept SSH connections.
-    allow_users: "admin"
+    allow_users: "vagrant ubuntu"
     # If this variable is specified, login is allowed only for users whose primary group or supplementary group
     # list matches one of the patterns. Only group names are valid, a numerical group ID is not recognized.
-    allow_groups: "sshadmins"
+    allow_groups: "vagrant ubuntu"
     # The following variables do the exact opposite of the two variables above them, such as they
     # deny users and groups instead of allowing them.
     # deny_users:
