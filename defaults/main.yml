@@ -578,11 +578,12 @@ ubtu22cis_system_is_log_server: false
 ubtu22cis_journal_upload_serverkeyfile:
 ubtu22cis_journal_servercertificatefile:
 ubtu22cis_journal_trustedcertificatefile:
-# ubtu22cis_journald_systemmaxuse: SystemMaxUse=
-# ubtu22cis_journald_systemkeepfree: SystemKeepFree=
-# ubtu22cis_journald_runtimemaxuse: RuntimeMaxUse=
-# ubtu22cis_journald_runtimekeepfree: RuntimeKeepFree
-# ubtu22cis_journald_maxfilesec: MaxFileSec=
+# Be aware to uncomment the values below when values are set
+ubtu22cis_journald_systemmaxuse: "#SystemMaxUse="
+ubtu22cis_journald_systemkeepfree: "#SystemKeepFree="
+ubtu22cis_journald_runtimemaxuse: "#RuntimeMaxUse="
+ubtu22cis_journald_runtimekeepfree: "#RuntimeKeepFree="
+ubtu22cis_journald_maxfilesec: "#MaxFileSec="
 
 # Control 4.2.2.x Rsyslog
 
@@ -605,8 +606,8 @@ ubtu22cis_sshd:
     # WARNING: make sure you understand the precedence when working with these values!!
     allow_users: "vagrant ubuntu"
     allow_groups: "vagrant ubuntu"
-    # deny_users:
-    # deny_groups:
+    deny_users: ""
+    deny_groups: ""
 
 # Control 5.3.1
 # ubtu22cis_sudo_package is the name of the sudo package to install

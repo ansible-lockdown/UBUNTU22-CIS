@@ -81,11 +81,11 @@
       line: "{{ item.line }}"
   notify: Restart journald
   loop:
-      - { regexp: '^#SystemMaxUse=|^SystemMaxUse=', line: '{{ ubtu22cis_journald_systemmaxuse | default ("#SystemMaxUse") }}'}
-      - { regexp: '^#SystemKeepFree=|^SystemKeepFree=', line: '{{ ubtu22cis_journald_systemkeepfree | default ("#SystemKeepFree")}}' }
-      - { regexp: '^#RuntimeMaxUse=|^RuntimeMaxUse=', line: '{{ ubtu22cis_journald_runtimemaxuse | default ("#RuntimeMaxUse") }}'}
-      - { regexp: '^#RuntimeKeepFree=|^RuntimeKeepFree=', line: '{{ ubtu22cis_journald_runtimekeepfree | default ("#RuntimeKeepFree") }}'}
-      - { regexp: '^#MaxFileSec=|^MaxFileSec=', line: '{{ ubtu22cis_journald_maxfilesec | default ("#MaxFileSec") }}'}
+      - { regexp: '^(#|\s+)SystemMaxUse=', line: "{{ ubtu22cis_journald_systemmaxuse }}" }
+      - { regexp: '^(#|\s+)SystemKeepFree=', line: "{{ ubtu22cis_journald_systemkeepfree }}" }
+      - { regexp: '^(#|\s+)RuntimeMaxUse=', line: "{{ ubtu22cis_journald_runtimemaxuse }}" }
+      - { regexp: '^(#|\s+)RuntimeKeepFree=', line: "{{ ubtu22cis_journald_runtimekeepfree }}" }
+      - { regexp: '^(#|\s+)MaxFileSec=', line: "{{ ubtu22cis_journald_maxfilesec }}" }
   when:
       - ubtu22cis_rule_4_2_1_6
   tags:
