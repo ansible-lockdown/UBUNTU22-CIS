@@ -2,6 +2,21 @@
 
 ## Based on CIS V1.0.0
 
+### V1.0.5
+
+issues addressed
+thanks to @bgro
+
+- #79
+- #80
+- #81
+- #82
+
+adopted PR changed
+thanks to @andrejzverev
+
+- #63
+
 ### v1.0.4
 
 Several issues addressed
