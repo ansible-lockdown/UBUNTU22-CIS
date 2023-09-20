@@ -4,6 +4,8 @@
 
 ### V1.0.5
 
+updated import_tasks to state file
+
 issues addressed
 thanks to @bgro
 
