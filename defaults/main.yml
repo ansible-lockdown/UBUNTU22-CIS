@@ -742,17 +742,17 @@ ubtu22cis_auditd:
     max_log_file_action: keep_logs
 
 ## Controls 4.2.1.x (`journald`) and 4.2.2.x (`rsyslog`)
-# The following variable sets what type of logging system you would
-# like your machine to use. The options for this variable are `rsyslog` or `journald`.
+# This variable governs which logging system is used.
+# The options for this variable are `rsyslog` or `journald`.
 ubtu22cis_syslog_service: rsyslog
-# This variable represents the remote log host where logs are being sent
+# This variable specifies the address of the remote log host where logs are being sent.
 ubtu22cis_remote_log_server: 192.168.2.100
 # This variable expresses whether the system is used as a log server or not.
-# If set to `true`, those controls not suitable for a log server are modified
-# or skipped.
+# If set to `true`, controls that interfere with log server functionality or
+# require that own system logs be sent to some other log server are skipped.
 ubtu22cis_system_is_log_server: false
 
-# Control 4.2.1.1.x & 4.2.1.x journald
+## Controls 4.2.1.1.x & 4.2.1.x journald
 # This variable specifies the path to the private key file used by the remote journal
 # server to authenticate itself to the client. This key is used alongside the server's
 # public certificate to establish secure communication.
@@ -764,14 +764,17 @@ ubtu22cis_journal_servercertificatefile:
 # of certificate authorities (CAs) that the client trusts. These trusted certificates are used
 # to validate the authenticity of the remote server's certificate.
 ubtu22cis_journal_trustedcertificatefile:
+# In order to set the following values, the lines have to be uncommented
+# and the COMPLETE line including the keyword must be provided.
 # ubtu22cis_journald_systemmaxuse: SystemMaxUse=
 # ubtu22cis_journald_systemkeepfree: SystemKeepFree=
 # ubtu22cis_journald_runtimemaxuse: RuntimeMaxUse=
 # ubtu22cis_journald_runtimekeepfree: RuntimeKeepFree
 # ubtu22cis_journald_maxfilesec: MaxFileSec=
 
-# Control 4.2.2.x Rsyslog
-# This variable states if the rsyslog configuration should be automated or not.
+## Controls 4.2.2.x Rsyslog
+# This variable governs whether the rsyslog configuration is to be set by this Ansible role.
+# Set it to `true` to configure via Ansible and to `false` otherwise.
 ubtu22cis_rsyslog_ansible_managed: true
 
 # Control 4.3
