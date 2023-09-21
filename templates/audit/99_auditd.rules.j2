@@ -68,8 +68,8 @@
 -w /var/log/btmp -p wa -k session
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_12 %}
--w /var/log/faillog -p wa -k logins
 -w /var/log/lastlog -p wa -k logins
+-w /var/run/faillock -p wa -k logins
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_13 %}
 -a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat -F auid>=1000 -F auid!=4294967295 -k delete
