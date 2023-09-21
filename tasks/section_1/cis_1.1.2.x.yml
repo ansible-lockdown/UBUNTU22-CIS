@@ -7,7 +7,8 @@
             msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
 
       - name: "1.1.2.1 | WARN | Ensure /tmp is a separate partition | warn_count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
   vars:
       warn_control_id: '1.1.2.1'
       required_mount: '/tmp'

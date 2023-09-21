@@ -45,7 +45,7 @@
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
         vars:
-            sudo_password_rule: ubtu22cis_rule_5_3_4
+            sudo_password_rule: ubtu22cis_rule_5_3_4  # pragma: allowlist secret
   when:
       - ubtu22cis_rule_5_3_4
       - ansible_env.SUDO_USER is defined
@@ -54,7 +54,7 @@
 
 - name: Check ubtu22cis_bootloader_password_hash variable has been changed
   ansible.builtin.assert:
-      that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'
+      that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
       msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
   when:
       - ubtu22cis_set_boot_pass
@@ -118,7 +118,8 @@
       - always
 
 - name: Run prelim tasks
-  ansible.builtin.import_tasks: prelim.yml
+  ansible.builtin.import_tasks:
+      file: prelim.yml
   tags:
       - prelim_tasks
       - run_audit
@@ -131,15 +132,16 @@
       - always
 
 - name: Run pre-remediation audit
-  ansible.builtin.import_tasks: pre_remediation_audit.yml
+  ansible.builtin.import_tasks:
+      file: pre_remediation_audit.yml
   when:
       - run_audit
   tags:
       - run_audit
-      - always
 
 - name: Run parse /etc/passwd
-  ansible.builtin.import_tasks: parse_etc_password.yml
+  ansible.builtin.import_tasks:
+      file: parse_etc_password.yml
   when:
       - ubtu22cis_section5 or
         ubtu22cis_section6
@@ -153,25 +155,29 @@
       - always
 
 - name: Include section 1 patches
-  ansible.builtin.import_tasks: section_1/main.yml
+  ansible.builtin.import_tasks:
+      file: section_1/main.yml
   when: ubtu22cis_section1
   tags:
       - section1
 
 - name: Include section 2 patches
-  ansible.builtin.import_tasks: section_2/main.yml
+  ansible.builtin.import_tasks:
+      file: section_2/main.yml
   when: ubtu22cis_section2
   tags:
       - section2
 
 - name: Include section 3 patches
-  ansible.builtin.import_tasks: section_3/main.yml
+  ansible.builtin.import_tasks:
+      file: section_3/main.yml
   when: ubtu22cis_section3
   tags:
       - section3
 
 - name: Include section 4 patches
-  ansible.builtin.import_tasks: section_4/main.yml
+  ansible.builtin.import_tasks:
+      file: section_4/main.yml
   when: ubtu22cis_section4
   tags:
       - section4
@@ -183,13 +189,15 @@
       - section5
 
 - name: Include section 6 patches
-  ansible.builtin.import_tasks: section_6/main.yml
+  ansible.builtin.import_tasks:
+      file: section_6/main.yml
   when: ubtu22cis_section6
   tags:
       - section6
 
 - name: run auditd logic
-  ansible.builtin.import_tasks: auditd.yml
+  ansible.builtin.import_tasks:
+      file: auditd.yml
   when: update_audit_template
   tags:
       - always
@@ -212,11 +220,12 @@
             - skip_reboot
 
 - name: run post remediation audit
-  ansible.builtin.import_tasks: post_remediation_audit.yml
+  ansible.builtin.import_tasks:
+      file: post_remediation_audit.yml
   when:
       - run_audit
   tags:
-      - always
+      - run_audit
 
 - name: Show Audit Summary
   ansible.builtin.debug:
@@ -225,7 +234,6 @@
       - run_audit
   tags:
       - run_audit
-      - always
 
 - name: If Warnings found Output count and control IDs affected
   ansible.builtin.debug:
