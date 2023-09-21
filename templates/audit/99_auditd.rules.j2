@@ -32,7 +32,7 @@
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_6 %}
 {% if priv_procs is defined %}
-{% for proc in priv_procs.stdout_lines -%} 
+{% for proc in priv_procs.stdout_lines -%}
 -a always,exit -F path={{ proc }} -F perm=x -F auid>=1000 -F auid!=4294967295 -k privileged
 {% endfor %}
 {% endif %}

@@ -148,7 +148,8 @@
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | WARN | Ensure all users last password change date is in the past | warn_count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when: ubtu22cis_5_5_1_5_user_list.stdout | length > 0
 
       - name: "5.5.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"

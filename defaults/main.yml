@@ -569,7 +569,7 @@ ubtu22cis_grub_user: root
 ubtu22cis_set_grub_user_pass: false
 ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
-ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"
+ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"  # pragma: allowlist secret
 ubtu22cis_set_boot_pass: true
 
 ubtu22cis_grub_file: /etc/default/grub.cfg
@@ -727,12 +727,18 @@ ubtu22cis_max_log_file_size: 10
 update_audit_template: false
 
 ## Advanced option found in auditd post
-allow_auditd_uid_user_exclusions: false
+## users whose actions are not logged by auditd
+ubtu22cis_allow_auditd_uid_user_exclusions: false
+# add a list of uids
+ubtu22cis_auditd_uid_exclude:
+    - 1999
 
 ## Controls 4.1.2.2 and 4.1.2.3 - What to do when log files fill up 
 # This variable controls how the audit system behaves when
 # log files are getting too full and space is getting too low.
 ubtu22cis_auditd:
+    action_mail_acct: root
+    space_left_action: email
     # This variable determines the action the audit system should take when disk
     # space runs low.
     # The options for setting this variable are as follows:
@@ -777,13 +783,20 @@ ubtu22cis_journal_servercertificatefile:
 # of certificate authorities (CAs) that the client trusts. These trusted certificates are used
 # to validate the authenticity of the remote server's certificate.
 ubtu22cis_journal_trustedcertificatefile:
-# In order to set the following values, the lines have to be uncommented
-# and the COMPLETE line including the keyword must be provided.
-# ubtu22cis_journald_systemmaxuse: SystemMaxUse=
-# ubtu22cis_journald_systemkeepfree: SystemKeepFree=
-# ubtu22cis_journald_runtimemaxuse: RuntimeMaxUse=
-# ubtu22cis_journald_runtimekeepfree: RuntimeKeepFree
-# ubtu22cis_journald_maxfilesec: MaxFileSec=
+# These variable specifies how much disk space the journal may use up at most
+# Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes.
+# See https://www.freedesktop.org/software/systemd/man/journald.conf.html for more information.
+# ATTENTION: Uncomment the keyword below when values are set!
+ubtu22cis_journald_systemmaxuse: "#SystemMaxUse="
+ubtu22cis_journald_systemkeepfree: "#SystemKeepFree="
+ubtu22cis_journald_runtimemaxuse: "#RuntimeMaxUse="
+ubtu22cis_journald_runtimekeepfree: "#RuntimeKeepFree="
+# This variable specifies, the maximum time to store entries in a single journal
+# file before rotating to the next one. Set to 0 to turn off this feature.
+# The given values is interpreted as seconds, unless suffixed with the units
+# `year`, `month`, `week`, `day`, `h` or `m` to override the default time unit of seconds.
+# ATTENTION: Uncomment the keyword below when values are set!
+ubtu22cis_journald_maxfilesec: "#MaxFileSec="
 
 ## Controls 4.2.2.x Rsyslog
 # This variable governs whether the rsyslog configuration is to be set by this Ansible role.
@@ -830,16 +843,32 @@ ubtu22cis_sshd:
     login_grace_time: 60
     # This variables is used to set the maximum number of open sessions per connection.
     max_sessions: 8
-    # WARNING: make sure you understand the precedence when working with these values!!
-    # The following variable specifies a list of local accounts that may accept SSH connections.
+    # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
+    # access for users whose user name matches one of the patterns. This is done
+    # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
+    # If an USER@HOST format will be used, the specified user will be allowed only on that particular host.
+    # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
+    # For more info, see https://linux.die.net/man/5/sshd_config
     allow_users: "vagrant ubuntu"
-    # If this variable is specified, login is allowed only for users whose primary group or supplementary group
-    # list matches one of the patterns. Only group names are valid, a numerical group ID is not recognized.
+    # (String) This variable, if spcieifed, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+    # for users whose primary group or supplementary group list matches one of the patterns. This is done
+    # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+    # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
+    # For more info, https://linux.die.net/man/5/sshd_config
     allow_groups: "vagrant ubuntu"
-    # The following variables do the exact opposite of the two variables above them, such as they
-    # deny users and groups instead of allowing them.
-    # deny_users:
-    # deny_groups:
+    # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
+    # for users whose user name matches one of the patterns. This is done
+    # by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
+    # If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
+    # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
+    # For more info, see https://linux.die.net/man/5/sshd_config
+    deny_users: ""
+    # This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to prevent SSH access
+    # for users whose primary group or supplementary group list matches one of the patterns. This is done
+    # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
+    # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
+    # For more info, see https://linux.die.net/man/5/sshd_config
+    deny_groups: ""
 
 ## Control 5.3.1
 # This variable represents the name of the sudo package to install
@@ -867,10 +896,10 @@ ubtu22cis_sugroup: nosugroup
 # CIS requires a value of 5 or more.
 ubtu22cis_pamd_pwhistory_remember: 5
 
-## Control 5.4.4
-# This variable specifies the hashing algorithm used. CIS demands `yescrypt` as algorithm.
-ubtu22cis_passwd_hash_algo: yescrypt
-# This variable is a toggle, whether to set pam as well as login defs if PAM is required
+# Control 5.4.4
+# ubtu22cis_passwd_hash_algo is the hashing algorithm used
+ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
+# Set pam as well as login defs if PAM is required
 ubtu22cis_passwd_setpam_hash_algo: false
 
 ## Controls 5.5.1.x - Password settings
