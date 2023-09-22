@@ -66,8 +66,6 @@
 
 - name: "1.8.4 | PATCH | Ensure GDM screen locks when the user is idle"
   block:
-- name: "1.8.4 | PATCH | Ensure GDM screen locks when the user is idle"
-  block:
       - name: "1.8.4 | PATCH | Ensure GDM screen locks when the user is idle | session profile"
         ansible.builtin.lineinfile:
             path: /etc/dconf/profile/session
