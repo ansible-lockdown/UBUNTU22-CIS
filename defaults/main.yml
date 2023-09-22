@@ -38,10 +38,10 @@ ubtu22cis_ask_passwd_to_boot: false
 # The role discovers dynamically (in tasks/main.yml) whether it
 # is executed on a container image and sets the variable
 # system_is_container the true. Otherwise, the default value
-# 'false' is left unchanged. 
+# 'false' is left unchanged.
 system_is_container: false
 
-### 
+###
 ### Settings for associated Audit role using Goss
 ###
 
@@ -57,21 +57,21 @@ setup_audit: false
 ## How to retrieve audit binary
 # Options are copy or download, using either the path
 # provided in variable `audit_conf_copy` for copying or
-# the url given in variable `audit_files_url` for downloading. 
+# the url given in variable `audit_files_url` for downloading.
 get_audit_binary_method: download
 
 ## How to retrieve the audit role
 # The role for auditing is maintained separately.
 # This variable specifies the method of how to get the audit role
 # onto the system. The options are as follows:
-# - git: clone from git repository as specified in variable `audit_file_git` in 
+# - git: clone from git repository as specified in variable `audit_file_git` in
 #   the version specified by variable `audit_git_version`
 # - copy: copy from path as specified in variable `audit_conf_copy`
 # - download: Download from url as specified in variable `audit_files_url`
 audit_content: git
 
 ## Enable audits to run
-# This variable governs whether the audit using the 
+# This variable governs whether the audit using the
 # separately maintained audit role using Goss
 # is carried out.
 run_audit: false
@@ -466,7 +466,7 @@ ubtu22cis_rpc_required: "{{ ubtu22cis_nfs_server or ubtu22cis_nfs_client }}"
 ##
 ## Client package configuration variables.
 ##
-## Set the respective variable to `true` to keep the 
+## Set the respective variable to `true` to keep the
 ## client package, otherwise it is uninstalled.
 ##
 
@@ -481,7 +481,7 @@ ubtu22cis_ldap_clients_required: false
 ##
 ## There are certain functionalities of a system
 ## that may require either to skip certain CIS rules
-## or install certain packages. 
+## or install certain packages.
 ## Set the respective variable to `true` in order to
 ## enable a certain functionality on the system
 
@@ -508,7 +508,7 @@ ubtu22cis_desktop_required: false
 ##
 
 ## tmp mount type
-# This variable determines, to which mount type 
+# This variable determines, to which mount type
 # the tmp mount type will be set, if it cannot be
 # correctly discovered. will force the tmp_mnt type
 # if not correctly discovered.
@@ -604,7 +604,7 @@ ubtu22cis_disable_dynamic_motd: true
 
 ## Controls 1.8.x - Settings for GDM
 # This variable specifies the GNOME configuration database file to which configurations are written.
-# (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en) 
+# (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en)
 # The default database is `local`.
 ubtu22cis_dconf_db_name: local
 # This variable governs the number of seconds of inactivity before the screen goes blank.
@@ -702,7 +702,7 @@ ubtu22cis_ufw_allow_out_ports:
 
 ##
 ## Section 4 Control Variables
-## 
+##
 
 ##  Control 4.1.1.4 - Ensure audit_backlog_limit is sufficient
 # This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
@@ -732,7 +732,7 @@ ubtu22cis_allow_auditd_uid_user_exclusions: false
 ubtu22cis_auditd_uid_exclude:
     - 1999
 
-## Controls 4.1.2.2 and 4.1.2.3 - What to do when log files fill up 
+## Controls 4.1.2.2 and 4.1.2.3 - What to do when log files fill up
 # This variable controls how the audit system behaves when
 # log files are getting too full and space is getting too low.
 ubtu22cis_auditd:
@@ -746,7 +746,7 @@ ubtu22cis_auditd:
     # - `suspend`: the system suspends recording audit events until more space is available;
     # - `halt`: the system is halted when disk space is critically low.
     # - `single`: the audit daemon will put the computer system in single user mode
-    # CIS prescribes either `halt` or `single`. 
+    # CIS prescribes either `halt` or `single`.
     admin_space_left_action: halt
     # This variable determines what action the audit system should take when the maximum
     # size of a log file is reached.
@@ -829,7 +829,7 @@ ubtu22cis_sshd:
     # This variable is used to state the key exchange algorithms used to establish secure encryption
     # keys during the initial connection setup.
     kex_algorithms: "curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256"
-    # This variable sets the time interval in seconds between sending "keep-alive" 
+    # This variable sets the time interval in seconds between sending "keep-alive"
     # messages from the server to the client. These types of messages are intended to
     # keep the connection alive and prevent it being terminated due to inactivity.
     client_alive_interval: 300
@@ -886,7 +886,7 @@ ubtu22cis_sudo_timestamp_timeout: 15
 ## Control 5.3.7
 # This variable determines the group of users that are allowed to use the su command.
 # one to specify a user group that is allowed to use the "su" command.
-# CIS requires that such a group be created (named according to site policy) and be kept empty. 
+# CIS requires that such a group be created (named according to site policy) and be kept empty.
 ubtu22cis_sugroup: nosugroup
 
 ## Control 5.4.3
@@ -904,7 +904,7 @@ ubtu22cis_passwd_setpam_hash_algo: false
 ## Controls 5.5.1.x - Password settings
 ubtu22cis_pass:
     ## Control 5.5.1.2
-    # This variable governs after how many days a  password expires. 
+    # This variable governs after how many days a  password expires.
     # CIS requires a value of 365 or less.
     max_days: 365
     ## Control 5.5.1.1
@@ -930,9 +930,9 @@ ubtu22cis_bash_umask: '027'
 ubtu22cis_shell_session_timeout:
     # This variable specifies the path of the timeout setting file.
     # (TMOUT setting can be set in multiple files, but only one is required for the
-    # rule to pass. Options are: 
+    # rule to pass. Options are:
     # - a file in `/etc/profile.d/` ending in `.s`,
-    # - `/etc/profile`, or 
+    # - `/etc/profile`, or
     # - `/etc/bash.bashrc`.
     file: /etc/profile.d/tmout.sh
     # This variable represents the amount of seconds a command or process is allowed to
@@ -944,11 +944,11 @@ ubtu22cis_shell_session_timeout:
 ## Section 6 Control Variables
 ##
 
-## Controls 6.2.11 & 6.2.12 
+## Controls 6.2.11 & 6.2.12
 # The minimum and maximum UIDs to be used when enforcing
 # and checking controls 6.2.11 and 6.2.12 can either be
 # discovered automatically via logins.def or set manually
-# in this file 
+# in this file
 # If min/maxx UIDs are to be discovered automatically,
 # set this variable to `true`, otherwise to `false`.
 discover_int_uid: false
@@ -972,7 +972,7 @@ ubtu22cis_no_world_write_adjust: true
 # The value of this variable specifies the owner that will be set for unowned files and directories.
 ubtu22cis_unowned_owner: root
 # This variable is a toggle for enabling/disabling the automated
-# setting of an owner (specified in variable `ubtu22cis_unowned_owner`) 
+# setting of an owner (specified in variable `ubtu22cis_unowned_owner`)
 # for all unowned files and directories.
 # Possible values are `true` and `false`.
 ubtu22cis_no_owner_adjust: true
@@ -981,13 +981,13 @@ ubtu22cis_no_owner_adjust: true
 # This variable represents the group that will be set for files without group.
 ubtu22cis_ungrouped_group: root
 # This variable is a toggle for enabling/disabling the automated
-# assignment of a group (specified in variable `ubtu22cis_unowned_group`) 
+# assignment of a group (specified in variable `ubtu22cis_unowned_group`)
 # for all group-less files and directories.
 # Possible values are `true` and `false`.
 ubtu22cis_no_group_adjust: true
 
 ## Control 6.1.12
-# This variable is a toggle for enabling/disabling the automated removal 
+# This variable is a toggle for enabling/disabling the automated removal
 # of the SUID bit from all files on all mounts.
 # Possible values are `true` and `false`.
 ubtu22cis_suid_adjust: false
@@ -1008,7 +1008,7 @@ ubtu22cis_dotperm_ansiblemanaged: true
 ## Audit Configuration Settings
 ##
 
-# The settings below configure the retrieval and usage of the 
+# The settings below configure the retrieval and usage of the
 # Goss-based audit role associated with this role, and the Goss-tool
 # itself.
 
