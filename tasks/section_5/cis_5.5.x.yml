@@ -12,7 +12,7 @@
         ansible.builtin.shell: chage --mindays {{ ubtu22cis_pass.min_days }} {{ item }}
         failed_when: false
         with_items:
-            - "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | map(attribute='id') | list }}"
+            - "{{ ubtu22cis_passwd | map(attribute='id') | list }}"
         when: ubtu22cis_disruption_high
   when:
       - ubtu22cis_rule_5_5_1_1
@@ -38,7 +38,7 @@
         ansible.builtin.shell: chage --maxdays {{ ubtu22cis_pass.max_days }} {{ item }}
         failed_when: false
         with_items:
-            - "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | map(attribute='id') | list }}"
+            - "{{ ubtu22cis_passwd | map(attribute='id') | list }}"
         when:
             - ubtu22cis_disruption_high
   when:
@@ -109,7 +109,7 @@
         ansible.builtin.shell: chage --inactive {{ ubtu22cis_pass.inactive }} {{ item }}
         failed_when: false
         with_items:
-            - "{{ ubtu22cis_passwd | selectattr('uid', '>=', 1000) | map(attribute='id') | list | intersect(ubtu22cis_5_5_1_4_inactive_users.stdout_lines) | list }}"
+            - "{{ ubtu22cis_passwd | map(attribute='id') | list | intersect(ubtu22cis_5_5_1_4_inactive_users.stdout_lines) | list }}"
         when:
             - ubtu22cis_disruption_high
             - ubtu22cis_5_5_1_4_inactive_users.stdout | length > 0
