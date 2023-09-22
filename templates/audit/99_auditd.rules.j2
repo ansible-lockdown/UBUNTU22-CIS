@@ -10,8 +10,8 @@
 -w /etc/sudoers.d/ -p wa -k scope
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_2 %}
--a always,exit -F arch=b64 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k actions
--a always,exit -F arch=b32 -C euid!=uid -F euid=0 -F auid>=1000 -F auid!=4294967295 -S execve -k actions
+-a always,exit -F arch=b64 -C euid!=uid -F auid!=unset -S execve -k user_emulation
+-a always,exit -F arch=b32 -C euid!=uid -F auid!=unset -S execve -k user_emulation
 {% endif %}
 {% if ubtu22cis_rule_4_1_3_3 %}
 -w {{ ubtu22cis_sudo_logfile }} -p wa -k sudo_log_file
