@@ -574,7 +574,6 @@ ubtu22cis_set_boot_pass: true
 
 ubtu22cis_grub_file: /etc/default/grub.cfg
 
-
 ## Controls 1.6.1.x - apparmor
 # AppArmor security policies define what system resources applications can access and their privileges.
 # This automatically limits the damage that the software can do to files accessible by the calling user.
@@ -941,11 +940,9 @@ ubtu22cis_shell_session_timeout:
     # CIS requires a value of at most 900 seconds.
     timeout: 900
 
-
 ##
 ## Section 6 Control Variables
 ##
-
 
 ## Controls 6.2.11 & 6.2.12 
 # The minimum and maximum UIDs to be used when enforcing
