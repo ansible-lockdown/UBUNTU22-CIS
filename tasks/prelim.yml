@@ -1,4 +1,7 @@
 ---
+- name: "PRELIM | Set default values for facts"
+  ansible.builtin.set_fact:
+    control_1_6_1_4_was_run: false
 
 - name: "PRELIM | Register if snap being used"
   ansible.builtin.shell: df -h | grep -wc "/snap"
