@@ -584,7 +584,12 @@ ubtu22cis_grub_file: /etc/default/grub.cfg
 ubtu22cis_apparmor_disable: false
 # This variable specifies whether enforce mode or complain  mode is set in control 1.6.1.3.
 # Possible values are `enforce` and `complain`.
-ubtu22cis_apparmor_mode: enforce
+# Note that this control and control 1.6.1.4 influence the same setting, but Control 1.6.1.4
+# is part of the Level 2 profile, whereas Control 1.6.1.3 is part of the Level 1 profile
+# If Control 1.6.1.4 is run (which sets all profiles to enforce mode), then Control 1.6.1.3
+# is skipped!
+# Note also that if you set this variable to `enforce`, then Control 1.6.1.3 and 1.6.1.4 are identical.
+ubtu22cis_apparmor_mode: complain
 
 ## Controls 1.7.x  - Warning banners
 # The controls 1.7.x set various warning banners and protect the respective files
