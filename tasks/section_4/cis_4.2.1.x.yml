@@ -8,13 +8,13 @@
         failed_when: false
         register: ubtu22cis_4_2_1_2_status
 
-      - name: "4.2.2.2 | AUDIT | Ensure journald service is enabled | Alert on bad status"
+      - name: "4.2.1.2 | AUDIT | Ensure journald service is enabled | Alert on bad status"
         ansible.builtin.debug:
             msg:
                 - "Warning!! The status of systemd-journald should be static and it is not. Please investigate"
         when: "'static' not in ubtu22cis_4_2_1_2_status.stdout"
 
-      - name: "4.2.2.2 | AUDIT | Ensure journald service is enabled | Warn Count"
+      - name: "4.2.1.2 | AUDIT | Ensure journald service is enabled | Warn Count"
         ansible.builtin.import_tasks:
             file: warning_facts.yml
         when: "'static' not in ubtu22cis_4_2_1_2_status.stdout"
