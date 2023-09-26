@@ -32,7 +32,7 @@
       dest: /etc/systemd/system/tmp.mount
       owner: root
       group: root
-      mode: 0644
+      mode: '0644'
   notify: Remount tmp
   with_items:
       - "{{ ansible_mounts }}"

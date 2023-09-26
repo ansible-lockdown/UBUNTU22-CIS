@@ -46,7 +46,7 @@
             create: true
             owner: root
             group: root
-            mode: 0644
+            mode: '0644'
 
       - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
         ansible.builtin.package:
