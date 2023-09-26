@@ -38,7 +38,7 @@
 
 ### Community
 
-On our [Discord Server](https://discord.io/ansible-lockdown) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
+Join us on our [Discord Server](https://www.lockdownenterprise.com/discord) to ask questions, discuss features, or just chat with other Ansible-Lockdown users.
 
 ## Caution(s)
 
@@ -68,8 +68,9 @@ This role was developed against a clean install of the Operating System. If you 
 
 **Technical Dependencies:**
 
-- Running Ansible/Tower setup (this role is tested against Ansible version 2.9.1 and newer)
+- Running Ansible/Tower setup (this role is tested against Ansible version 2.10.1 and newer)
 - Python3 Ansible run environment
+- goss >= 0.4.0 (If using for audit)
 
 ## Auditing (new)
 
@@ -77,7 +78,7 @@ This can be turned on or off within the defaults/main.yml file with the variable
 
 This is a much quicker, very lightweight, checking (where possible) config compliance and live/running settings.
 
-A new form of auditing has been develeoped, by using a small (12MB) go binary called [goss](https://github.com/aelsabbahy/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
+A new form of auditing has been developed, by using a small (12MB) go binary called [goss](https://github.com/goss-org/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
 This audit will not only check the config has the correct setting but aims to capture if it is running with that configuration also trying to remove [false positives](https://www.mindpointgroup.com/blog/is-compliance-scanning-still-relevant/) in the process.
 
 Refer to [UBUNTU22-CIS-Audit](https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit).

@@ -85,6 +85,7 @@
             direction: in
             from_ip: '::1'
         notify: Reload ufw
+        when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_5_1_4
   tags:
@@ -150,7 +151,8 @@
                 - "{{ ubtu22cis_3_5_1_6_firewall_rules.stdout_lines }}"
 
       - name: "3.5.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Set warning count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
   vars:
       warn_control_id: '3.5.1.6'
   when:

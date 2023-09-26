@@ -17,7 +17,8 @@
                 - "{{ ubtu22cis_1_2_1_apt_policy.stdout_lines }}"
 
       - name: "1.2.1 | WARN | Ensure package manager repositories are configured | warn_count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
   vars:
       warn_control_id: '1.2.1'
   when:
@@ -48,7 +49,8 @@
                 - "{{ ubtu22cis_1_2_2_apt_gpgkeys.stdout_lines }}"
 
       - name: "1.2.2 | WARN | Ensure GPG keys are configured | warn_count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
   vars:
       warn_control_id: '1.2.2'
   when:

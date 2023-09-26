@@ -185,7 +185,8 @@
             - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
 
       - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Warn Count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when:
             - not ubtu22cis_no_owner_adjust
             - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
@@ -239,7 +240,8 @@
             - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
 
       - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when:
             - not ubtu22cis_no_group_adjust
             - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
@@ -293,7 +295,8 @@
             - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
 
       - name: "6.1.12 | AUDIT | Audit SUID executables | Warn Count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when:
             - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
             - not ubtu22cis_suid_adjust
@@ -337,7 +340,8 @@
             - not ubtu22cis_sgid_adjust
 
       - name: "6.1.13 | AUDIT | Audit SGID executables | Warn Count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when:
             - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
             - not ubtu22cis_sgid_adjust

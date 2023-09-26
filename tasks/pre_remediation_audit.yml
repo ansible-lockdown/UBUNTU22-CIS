@@ -1,7 +1,8 @@
 ---
 
 - name: Audit Binary Setup | Setup the LE audit
-  ansible.builtin.include_tasks: LE_audit_setup.yml
+  ansible.builtin.include_tasks:
+      file: LE_audit_setup.yml
   when:
       - setup_audit
   tags:
@@ -68,9 +69,8 @@
 
       - name: Pre Audit Setup | If audit ensure goss is available
         ansible.builtin.assert:
+            that: goss_available.stat.exists
             msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
-        when:
-            - not goss_available.stat.exists
   when:
       - run_audit
 
@@ -83,7 +83,6 @@
       - run_audit
   tags:
       - goss_template
-      - always
 
 - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
   ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"

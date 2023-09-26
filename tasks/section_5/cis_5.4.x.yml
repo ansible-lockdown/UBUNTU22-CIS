@@ -113,8 +113,8 @@
       - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does exist"
         ansible.builtin.lineinfile:
             path: /etc/pam.d/common-password
-            regexp: '^(password\s*\[success=1 default=ignore\] pam_unix.*)(remember=([0-9]{1,})|)(.*$)'
-            line: '\g<1>\g<2> remember={{ ubtu22cis_pamd_pwhistory_remember }}'
+            regexp: '^(?P<begin>[^\S\n]*password[^\S\n]+.*pam_unix.so[^\S\n]+)(?P<remember>(?P<before>.+?)remember=[0-9]+[^\S\n]?)?(?P<after>.*)$'
+            line: '\g<begin>\g<before>remember={{ ubtu22cis_pamd_pwhistory_remember }} \g<after>'
             backrefs: true
         when:
             - ubtu22cis_5_4_3_pam_unix_state.stdout | length > 0
@@ -123,7 +123,7 @@
       - name: "5.4.3 | PATCH | Ensure password reuse is limited | Set remember value if pam_unix does not exist"
         ansible.builtin.lineinfile:
             path: /etc/pam.d/common-password
-            regexp: '^password\s*\[success=1 default=ignore\] pam_unix.*'
+            regexp: '^password.+pam_unix.so.*'
             line: 'password [success=1 default=ignore] pam_unix.so obscure use_authtok try_first_pass remember={{ ubtu22cis_pamd_pwhistory_remember }}'
             insertafter: '^# end of pam-auth-update config'
         when: ubtu22cis_5_4_3_pam_unix_state.stdout | length == 0
@@ -188,7 +188,8 @@
         when: "' $y$' not in ubtu22cis_5_4_5_passwd_hash_used.stdout"
 
       - name: "5.4.5 | WARN | Ensure all current passwords uses the configured hashing algorithm | warn_count"
-        ansible.builtin.import_tasks: warning_facts.yml
+        ansible.builtin.import_tasks:
+            file: warning_facts.yml
         when: "' $y$' not in ubtu22cis_5_4_5_passwd_hash_used.stdout"
   vars:
       warn_control_id: '5.4.5'
