@@ -5,7 +5,7 @@
       path: /etc/passwd
       owner: root
       group: root
-      mode: 0644
+      mode: '0644'
   when:
       - ubtu22cis_rule_6_1_1
   tags:
@@ -20,7 +20,7 @@
       path: /etc/passwd-
       owner: root
       group: root
-      mode: 0644
+      mode: '0644'
   when:
       - ubtu22cis_rule_6_1_2
   tags:
@@ -35,7 +35,7 @@
       path: /etc/group-
       owner: root
       group: root
-      mode: 0644
+      mode: '0644'
   when:
       - ubtu22cis_rule_6_1_3
   tags:
@@ -50,7 +50,7 @@
       path: /etc/group-
       owner: root
       group: root
-      mode: 0644
+      mode: '0644'
   when:
       - ubtu22cis_rule_6_1_4
   tags:
@@ -65,7 +65,7 @@
       path: /etc/shadow
       owner: root
       group: root
-      mode: 0000
+      mode: '0000'
   when:
       - ubtu22cis_rule_6_1_5
   tags:
@@ -80,7 +80,7 @@
       path: /etc/shadow-
       owner: root
       group: root
-      mode: 0000
+      mode: '0000'
   when:
       - ubtu22cis_rule_6_1_6
   tags:
@@ -95,7 +95,7 @@
       path: /etc/gshadow
       owner: root
       group: root
-      mode: 0000
+      mode: '0000'
   when:
       - ubtu22cis_rule_6_1_7
   tags:
@@ -110,7 +110,7 @@
       path: /etc/gshadow-
       owner: root
       group: root
-      mode: 0000
+      mode: '0000'
   when:
       - ubtu22cis_rule_6_1_8
   tags:
