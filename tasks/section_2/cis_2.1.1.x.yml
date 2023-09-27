@@ -18,7 +18,7 @@
 
       - name: "2.1.1.1 | PATCH | Ensure a single time synchronization daemon is in use | mask service"
         ansible.builtin.service:
-            name: systemd-timesyncd.service
+            name: systemd-timesyncd
             state: stopped
             enabled: false
             masked: true
