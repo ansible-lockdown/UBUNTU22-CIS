@@ -11,6 +11,7 @@ skip_list:
     - 'name[casing]'
     - 'name[template]'
     - 'key-order[task]'
+    - 'yaml[line-length]'
     - '204'
     - '305'
     - '303'

@@ -17,7 +17,7 @@
             dest: "/{{ item }}"
             owner: root
             group: root
-            mode: 0640
+            mode: '0640'
         notify: Flush ipv6 route table
         loop:
             - etc/sysctl.d/60-disable_ipv6.conf

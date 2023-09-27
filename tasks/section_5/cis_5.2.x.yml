@@ -5,7 +5,7 @@
       path: /etc/ssh/sshd_config
       owner: root
       group: root
-      mode: 0600
+      mode: '0600'
   when:
       - ubtu22cis_rule_5_2_1
   tags:
@@ -29,7 +29,7 @@
             path: "{{ item.path }}"
             owner: root
             group: root
-            mode: 0600
+            mode: '0600'
         with_items:
             - "{{ ubtu22cis_5_2_2_ssh_host_priv_keys.files }}"
         loop_control:
@@ -57,7 +57,7 @@
             path: "{{ item.path }}"
             owner: root
             group: root
-            mode: 0644
+            mode: '0644'
         with_items:
             - "{{ ubtu22cis_5_2_3_ssh_host_pub_keys.files }}"
         loop_control:

@@ -5,11 +5,11 @@ Rules
 -----
 1) All commits must be GPG signed (details in Signing section)
 2) All commits must have Signed-off-by (Signed-off-by: Joan Doe <joan.doe@email.com>) in the commit message (details in Signing section)
-3) All work is done in your own branch or own fork
+3) All work is done in your own branch or fork
 4) Pull requests
-    a) From within the repo: All pull requests go into the devel branch. There are automated checks for signed commits, signoff in commit message, and functional testing
-    b) From a forked repo: All pull requests will go into a staging branch within the repo. There are automated checks for signed commits, signoff in commit message, and functional testing when going from staging to devel
-4) All pull requests go into the devel branch. There are automated checks for signed commits, signoff in commit message, and functional testing)
+    a) From within the repo: All pull requests go into the devel branch. There are automated checks for signed commits, signoff in commit messages, and functional testing
+    b) From a forked repo: All pull requests will go into a staging branch within the repo. There are automated checks for signed commits, signoff in commit messages, and functional testing when going from staging to devel
+4) All pull requests go into the devel branch. There are automated checks for signed commits, signoff in commit messages, and functional testing)
 5) Be open and nice to each other
 
 Workflow
@@ -32,19 +32,19 @@ The process is to certify the below DCO 1.1 text
     By making a contribution to this project, I certify that:
 
     (a) The contribution was created in whole or in part by me and I
-        have the right to submit it under the open source license
+        have the right to submit it under the open-source license
         indicated in the file; or
 
     (b) The contribution is based upon previous work that, to the best
-        of my knowledge, is covered under an appropriate open source
+        of my knowledge, is covered under an appropriate open-source
         license and I have the right under that license to submit that
         work with modifications, whether created in whole or in part
-        by me, under the same open source license (unless I am
+        by me, under the same open-source license (unless I am
         permitted to submit under a different license), as indicated
         in the file; or
 
     (c) The contribution was provided directly to me by some other
-        person who certified (a), (b) or (c) and I have not modified
+        person who certified (a), (b), or (c) and I have not modified
         it.
 
     (d) I understand and agree that this project and the contribution

@@ -50,7 +50,7 @@
         ansible.builtin.file:
             path: "{{ audit_discovered_logfile.stdout | dirname }}"
             state: directory
-            mode: 0750
+            mode: '0750'
         when: not auditlog_dir.stat.mode is match('07(0|5)0')
   when:
       - ubtu22cis_rule_4_1_4_4
@@ -64,7 +64,7 @@
 - name: "4.1.4.5 | PATCH | Ensure audit configuration files are 640 or more restrictive"
   ansible.builtin.file:
       path: "{{ item.path }}"
-      mode: 0640
+      mode: '0640'
   loop: "{{ auditd_conf_files.files }}"
   loop_control:
       label: "{{ item.path }}"
@@ -127,7 +127,7 @@
       - name: "4.1.4.8 | PATCH | Ensure audit tools are 755 or more restrictive | set if required"
         ansible.builtin.file:
             path: "{{ item.item }}"
-            mode: 0750
+            mode: '0750'
 
         loop: "{{ audit_bins.results }}"
         loop_control:
