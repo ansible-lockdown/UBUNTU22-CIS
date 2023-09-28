@@ -38,7 +38,7 @@
       - ubtu22cis_rule_2_2_2
       - not ubtu22cis_avahi_server
       - ubtu22cis_disruption_high
-      - "'avahi' in ansible_facts.packages"
+      - "'avahi-daemon' in ansible_facts.packages"
   tags:
       - level1-server
       - level1-workstation
