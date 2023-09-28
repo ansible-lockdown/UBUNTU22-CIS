@@ -8,6 +8,8 @@
   tags:
       - rule_1.1.1.2
       - always
+  when:
+      - ubtu22cis_rule_1_1_1_2
 
 - name: "PRELIM | Register if squashfs is built into the kernel"
   ansible.builtin.shell: more /lib/modules/$(uname -r)/modules.builtin | grep  -c "squashfs"
@@ -17,6 +19,8 @@
   tags:
       - rule_1.1.1.2
       - always
+  when:
+      - ubtu22cis_rule_1_1_1_2
 
 - name: "PRELIM | Section 1.1 | Create list of mount points"
   ansible.builtin.set_fact:
