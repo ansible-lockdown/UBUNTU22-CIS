@@ -44,7 +44,7 @@
 
 - name: "1.8.3 | PATCH | Ensure disable-user-list is enabled"
   ansible.builtin.lineinfile:
-      path: /etc/gdm3/greeter.dconf-default
+      path: /etc/gdm3/greeter.dconf-defaults
       regexp: '^disable-user-list='
       line: 'disable-user-list=true'
       insertafter: 'banner-message-text='
