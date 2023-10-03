@@ -17,20 +17,30 @@
       - gnome
 
 - name: "1.8.2 | PATCH | Ensure GDM login banner is configured"
-  ansible.builtin.lineinfile:
-      path: /etc/gdm3/greeter.dconf-defaults
-      regexp: "{{ item.regexp }}"
-      line: "{{ item.line }}"
-      insertafter: "{{ item.insertafter }}"
-      create: true
-      owner: root
-      group: root
-      mode: '0644'
+  block:
+      - name: "1.8.2 | PATCH | Ensure GDM login banner is configured | make directory"
+        ansible.builtin.file:
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d"
+            owner: root
+            group: root
+            mode: '0755'
+            state: directory
+
+      - name: "1.8.2 | PATCH | Ensure GDM login banner is configured | banner settings"
+        ansible.builtin.lineinfile:
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-login-screen"
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+            insertafter: "{{ item.insertafter }}"
+            create: true
+            owner: root
+            group: root
+            mode: '0644'
+        with_items:
+            - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
+            - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
+            - { regexp: 'banner-message-text', line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: 'banner-message-enable' }
   notify: Update dconf
-  with_items:
-      - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
-      - { regexp: 'banner-message-enable', line: 'banner-message-enable=true', insertafter: '\[org\/gnome\/login-screen\]'}
-      - { regexp: 'banner-message-text', line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: 'banner-message-enable' }
   when:
       - ubtu22cis_rule_1_8_2
       - ubtu22cis_desktop_required
@@ -43,15 +53,28 @@
       - gnome
 
 - name: "1.8.3 | PATCH | Ensure disable-user-list is enabled"
-  ansible.builtin.lineinfile:
-      path: /etc/gdm3/greeter.dconf-default
-      regexp: '^disable-user-list='
-      line: 'disable-user-list=true'
-      insertafter: 'banner-message-text='
-      create: true
-      owner: root
-      group: root
-      mode: '0644'
+  block:
+      - name: "1.8.3 | PATCH | Ensure GDM screen locks when the user is idle | make directory"
+        ansible.builtin.file:
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d"
+            owner: root
+            group: root
+            mode: '0755'
+            state: directory
+
+      - name: "1.8.3 | PATCH | Ensure disable-user-list is enabled | disable-user-list setting"
+        ansible.builtin.lineinfile:
+            path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-login-screen"
+            regexp: "{{ item.regexp }}"
+            line: "{{ item.line }}"
+            insertafter: "{{ item.insertafter }}"
+            create: true
+            owner: root
+            group: root
+            mode: '0644'
+        with_items:
+            - { regexp: '\[org\/gnome\/login-screen\]', line: '[org/gnome/login-screen]', insertafter: EOF }
+            - { regexp: 'disable-user-list', line: 'disable-user-list=true', insertafter: '\[org\/gnome\/login-screen\]'}
   notify: Update dconf
   when:
       - ubtu22cis_rule_1_8_3
