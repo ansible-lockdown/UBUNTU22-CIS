@@ -42,8 +42,8 @@
             regexp: "{{ item.regexp }}"
             replace: "{{ item.replace }}"
         with_items:
-            - { regexp: 'apparmor=\S+', replace: 'apparmor=1' }
-            - { regexp: 'security=\S+', replace: 'security=apparmor' }
+            - { regexp: 'apparmor=\w+', replace: 'apparmor=1' }
+            - { regexp: 'security=\w+', replace: 'security=apparmor' }
         when:
             - "'apparmor' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
             - "'security' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
