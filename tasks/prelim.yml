@@ -12,7 +12,7 @@
       - ubtu22cis_rule_1_1_1_2
 
 - name: "PRELIM | Register if squashfs is built into the kernel"
-  ansible.builtin.shell: more /lib/modules/$(uname -r)/modules.builtin | grep  -c "squashfs"
+  ansible.builtin.shell: cat /lib/modules/$(uname -r)/modules.builtin | grep  -c "squashfs"
   changed_when: false
   failed_when: squashfs_builtin.rc not in [ 0, 1 ]
   register: squashfs_builtin
