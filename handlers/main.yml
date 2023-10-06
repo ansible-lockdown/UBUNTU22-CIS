@@ -78,14 +78,14 @@
       name: net.ipv4.route.flush
       value: '1'
       sysctl_set: true
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts.virtualization_type != "docker"
 
 - name: Flush ipv6 route table
   ansible.posix.sysctl:
       name: net.ipv6.route.flush
       value: '1'
       sysctl_set: true
-  when: ansible_virtualization_type != "docker"
+  when: ansible_facts.virtualization_type != "docker"
 
 - name: Reload ufw
   community.general.ufw:
