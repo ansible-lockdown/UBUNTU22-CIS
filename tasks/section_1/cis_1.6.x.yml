@@ -28,6 +28,24 @@
       - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
         ansible.builtin.lineinfile:
             path: /etc/default/grub
+            regexp: ^(GRUB_CMDLINE_LINUX=")(|apparmor=\d\s)(.*\w+")
+            line: \1apparmor=1 \3
+            backrefs: true
+        notify: Grub update
+        when: ubtu22cis_1_6_1_2_cmdline_settings.stdout is not search('apparmor=')
+
+      - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set security settings if none exist"
+        ansible.builtin.lineinfile:
+            path: /etc/default/grub
+            regexp: ^(GRUB_CMDLINE_LINUX=")(|security=\w+\s)(.*\w+")
+            line: \1security=apparmor \3
+            backrefs: true
+        notify: Grub update
+        when: ubtu22cis_1_6_1_2_cmdline_settings.stdout is not search('security=')
+
+      - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
+        ansible.builtin.lineinfile:
+            path: /etc/default/grub
             regexp: '^GRUB_CMDLINE_LINUX='
             line: 'GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor {{ ubtu22cis_1_6_1_2_cmdline_settings.stdout }}"'
             insertafter: '^GRUB_'
@@ -36,17 +54,17 @@
             - "'security' not in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
         notify: Grub update
 
-      - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist | Replace apparmor settings when exists"
+      - name: "1.6.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Replace apparmor settings when exists"
         ansible.builtin.replace:
             path: /etc/default/grub
             regexp: "{{ item.regexp }}"
             replace: "{{ item.replace }}"
         with_items:
-            - { regexp: 'apparmor=\S+', replace: 'apparmor=1' }
-            - { regexp: 'security=\S+', replace: 'security=apparmor' }
+            - { regexp: 'apparmor=\w+', replace: 'apparmor=1' }
+            - { regexp: 'security=\w+', replace: 'security=apparmor' }
         when:
-            - "'apparmor' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
-            - "'security' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
+            - "'apparmor' in ubtu22cis_1_6_1_2_cmdline_settings.stdout or
+              'security' in ubtu22cis_1_6_1_2_cmdline_settings.stdout"
         notify: Grub update
   when:
       - ubtu22cis_rule_1_6_1_2
