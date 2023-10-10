@@ -7,6 +7,7 @@
 collections links updates since galaxy-ng changes and older ansible versions not supported
 README also updates as qulaity scores inconsistent since change
 
+- #120 thanks you @zac90
 - #121 thanks to @ipruteanu-sie
 - #128 thanks to @dderemiah
 
