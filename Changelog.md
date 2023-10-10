@@ -5,10 +5,12 @@
 ### v1.0.6
 
 collections links updates since galaxy-ng changes and older ansible versions not supported
-README also updates as qulaity scores inconsistent since change
+README also updates as quality scores inconsistent since change
 
 - #120 thanks you @zac90
 - #121 thanks to @ipruteanu-sie
+- #124 thanks to @ipruteanu-sie
+- #126 thanks to @ipruteanu-sie
 - #128 thanks to @dderemiah
 
 ### V1.0.5
