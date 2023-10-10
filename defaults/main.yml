@@ -42,6 +42,12 @@ ubtu22cis_ask_passwd_to_boot: false
 # 'false' is left unchanged.
 system_is_container: false
 
+## Root user used
+# Root by default is not used unless setup by user
+# The role will only run certain commands if set to true
+# This allows the ability to skip tasks that may cause an issue
+ubtu22cis_uses_root: false
+
 ###
 ### Settings for associated Audit role using Goss
 ###
