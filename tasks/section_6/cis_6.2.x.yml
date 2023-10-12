@@ -292,6 +292,8 @@
                   - item.stat.exists
                   - item.stat.isdir
                   - item.stat.pw_name != 'root' or item.stat.gr_name != 'root' or item.stat.woth or item.stat.wgrp
+                  - (item != 'root') and (not ubtu22cis_uses_root)
+
   when:
       - ubtu22cis_rule_6_2_9
   tags:
