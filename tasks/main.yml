@@ -41,7 +41,7 @@
 
       - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
         ansible.builtin.assert:
-            that: ansible_user_password_set.stdout != "!!" and ansible_user_password_set.stdout | length > 6
+            that: ansible_user_password_set.stdout != "!!" and ansible_user_password_set.stdout | length > 10
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
         vars:
