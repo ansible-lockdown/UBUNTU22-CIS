@@ -69,9 +69,9 @@
             insertbefore: "{{ item.before | default(omit) }}"
             insertafter: "{{ item.after | default(omit) }}"
         loop:
-            - { regexp: 'auth\s+required\s+pam_faillock.so', line: 'auth    required            pam_faillock.so preauth', before: '^.*pam_unix.so'}
             - { regexp: 'auth\s+sufficient\s+pam_faillock.so', line: 'auth    sufficient          pam_faillock.so authsucc', after: '^.*pam_unix.so'}
             - { regexp: 'auth\s+[default=die]\s+pam_faillock.so', line: 'auth    [default=die]       pam_faillock.so authfail', before: '^.*authsucc'}
+            - { regexp: 'auth\s+required\s+pam_faillock.so', line: 'auth    required            pam_faillock.so preauth', before: '^.*pam_unix.so'}
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-account"
         ansible.builtin.lineinfile:
