@@ -33,7 +33,7 @@
 - name: "Check password set for connecting user"
   block:
       - name: Capture current password state of connecting user"
-        ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+        ansible.builtin.shell: "grep -w {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
         changed_when: false
         failed_when: false
         check_mode: false
@@ -41,7 +41,7 @@
 
       - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
         ansible.builtin.assert:
-            that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+            that: ansible_user_password_set.stdout != "!!" and ansible_user_password_set.stdout | length > 6
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
         vars:

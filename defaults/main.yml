@@ -577,7 +577,7 @@ ubtu22cis_set_grub_user_pass: false
 ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
 ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"  # pragma: allowlist secret
-ubtu22cis_set_boot_pass: true
+ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /boot/grub/grub.cfg
 
