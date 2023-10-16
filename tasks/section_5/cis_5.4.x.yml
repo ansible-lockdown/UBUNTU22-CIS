@@ -85,18 +85,6 @@
             control: '[success=1 default=ignore]'
             module_path: pam_unix.so
 
-      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock authfail common-auth "
-        community.general.pamd:
-            name: common-auth
-            new_type: auth
-            new_control: '[default=die]'
-            new_module_path: pam_faillock.so
-            module_arguments: authfail
-            state: after
-            type: auth
-            control: '[success=1 default=ignore]'
-            module_path: pam_unix.so
-
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock authsucc common-auth "
         community.general.pamd:
             name: common-auth
@@ -106,7 +94,19 @@
             module_arguments: authsucc
             state: after
             type: auth
-            control: '[default=die]'
+            control: '[success=1 default=ignore]'
+            module_path: pam_unix.so
+
+      - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock authfail common-auth "
+        community.general.pamd:
+            name: common-auth
+            new_type: auth
+            new_control: '[default=die]'
+            new_module_path: pam_faillock.so
+            module_arguments: authfail
+            state: before
+            type: auth
+            control: sufficient
             module_path: pam_faillock.so
 
       - name: "5.4.2 | PATCH | Ensure lockout for failed password attempts is configured | Set faillock common-account"
