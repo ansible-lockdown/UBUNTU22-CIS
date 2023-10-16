@@ -5,7 +5,7 @@
 ### 1.0.7
 
 Huge thanks to the discord community
-in particular @Loz and @Petri
+in particular @Loz and @Petri for all the testing we're unable to reproduce
 
 - ssh default groups emptied
 - bootloader password default now false and improved test
