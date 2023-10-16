@@ -76,16 +76,16 @@
   tags:
       - goss_template
 
-- name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
-  changed_when: true
-  environment:
-      AUDIT_BIN: "{{ audit_bin }}"
-      AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
-      AUDIT_FILE: "goss.yml"
-
 - name: Pre Audit | Capture audit data if json format
   block:
+      - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
+        ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
+        changed_when: true
+        environment:
+            AUDIT_BIN: "{{ audit_bin }}"
+            AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+            AUDIT_FILE: "goss.yml"
+
       - name: "capture data {{ pre_audit_outfile }}"
         ansible.builtin.shell: "cat {{ pre_audit_outfile }}"
         register: pre_audit
@@ -101,6 +101,15 @@
 
 - name: Pre Audit | Capture audit data if documentation format
   block:
+
+      - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
+        ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }} -f documentation"
+        changed_when: true
+        environment:
+            AUDIT_BIN: "{{ audit_bin }}"
+            AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+            AUDIT_FILE: "goss.yml"
+
       - name: "Pre Audit | capture data {{ pre_audit_outfile }} | documentation format"
         ansible.builtin.shell: "tail -2 {{ pre_audit_outfile }}"
         register: pre_audit
