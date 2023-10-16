@@ -69,9 +69,8 @@
   loop_control:
       label: "{{ item.path }}"
   when:
-      - item.mode != '06(0|4)0'
       - ubtu22cis_rule_4_1_4_5
-      - auditd_conf_files is defined
+      - item.mode != '06(0|4)0'
   tags:
       - level2-server
       - level2-workstation
