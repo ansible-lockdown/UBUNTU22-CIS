@@ -2,6 +2,21 @@
 
 ## Based on CIS V1.0.0
 
+### 1.0.7
+
+Huge thanks to the discord community
+in particular @Loz and @Petri
+
+- ssh default groups emptied
+- bootloader password default now false and improved test
+- rule 5.4.2 logic and extra variables added found in defaults/main.yml
+- audit updates for documentation
+
+thanks to @paulquevedojdrf
+
+- #135
+- #136
+
 ### v1.0.6
 
 collections links updates since galaxy-ng changes and older ansible versions not supported
