@@ -113,10 +113,10 @@
             patterns: '*.conf,*.rules'
         register: auditd_conf_files
   when:
-      - ubtu22cis_rule_4_1_1_1
-      - "'auditd' not in ansible_facts.packages or
-        'auditd-plugins' not in ansible_facts.packages"
-      - ubtu22cis_rule_4_1_4_5 or
+      - "'auditd' in ansible_facts.packages or
+        'auditd-plugins' in ansible_facts.packages"
+      - ubtu22cis_rule_4_1_1_1 or
+        ubtu22cis_rule_4_1_4_5 or
         ubtu22cis_rule_4_1_4_6 or
         ubtu22cis_rule_4_1_4_7
   tags:
