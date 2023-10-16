@@ -167,7 +167,7 @@
 
 - name: "PRELIM | Interactive User accounts"
   ansible.builtin.shell: >
-        grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '($7 != "'"$(which nologin)"'" && $7 != "/bin/false") { print $6 }'
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/false") { print $6 }'
   changed_when: false
   register: interactive_users_home
   tags:
