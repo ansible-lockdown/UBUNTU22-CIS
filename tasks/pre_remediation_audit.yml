@@ -16,19 +16,11 @@
 
 - name: Pre Audit Setup | If using git for content set up
   block:
-      - name: Pre Audit Setup | Install git (rh8 python3)
+      - name: Pre Audit Setup | Install git
         ansible.builtin.package:
             name: git
             state: present
-        when: ansible_distribution_major_version == '8'
-
-      - name: Pre Audit Setup | Install git (rh7 python2)
-        ansible.builtin.package:
-            name: git
-            state: present
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when: ansible_distribution_major_version == '7'
+        when: "'git' not in ansible_facts.packages"
 
       - name: Pre Audit Setup | retrieve audit content files from git
         ansible.builtin.git:
