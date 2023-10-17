@@ -26,8 +26,8 @@
       - ubtu22cis_rule_3_1_1
       - not ubtu22cis_ipv6_required
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - rule_3.1.1
       - ipv6
