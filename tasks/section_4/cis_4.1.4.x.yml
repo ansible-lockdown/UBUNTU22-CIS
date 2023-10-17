@@ -23,7 +23,7 @@
             "4.1.4.3 | PATCH | Ensure only authorized groups are assigned ownership of audit log files"
         ansible.builtin.file:
             path: "{{ audit_discovered_logfile.stdout }}"
-            mode: "{% if auditd_logfile.stat.mode != '0600' %}0640{% endif %}"
+            mode: "{% if auditd_logfile.stat.mode > '0640' %}0640{% endif %}"
             owner: root
             group: root
   when:
@@ -70,7 +70,7 @@
       label: "{{ item.path }}"
   when:
       - ubtu22cis_rule_4_1_4_5
-      - item.mode != '06(0|4)0'
+      - item.mode > '0640'
   tags:
       - level2-server
       - level2-workstation
