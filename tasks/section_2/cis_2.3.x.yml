@@ -4,6 +4,7 @@
   ansible.builtin.package:
       name: nis
       state: absent
+  notify: Purge_packages
   when:
       - ubtu22cis_rule_2_3_1
       - not ubtu22cis_nis_required
@@ -17,6 +18,7 @@
   ansible.builtin.package:
       name: rsh-client
       state: absent
+  notify: Purge_packages
   when:
       - ubtu22cis_rule_2_3_2
       - not ubtu22cis_rsh_required
@@ -32,6 +34,7 @@
   ansible.builtin.package:
       name: talk
       state: absent
+  notify: Purge_packages
   when:
       - ubtu22cis_rule_2_3_3
       - not ubtu22cis_talk_required
@@ -47,6 +50,7 @@
   ansible.builtin.package:
       name: telnet
       state: absent
+  notify: Purge_packages
   when:
       - ubtu22cis_rule_2_3_4
       - not ubtu22cis_telnet_required
@@ -62,6 +66,7 @@
   ansible.builtin.package:
       name: ldap-utils
       state: absent
+  notify: Purge_packages
   when:
       - ubtu22cis_rule_2_3_5
       - not ubtu22cis_ldap_clients_required
@@ -77,6 +82,7 @@
   ansible.builtin.package:
       name: rpcbind
       state: absent
+  notify: Purge_packages
   when:
       - ubtu22cis_rule_2_3_6
       - not ubtu22cis_rpc_required

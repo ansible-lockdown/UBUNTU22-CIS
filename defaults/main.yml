@@ -510,6 +510,11 @@ ubtu22cis_ipv6_required: false
 # and X-Windows are carried out.
 ubtu22cis_desktop_required: false
 
+## Purge apt packages
+# This will allow the purging of any packages that are marked to be removed
+# This will also purge any packages not removed via this playbook
+ubtu22cis_purge_apt: false
+
 ##
 ## Section 1 Control Variables
 ##

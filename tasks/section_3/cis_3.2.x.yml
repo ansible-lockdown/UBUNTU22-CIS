@@ -47,7 +47,7 @@
             ignoreerrors: true
         notify:
             - Flush ipv6 route table
-        when: ubtu22cis_ipv6_required
+
   when:
       - ubtu22cis_rule_3_2_2
       - not ubtu22cis_is_router

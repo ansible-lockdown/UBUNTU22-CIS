@@ -36,6 +36,11 @@
       src: /dev/shm
       state: remounted
 
+- name: Purge_packages
+  ansible.builtin.apt:
+      purge: true
+  when: ubtu22cis_purge_apt
+
 - name: Grub update
   ansible.builtin.shell: update-grub
   failed_when: false
