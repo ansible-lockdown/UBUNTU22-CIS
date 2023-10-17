@@ -5,12 +5,14 @@
 ### 1.0.7
 
 Huge thanks to the discord community
-in particular @Loz and @Petri for all the testing we're unable to reproduce
+in particular @Loz and @Petri for all the testing
 
 - ssh default groups emptied
 - bootloader password default now false and improved test
 - rule 5.4.2 logic and extra variables added found in defaults/main.yml
 - audit updates for documentation
+- 1.1.1.2 conditional logic improvement
+- 4.1.4.1 & 4.1.4.5 improved logic
 
 thanks to @paulquevedojdrf
 
