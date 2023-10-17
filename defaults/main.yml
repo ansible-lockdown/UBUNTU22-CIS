@@ -535,6 +535,12 @@ expected_tmp_mnt: fstab
 # By setting this variable to `true`, all of the settings related to AIDE will be applied!
 ubtu22cis_config_aide: true
 
+## When Initializing aide this can take longer on some systems
+# changing the values enables user to change to thier own requirements
+ubtu22cis_aide_init:
+    async: 45  # Maximum Time in seconds
+    poll: 0  # Polling Interval in seconds
+
 ## Control 1.3.2
 # These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
 # The sub-settings of this variable provide the parameters required to configure
