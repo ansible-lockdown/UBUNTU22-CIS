@@ -23,8 +23,8 @@
             creates: /var/lib/aide/aide.db
         changed_when: false
         failed_when: false
-        async: 45
-        poll: 0
+        async: 60
+        poll: 20
         when: not ansible_check_mode
   when:
       - ubtu22cis_rule_1_3_1
