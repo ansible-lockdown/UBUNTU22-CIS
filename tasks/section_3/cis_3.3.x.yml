@@ -29,7 +29,6 @@
             - net.ipv6.conf.all.accept_source_route
             - net.ipv6.conf.default.accept_source_route
         notify: Flush ipv6 route table
-        when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_3_1
       - not ubtu22cis_is_router
@@ -71,7 +70,6 @@
             - net.ipv6.conf.all.accept_redirects
             - net.ipv6.conf.default.accept_redirects
         notify: Flush ipv6 route table
-        when: ubtu22cis_ipv6_required
   when:
       - ubtu22cis_rule_3_3_2
   tags:
