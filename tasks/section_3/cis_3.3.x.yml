@@ -176,6 +176,7 @@
       name: "{{ item }}"
       value: '1'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
