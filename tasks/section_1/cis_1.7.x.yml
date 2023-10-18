@@ -12,9 +12,10 @@
             path: /etc/pam.d/sshd
             regexp: "{{ item.regexp }}"
             line: "{{ item.line }}"
+            backrefs: true
         loop:
-            - { regexp: 'session\s+optional\s+pam_motd.so\s+motd=/run/motd.dynamic', line: '# 1\' }
-            - { regexp: 'session\s+optional\s+pam_motd.so noupdate', line: '# 1\' }
+            - { regexp: '(session\s+optional\s+pam_motd.so\s+motd=/run/motd.dynamic)', line: '# \1' }
+            - { regexp: '(session\s+optional\s+pam_motd.so noupdate)', line: '# \1' }
             - { regexp: '# Pam_motd.so disabled for CIS benchmark', line: '# Pam_motd.so disabled for CIS benchmark' }
         when: ubtu22cis_disable_dynamic_motd
   when:
