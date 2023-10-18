@@ -592,6 +592,10 @@ ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /boot/grub/grub.cfg
 
+## 1.5.x
+# Ability to set file in which the kernel systcl changes are placed
+ubtu22cis_sysctl_kernel_conf: /etc/sysctl.d/98_cis_kernel.conf
+
 ## Controls 1.6.1.x - apparmor
 # AppArmor security policies define what system resources applications can access and their privileges.
 # This automatically limits the damage that the software can do to files accessible by the calling user.

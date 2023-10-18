@@ -4,6 +4,11 @@
   ansible.posix.sysctl:
       name: kernel.randomize_va_space
       value: '2'
+      state: present
+      sysctl_file: "{{ ubtu22cis_sysctl_kernel_conf }}"
+      reload: true
+      sysctl_set: true
+      ignoreerrors: true
   when:
       - ubtu22cis_rule_1_5_1
   tags:
@@ -73,6 +78,7 @@
             name: fs.suid_dumpable
             value: '0'
             state: present
+            sysctl_file: "{{ ubtu22cis_sysctl_kernel_conf }}"
             reload: true
             sysctl_set: true
             ignoreerrors: true
