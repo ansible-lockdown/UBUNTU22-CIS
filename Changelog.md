@@ -13,6 +13,7 @@ in particular @Loz and @Petri for all the testing
 - audit updates for documentation
 - 1.1.1.2 conditional logic improvement
 - 4.1.4.1 & 4.1.4.5 improved logic
+- 4.2.3 ensure checking for hidden logfiles
 
 thanks to @paulquevedojdrf
 
@@ -26,6 +27,7 @@ thanks to @zac90
 - #140
 - #141
 - #142
+- #143
 
 ### v1.0.6
 
