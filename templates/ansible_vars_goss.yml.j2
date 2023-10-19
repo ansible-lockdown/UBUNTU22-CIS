@@ -537,7 +537,7 @@ ubtu22cis_ssh_weak_macs:
 
 ubtu22cis_ssh_strong_kex:
 {% for kex in ubtu22cis_sshd.kex_algorithms %}
-  - {{ kex_algorithms }}
+  - {{ kex }}
 {% endfor %}
 ubtu22cis_ssh_weak_kex:
   - diffie-hellman-group1-sha1
