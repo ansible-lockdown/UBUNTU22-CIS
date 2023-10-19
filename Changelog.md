@@ -14,6 +14,7 @@ in particular @Loz and @Petri for all the testing
 - 1.1.1.2 conditional logic improvement
 - 4.1.4.1 & 4.1.4.5 improved logic
 - 4.2.3 ensure checking for hidden logfiles
+- sshd ciphers/macs/kex all now lists to allow greater testing
 
 thanks to @paulquevedojdrf
 
