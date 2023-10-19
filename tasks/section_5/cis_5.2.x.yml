@@ -251,7 +251,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^Ciphers|^#Ciphers'
-      line: 'Ciphers {{ ubtu22cis_sshd.ciphers }}'
+      line: "Ciphers {{ ubtu22cis_sshd.ciphers | join(',') }}"
       insertafter: '^# Ciphers and keying'
   notify: restart sshd
   when:
@@ -268,7 +268,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MACs|^#MACs'
-      line: 'MACs {{ ubtu22cis_sshd.macs }}'
+      line: "MACs {{ ubtu22cis_sshd.macs }} | join(',')"
       insertafter: '^# Ciphers and keying'
   notify: restart sshd
   when:
@@ -285,7 +285,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^KexAlgorithms|^#KexAlgorithms'
-      line: 'KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms }}'
+      line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | join(',') }}"
       insertafter: '^# Ciphers and keying'
   notify: restart sshd
   when:
