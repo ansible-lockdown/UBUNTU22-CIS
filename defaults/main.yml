@@ -462,6 +462,7 @@ ubtu22cis_smb_server: false
 ubtu22cis_squid_server: false
 ubtu22cis_snmp_server: false
 ubtu22cis_rsync_server: false
+ubtu22cis_rsync_masked: false
 ubtu22cis_nis_server: false
 ubtu22cis_nfs_client: false
 
