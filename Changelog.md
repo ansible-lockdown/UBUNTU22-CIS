@@ -15,6 +15,7 @@ in particular @Loz and @Petri for all the testing
 - 4.1.4.1 & 4.1.4.5 improved logic
 - 4.2.3 ensure checking for hidden logfiles
 - sshd ciphers/macs/kex all now lists to allow greater testing
+- correction to cis level
 
 thanks to @paulquevedojdrf
 
