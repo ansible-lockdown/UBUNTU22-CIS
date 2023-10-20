@@ -2,22 +2,22 @@
 
 - name: Gather distribution info
   # we need:
-  # - hardware for ansible_mounts
+  # - hardware for ansible_facts.mounts
   # - platform for ansible_architecture (ansible internal)
-  # - virtual for ansible_virtualization_type
+  # - virtual for ansible_facts.virtualization_type
   ansible.builtin.setup:
       gather_subset: distribution,hardware,platform,virtual,!all,!min
   when:
-      - ansible_distribution is not defined
+      - ansible_facts.distribution is not defined
   tags:
       - always
 
 - name: Check OS version and family
   ansible.builtin.fail:
-      msg: "This role can only be run against Ubuntu 22. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+      msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
   when:
-      - ansible_distribution == 'Ubuntu'
-      - ansible_distribution_major_version is version_compare('22', '!=')
+      - ansible_facts.distribution == 'Ubuntu'
+      - ansible_facts.distribution_major_version is version_compare('22', '!=')
   tags:
       - always
 
@@ -106,7 +106,7 @@
             - system_is_container
   when:
       - ansible_connection == 'docker' or
-        ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+        ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
   tags:
       - container_discovery
       - always

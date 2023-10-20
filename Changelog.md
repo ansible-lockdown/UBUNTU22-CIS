@@ -17,6 +17,10 @@ in particular @Loz and @Petri for all the testing
 - sshd ciphers/macs/kex all now lists to allow greater testing
 - correction to cis level
 
+thanks to @jovial
+
+- #132
+
 thanks to @paulquevedojdrf
 
 - #135

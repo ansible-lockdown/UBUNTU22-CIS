@@ -35,7 +35,7 @@
       mode: '0644'
   notify: Remount tmp
   with_items:
-      - "{{ ansible_mounts }}"
+      - "{{ ansible_facts.mounts }}"
   loop_control:
       label: "{{ item.device }}"
   when:
@@ -67,7 +67,7 @@
       opts: defaults,{% if ubtu22cis_rule_1_1_2_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_2_4 %}nosuid{% endif %}
   notify: remount tmp
   with_items:
-      - "{{ ansible_mounts }}"
+      - "{{ ansible_facts.mounts }}"
   loop_control:
       label: "{{ item.device }}"
   when:

@@ -156,7 +156,7 @@
         check_mode: false
         register: ubtu22cis_6_1_10_no_user_items
         with_items:
-            - "{{ ansible_mounts }}"
+            - "{{ ansible_facts.mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
@@ -211,7 +211,7 @@
         check_mode: false
         register: ubtu22cis_6_1_11_ungrouped_items
         with_items:
-            - "{{ ansible_mounts }}"
+            - "{{ ansible_facts.mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
@@ -266,7 +266,7 @@
         check_mode: false
         register: ubtu22cis_6_1_12_suid_executables
         with_items:
-            - "{{ ansible_mounts }}"
+            - "{{ ansible_facts.mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 
@@ -321,7 +321,7 @@
         check_mode: false
         register: ubtu22cis_6_1_13_sgid_executables
         with_items:
-            - "{{ ansible_mounts }}"
+            - "{{ ansible_facts.mounts }}"
         loop_control:
             label: "{{ item.mount }}"
 

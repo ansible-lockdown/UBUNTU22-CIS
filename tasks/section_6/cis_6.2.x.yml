@@ -103,12 +103,12 @@
       - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
         ansible.builtin.debug:
             msg: "Warning!! - You have users in the shadow group"
-        when: getent_group.shadow[2] | length > 0
+        when: ansible_facts.getent_group.shadow[2] | length > 0
 
       - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
         ansible.builtin.import_tasks:
             file: warning_facts.yml
-        when: getent_group.shadow[2] | length > 0
+        when: ansible_facts.getent_group.shadow[2] | length > 0
   vars:
       warn_control_id: '6.2.4'
   when:
