@@ -44,6 +44,7 @@ README also updates as quality scores inconsistent since change
 - #120 thanks you @zac90
 - #121 thanks to @ipruteanu-sie
 - #124 thanks to @ipruteanu-sie
+- #125 thanks to @ipruteanu-sie
 - #126 thanks to @ipruteanu-sie
 - #128 thanks to @dderemiah
 
