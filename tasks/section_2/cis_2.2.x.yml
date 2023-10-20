@@ -326,14 +326,28 @@
       - rule_2.2.15
       - postfix
 
-- name: "2.2.16 | PATCH | Ensure rsync service is not installed"
-  ansible.builtin.package:
-      name: rsync
-      state: absent
-  notify: Purge_packages
+- name: "2.2.16 | PATCH | Ensure rsync service is either not installed or masked"
+  block:
+      - name: "2.2.16 | PATCH | Ensure rsync service is either not installed or masked | remove pkg"
+        ansible.builtin.package:
+            name: rsync
+            state: absent
+        notify: Purge_packages
+        when:
+            - ubtu22cis_rule_2_2_16
+            - ubtu22cis_rsync_server == 'remove'
+
+      - name: "2.2.16 | PATCH | Ensure rsync service is either not installed or masked | mask service"
+        ansible.builtin.systemd:
+            name: rsync
+            masked: true
+            enabled: false
+            state: stopped
+            daemon_reload: true
+        when:
+            - ubtu22cis_rule_2_2_16
+            - ubtu22cis_rsync_server == 'mask'
   when:
-      - ubtu22cis_rule_2_2_16
-      - not ubtu22cis_rsync_server
       - "'rsync' in ansible_facts.packages"
   tags:
       - level1-server

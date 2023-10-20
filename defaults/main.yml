@@ -461,7 +461,7 @@ ubtu22cis_dovecot_server: false
 ubtu22cis_smb_server: false
 ubtu22cis_squid_server: false
 ubtu22cis_snmp_server: false
-ubtu22cis_rsync_server: false
+ubtu22cis_rsync_server: mask  # Can be set to true, mask or remove depending on requirements
 ubtu22cis_nis_server: false
 ubtu22cis_nfs_client: false
 
