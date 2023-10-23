@@ -21,6 +21,11 @@ Thanks to @loz for all the testing and feedback
 
 - rule 5.4.2 logic and extra variables added in defaults/main.yml
 
+thanks to @bgro
+
+- #131
+- #148
+
 thanksto @tomi-bigpi
 
 - #123
@@ -43,6 +48,10 @@ thanks to @zac90
 - #142
 - #143
 - #145
+
+thanks to @dderemiah
+
+- #146
 
 thanks to @lozzolloz
 
