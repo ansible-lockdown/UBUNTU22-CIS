@@ -5,17 +5,25 @@
 ### 1.0.7
 
 Huge thanks to the discord community
-in particular @Loz and @Petri for all the testing
+Thanks to @loz for all the testing and feedback
 
+- 4.1.4.1 & 4.1.4.5 improved logic
 - ssh default groups emptied
 - bootloader password default now false and improved test
-- rule 5.4.2 logic and extra variables added found in defaults/main.yml
 - audit updates for documentation
 - 1.1.1.2 conditional logic improvement
-- 4.1.4.1 & 4.1.4.5 improved logic
 - 4.2.3 ensure checking for hidden logfiles
 - sshd ciphers/macs/kex all now lists to allow greater testing
 - correction to cis level
+- section 6.1 mode updates
+
+@Petri and @Loz for all the testing on this partcular issue
+
+- rule 5.4.2 logic and extra variables added in defaults/main.yml
+
+thanksto @tomi-bigpi
+
+- #123
 
 thanks to @jovial
 
@@ -35,6 +43,12 @@ thanks to @zac90
 - #142
 - #143
 - #145
+
+thanks to @lozzolloz
+
+- #151
+- #153
+- #154
 
 ### v1.0.6
 
