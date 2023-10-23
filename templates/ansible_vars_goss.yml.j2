@@ -387,7 +387,8 @@ ubtu22cis_apparmor_mode: {{ ubtu22cis_apparmor_mode }}
 ubtu22cis_apparmor_enforce_only: {{ubtu22cis_apparmor_enforce_only}}
 
 # Warning Banner Content (issue, issue.net, motd)
-ubtu22_warning_banner: {{ ubtu22cis_warning_banner }}
+ubtu22_warning_banner: |
+  {{ ubtu22cis_warning_banner|indent(2, false)  }}
 # End Banner
 
 # Section 2
