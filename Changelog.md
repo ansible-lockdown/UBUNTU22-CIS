@@ -7,6 +7,7 @@
 Huge thanks to the discord community
 Thanks to @loz for all the testing and feedback
 
+- 1.7.1 added dymamic check to audit
 - 4.1.4.1 & 4.1.4.5 improved logic
 - ssh default groups emptied
 - bootloader password default now false and improved test

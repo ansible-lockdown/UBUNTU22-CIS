@@ -390,6 +390,11 @@ ubtu22_warning_banner: |
   {{ ubtu22cis_warning_banner|indent(2, false)  }}
 # End Banner
 
+# If configured to stop dynamic loading of files in /etc/update-motd.d
+# optional in remediation
+ubtu22cis_disable_dynamic_motd: {{ ubtu22cis_disable_dynamic_motd }}
+
+
 # Section 2
 # Time sync - can be timesync or chr0ny or ntp
 ubtu22cis_time_service: {{ ubtu22cis_time_sync_tool }}
