@@ -11,7 +11,7 @@
             AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
             AUDIT_FILE: "goss.yml"
 
-      - name: "capture data {{ post_audit_outfile }}"
+      - name: "Capture data {{ post_audit_outfile }}"
         ansible.builtin.shell: "cat {{ post_audit_outfile }}"
         register: post_audit
         changed_when: false
@@ -35,7 +35,7 @@
             AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
             AUDIT_FILE: "goss.yml"
 
-      - name: "Post Audit | capture data {{ post_audit_outfile }}"
+      - name: "Post Audit | Capture data {{ post_audit_outfile }}"
         ansible.builtin.shell: "tail -2 {{ post_audit_outfile }}"
         register: post_audit
         changed_when: false
@@ -46,7 +46,7 @@
   when:
       - audit_format == "documentation"
 
-- name: Post Audit | ensure audit files readable by users
+- name: Post Audit | Ensure audit files readable by users
   ansible.builtin.file:
       path: "{{ item }}"
       mode: '0644'

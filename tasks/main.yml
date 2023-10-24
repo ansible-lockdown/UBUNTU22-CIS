@@ -202,12 +202,12 @@
   tags:
       - always
 
-- name: flush handlers
+- name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: reboot system
+- name: Reboot system
   block:
-      - name: reboot system if not skipped
+      - name: Reboot system if not skipped
         ansible.builtin.reboot:
         when:
             - not skip_reboot
@@ -219,7 +219,7 @@
         when:
             - skip_reboot
 
-- name: run post remediation audit
+- name: Run post remediation audit
   ansible.builtin.import_tasks:
       file: post_remediation_audit.yml
   when:
