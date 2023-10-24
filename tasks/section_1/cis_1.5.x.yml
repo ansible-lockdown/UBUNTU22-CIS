@@ -30,7 +30,7 @@
         ansible.builtin.package:
             name: prelink
             state: absent
-            purge: "{{ ubuntu22cis_purge_apt }}"
+            purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_1_5_2
       - "'prelink' in ansible_facts.packages"
@@ -58,8 +58,7 @@
         ansible.builtin.package:
             name: apport
             state: absent
-            purge: "{{ ubuntu22cis_purge_apt }}"
-        notify: Purge_packages
+            purge: "{{ ubtu22cis_purge_apt }}"
         when:
             - "'apport' in ansible_facts.packages"
   when:
