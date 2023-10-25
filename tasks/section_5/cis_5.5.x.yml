@@ -9,7 +9,7 @@
             line: 'PASS_MIN_DAYS {{ ubtu22cis_pass.min_days }}'
 
       - name: "5.5.1.1 | PATCH | Ensure minimum days between password changes is configured | Get existing users PASS_MIN_DAYS"
-        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($4>{{ ubtu22cis_pass.min_days }})){print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($4<{{ ubtu22cis_pass.min_days }})) {print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_1_min_days
@@ -18,11 +18,10 @@
         ansible.builtin.shell: chage --mindays {{ ubtu22cis_pass.min_days }} {{ item }}
         failed_when: false
         changed_when: ubtu22cis_5_5_1_1_min_days.stdout |length > 0
-        loop:
-            - ubtu22cis_5_5_1_1_min_days.stdout_list
+        loop: "{{ ubtu22cis_5_5_1_1_min_days.stdout_lines }}"
         when:
             - ubtu22cis_disruption_high
-            - (item != 'root') and (not ubtu22cis_uses_root)
+            - (item != 'root') or (not ubtu22cis_uses_root)
   when:
       - ubtu22cis_rule_5_5_1_1
   tags:
@@ -44,7 +43,7 @@
             insertafter: '# Password aging controls'
 
       - name: "5.5.1.2 | PATCH | Ensure password expiration is 365 days or less | Get existing users PASS_MAX_DAYS"
-        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($5<={{ ubtu22cis_pass.max_days }} && $5<{{ ubtu22cis_pass.min_days }})){print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($5>{{ ubtu22cis_pass.max_days }} || $5<{{ ubtu22cis_pass.min_days }} || $5 == -1)){print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_2_max_days
@@ -53,11 +52,10 @@
         ansible.builtin.shell: chage --maxdays {{ ubtu22cis_pass.max_days }} {{ item }}
         failed_when: false
         changed_when: ubtu22cis_5_5_1_2_max_days.stdout | length > 0
-        loop:
-            - ubtu22cis_5_5_1_2_max_days.stdout_list
+        loop: "{{ ubtu22cis_5_5_1_2_max_days.stdout_lines }}"
         when:
             - ubtu22cis_disruption_high
-            - (item != 'root') and (not ubtu22cis_uses_root)
+            - (item != 'root') or (not ubtu22cis_uses_root)
   when:
       - ubtu22cis_rule_5_5_1_2
   tags:
@@ -68,7 +66,6 @@
       - rule_5.5.1.2
       - user
       - login
-      - skip_ansible_lint
 
 - name: "5.5.1.3 | PATCH | Ensure password expiration warning days is 7 or more"
   block:
@@ -88,11 +85,10 @@
         ansible.builtin.shell: chage --maxdays {{ ubtu22cis_pass.warn_age }} {{ item }}
         failed_when: false
         changed_when: ubtu22cis_5_5_1_3_warn_days.stdout | length > 0
-        loop:
-            - ubtu22cis_5_5_1_3_warn_days.stdout_list
+        loop: "{{ ubtu22cis_5_5_1_3_warn_days.stdout_lines }}"
         when:
             - ubtu22cis_disruption_high
-            - (item != 'root') and (not ubtu22cis_uses_root)
+            - (item != 'root') or (not ubtu22cis_uses_root)
   when:
       - ubtu22cis_rule_5_5_1_3
   tags:

@@ -109,19 +109,21 @@
         ansible.builtin.package:
             name: ['auditd', 'audispd-plugins']
             state: present
+        when:
+            - "'auditd' not in ansible_facts.packages or
+              'auditd-plugins' not in ansible_facts.packages"
 
-      - name: "PRELIM | 4.1.4.5 | Audit conf and rules files | list files"
+      - name: "PRELIM | AUDIT | Audit conf and rules files | list files"
         ansible.builtin.find:
             path: /etc/audit/
             file_type: file
             recurse: true
             patterns: '*.conf,*.rules'
         register: auditd_conf_files
+
   when:
-      - ubtu22cis_rule_4_1_1_1
-      - "'auditd' not in ansible_facts.packages or
-        'auditd-plugins' not in ansible_facts.packages"
-      - ubtu22cis_rule_4_1_4_5 or
+      - ubtu22cis_rule_4_1_1_1 or
+        ubtu22cis_rule_4_1_4_5 or
         ubtu22cis_rule_4_1_4_6 or
         ubtu22cis_rule_4_1_4_7
   tags:
@@ -172,7 +174,7 @@
 
 - name: "PRELIM | Interactive User accounts"
   ansible.builtin.shell: >
-        grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '($7 != "'"$(which nologin)"'" && $7 != "/bin/false") { print $6 }'
+      grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/false") { print $6 }'
   changed_when: false
   register: interactive_users_home
   tags:

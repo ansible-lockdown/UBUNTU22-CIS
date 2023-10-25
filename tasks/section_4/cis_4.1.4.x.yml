@@ -23,7 +23,7 @@
             "4.1.4.3 | PATCH | Ensure only authorized groups are assigned ownership of audit log files"
         ansible.builtin.file:
             path: "{{ audit_discovered_logfile.stdout }}"
-            mode: "{% if auditd_logfile.stat.mode != '0600' %}0640{% endif %}"
+            mode: "{% if auditd_logfile.stat.mode > '0640' %}0640{% endif %}"
             owner: root
             group: root
   when:
@@ -31,8 +31,8 @@
         ubtu22cis_rule_4_1_4_2 or
         ubtu22cis_rule_4_1_4_3
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.1
@@ -55,8 +55,8 @@
   when:
       - ubtu22cis_rule_4_1_4_4
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.4
@@ -69,11 +69,11 @@
   loop_control:
       label: "{{ item.path }}"
   when:
-      - item.mode != '06(0|4)0'
       - ubtu22cis_rule_4_1_4_5
+      - item.mode > '0640'
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.5
@@ -88,8 +88,8 @@
   when:
       - ubtu22cis_rule_4_1_4_6
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.6
@@ -104,8 +104,8 @@
   when:
       - ubtu22cis_rule_4_1_4_7
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.7
@@ -136,8 +136,8 @@
   when:
       - ubtu22cis_rule_4_1_4_8
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.8
@@ -157,8 +157,8 @@
   when:
       - ubtu22cis_rule_4_1_4_9
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.9
@@ -177,8 +177,8 @@
   when:
       - ubtu22cis_rule_4_1_4_10
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.10
@@ -200,8 +200,8 @@
       - ubtu22cis_rule_4_1_4_11 and
         ubtu22cis_config_aide
   tags:
-      - level2-server
-      - level2-workstation
+      - level1-server
+      - level1-workstation
       - patch
       - auditd
       - rule_4.1.4.11

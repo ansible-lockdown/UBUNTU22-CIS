@@ -2,6 +2,64 @@
 
 ## Based on CIS V1.0.0
 
+### 1.0.7
+
+Huge thanks to the discord community
+Thanks to @loz for all the testing and feedback
+
+- 1.7.1 added dymamic check to audit
+- 4.1.4.1 & 4.1.4.5 improved logic
+- ssh default groups emptied
+- bootloader password default now false and improved test
+- audit updates for documentation
+- 1.1.1.2 conditional logic improvement
+- 4.2.3 ensure checking for hidden logfiles
+- sshd ciphers/macs/kex all now lists to allow greater testing
+- correction to cis level
+- section 6.1 mode updates
+
+@Petri and @Loz for all the testing on this partcular issue
+
+- rule 5.4.2 logic and extra variables added in defaults/main.yml
+
+thanks to @bgro
+
+- #131
+- #148
+
+thanksto @tomi-bigpi
+
+- #123
+
+thanks to @jovial
+
+- #132
+
+thanks to @paulquevedojdrf
+
+- #135
+- #136
+
+thanks to @zac90
+
+- #138
+- #139
+- #140
+- #141
+- #142
+- #143
+- #145
+
+thanks to @dderemiah
+
+- #146
+
+thanks to @lozzolloz
+
+- #151
+- #153
+- #154
+
 ### v1.0.6
 
 collections links updates since galaxy-ng changes and older ansible versions not supported
@@ -10,6 +68,7 @@ README also updates as quality scores inconsistent since change
 - #120 thanks you @zac90
 - #121 thanks to @ipruteanu-sie
 - #124 thanks to @ipruteanu-sie
+- #125 thanks to @ipruteanu-sie
 - #126 thanks to @ipruteanu-sie
 - #128 thanks to @dderemiah
 

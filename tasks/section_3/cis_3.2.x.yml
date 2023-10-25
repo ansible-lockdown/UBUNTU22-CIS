@@ -5,6 +5,7 @@
       name: "{{ item }}"
       value: '0'
       sysctl_set: true
+      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
       state: present
       reload: true
       ignoreerrors: true
@@ -31,6 +32,7 @@
             name: net.ipv4.ip_forward
             value: '0'
             sysctl_set: true
+            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
             state: present
             reload: true
             ignoreerrors: true
@@ -42,12 +44,13 @@
             name: net.ipv6.conf.all.forwarding
             value: '0'
             sysctl_set: true
+            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
             state: present
             reload: true
             ignoreerrors: true
         notify:
             - Flush ipv6 route table
-        when: ubtu22cis_ipv6_required
+
   when:
       - ubtu22cis_rule_3_2_2
       - not ubtu22cis_is_router

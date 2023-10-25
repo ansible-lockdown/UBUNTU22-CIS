@@ -4,6 +4,7 @@
   ansible.builtin.package:
       name: xserver-xorg*
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_1
       - not ubtu22cis_desktop_required
@@ -34,6 +35,7 @@
         ansible.builtin.package:
             name: avahi-daemon
             state: absent
+            purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_2
       - not ubtu22cis_avahi_server
@@ -52,6 +54,7 @@
   ansible.builtin.package:
       name: cups
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_3
       - not ubtu22cis_cups_server
@@ -69,6 +72,7 @@
   ansible.builtin.package:
       name: isc-dhcp-server
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_4
       - not ubtu22cis_dhcp_server
@@ -86,6 +90,7 @@
   ansible.builtin.package:
       name: slapd
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_5
       - not ubtu22cis_ldap_server
@@ -103,6 +108,7 @@
   ansible.builtin.package:
       name: nfs-kernel-server
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_6
       - not ubtu22cis_nfs_server
@@ -121,6 +127,7 @@
   ansible.builtin.package:
       name: bind9
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_7
       - not ubtu22cis_dns_server
@@ -138,6 +145,7 @@
   ansible.builtin.package:
       name: vsftpd
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_8
       - not ubtu22cis_vsftpd_server
@@ -155,6 +163,7 @@
   ansible.builtin.package:
       name: apache2
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_9
       - not ubtu22cis_httpd_server
@@ -172,6 +181,7 @@
   ansible.builtin.package:
       name: ['dovecot-imapd', 'dovecot-pop3d']
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_10
       - not ubtu22cis_dovecot_server
@@ -190,6 +200,7 @@
   ansible.builtin.package:
       name: samba
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_11
       - not ubtu22cis_smb_server
@@ -207,6 +218,7 @@
   ansible.builtin.package:
       name: squid
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_12
       - not ubtu22cis_squid_server
@@ -224,6 +236,7 @@
   ansible.builtin.package:
       name: snmpd
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_13
       - not ubtu22cis_snmp_server
@@ -241,6 +254,7 @@
   ansible.builtin.package:
       name: nis
       state: absent
+      purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_2_2_14
       - not ubtu22cis_nis_server
@@ -312,13 +326,28 @@
       - rule_2.2.15
       - postfix
 
-- name: "2.2.16 | PATCH | Ensure rsync service is not installed"
-  ansible.builtin.package:
-      name: rsync
-      state: absent
+- name: "2.2.16 | PATCH | Ensure rsync service is either not installed or masked"
+  block:
+      - name: "2.2.16 | PATCH | Ensure rsync service is either not installed or masked | remove pkg"
+        ansible.builtin.package:
+            name: rsync
+            state: absent
+            purge: "{{ ubtu22cis_purge_apt }}"
+        when:
+            - ubtu22cis_rule_2_2_16
+            - ubtu22cis_rsync_server == 'remove'
+
+      - name: "2.2.16 | PATCH | Ensure rsync service is either not installed or masked | mask service"
+        ansible.builtin.systemd:
+            name: rsync
+            masked: true
+            enabled: false
+            state: stopped
+            daemon_reload: true
+        when:
+            - ubtu22cis_rule_2_2_16
+            - ubtu22cis_rsync_server == 'mask'
   when:
-      - ubtu22cis_rule_2_2_16
-      - not ubtu22cis_rsync_server
       - "'rsync' in ansible_facts.packages"
   tags:
       - level1-server
