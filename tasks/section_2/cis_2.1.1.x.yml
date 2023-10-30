@@ -23,7 +23,10 @@
             enabled: false
             masked: true
             daemon_reload: true
-        when: ubtu22cis_time_sync_tool != "systemd-timesyncd"
+        when:
+            - ubtu22cis_time_sync_tool != "systemd-timesyncd"
+            - "'systemd-timesyncd' in ansible_facts.packages"
+
   when:
       - ubtu22cis_rule_2_1_1_1
   tags:
