@@ -111,7 +111,7 @@
       # Aws deployments taking a while to come up insert sleep or playbook fails
 
             - name: Sleep for 60 seconds
-              run: sleep 60s
+              run: sleep ${{ vars.BUILD_SLEEPTIME }}
 
           # Run the ansible playbook
             - name: Run_Ansible_Playbook
