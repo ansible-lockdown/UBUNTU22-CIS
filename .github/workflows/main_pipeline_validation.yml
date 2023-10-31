@@ -18,7 +18,7 @@
     # that can run sequentially or in parallel
     jobs:
 
-        # This workflow contains a single job which tests the playbook
+        # This workflow contains a single job that tests the playbook
         playbook-test:
           # The type of runner that the job will run on
           runs-on: ubuntu-latest
@@ -38,7 +38,7 @@
                 ref: ${{ github.event.pull_request.head.sha }}
 
             # Pull in terraform code for linux servers
-            - name: Clone github IaC plan
+            - name: Clone GitHub IaC plan
               uses: actions/checkout@v4
               with:
                 repository: ansible-lockdown/github_linux_IaC
@@ -63,7 +63,7 @@
                 pwd
                 ls
               env:
-                # Imported from github variables this is used to load the relvent OS.tfvars file
+                # Imported from GitHub variables this is used to load the relevant OS.tfvars file
                 OSVAR: ${{ vars.OSVAR }}
                 benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -71,7 +71,7 @@
               id: init
               run: terraform init
               env:
-                # Imported from github variables this is used to load the relvent OS.tfvars file
+                # Imported from GitHub variables this is used to load the relevant OS.tfvars file
                 OSVAR: ${{ vars.OSVAR }}
                 TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -79,7 +79,7 @@
               id: validate
               run: terraform validate
               env:
-                # Imported from github variables this is used to load the relvent OS.tfvars file
+                # Imported from GitHub variables this is used to load the relevant OS.tfvars file
                 OSVAR: ${{ vars.OSVAR }}
                 TF_VAR_benchmark_type: ${{ vars.BENCHMARK_TYPE }}
 
@@ -102,7 +102,7 @@
             - name: Sleep for 60 seconds
               run: sleep ${{ vars.BUILD_SLEEPTIME }}
 
-          # Run the ansible playbook
+          # Run the Ansibleplaybook
             - name: Run_Ansible_Playbook
               uses: arillso/action.playbook@master
               with:
