@@ -3,7 +3,7 @@
 # provided by MindPointGroup LLC
 
 [Time]
-NTP={{ ubtu22cis_time_pool }}
+NTP={% for servers in ubtu22cis_time_pool %}{{ servers.name }} {% endfor %}
 
 
 FallbackNTP={% for servers in ubtu22cis_time_servers %}{{ servers.name }} {% endfor %}
