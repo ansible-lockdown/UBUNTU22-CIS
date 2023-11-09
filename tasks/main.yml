@@ -2,22 +2,22 @@
 
 - name: Gather distribution info
   # we need:
-  # - hardware for ansible_mounts
+  # - hardware for ansible_facts.mounts
   # - platform for ansible_architecture (ansible internal)
-  # - virtual for ansible_virtualization_type
+  # - virtual for ansible_facts.virtualization_type
   ansible.builtin.setup:
       gather_subset: distribution,hardware,platform,virtual,!all,!min
   when:
-      - ansible_distribution is not defined
+      - ansible_facts.distribution is not defined
   tags:
       - always
 
 - name: Check OS version and family
   ansible.builtin.fail:
-      msg: "This role can only be run against Ubuntu 22. {{ ansible_distribution }} {{ ansible_distribution_major_version }} is not supported."
+      msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
   when:
-      - ansible_distribution == 'Ubuntu'
-      - ansible_distribution_major_version is version_compare('22', '!=')
+      - ansible_facts.distribution == 'Ubuntu'
+      - ansible_facts.distribution_major_version is version_compare('22', '!=')
   tags:
       - always
 
@@ -33,7 +33,7 @@
 - name: "Check password set for connecting user"
   block:
       - name: Capture current password state of connecting user"
-        ansible.builtin.shell: "grep {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+        ansible.builtin.shell: "grep -w {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
         changed_when: false
         failed_when: false
         check_mode: false
@@ -41,7 +41,7 @@
 
       - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
         ansible.builtin.assert:
-            that: ansible_user_password_set.stdout | length != 0 and ansible_user_password_set.stdout != "!!"
+            that: ansible_user_password_set.stdout != "!!" and ansible_user_password_set.stdout | length > 10
             fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
             success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
         vars:
@@ -106,7 +106,7 @@
             - system_is_container
   when:
       - ansible_connection == 'docker' or
-        ansible_virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
+        ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"]
   tags:
       - container_discovery
       - always
@@ -202,12 +202,12 @@
   tags:
       - always
 
-- name: flush handlers
+- name: Flush handlers
   ansible.builtin.meta: flush_handlers
 
-- name: reboot system
+- name: Reboot system
   block:
-      - name: reboot system if not skipped
+      - name: Reboot system if not skipped
         ansible.builtin.reboot:
         when:
             - not skip_reboot
@@ -219,7 +219,7 @@
         when:
             - skip_reboot
 
-- name: run post remediation audit
+- name: Run post remediation audit
   ansible.builtin.import_tasks:
       file: post_remediation_audit.yml
   when:

@@ -20,7 +20,7 @@
       path: /etc/crontab
       owner: root
       group: root
-      mode: 0600
+      mode: '0600'
   when:
       - ubtu22cis_rule_5_1_2
   tags:
@@ -36,7 +36,7 @@
       path: /etc/cron.hourly
       owner: root
       group: root
-      mode: 0700
+      mode: '0700'
   when:
       - ubtu22cis_rule_5_1_3
   tags:
@@ -52,7 +52,7 @@
       path: /etc/cron.daily
       owner: root
       group: root
-      mode: 0700
+      mode: '0700'
   when:
       - ubtu22cis_rule_5_1_4
   tags:
@@ -68,7 +68,7 @@
       path: /etc/cron.weekly
       owner: root
       group: root
-      mode: 0700
+      mode: '0700'
   when:
       - ubtu22cis_rule_5_1_5
   tags:
@@ -84,7 +84,7 @@
       path: /etc/cron.monthly
       owner: root
       group: root
-      mode: 0700
+      mode: '0700'
   when:
       - ubtu22cis_rule_5_1_6
   tags:
@@ -100,7 +100,7 @@
       path: /etc/cron.d
       owner: root
       group: root
-      mode: 0700
+      mode: '0700'
   when:
       - ubtu22cis_rule_5_1_7
   tags:
@@ -128,7 +128,7 @@
             path: /etc/cron.allow
             owner: root
             group: root
-            mode: 0640
+            mode: '0640'
             state: touch
         when: not ubtu22cis_5_1_8_status.stat.exists
 
@@ -137,7 +137,7 @@
             path: /etc/cron.allow
             owner: root
             group: root
-            mode: 0640
+            mode: '0640'
         when: ubtu22cis_5_1_8_status.stat.exists
   when:
       - ubtu22cis_rule_5_1_8
@@ -166,7 +166,7 @@
             path: /etc/at.allow
             owner: root
             group: root
-            mode: 0640
+            mode: '0640'
             state: touch
         when: not ubtu22cis_5_1_9_status.stat.exists
 
@@ -175,7 +175,7 @@
             path: /etc/at.allow
             owner: root
             group: root
-            mode: 0640
+            mode: '0640'
         when: ubtu22cis_5_1_9_status.stat.exists
   when:
       - ubtu22cis_rule_5_1_9

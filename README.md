@@ -10,7 +10,6 @@
 ![followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
 [![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
 
-![Ansible Galaxy Quality](https://img.shields.io/ansible/quality/56324?label=Quality&&logo=ansible)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
 ![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
@@ -44,7 +43,7 @@ Join us on our [Discord Server](https://www.lockdownenterprise.com/discord) to a
 
 This role **will make changes to the system** that could break things. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
-This role was developed against a clean install of the Operating System. If you are implimenting to an existing system please review this role for any site specific changes that are needed.
+This role was developed against a clean install of the Operating System. If you are implementing on an existing system, please review this role for any site-specific changes that are needed.
 
 ## Documentation
 
@@ -64,7 +63,7 @@ This role was developed against a clean install of the Operating System. If you 
   - [Tower User Guide](https://docs.ansible.com/ansible-tower/latest/html/userguide/index.html)
   - [Ansible Community Info](https://docs.ansible.com/ansible/latest/community/index.html)
 - Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup.
-- Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consiquences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file or the [Main Variables Wiki Page](https://github.com/ansible-lockdown/UBUNTU22-CIS/wiki/Main-Variables).
+- Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consequences in a live production system. Also, familiarize yourself with the variables in the defaults/main.yml file or the [Main Variables Wiki Page](https://github.com/ansible-lockdown/UBUNTU22-CIS/wiki/Main-Variables).
 
 **Technical Dependencies:**
 
@@ -87,14 +86,14 @@ Further audit documentation can be found at [Read The Docs](https://ansible-lock
 
 ## Role Variables
 
-This role is designed that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc.
+This role is designed so the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc.
 
 ## Branches
 
-- **devel** - This is the default branch and the working development branch. Community pull requests will pull into this branch
+- **devel** - This is the default branch and the working development branch. Community pull requests will be pulled into this branch
 - **main** - This is the release branch
 - **reports** - This is a protected branch for our scoring reports, no code should ever go here
-- **gh-pages** - This is the github pages branch
+- **gh-pages** - This is the GitHub pages branch
 - **all other branches** - Individual community member branches
 
 ## Community Contribution
@@ -111,7 +110,7 @@ We encourage you (the community) to contribute to this role. Please read the rul
 uses:
 
 - ansible-core 2.12
-- ansible collections - pulls in the latest version based on requirements file
+- ansible collections - pulls in the latest version based on the requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
 

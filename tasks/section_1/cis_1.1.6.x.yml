@@ -34,7 +34,7 @@
       fstype: "{{ item.fstype }}"
       opts: defaults,{% if ubtu22cis_rule_1_1_6_2 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_6_3 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_6_4 %}nosuid{% endif %}
   notify: Remount var_log_audit
-  loop: "{{ ansible_mounts }}"
+  loop: "{{ ansible_facts.mounts }}"
   loop_control:
       label: "{{ item.device }}"
   when:

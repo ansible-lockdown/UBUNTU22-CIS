@@ -103,12 +103,12 @@
       - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
         ansible.builtin.debug:
             msg: "Warning!! - You have users in the shadow group"
-        when: getent_group.shadow[2] | length > 0
+        when: ansible_facts.getent_group.shadow[2] | length > 0
 
       - name: "6.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
         ansible.builtin.import_tasks:
             file: warning_facts.yml
-        when: getent_group.shadow[2] | length > 0
+        when: ansible_facts.getent_group.shadow[2] | length > 0
   vars:
       warn_control_id: '6.2.4'
   when:
@@ -292,6 +292,8 @@
                   - item.stat.exists
                   - item.stat.isdir
                   - item.stat.pw_name != 'root' or item.stat.gr_name != 'root' or item.stat.woth or item.stat.wgrp
+                  - (item != 'root') and (not ubtu22cis_uses_root)
+
   when:
       - ubtu22cis_rule_6_2_9
   tags:

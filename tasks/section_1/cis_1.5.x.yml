@@ -4,6 +4,11 @@
   ansible.posix.sysctl:
       name: kernel.randomize_va_space
       value: '2'
+      state: present
+      sysctl_file: "{{ ubtu22cis_sysctl_kernel_conf }}"
+      reload: true
+      sysctl_set: true
+      ignoreerrors: true
   when:
       - ubtu22cis_rule_1_5_1
   tags:
@@ -25,6 +30,7 @@
         ansible.builtin.package:
             name: prelink
             state: absent
+            purge: "{{ ubtu22cis_purge_apt }}"
   when:
       - ubtu22cis_rule_1_5_2
       - "'prelink' in ansible_facts.packages"
@@ -46,12 +52,13 @@
             create: true
             owner: root
             group: root
-            mode: 0644
+            mode: '0644'
 
       - name: "1.5.3 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
         ansible.builtin.package:
             name: apport
             state: absent
+            purge: "{{ ubtu22cis_purge_apt }}"
         when:
             - "'apport' in ansible_facts.packages"
   when:
@@ -71,6 +78,7 @@
             name: fs.suid_dumpable
             value: '0'
             state: present
+            sysctl_file: "{{ ubtu22cis_sysctl_kernel_conf }}"
             reload: true
             sysctl_set: true
             ignoreerrors: true

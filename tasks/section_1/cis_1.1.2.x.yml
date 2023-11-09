@@ -32,18 +32,17 @@
       dest: /etc/systemd/system/tmp.mount
       owner: root
       group: root
-      mode: 0644
+      mode: '0644'
   notify: Remount tmp
   with_items:
-      - "{{ ansible_mounts }}"
+      - "{{ ansible_facts.mounts }}"
   loop_control:
       label: "{{ item.device }}"
   when:
       - "'/tmp' in mount_names"
       - item.mount == "/tmp"
       - tmp_mnt_type == 'tmp_systemd'
-      - ubtu22cis_rule_1_1_2_1 or
-        ubtu22cis_rule_1_1_2_2 or
+      - ubtu22cis_rule_1_1_2_2 or
         ubtu22cis_rule_1_1_2_3 or
         ubtu22cis_rule_1_1_2_4
   tags:
@@ -68,7 +67,7 @@
       opts: defaults,{% if ubtu22cis_rule_1_1_2_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3 %}noexec,{% endif %}{% if ubtu22cis_rule_1_1_2_4 %}nosuid{% endif %}
   notify: remount tmp
   with_items:
-      - "{{ ansible_mounts }}"
+      - "{{ ansible_facts.mounts }}"
   loop_control:
       label: "{{ item.device }}"
   when:

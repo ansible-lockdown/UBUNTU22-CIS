@@ -84,8 +84,8 @@
             rule: deny
             direction: in
             from_ip: '::1'
-        notify: Reload ufw
         when: ubtu22cis_ipv6_required
+        notify: Reload ufw
   when:
       - ubtu22cis_rule_3_5_1_4
   tags:

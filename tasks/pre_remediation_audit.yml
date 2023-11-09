@@ -16,19 +16,11 @@
 
 - name: Pre Audit Setup | If using git for content set up
   block:
-      - name: Pre Audit Setup | Install git (rh8 python3)
+      - name: Pre Audit Setup | Install git
         ansible.builtin.package:
             name: git
             state: present
-        when: ansible_distribution_major_version == '8'
-
-      - name: Pre Audit Setup | Install git (rh7 python2)
-        ansible.builtin.package:
-            name: git
-            state: present
-        vars:
-            ansible_python_interpreter: "{{ python2_bin }}"
-        when: ansible_distribution_major_version == '7'
+        when: "'git' not in ansible_facts.packages"
 
       - name: Pre Audit Setup | retrieve audit content files from git
         ansible.builtin.git:
@@ -78,22 +70,22 @@
   ansible.builtin.template:
       src: ansible_vars_goss.yml.j2
       dest: "{{ audit_vars_path }}"
-      mode: 0600
+      mode: '0600'
   when:
       - run_audit
   tags:
       - goss_template
 
-- name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
-  changed_when: true
-  environment:
-      AUDIT_BIN: "{{ audit_bin }}"
-      AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
-      AUDIT_FILE: "goss.yml"
-
 - name: Pre Audit | Capture audit data if json format
   block:
+      - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
+        ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }}"
+        changed_when: true
+        environment:
+            AUDIT_BIN: "{{ audit_bin }}"
+            AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+            AUDIT_FILE: "goss.yml"
+
       - name: "capture data {{ pre_audit_outfile }}"
         ansible.builtin.shell: "cat {{ pre_audit_outfile }}"
         register: pre_audit
@@ -109,6 +101,15 @@
 
 - name: Pre Audit | Capture audit data if documentation format
   block:
+
+      - name: "Pre Audit | Run pre_remediation {{ benchmark }} audit"
+        ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g {{ group_names }} -f documentation"
+        changed_when: true
+        environment:
+            AUDIT_BIN: "{{ audit_bin }}"
+            AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+            AUDIT_FILE: "goss.yml"
+
       - name: "Pre Audit | capture data {{ pre_audit_outfile }} | documentation format"
         ansible.builtin.shell: "tail -2 {{ pre_audit_outfile }}"
         register: pre_audit

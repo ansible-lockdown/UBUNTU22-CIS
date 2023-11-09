@@ -7,12 +7,13 @@
             paths: "/var/log"
             file_type: file
             recurse: true
+            hidden: true
         register: logfiles
 
       - name: "4.2.3 | PATCH | Ensure permissions on all logfiles are configured | change permissions"
         ansible.builtin.file:
             path: "{{ item.path }}"
-            mode: 0640
+            mode: '0640'
         loop: "{{ logfiles.files }}"
         loop_control:
             label: "{{ item.path }}"

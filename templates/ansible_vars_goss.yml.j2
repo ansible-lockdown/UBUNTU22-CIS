@@ -383,11 +383,18 @@ ubtu22cis_bootloader_password: {{ ubtu22cis_bootloader_password_hash }}
 
 # 1.6 - Only have apparmor enforcing
 ubtu22cis_apparmor_disable: {{ ubtu22cis_apparmor_disable }}
-ubtu22cis_apparmor_enforce_only: {{ ubtu22cis_apparmor_enforce_only }}
+ubtu22cis_apparmor_mode: {{ ubtu22cis_apparmor_mode }}
+ubtu22cis_apparmor_enforce_only: {{ubtu22cis_apparmor_enforce_only}}
 
 # Warning Banner Content (issue, issue.net, motd)
-ubtu22_warning_banner: {{ ubtu22cis_warning_banner }}
+ubtu22_warning_banner: |
+  {{ ubtu22cis_warning_banner|indent(2, false)  }}
 # End Banner
+
+# If configured to stop dynamic loading of files in /etc/update-motd.d
+# optional in remediation
+ubtu22cis_disable_dynamic_motd: {{ ubtu22cis_disable_dynamic_motd }}
+
 
 # Section 2
 # Time sync - can be timesync or chr0ny or ntp
@@ -499,7 +506,10 @@ ubtu22cis_sshd_access:
   - DenyUser
   - DenyGroup
 
-ubtu22cis_ssh_strong_ciphers: Ciphers chacha20-poly1305@openssh.com,aes256-gcm@openssh.com,aes128-gcm@openssh.com,aes256-ctr,aes192-ctr,aes128-ctr
+ubtu22cis_ssh_strong_ciphers:
+{% for cipher in ubtu22cis_sshd.ciphers %}
+  - {{ cipher }}
+{% endfor %}
 ubtu22cis_ssh_weak_ciphers:
   - 3des-cbc
   - aes128-cbc
@@ -512,7 +522,10 @@ ubtu22cis_ssh_weak_ciphers:
   - cast128-cbc
   - rijndael-cbc@lysator.liu.se
 
-ubtu22cis_ssh_strong_macs: MACs hmac-sha2-512-etm@openssh.com,hmac-sha2-256-etm@openssh.com,hmac-sha2-512,hmac-sha2-256
+ubtu22cis_ssh_strong_macs:
+{% for mac in ubtu22cis_sshd.macs %}
+  - {{ mac }}
+{% endfor %}
 ubtu22cis_ssh_weak_macs:
   - hmac-md5
   - hmac-md5-96
@@ -529,7 +542,10 @@ ubtu22cis_ssh_weak_macs:
   - umac-64-etm@openssh.com
   - umac-128-etm@openssh.com
 
-ubtu22cis_ssh_strong_kex: KexAlgorithms curve25519-sha256,curve25519-sha256@libssh.org,diffie-hellman-group14-sha256,diffie-hellman-group16-sha512,diffie-hellman-group18-sha512,ecdh-sha2-nistp521,ecdh-sha2-nistp384,ecdh-sha2-nistp256,diffie-hellman-group-exchange-sha256
+ubtu22cis_ssh_strong_kex:
+{% for kex in ubtu22cis_sshd.kex_algorithms %}
+  - {{ kex }}
+{% endfor %}
 ubtu22cis_ssh_weak_kex:
   - diffie-hellman-group1-sha1
   - diffie-hellman-group14-sha1
