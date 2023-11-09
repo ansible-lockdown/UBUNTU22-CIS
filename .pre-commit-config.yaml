@@ -34,7 +34,6 @@ repos:
   hooks:
   - id: detect-secrets
     args: [ '--baseline', '.config/.secrets.baseline' ]
-    exclude: .config/.gitleaks-report.json
 
 - repo: https://github.com/gitleaks/gitleaks
   rev: v8.18.0
