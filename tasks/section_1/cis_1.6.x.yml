@@ -130,6 +130,7 @@
         changed_when: false
         when:
             - ubtu22cis_apparmor_mode == "enforce"
+
       - name: "1.6.1.3 | AUDIT | Ensure all AppArmor Profiles are in enforce or complain | Set ubtu22cis_apparmor_enforce_only false for GOSS"
         ansible.builtin.set_fact:
             ubtu22cis_apparmor_enforce_only: false
