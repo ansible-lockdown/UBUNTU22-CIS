@@ -60,6 +60,18 @@ thanks to @lozzolloz
 - #153
 - #154
 
+thanks to @brisky
+
+- #158
+
+thanks to Jeroen0494
+
+- #161
+
+thanks to @r0bc94
+
+- #164
+
 ### v1.0.6
 
 collections links updates since galaxy-ng changes and older ansible versions not supported

@@ -80,7 +80,7 @@
             regexp: '^AllowUsers|^#AllowUsers'
             line: 'AllowUsers {{ ubtu22cis_sshd.allow_users }}'
         notify: restart sshd
-        when: "ubtu22cis_sshd['allow_users']|default('') != ''"
+        when: "ubtu22cis_sshd['allow_users']| default('') | length > 0 "
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add allowed groups"
         ansible.builtin.lineinfile:
@@ -88,7 +88,7 @@
             regexp: '^AllowGroups|^#AllowGroups'
             line: 'AllowGroups {{ ubtu22cis_sshd.allow_groups }}'
         notify: restart sshd
-        when: "ubtu22cis_sshd['allow_groups']|default('') != ''"
+        when: "ubtu22cis_sshd['allow_groups']| default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add deny users"
         ansible.builtin.lineinfile:
@@ -96,7 +96,7 @@
             regexp: '^DenyUsers|^#DenyUsers'
             line: 'DenyUsers {{ ubtu22cis_sshd.deny_users }} '
         notify: restart sshd
-        when: "ubtu22cis_sshd['deny_users']| length > 0"
+        when: "ubtu22cis_sshd['deny_users']| default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add deny groups"
         ansible.builtin.lineinfile:
@@ -104,7 +104,7 @@
             regexp: '^DenyGroups|^#DenyGroups'
             line: 'DenyGroups {{ ubtu22cis_sshd.deny_groups }}'
         notify: restart sshd
-        when: "ubtu22cis_sshd['deny_groups']| length > 0"
+        when: "ubtu22cis_sshd['deny_groups']| default('') | length > 0"
   when:
       - ubtu22cis_rule_5_2_4
   tags:

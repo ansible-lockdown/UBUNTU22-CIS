@@ -893,7 +893,7 @@ ubtu22cis_sshd:
     # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
     # For more info, see https://linux.die.net/man/5/sshd_config
     allow_users: ""
-    # (String) This variable, if spcieifed, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
+    # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
     # for users whose primary group or supplementary group list matches one of the patterns. This is done
     # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
     # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
