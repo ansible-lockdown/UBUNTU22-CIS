@@ -125,6 +125,7 @@
               env:
                 ANSIBLE_HOST_KEY_CHECKING: "false"
                 ANSIBLE_DEPRECATION_WARNINGS: "false"
+                ANSIBLE_INJECT_FACT_VARS: "false"
 
           # Remove test system - User secrets to keep if necessary
 
