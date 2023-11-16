@@ -855,6 +855,11 @@ ubtu22cis_sshd_default_kex_algorithms:
         - ecdh-sha2-nistp384
         - ecdh-sha2-nistp256
         - diffie-hellman-group-exchange-sha256
+ubtu22cis_sshd_default_max_auth_tries: 4
+ubtu22cis_sshd_default_max_sessions: 8
+ubtu22cis_sshd_default_login_grace_time: 60
+ubtu22cis_sshd_default_client_alive_interval: 300
+ubtu22cis_sshd_default_client_alive_count_max: 3
 
 ubtu22cis_sshd:
     # This variable is used to control the verbosity of the logging produced by the SSH server.
@@ -868,7 +873,7 @@ ubtu22cis_sshd:
     log_level: "{{ubtu22cis_sshd_default_log_level}}"
     # This variable specifies the maximum number of authentication attempts that are
     # allowed for a single SSH session.
-    max_auth_tries: 4
+    max_auth_tries: "{{ubtu22cis_sshd_default_max_auth_tries}}"
     # This variable specifies the encryption algorithms that can be used for securing
     # data transmission.
     ciphers: "{{ubtu22cis_sshd_default_ciphers}}"
@@ -881,16 +886,16 @@ ubtu22cis_sshd:
     # This variable sets the time interval in seconds between sending "keep-alive"
     # messages from the server to the client. These types of messages are intended to
     # keep the connection alive and prevent it being terminated due to inactivity.
-    client_alive_interval: 300
+    client_alive_interval: "{{ubtu22cis_sshd_default_client_alive_interval}}"
     # This variable sets the maximum number of unresponsive "keep-alive" messages
     # that can be sent from the server to the client before the connection is considered
     # inactive and thus, closed.
-    client_alive_count_max: 3
+    client_alive_count_max: "{{ubtu22cis_sshd_default_client_alive_count_max}}"
     # This variable specifies the amount of seconds allowed for successful authentication to
     # the SSH server.
-    login_grace_time: 60
+    login_grace_time: "{{ubtu22cis_sshd_default_login_grace_time}}"
     # This variables is used to set the maximum number of open sessions per connection.
-    max_sessions: 8
+    max_sessions: "{{ubtu22cis_sshd_default_max_sessions}}"
     # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
     # access for users whose user name matches one of the patterns. This is done
     # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
