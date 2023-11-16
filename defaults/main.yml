@@ -832,38 +832,20 @@ ubtu22cis_rsyslog_ansible_managed: true
 ##
 
 ## Controls 5.2.4/5/13/14/15/18/20/21/22 -- various sshd settings
-ubtu22cis_sshd:
-    # This variable is used to control the verbosity of the logging produced by the SSH server.
-    # The options for setting it are as follows:
-    # - `QUIET`: Minimal logging;
-    # - `FATAL`: logs only fatal errors;
-    # - `ERROR`: logs error messages;
-    # - `INFO`: logs informational messages in addition to errors;
-    # - `VERBOSE`: logs a higher level of detail, including login attempts and key exchanges;
-    # - `DEBUG`: generates very detailed debugging information including sensitive information.
-    log_level: "INFO"
-    # This variable specifies the maximum number of authentication attempts that are
-    # allowed for a single SSH session.
-    max_auth_tries: 4
-    # This variable specifies the encryption algorithms that can be used for securing
-    # data transmission.
-    ciphers:
+ubtu22cis_sshd_default_log_level: "INFO"
+ubtu22cis_sshd_default_ciphers: 
         - chacha20-poly1305@openssh.com
         - aes256-gcm@openssh.com
         - aes128-gcm@openssh.com
         - aes256-ctr
         - aes192-ctr
         - aes128-ctr
-    # This variable specifies a list of message authentication code algorithms (MACs) that are allowed for verifying
-    # the integrity of data exchanged.
-    macs:
+ubtu22cis_sshd_default_macs:
         - hmac-sha2-512-etm@openssh.com
         - hmac-sha2-256-etm@openssh.com
         - hmac-sha2-512
         - hmac-sha2-256
-    # This variable is used to state the key exchange algorithms used to establish secure encryption
-    # keys during the initial connection setup.
-    kex_algorithms:
+ubtu22cis_sshd_default_kex_algorithms: 
         - curve25519-sha256
         - curve25519-sha256@libssh.org
         - diffie-hellman-group14-sha256
@@ -873,6 +855,29 @@ ubtu22cis_sshd:
         - ecdh-sha2-nistp384
         - ecdh-sha2-nistp256
         - diffie-hellman-group-exchange-sha256
+
+ubtu22cis_sshd:
+    # This variable is used to control the verbosity of the logging produced by the SSH server.
+    # The options for setting it are as follows:
+    # - `QUIET`: Minimal logging;
+    # - `FATAL`: logs only fatal errors;
+    # - `ERROR`: logs error messages;
+    # - `INFO`: logs informational messages in addition to errors;
+    # - `VERBOSE`: logs a higher level of detail, including login attempts and key exchanges;
+    # - `DEBUG`: generates very detailed debugging information including sensitive information.
+    log_level: "{{ubtu22cis_sshd_default_log_level}}"
+    # This variable specifies the maximum number of authentication attempts that are
+    # allowed for a single SSH session.
+    max_auth_tries: 4
+    # This variable specifies the encryption algorithms that can be used for securing
+    # data transmission.
+    ciphers: "{{ubtu22cis_sshd_default_ciphers}}"
+    # This variable specifies a list of message authentication code algorithms (MACs) that are allowed for verifying
+    # the integrity of data exchanged.
+    macs: "{{ubtu22cis_sshd_default_macs}}"
+    # This variable is used to state the key exchange algorithms used to establish secure encryption
+    # keys during the initial connection setup.
+    kex_algorithms: "{{ubtu22cis_sshd_default_kex_algorithms}}"
     # This variable sets the time interval in seconds between sending "keep-alive"
     # messages from the server to the client. These types of messages are intended to
     # keep the connection alive and prevent it being terminated due to inactivity.
