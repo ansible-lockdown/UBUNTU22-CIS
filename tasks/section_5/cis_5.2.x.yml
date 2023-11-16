@@ -119,7 +119,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^LogLevel|^#LogLevel'
-      line: 'LogLevel {{ ubtu22cis_sshd.log_level }}'
+      line: 'LogLevel {{ ubtu22cis_sshd.log_level|default("INFO") }}'
       insertafter: '^# Logging'
   notify: restart sshd
   when:
