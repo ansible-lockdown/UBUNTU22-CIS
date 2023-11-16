@@ -335,7 +335,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MaxAuthTries|^#MaxAuthTries'
-      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries }}'
+      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
       insertafter: '^# Authentication'
   notify: restart sshd
   when:
@@ -368,7 +368,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MaxSessions|^#MaxSessions'
-      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions }}'
+      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
       insertafter: '^# Authentication'
   notify: restart sshd
   when:
@@ -385,7 +385,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^LoginGraceTime|^#LoginGraceTime'
-      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time }}'
+      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
       insertafter: '^# Authentication'
   notify: restart sshd
   when:
@@ -404,8 +404,8 @@
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
   with_items:
-      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval }}' }
-      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max }}' }
+      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
+      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_22
