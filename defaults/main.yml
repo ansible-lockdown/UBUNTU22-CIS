@@ -833,7 +833,7 @@ ubtu22cis_rsyslog_ansible_managed: true
 
 ## Controls 5.2.4/5/13/14/15/18/20/21/22 -- various sshd settings
 ubtu22cis_sshd_default_log_level: "INFO"
-ubtu22cis_sshd_default_ciphers: 
+ubtu22cis_sshd_default_ciphers:
         - chacha20-poly1305@openssh.com
         - aes256-gcm@openssh.com
         - aes128-gcm@openssh.com
@@ -845,7 +845,7 @@ ubtu22cis_sshd_default_macs:
         - hmac-sha2-256-etm@openssh.com
         - hmac-sha2-512
         - hmac-sha2-256
-ubtu22cis_sshd_default_kex_algorithms: 
+ubtu22cis_sshd_default_kex_algorithms:
         - curve25519-sha256
         - curve25519-sha256@libssh.org
         - diffie-hellman-group14-sha256
