@@ -1,17 +1,5 @@
 ---
 
-- name: Gather distribution info
-  # we need:
-  # - hardware for ansible_facts.mounts
-  # - platform for ansible_architecture (ansible internal)
-  # - virtual for ansible_facts.virtualization_type
-  ansible.builtin.setup:
-      gather_subset: distribution,hardware,platform,virtual,!all,!min
-  when:
-      - ansible_facts.distribution is not defined
-  tags:
-      - always
-
 - name: Check OS version and family
   ansible.builtin.fail:
       msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
