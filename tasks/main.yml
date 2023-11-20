@@ -131,11 +131,20 @@
   tags:
       - always
 
-- name: Run pre-remediation audit
-  ansible.builtin.import_tasks:
-      file: pre_remediation_audit.yml
+- name: Include audit specific variables
+  ansible.builtin.include_vars: audit.yml
   when:
+      - run_audit or audit_only
+      - setup_audit
+  tags:
+      - setup_audit
       - run_audit
+
+- name: Include pre-remediation audit tasks
+  ansible.builtin.import_tasks: pre_remediation_audit.yml
+  when:
+      - run_audit or audit_only
+      - setup_audit
   tags:
       - run_audit
 
