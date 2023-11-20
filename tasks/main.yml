@@ -1,5 +1,9 @@
 ---
 
+- name: debug ansible_machine
+  ansible.builtin.debug:
+      var: ansible_machine
+
 - name: Check OS version and family
   ansible.builtin.fail:
       msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
