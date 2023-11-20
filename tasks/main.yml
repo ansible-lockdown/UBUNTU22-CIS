@@ -2,7 +2,7 @@
 
 - name: debug ansible_machine
   ansible.builtin.debug:
-      var: ansible_machine
+      var: ansible_facts.machine
 
 - name: Check OS version and family
   ansible.builtin.fail:
