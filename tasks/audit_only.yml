@@ -6,7 +6,7 @@
       path: "{{ audit_capture_files_dir }}/{{ inventory_hostname }}"
       recurse: true
       state: directory
-  when: capture_audit_files
+  when: fetch_audit_files
   delegate_to: localhost
   become: false
 
@@ -16,7 +16,7 @@
       flat: true
       mode: '0644'
       src: "{{ pre_audit_outfile }}"
-  when: capture_audit_files
+  when: fetch_audit_files
 
 - name: Audit_only | Show Audit Summary
   when:

@@ -66,7 +66,7 @@ run_audit: false
 audit_only: false
 # As part of audit_only
 # This will enable files to be copied back to control node
-capture_audit_files: false
+fetch_audit_files: false
 # Path to copy the files to will create dir structure
 audit_capture_files_dir: /some/location to copy to on control node
 
