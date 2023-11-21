@@ -2,6 +2,13 @@
 
 ## Based on CIS V1.0.0
 
+### 1.0.8
+
+- updated goss binary to 0.4.4
+- moved majority of audit variables to vars/audit.yml
+- new function to enable audit_only using remediation
+- removed some dupes in audit config
+
 ### 1.0.7
 
 Huge thanks to the discord community
