@@ -75,9 +75,20 @@ audit_capture_files_dir: /some/location to copy to on control node
 # you will need to access to either github or the file already dowmloaded
 get_audit_binary_method: download
 
+## if get_audit_binary_method - copy the following needs to be updated for your environment
+## it is expected that it will be copied from somewhere accessible to the control node
+## e.g copy from ansible control node to remote host
+audit_bin_copy_location: /some/accessible/path
+
 # how to get audit files onto host options
 # options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
 audit_content: git
+
+# archive or copy:
+audit_conf_copy: "some path to copy from"
+
+# get_url:
+audit_files_url: "some url maybe s3?"
 
 # Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
 audit_run_heavy_tests: true
