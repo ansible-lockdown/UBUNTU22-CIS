@@ -12,11 +12,11 @@
         notify: Grub update
 
       - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Check grub cmdline linux"
-        ansible.builtin.shell: 'cat /etc/default/grub | grep ^GRUB_CMDLINE_LINUX'
+        ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
         changed_when: false
         failed_when: false
         check_mode: false
-        register: ubtu22cis_3_1_1_GRUB_CMDLINE_LINUX
+        register: ubtu22cis_3_1_1_cmdline_settings
         when: ubtu22cis_ipv6_disable == 'grub'
 
       - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Insert ipv6.disable if it doesn't exist"
@@ -26,8 +26,8 @@
             line: '\1 ipv6.disable=1"'
             backrefs: true
         when:
-         - ipv6disable_replaced is not changed
-         - "'ipv6.disable' not in ubtu22cis_3_1_1_GRUB_CMDLINE_LINUX.stdout"
+            - ipv6disable_replaced is not changed
+            - "'ipv6.disable' not in ubtu22cis_3_1_1_cmdline_settings.stdout"
         notify: Grub update
 
       - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Remove net.ipv6.conf.all.disable_ipv6"
