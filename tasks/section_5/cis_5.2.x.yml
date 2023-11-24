@@ -79,6 +79,7 @@
             path: /etc/ssh/sshd_config
             regexp: '^AllowUsers|^#AllowUsers'
             line: 'AllowUsers {{ ubtu22cis_sshd.allow_users }}'
+            validate: 'sshd -t -f %s'
         notify: restart sshd
         when: "ubtu22cis_sshd['allow_users']| default('') | length > 0 "
 
@@ -87,6 +88,7 @@
             path: /etc/ssh/sshd_config
             regexp: '^AllowGroups|^#AllowGroups'
             line: 'AllowGroups {{ ubtu22cis_sshd.allow_groups }}'
+            validate: 'sshd -t -f %s'
         notify: restart sshd
         when: "ubtu22cis_sshd['allow_groups']| default('') | length > 0"
 
@@ -95,6 +97,7 @@
             path: /etc/ssh/sshd_config
             regexp: '^DenyUsers|^#DenyUsers'
             line: 'DenyUsers {{ ubtu22cis_sshd.deny_users }} '
+            validate: 'sshd -t -f %s'
         notify: restart sshd
         when: "ubtu22cis_sshd['deny_users']| default('') | length > 0"
 
@@ -103,6 +106,7 @@
             path: /etc/ssh/sshd_config
             regexp: '^DenyGroups|^#DenyGroups'
             line: 'DenyGroups {{ ubtu22cis_sshd.deny_groups }}'
+            validate: 'sshd -t -f %s'
         notify: restart sshd
         when: "ubtu22cis_sshd['deny_groups']| default('') | length > 0"
   when:
@@ -121,6 +125,7 @@
       regexp: '^LogLevel|^#LogLevel'
       line: 'LogLevel {{ ubtu22cis_sshd.log_level }}'
       insertafter: '^# Logging'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_5
@@ -138,6 +143,7 @@
       regexp: '^UsePAM|^#UsePAM'
       line: 'UsePAM yes'
       insertafter: '^# and ChallengeResponseAuthentication'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_6
@@ -155,6 +161,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^PermitRootLogin|^#PermitRootLogin'
       line: 'PermitRootLogin no'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_7
@@ -171,6 +178,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^HostbasedAuthentication|^#HostbasedAuthentication'
       line: 'HostbasedAuthentication no'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_8
@@ -188,6 +196,7 @@
       regexp: '^PermitEmptyPasswords|^#PermitEmptyPasswords'
       line: 'PermitEmptyPasswords no'
       insertafter: '# To disable tunneled clear text passwords'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_9
@@ -204,6 +213,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^PermitUserEnvironment|^#PermitUserEnvironment'
       line: 'PermitUserEnvironment no'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_10
@@ -220,6 +230,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^IgnoreRhosts|^#IgnoreRhosts'
       line: 'IgnoreRhosts yes'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_11
@@ -236,6 +247,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^X11Forwarding|^#X11Forwarding'
       line: 'X11Forwarding no'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_12
@@ -253,6 +265,7 @@
       regexp: '^Ciphers|^#Ciphers'
       line: "Ciphers {{ ubtu22cis_sshd.ciphers | join(',') }}"
       insertafter: '^# Ciphers and keying'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_13
@@ -270,6 +283,7 @@
       regexp: '^MACs|^#MACs'
       line: "MACs {{ ubtu22cis_sshd.macs | join(',') }}"
       insertafter: '^# Ciphers and keying'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_14
@@ -287,6 +301,7 @@
       regexp: '^KexAlgorithms|^#KexAlgorithms'
       line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | join(',') }}"
       insertafter: '^# Ciphers and keying'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_15
@@ -303,6 +318,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^AllowTcpForwarding|^#AllowTcpForwarding'
       line: 'AllowTcpForwarding no'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_16
@@ -320,6 +336,7 @@
       regexp: '^Banner|^#Banner'
       line: Banner /etc/issue.net
       insertafter: '^# no default banner path'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_17
@@ -337,6 +354,7 @@
       regexp: '^MaxAuthTries|^#MaxAuthTries'
       line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries }}'
       insertafter: '^# Authentication'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_18
@@ -353,6 +371,7 @@
       path: /etc/ssh/sshd_config
       regexp: '^MaxStartups|^#MaxStartups'
       line: 'MaxStartups 10:30:60'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_19
@@ -370,6 +389,7 @@
       regexp: '^MaxSessions|^#MaxSessions'
       line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions }}'
       insertafter: '^# Authentication'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_20
@@ -387,6 +407,7 @@
       regexp: '^LoginGraceTime|^#LoginGraceTime'
       line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time }}'
       insertafter: '^# Authentication'
+      validate: 'sshd -t -f %s'
   notify: restart sshd
   when:
       - ubtu22cis_rule_5_2_21
@@ -403,6 +424,7 @@
       path: /etc/ssh/sshd_config
       regexp: "{{ item.regexp }}"
       line: "{{ item.line }}"
+      validate: 'sshd -t -f %s'
   with_items:
       - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval }}' }
       - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max }}' }
