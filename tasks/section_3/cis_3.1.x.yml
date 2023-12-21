@@ -26,6 +26,7 @@
             line: '\1 ipv6.disable=1"'
             backrefs: true
         when:
+            - ubtu22cis_ipv6_disable == 'grub'
             - ipv6disable_replaced is not changed
             - "'ipv6.disable' not in ubtu22cis_3_1_1_cmdline_settings.stdout"
         notify: Grub update
