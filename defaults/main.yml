@@ -938,6 +938,26 @@ ubtu22cis_sudo_timestamp_timeout: 15
 # CIS requires that such a group be created (named according to site policy) and be kept empty.
 ubtu22cis_sugroup: nosugroup
 
+## Control 5.4.1
+# This variable allows us to use either
+#
+
+ubtu22cis_pwquality_minclass: false
+ubtu22cis_pwquality_minclass_value: '4'
+ubtu22cis_pwquality:
+    - key: '#minclass'
+      value: "{{ ubtu22cis_pwquality_minclass_value }}"
+    - key: 'minlen'
+      value: '14'
+    - key: 'dcredit'
+      value: '-1'
+    - key: 'ucredit'
+      value: '-1'
+    - key: 'ocredit'
+      value: '-1'
+    - key: 'lcredit'
+      value: '-1'
+
 ## Control 5.4.3
 # This variable represents the number of password change cycles, after which
 # a user can re-use a password.
