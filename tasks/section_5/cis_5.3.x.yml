@@ -114,7 +114,6 @@
 
 - name: "5.3.7 | PATCH | Ensure access to the su command is restricted"
   block:
-
       - name: "5.3.7 | PATCH | Ensure access to the su command is restricted | Ensure sugroup exists"
         ansible.builtin.group:
             name: "{{ ubtu22cis_sugroup }}"
