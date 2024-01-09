@@ -2,6 +2,14 @@
 
 ## Based on CIS V1.0.0
 
+### 1.0.9
+
+- #144 usb-blacklisting - thanks to @paulquevedojdrf
+- #152 and #170 Added ssh validate to tasks - thanks to @dderemiah and @twadelij
+- #180 and #181 password reuse 5.3.4 - thanks to @DianaMariaDDM
+- #182 pwquality enhancement New variable to allow extended or minclass (default)options - thanks to @ma3s7ro
+- #184  Initial container config feedback required - thansk to @ipruteanu-sie
+
 ### 1.0.8
 
 - updated goss binary to 0.4.4
