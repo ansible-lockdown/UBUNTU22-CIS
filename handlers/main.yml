@@ -1,5 +1,8 @@
 ---
 
+- name: Update_Initramfs
+  ansible.builtin.shell: update-initramfs -u
+
 - name: Remount tmp
   ansible.posix.mount:
       path: /tmp

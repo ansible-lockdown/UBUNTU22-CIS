@@ -22,6 +22,7 @@
             name: cramfs
             state: absent
         when: ansible_connection != 'docker'
+  notify: Update_Initramfs
   when:
       - ubtu22cis_rule_1_1_1_1
   tags:
@@ -54,6 +55,7 @@
             name: squashfs
             state: absent
         when: ansible_connection != 'docker'
+  notify: Update_Initramfs
   when:
       - ubtu22cis_rule_1_1_1_2
       - snap_pkg_mgr.stdout == "0"
@@ -88,6 +90,7 @@
             name: udf
             state: absent
         when: ansible_connection != 'docker'
+  notify: Update_Initramfs
   when:
       - ubtu22cis_rule_1_1_1_3
   tags:

@@ -20,6 +20,7 @@
             name: usb-storage
             state: absent
         when: ansible_connection != 'docker'
+  notify: Update_Initramfs
   when:
       - ubtu22cis_rule_1_1_10
       - not ubtu22cis_allow_usb_storage
