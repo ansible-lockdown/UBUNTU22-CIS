@@ -2,6 +2,11 @@
 
 min_ansible_version: 2.10.1
 
+# The role discovers dynamically (in tasks/main.yml) whether it
+# is executed on a container image and sets the variable
+# system_is_container the true. Otherwise, the default value
+# 'false' is left unchanged.
+system_is_container: false
 # Used to control warning summary
 warn_control_list: ""
 warn_count: 0
