@@ -17,9 +17,9 @@
 - name: "5.3.2 | PATCH | Ensure sudo commands use pty"
   ansible.builtin.lineinfile:
       path: /etc/sudoers
-      regexp: '^Defaults        use_'
+      regexp: '^Defaults\s+use_'
       line: 'Defaults        use_pty'
-      insertafter: '^Defaults'
+      insertafter: '^\s*Defaults'
   when:
       - ubtu22cis_rule_5_3_2
   tags:
@@ -33,9 +33,9 @@
 - name: "5.3.3 | PATCH | Ensure sudo log file exists"
   ansible.builtin.lineinfile:
       path: /etc/sudoers
-      regexp: '^Defaults        logfile'
+      regexp: '^Defaults\s+logfile'
       line: 'Defaults        logfile="{{ ubtu22cis_sudo_logfile }}"'
-      insertafter: '^Defaults'
+      insertafter: '^\s*Defaults'
   when:
       - ubtu22cis_rule_5_3_3
   tags:
@@ -89,8 +89,9 @@
       - name: "5.3.6 | PATCH | Ensure sudo authentication timeout is configured correctly | Set value if no results"
         ansible.builtin.lineinfile:
             path: /etc/sudoers
-            regexp: 'Defaults timestamp_timeout='
-            line: "Defaults timestamp_timeout={{ ubtu22cis_sudo_timestamp_timeout }}"
+            regexp: '^\s*Defaults/s+timestamp_timeout='
+            line: "Defaults        timestamp_timeout={{ ubtu22cis_sudo_timestamp_timeout }}"
+            insertafter: '^\s*Defaults'
             validate: '/usr/sbin/visudo -cf %s'
         when: ubtu22cis_5_3_6_timeout_files.stdout | length == 0
 

@@ -10,8 +10,8 @@
             owner: root
             group: root
         loop:
-            - etc/chrony/sources.d/pool.source
-            - etc/chrony/sources.d/server.source
+            - etc/chrony/sources.d/pool.sources
+            - etc/chrony/sources.d/server.sources
         notify: Restart timeservice
 
       - name: "2.1.2.1 | PATCH | Ensure chrony is configured with authorized timeserver | load sources"
