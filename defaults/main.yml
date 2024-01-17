@@ -599,7 +599,7 @@ ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /boot/grub/grub.cfg
 
-## 1.5.x
+## Controls 1.5.x
 # Ability to set file in which the kernel systcl changes are placed
 ubtu22cis_sysctl_kernel_conf: /etc/sysctl.d/98_cis_kernel.conf
 
@@ -750,7 +750,7 @@ ubtu22cis_audit_back_log_limit: 8192
 # This should be set based on your sites policy. CIS does not provide a specific value.
 ubtu22cis_max_log_file_size: 10
 
-## 4.1.3.x - Audit template
+## Controls 4.1.3.x - Audit template
 # This variable is set to true by tasks 4.1.3.1 to 4.1.3.20. As a result, the
 # audit settings are overwritten with the role's template. In order to exclude
 # specific rules, you must set the variable of form `ubtu22cis_rule_4_1_3_x` above
