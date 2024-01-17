@@ -133,7 +133,7 @@
       - auditd
       - always
 
-- name: "PRELIM | 5.3.4 | Find all sudoers files."
+- name: "PRELIM | 5.3.4 | 5.3.5 | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
   changed_when: false
   failed_when: false
