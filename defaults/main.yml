@@ -946,7 +946,7 @@ ubtu22cis_sugroup: nosugroup
 # CIS requires a value of 5 or more.
 ubtu22cis_pamd_pwhistory_remember: 5
 
-# Control 5.4.2
+## Control 5.4.2
 # This can seriously break access to a system
 ## The end state the file /etc/pam.d/common-auth need to be understood
 ## If using external auth providers this will be very different
@@ -957,7 +957,7 @@ ubtu22cis_rule_5_4_2_faillock_config: |
     auth       [default=die] pam_faillock.so authfail
     auth       sufficient pam_faillock.so authsucc
 
-# Control 5.4.4
+## Control 5.4.4
 # ubtu22cis_passwd_hash_algo is the hashing algorithm used
 ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
 # Set pam as well as login defs if PAM is required
