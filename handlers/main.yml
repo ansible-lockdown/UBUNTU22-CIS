@@ -1,9 +1,43 @@
 ---
+- name: Writing the tmp file | tmp_systemd
+  ansible.builtin.template:
+      src: etc/systemd/system/tmp.mount.j2
+      dest: /etc/systemd/system/tmp.mount
+      owner: root
+      group: root
+      mode: '0644'
+  with_items:
+      - "{{ ansible_facts.mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - "'/tmp' in mount_names"
+      - item.mount == "/tmp"
+      - tmp_mnt_type == 'tmp_systemd'
+  listen: Writing and remounting tmp
+
+- name: Writing the tmp file | fstab
+  ansible.posix.mount:
+      path: /tmp
+      src: "{{ item.device }}"
+      state: present
+      fstype: "{{ item.fstype }}"
+      opts: defaults,{{ tmp_partition_mount_options | unique | join(',') }}
+  with_items:
+      - "{{ ansible_facts.mounts }}"
+  loop_control:
+      label: "{{ item.device }}"
+  when:
+      - "'/tmp' in mount_names"
+      - tmp_mnt_type == 'fstab'
+      - item.mount == "/tmp" 
+  listen: Writing and remounting tmp 
 
 - name: Remount tmp
   ansible.posix.mount:
       path: /tmp
       state: remounted
+  listen: Writing and remounting tmp
 
 - name: Remount var
   ansible.posix.mount:
