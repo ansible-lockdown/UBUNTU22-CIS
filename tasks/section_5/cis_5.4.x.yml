@@ -108,7 +108,7 @@
 
 - name: "5.4.3 | PATCH | Ensure password reuse is limited"
   block:
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Add pam_unix or edit it accordingly" 
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Add pam_unix or edit it accordingly"
         community.general.pamd:
             name: common-password
             type: password
@@ -118,7 +118,7 @@
                 yescrypt'
             state: args_present
 
-      - name: "5.4.3 | PATCH | Ensure password reuse is limited| Set remember value after adding pam unix" 
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited| Set remember value after adding pam unix"
         community.general.pamd:
             name: common-password
             type: password
@@ -127,7 +127,7 @@
             new_type: password
             new_module_path: pam_pwhistory.so
             new_control: required
-            module_arguments: 'use_authtok 
+            module_arguments: 'use_authtok
                 remember={{ ubtu22cis_pamd_pwhistory_remember }}'
             state: before
   when:
