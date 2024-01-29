@@ -27,8 +27,8 @@
   ansible.builtin.set_fact:
     tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nodev' ] }}"
   notify: Writing and remounting tmp
-  when: ubtu22cis_rule_1_1_2_2 
-  tags: 
+  when: ubtu22cis_rule_1_1_2_2
+  tags:
       - level1-server
       - level1-workstation
       - automated
@@ -40,8 +40,8 @@
   ansible.builtin.set_fact:
     tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'noexec' ] }}"
   notify: Writing and remounting tmp
-  when: ubtu22cis_rule_1_1_2_3 
-  tags: 
+  when: ubtu22cis_rule_1_1_2_3
+  tags:
       - level1-server
       - level1-workstation
       - automated
@@ -53,8 +53,8 @@
   ansible.builtin.set_fact:
     tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nosuid' ] }}"
   notify: Writing and remounting tmp
-  when: ubtu22cis_rule_1_1_2_4 
-  tags: 
+  when: ubtu22cis_rule_1_1_2_4
+  tags:
       - level1-server
       - level1-workstation
       - automated

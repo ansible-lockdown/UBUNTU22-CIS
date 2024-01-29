@@ -30,8 +30,8 @@
   when:
       - "'/tmp' in mount_names"
       - tmp_mnt_type == 'fstab'
-      - item.mount == "/tmp" 
-  listen: Writing and remounting tmp 
+      - item.mount == "/tmp"
+  listen: Writing and remounting tmp
 
 - name: Remount tmp
   ansible.posix.mount:
