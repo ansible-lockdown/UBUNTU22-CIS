@@ -25,7 +25,7 @@
 
 - name: "1.1.2.2 | PATCH | Ensure nodev option set on /tmp partition"
   ansible.builtin.set_fact:
-    tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nodev' ] }}"
+      tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nodev' ] }}"
   notify: Writing and remounting tmp
   when: ubtu22cis_rule_1_1_2_2
   tags:
@@ -38,7 +38,7 @@
 
 - name: "1.1.2.3 | PATCH | Ensure noexec option set on /tmp partition"
   ansible.builtin.set_fact:
-    tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'noexec' ] }}"
+      tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'noexec' ] }}"
   notify: Writing and remounting tmp
   when: ubtu22cis_rule_1_1_2_3
   tags:
@@ -51,7 +51,7 @@
 
 - name: "1.1.2.4 | PATCH | Ensure nosuid option set on /tmp partition"
   ansible.builtin.set_fact:
-    tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nosuid' ] }}"
+      tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nosuid' ] }}"
   notify: Writing and remounting tmp
   when: ubtu22cis_rule_1_1_2_4
   tags:
