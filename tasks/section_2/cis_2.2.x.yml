@@ -349,6 +349,7 @@
             - ubtu22cis_rsync_server == 'mask'
   when:
       - "'rsync' in ansible_facts.packages"
+      - ubtu22cis_rule_2_2_16
   tags:
       - level1-server
       - level1-workstation
