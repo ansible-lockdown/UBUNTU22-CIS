@@ -25,6 +25,7 @@
             state: present
             reload: true
             ignoreerrors: true
+        when: ubtu22cis_ipv6_disable == 'sysctl'
         with_items:
             - net.ipv6.conf.all.accept_source_route
             - net.ipv6.conf.default.accept_source_route
@@ -66,6 +67,7 @@
             state: present
             reload: true
             ignoreerrors: true
+        when: ubtu22cis_ipv6_disable == 'sysctl'
         with_items:
             - net.ipv6.conf.all.accept_redirects
             - net.ipv6.conf.default.accept_redirects

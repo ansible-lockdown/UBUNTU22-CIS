@@ -115,7 +115,7 @@
       - pam
       - notimplemented
 
-- name: 5.4.3 | PATCH | Ensure password reuse is limited"
+- name: "5.4.3 | PATCH | Ensure password reuse is limited"
   block:
       - name: "5.4.3 | PATCH | Ensure password reuse is limited | Add pam_unix or edit it accordingly"
         community.general.pamd:
