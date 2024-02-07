@@ -225,12 +225,6 @@
   tags:
       - always
 
-- name: "PRELIM | Recapture packages"
-  ansible.builtin.package_facts:
-      manager: auto
-  tags:
-      - always
-
 - name: "Optional | Patch | UFW firewall force to use /etc/sysctl.conf settings"
   ansible.builtin.lineinfile:
       path: /etc/default/ufw
