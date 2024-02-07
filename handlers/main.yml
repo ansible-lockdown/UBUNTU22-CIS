@@ -120,7 +120,8 @@
       msg: "Reboot required for auditd to apply new rules as immutable set"
   notify: change_requires_reboot
   when:
-      - auditd_immutable_check.stdout | length > 0
+      - audit_rules_updated.changed
+      - auditd_immutable_check is defined
 
 - name: Restart auditd
   ansible.builtin.shell: service auditd restart
