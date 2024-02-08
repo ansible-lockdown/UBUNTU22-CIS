@@ -37,6 +37,8 @@
   ansible.posix.mount:
       path: /tmp
       state: remounted
+  when:
+      - "'/tmp' in mount_names"
   listen: Writing and remounting tmp
 
 - name: Remount var
