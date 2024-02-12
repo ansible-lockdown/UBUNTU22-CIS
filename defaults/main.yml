@@ -40,7 +40,7 @@ ubtu22cis_ask_passwd_to_boot: false
 # is executed on a container image and sets the variable
 # system_is_container the true. Otherwise, the default value
 # 'false' is left unchanged.
-system_is_container: false
+container_vars_file: is_container.yml
 
 ## Root user used
 # Root by default is not used unless setup by user
@@ -939,6 +939,26 @@ ubtu22cis_sudo_timestamp_timeout: 15
 # one to specify a user group that is allowed to use the "su" command.
 # CIS requires that such a group be created (named according to site policy) and be kept empty.
 ubtu22cis_sugroup: nosugroup
+
+## Control 5.4.1
+# This variable allows us to use either
+#
+
+ubtu22cis_pwquality_minclass: true
+ubtu22cis_pwquality_minclass_value: '4'
+ubtu22cis_pwquality:
+    - key: '#minclass'
+      value: "{{ ubtu22cis_pwquality_minclass_value }}"
+    - key: 'minlen'
+      value: '14'
+    - key: 'dcredit'
+      value: '-1'
+    - key: 'ucredit'
+      value: '-1'
+    - key: 'ocredit'
+      value: '-1'
+    - key: 'lcredit'
+      value: '-1'
 
 ## Control 5.4.3
 # This variable represents the number of password change cycles, after which

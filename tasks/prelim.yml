@@ -133,6 +133,15 @@
       - auditd
       - always
 
+- name: "PRELIM | Check if auditd is immutable before changes"
+  ansible.builtin.shell: auditctl -l | grep -c '-e 2'
+  changed_when: false
+  failed_when: auditd_immutable_check.rc not in [ 0, 1 ]
+  register: auditd_immutable_check
+  when: "'auditd' in ansible_facts.packages"
+  tags:
+      - always
+
 - name: "PRELIM | 5.3.4 | 5.3.5 | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
   changed_when: false
@@ -213,12 +222,6 @@
   changed_when: false
   check_mode: false
   register: ubtu22cis_users
-  tags:
-      - always
-
-- name: "PRELIM | Recapture packages"
-  ansible.builtin.package_facts:
-      manager: auto
   tags:
       - always
 

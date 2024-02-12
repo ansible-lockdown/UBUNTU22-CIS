@@ -208,6 +208,7 @@
         ansible.builtin.reboot:
         when:
             - not skip_reboot
+            - change_requires_reboot
 
       - name: Warning a reboot required but skip option set
         ansible.builtin.debug:
@@ -215,6 +216,7 @@
         changed_when: true
         when:
             - skip_reboot
+            - change_requires_reboot
 
 - name: Run post remediation audit
   ansible.builtin.import_tasks:

@@ -2,6 +2,16 @@
 
 ## Based on CIS V1.0.0
 
+### 1.0.9
+
+- updated audit command to allow multiple groups from inventory
+- #144 usb-blacklisting - thanks to @paulquevedojdrf
+- #152 and #170 Added ssh validate to tasks - thanks to @dderemiah and @twadelij
+- #180 and #181 password reuse 5.3.4 - thanks to @DianaMariaDDM
+- #182 pwquality enhancement New variable to allow extended or minclass (default)options - thanks to @ma3s7ro
+- #184 Initial container config feedback required - thanks to @ipruteanu-sie
+- #204 reboot not idempotent - changed auditd and reboot logic update to 4.1.3.6 discovery - thanks to @bhuddah
+
 ### 1.0.8
 
 - updated goss binary to 0.4.4
