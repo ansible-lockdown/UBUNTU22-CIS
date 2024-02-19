@@ -29,9 +29,15 @@
       - motd
 
 - name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
-  ansible.builtin.template:
-      src: etc/issue.j2
-      dest: /etc/issue
+  block:
+      - name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly | issue"
+        ansible.builtin.template:
+            src: etc/issue.j2
+            dest: /etc/issue
+
+      - name: "1.7.2 | PATCH | Ensure local login warning banner is kept on package upgrade | issue"
+        community.general.dpkg_divert:
+            path: /etc/issue
   when:
       - ubtu22cis_rule_1_7_2
   tags:
@@ -43,9 +49,15 @@
       - banner
 
 - name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
-  ansible.builtin.template:
-      src: etc/issue.net.j2
-      dest: /etc/issue.net
+  block:
+      - name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly | issue.net"
+        ansible.builtin.template:
+            src: etc/issue.net.j2
+            dest: /etc/issue.net
+
+      - name: "1.7.3 | PATCH | Ensure remote login warning banner is kept on package upgrade | issue.net"
+        community.general.dpkg_divert:
+            path: /etc/issue.net
   when:
       - ubtu22cis_rule_1_7_3
   tags:
