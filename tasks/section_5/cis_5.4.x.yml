@@ -16,8 +16,17 @@
       - name: "5.4.1 | PATCH | Ensure password creation requirements are configured | Add minclass"
         ansible.builtin.lineinfile:
             path: /etc/security/pwquality.conf
-            regexp: '^minclass|^# minclass'
-            line: 'minclass = 4'
+            regexp: ^minclass
+            line: "minclass = {{ ubtu22cis_pwquality_minclass_value }}"
+        when: ubtu22cis_pwquality_minclass
+
+      - name: "5.4.1 | PATCH | Ensure password creation requirements are configured | Add extended keys"
+        ansible.builtin.lineinfile:
+            path: /etc/security/pwquality.conf
+            regexp: ^{{ item.key }}
+            line: "{{ item.key }} = {{ item.value }}"
+        loop: "{{ ubtu22cis_pwquality }}"
+        when: not ubtu22cis_pwquality_minclass
 
       - name: "5.4.1 | AUDIT | Ensure password creation requirements are configured | Confirm pwquality module in common-password"
         ansible.builtin.shell: grep 'password.*requisite.*pam_pwquality.so' /etc/pam.d/common-password
@@ -106,14 +115,30 @@
       - pam
       - notimplemented
 
-- name: 5.4.3 | PATCH | Ensure password reuse is limited"
-  community.general.pamd:
-      name: common-password
-      type: password
-      control: '[success=1 default=ignore]'
-      module_path: pam_unix.so
-      module_arguments: "remember={{ ubtu22cis_pamd_pwhistory_remember }}"
-      state: args_present
+- name: "5.4.3 | PATCH | Ensure password reuse is limited"
+  block:
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited | Add pam_unix or edit it accordingly"
+        community.general.pamd:
+            name: common-password
+            type: password
+            control: '[success=1 default=ignore]'
+            module_path: pam_unix.so
+            module_arguments: 'obscure
+                yescrypt'
+            state: args_present
+
+      - name: "5.4.3 | PATCH | Ensure password reuse is limited| Set remember value after adding pam unix"
+        community.general.pamd:
+            name: common-password
+            type: password
+            control: '[success=1 default=ignore]'
+            module_path: pam_unix.so
+            new_type: password
+            new_module_path: pam_pwhistory.so
+            new_control: required
+            module_arguments: 'use_authtok
+                remember={{ ubtu22cis_pamd_pwhistory_remember }}'
+            state: before
   when:
       - ubtu22cis_rule_5_4_3
   tags:

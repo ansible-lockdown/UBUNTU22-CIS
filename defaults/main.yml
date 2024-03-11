@@ -40,7 +40,7 @@ ubtu22cis_ask_passwd_to_boot: false
 # is executed on a container image and sets the variable
 # system_is_container the true. Otherwise, the default value
 # 'false' is left unchanged.
-system_is_container: false
+container_vars_file: is_container.yml
 
 ## Root user used
 # Root by default is not used unless setup by user
@@ -543,8 +543,10 @@ ubtu22cis_config_aide: true
 ## When Initializing aide this can take longer on some systems
 # changing the values enables user to change to thier own requirements
 ubtu22cis_aide_init:
-    async: 45  # Maximum Time in seconds
-    poll: 0  # Polling Interval in seconds
+    # Maximum Time in seconds
+    async: 45
+    # Polling Interval in seconds
+    poll: 0
 
 ## Control 1.3.2
 # These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
@@ -597,7 +599,7 @@ ubtu22cis_set_boot_pass: false
 
 ubtu22cis_grub_file: /boot/grub/grub.cfg
 
-## 1.5.x
+## Controls 1.5.x
 # Ability to set file in which the kernel systcl changes are placed
 ubtu22cis_sysctl_kernel_conf: /etc/sysctl.d/98_cis_kernel.conf
 
@@ -748,7 +750,7 @@ ubtu22cis_audit_back_log_limit: 8192
 # This should be set based on your sites policy. CIS does not provide a specific value.
 ubtu22cis_max_log_file_size: 10
 
-## 4.1.3.x - Audit template
+## Controls 4.1.3.x - Audit template
 # This variable is set to true by tasks 4.1.3.1 to 4.1.3.20. As a result, the
 # audit settings are overwritten with the role's template. In order to exclude
 # specific rules, you must set the variable of form `ubtu22cis_rule_4_1_3_x` above
@@ -938,13 +940,33 @@ ubtu22cis_sudo_timestamp_timeout: 15
 # CIS requires that such a group be created (named according to site policy) and be kept empty.
 ubtu22cis_sugroup: nosugroup
 
+## Control 5.4.1
+# This variable allows us to use either
+#
+
+ubtu22cis_pwquality_minclass: true
+ubtu22cis_pwquality_minclass_value: '4'
+ubtu22cis_pwquality:
+    - key: '#minclass'
+      value: "{{ ubtu22cis_pwquality_minclass_value }}"
+    - key: 'minlen'
+      value: '14'
+    - key: 'dcredit'
+      value: '-1'
+    - key: 'ucredit'
+      value: '-1'
+    - key: 'ocredit'
+      value: '-1'
+    - key: 'lcredit'
+      value: '-1'
+
 ## Control 5.4.3
 # This variable represents the number of password change cycles, after which
 # a user can re-use a password.
 # CIS requires a value of 5 or more.
 ubtu22cis_pamd_pwhistory_remember: 5
 
-# Control 5.4.2
+## Control 5.4.2
 # This can seriously break access to a system
 ## The end state the file /etc/pam.d/common-auth need to be understood
 ## If using external auth providers this will be very different
@@ -955,7 +977,7 @@ ubtu22cis_rule_5_4_2_faillock_config: |
     auth       [default=die] pam_faillock.so authfail
     auth       sufficient pam_faillock.so authsucc
 
-# Control 5.4.4
+## Control 5.4.4
 # ubtu22cis_passwd_hash_algo is the hashing algorithm used
 ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
 # Set pam as well as login defs if PAM is required

@@ -6,13 +6,13 @@
       dest: /etc/audit/rules.d/99_auditd.rules
       owner: root
       group: root
-      mode: '0600'
+      mode: '0640'
   register: audit_rules_updated
   notify:
       - Auditd rules reload
-      - Auditd_immutable_check
       - Audit_immutable_fact
       - Restart auditd
+      - change_requires_reboot
   when: update_audit_template
 
 - name: POST | Set up auditd user logging exceptions
@@ -25,19 +25,3 @@
   notify: Restart auditd
   when:
       - ubtu22cis_allow_auditd_uid_user_exclusions
-
-# - name: "POST | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable"
-#   block:
-#       - name: "POST | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Get status"
-#         ansible.builtin.shell: grep -c "^-e 2" /etc/audit/rules.d/99_auditd.rules
-#         changed_when: false
-#         failed_when: false
-#         register: ubtu22cis_auditd_immutable_check
-
-#       - name: "POST | AUDITD | Discover if auditd immutable - Set reboot required if auditd immutable | Set reboot required"
-#         ansible.builtin.debug:
-#             msg: "Reboot required for auditd to apply new rules as immutable set"
-#         notify: change_requires_reboot
-#         when: ubtu22cis_auditd_immutable_check.stdout == '1'
-#   when:
-#       - ubtu22cis_audit_rules_update.changed

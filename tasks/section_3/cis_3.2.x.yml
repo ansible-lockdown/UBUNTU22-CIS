@@ -48,6 +48,7 @@
             state: present
             reload: true
             ignoreerrors: true
+        when: ubtu22cis_ipv6_disable == 'sysctl'
         notify:
             - Flush ipv6 route table
 

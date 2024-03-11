@@ -133,7 +133,16 @@
       - auditd
       - always
 
-- name: "PRELIM | 5.3.4 | Find all sudoers files."
+- name: "PRELIM | Check if auditd is immutable before changes"
+  ansible.builtin.shell: auditctl -l | grep -c '-e 2'
+  changed_when: false
+  failed_when: auditd_immutable_check.rc not in [ 0, 1 ]
+  register: auditd_immutable_check
+  when: "'auditd' in ansible_facts.packages"
+  tags:
+      - always
+
+- name: "PRELIM | 5.3.4 | 5.3.5 | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
   changed_when: false
   failed_when: false
@@ -177,6 +186,12 @@
       grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/false") { print $6 }'
   changed_when: false
   register: interactive_users_home
+  when:
+      - ubtu22cis_rule_6_2_11 or
+        ubtu22cis_rule_6_2_13 or
+        ubtu22cis_rule_6_2_14 or
+        ubtu22cis_rule_6_2_15 or
+        ubtu22cis_rule_6_2_16
   tags:
       - always
 
@@ -207,16 +222,6 @@
   changed_when: false
   check_mode: false
   register: ubtu22cis_users
-  when:
-      - ubtu22cis_rule_6_2_14 or
-        ubtu22cis_rule_6_2_15 or
-        ubtu22cis_rule_6_2_16
-  tags:
-      - always
-
-- name: "PRELIM | Recapture packages"
-  ansible.builtin.package_facts:
-      manager: auto
   tags:
       - always
 

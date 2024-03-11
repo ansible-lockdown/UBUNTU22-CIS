@@ -17,7 +17,6 @@
         failed_when: false
         check_mode: false
         register: ubtu22cis_3_1_1_cmdline_settings
-        when: ubtu22cis_ipv6_disable == 'grub'
 
       - name: "3.1.1 | PATCH | Ensure system is checked to determine if IPv6 is enabled | Insert ipv6.disable if it doesn't exist"
         ansible.builtin.lineinfile:
@@ -26,6 +25,7 @@
             line: '\1 ipv6.disable=1"'
             backrefs: true
         when:
+            - ubtu22cis_ipv6_disable == 'grub'
             - ipv6disable_replaced is not changed
             - "'ipv6.disable' not in ubtu22cis_3_1_1_cmdline_settings.stdout"
         notify: Grub update
