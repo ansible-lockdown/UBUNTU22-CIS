@@ -77,7 +77,7 @@
       mode: '0600'
 
 - name: Pre Audit | Run pre_remediation {{ benchmark }} audit
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
+  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
   changed_when: true
   environment:
       AUDIT_BIN: "{{ audit_bin }}"
@@ -88,7 +88,7 @@
   when:
       - audit_format == "json"
   block:
-      - name: capture data {{ pre_audit_outfile }}
+      - name: Pre Audit | Capture data {{ pre_audit_outfile }}
         ansible.builtin.shell: cat {{ pre_audit_outfile }}
         register: pre_audit
         changed_when: false
@@ -103,7 +103,7 @@
   when:
       - audit_format == "documentation"
   block:
-      - name: Pre Audit | capture data {{ pre_audit_outfile }} | documentation format
+      - name: Pre Audit | Capture data {{ pre_audit_outfile }} | documentation format
         ansible.builtin.shell: tail -2 {{ pre_audit_outfile }}
         register: pre_audit
         changed_when: false
