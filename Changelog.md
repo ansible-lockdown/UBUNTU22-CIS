@@ -2,6 +2,11 @@
 
 ## Based on CIS V1.0.0
 
+### 1.1.0
+
+- #216 thanks to @txsastre
+- moved the audit to run prior to any changes taking place on the system (exception of required)
+
 ### 1.0.9
 
 - updated audit command to allow multiple groups from inventory
