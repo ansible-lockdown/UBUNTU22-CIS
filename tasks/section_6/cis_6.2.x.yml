@@ -309,8 +309,8 @@
   failed_when: false
   loop: "{{ ubtu22cis_uid_zero_accounts_except_root.stdout_lines }}"
   when:
-      - ubtu22cis_uid_zero_accounts_except_root.rc
       - ubtu22cis_rule_6_2_10
+      - ubtu22cis_uid_zero_accounts_except_root.rc
   tags:
       - level1-server
       - level1-workstation
