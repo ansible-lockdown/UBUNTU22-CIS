@@ -227,6 +227,8 @@
   changed_when: false
   check_mode: false
   register: ubtu22cis_uid_zero_accounts_except_root
+  when:
+      - ubtu22cis_rule_6_2_10
   tags:
       - rule_6.2.10
       - level1-server
