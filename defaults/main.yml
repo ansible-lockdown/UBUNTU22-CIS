@@ -100,11 +100,6 @@ audit_log_dir: '/opt'
 ### Goss Settings ##
 ####### END ########
 
-## Running role under chroot
-# Tweak role to run in a chroot, such as in a kickstart %post script.
-# The correct value of this variable is auto-determined.
-ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
-
 ## Running in EC2 pipeline
 # Skip events for EC2 instance testing pipeline.
 # This variable is set to true for automated tests
@@ -468,7 +463,6 @@ ubtu22cis_squid_server: false
 ubtu22cis_snmp_server: false
 ubtu22cis_rsync_server: mask  # Can be set to true, mask or remove depending on requirements
 ubtu22cis_nis_server: false
-ubtu22cis_nfs_client: false
 
 # rpcbind is required by nfs-common which is required on client and server
 # The value of the variable is determined automatically, based on the variables
