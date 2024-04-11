@@ -12,7 +12,7 @@
       - Auditd rules reload
       - Audit_immutable_fact
       - Restart auditd
-      - change_requires_reboot
+      - set_reboot_required
   when: update_audit_template
 
 - name: POST | Set up auditd user logging exceptions
