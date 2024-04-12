@@ -3,6 +3,7 @@
 - name: "SECTION | 1.1.1 | Disable Unused Filesystems"
   ansible.builtin.import_tasks:
       file: cis_1.1.1.x.yml
+  when: not system_is_container
 
 - name: "SECTION | 1.1.2 | configure /tmp"
   ansible.builtin.import_tasks:
