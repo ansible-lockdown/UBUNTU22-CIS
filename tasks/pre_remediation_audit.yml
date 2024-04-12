@@ -38,7 +38,7 @@
 
 - name: Pre Audit Setup | Unarchive audit content files on server
   when:
-      - audit_content == 'archived'
+      - audit_content == 'archive'
   ansible.builtin.unarchive:
       src: "{{ audit_conf_source }}"
       dest: "{{ audit_conf_dest }}"
@@ -46,9 +46,11 @@
 - name: Pre Audit Setup | Get audit content from url
   when:
       - audit_content == 'get_url'
-  ansible.builtin.get_url:
-      url: "{{ audit_conf_source }}"
-      dest: "{{ audit_conf_dest }}"
+  ansible.builtin.unarchive:
+      src: "{{ audit_conf_source }}"
+      dest: "{{ audit_conf_dest }}/{{ benchmark }}-Audit"
+      remote_src: "{{ ( audit_conf_source is contains ('http'))| ternary(true, false ) }}"
+      extra_opts: "{{ (audit_conf_source is contains ('github')) | ternary('--strip-components=1', [] ) }}"
 
 - name: Pre Audit Setup | Check Goss is available
   when:
