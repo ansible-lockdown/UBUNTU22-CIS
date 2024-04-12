@@ -463,6 +463,7 @@ ubtu22cis_squid_server: false
 ubtu22cis_snmp_server: false
 ubtu22cis_rsync_server: mask  # Can be set to true, mask or remove depending on requirements
 ubtu22cis_nis_server: false
+ubtu22cis_nfs_client: false
 
 # rpcbind is required by nfs-common which is required on client and server
 # The value of the variable is determined automatically, based on the variables
