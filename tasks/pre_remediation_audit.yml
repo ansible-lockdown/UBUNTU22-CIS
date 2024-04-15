@@ -5,7 +5,8 @@
       - setup_audit
   tags:
       - setup_audit
-  ansible.builtin.include_tasks: LE_audit_setup.yml
+  ansible.builtin.include_tasks:
+      file: LE_audit_setup.yml
 
 - name: Pre Audit Setup | Ensure {{ audit_conf_dir }} exists
   ansible.builtin.file:
