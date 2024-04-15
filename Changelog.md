@@ -4,7 +4,7 @@
 
 ### 1.1.0
 
-- #216 thanks to feedback @txsastre
+- #223 thanks to feedback @txsastre
 - audit
   - moved the audit to run prior to any changes taking place on the system (exception of required)
   - improvements to copy/archive/get_url content methods incl notes in defaults/main.yml
