@@ -1,6 +1,6 @@
 ---
 
-min_ansible_version: 2.10.1
+min_ansible_version: 2.12.1
 # Set default value for reboot value
 change_requires_reboot: false
 # The role discovers dynamically (in tasks/main.yml) whether it

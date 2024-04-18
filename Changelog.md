@@ -4,8 +4,15 @@
 
 ### 1.1.0
 
-- #216 thanks to @txsastre
-- moved the audit to run prior to any changes taking place on the system (exception of required)
+- #223 thanks to feedback @txsastre
+- audit
+  - moved the audit to run prior to any changes taking place on the system (exception of required)
+  - improvements to copy/archive/get_url content methods incl notes in defaults/main.yml
+  - tidy up and logic of var naming
+- lint and tidy up
+- ansible version update
+- unused filesystem added to skip if container list
+- unused vars removed
 
 ### 1.0.9
 

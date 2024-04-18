@@ -175,7 +175,7 @@
   tags:
       - section6
 
-- name: run auditd logic
+- name: Run auditd logic
   ansible.builtin.import_tasks:
       file: auditd.yml
   when: update_audit_template

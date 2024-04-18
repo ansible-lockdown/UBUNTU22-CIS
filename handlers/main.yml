@@ -2,7 +2,7 @@
 
 - name: Update_Initramfs
   ansible.builtin.shell: update-initramfs -u
-  notify: change_requires_reboot
+  notify: set_reboot_required
 
 - name: Remount tmp
   ansible.posix.mount:
@@ -43,7 +43,7 @@
 - name: Grub update
   ansible.builtin.shell: update-grub
   failed_when: false
-  notify: change_requires_reboot
+  notify: set_reboot_required
 
 - name: Restart timeservice
   ansible.builtin.systemd:
@@ -118,7 +118,7 @@
 - name: Audit_immutable_fact
   ansible.builtin.debug:
       msg: "Reboot required for auditd to apply new rules as immutable set"
-  notify: change_requires_reboot
+  notify: set_reboot_required
   when:
       - audit_rules_updated.changed
       - auditd_immutable_check is defined
@@ -130,14 +130,11 @@
   tags:
       - skip_ansible_lint
 
-- name: restart sshd
+- name: Restart sshd
   ansible.builtin.systemd:
       name: sshd
       state: restarted
 
-- name: reload gdm
-  ansible.builtin.shell: dpkg-reconfigure gdm3
-
-- name: change_requires_reboot
+- name: set_reboot_required
   ansible.builtin.set_fact:
       change_requires_reboot: true
