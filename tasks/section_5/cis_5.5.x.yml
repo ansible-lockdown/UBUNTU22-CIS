@@ -114,7 +114,7 @@
         when: ubtu22cis_5_5_1_4_inactive_setting.stdout != ubtu22cis_pass.inactive | string
 
       - name: "5.5.1.4 | AUDIT | Ensure inactive password lock is 30 days or less | Get Individual users"
-        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($7~/(\\\\s*$|-1)/ || ( $7>1 && $7<{{ ubtu22cis_pass.inactive }}))) {print $1}' /etc/shadow"
+        ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($7~/(\\s*|-1)/ || ( $7>1 && $7<{{ ubtu22cis_pass.inactive }}))) {print $1}' /etc/shadow"
         changed_when: false
         failed_when: false
         register: ubtu22cis_5_5_1_4_inactive_users
