@@ -2,6 +2,14 @@
 
 ## Based on CIS V1.0.0
 
+### 1.1.1
+
+- Huge thanks to
+  - @rostskadat
+    - #175 - Allowing changes to the ssh default variables
+  - @DianaMariaDDM
+    - #200 - new approach to tmp mount options
+
 ### 1.1.0
 
 - #223 thanks to feedback @txsastre
