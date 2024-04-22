@@ -123,7 +123,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^LogLevel|^#LogLevel'
-      line: "LogLevel {{ ubtu22cis_sshd.log_level }}"
+      line: 'LogLevel {{ ubtu22cis_sshd.log_level | default(ubtu22cis_sshd_default_log_level) }}'
       insertafter: '^# Logging'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -263,7 +263,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^Ciphers|^#Ciphers'
-      line: "Ciphers {{ ubtu22cis_sshd.ciphers | join(',') }}"
+      line: "Ciphers {{ ubtu22cis_sshd.ciphers | default(ubtu22cis_sshd_default_ciphers) | join(',') }}"
       insertafter: '^# Ciphers and keying'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -281,7 +281,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MACs|^#MACs'
-      line: "MACs {{ ubtu22cis_sshd.macs | join(',') }}"
+      line: "MACs {{ ubtu22cis_sshd.macs | default(ubtu22cis_sshd_default_macs) | join(',') }}"
       insertafter: '^# Ciphers and keying'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -299,7 +299,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^KexAlgorithms|^#KexAlgorithms'
-      line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | join(',') }}"
+      line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | default(ubtu22cis_sshd_default_kex_algorithms) | join(',') }}"
       insertafter: '^# Ciphers and keying'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -352,7 +352,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MaxAuthTries|^#MaxAuthTries'
-      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries }}'
+      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
       insertafter: '^# Authentication'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -387,7 +387,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MaxSessions|^#MaxSessions'
-      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions }}'
+      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
       insertafter: '^# Authentication'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -405,7 +405,7 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^LoginGraceTime|^#LoginGraceTime'
-      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time }}'
+      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
       insertafter: '^# Authentication'
       validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -426,8 +426,8 @@
       line: "{{ item.line }}"
       validate: 'sshd -t -f %s'
   with_items:
-      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval }}' }
-      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max }}' }
+      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
+      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
   notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_22
