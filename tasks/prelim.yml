@@ -59,14 +59,14 @@
   tags:
       - always
 
-- name: Initialize the mount options variable
+- name: PRELIM | Initialize the mount options variable
   block:
-      - name: Initializing the var if there is no /tmp mount
+      - name: PRELIM | Initializing the var if there is no /tmp mount | set_fact
         ansible.builtin.set_fact:
             tmp_partition_mount_options: []
         when: "'/tmp' not in mount_names"
 
-      - name: Initializing the var if there is a /tmp mount
+      - name: PRELIM | Initializing the var if there is a /tmp mount | set_fact
         ansible.builtin.set_fact:
             tmp_partition_mount_options: "{{ item.options.split(',') }}"
         loop: "{{ ansible_facts.mounts }}"
