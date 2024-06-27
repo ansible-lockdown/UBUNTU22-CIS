@@ -16,5 +16,5 @@
 # the count increases by a value of 1
 - name: "{{ warn_control_id }} | AUDIT | Set fact for manual task warning."
   ansible.builtin.set_fact:
-      warn_control_list: "{{ warn_control_list }} [{{ warn_control_id }}]"
-      warn_count: "{{ warn_count | int + 1 }}"
+    warn_control_list: "{{ warn_control_list }} [{{ warn_control_id }}]"
+    warn_count: "{{ warn_count | int + 1 }}"

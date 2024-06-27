@@ -1,0 +1,38 @@
+---
+
+- name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users"
+  when:
+    - - ubtu22cis_rule_2_4_2_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_2.4.2.1
+    - cron
+  block:
+    - name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users | Remove at.deny"
+      ansible.builtin.file:
+        path: /etc/at.deny
+        state: absent
+
+    - name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users | Check for at.allow"
+      ansible.builtin.stat:
+        path: /etc/at.allow
+      register: ubtu22cis_2_4_2_1_status
+
+    - name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users | Create at.allow if doesn't exist"
+      when: not ubtu22cis_2_4_2_1_status.stat.exists
+      ansible.builtin.file:
+        path: /etc/at.allow
+        owner: root
+        group: root
+        mode: '0640'
+        state: touch
+
+    - name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users | update at.allow if exists"
+      when: ubtu22cis_2_4_2_1_status.stat.exists
+      ansible.builtin.file:
+        path: /etc/at.allow
+        owner: root
+        group: root
+        mode: '0640'

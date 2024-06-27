@@ -1,368 +1,81 @@
 ---
 
-- name: "6.1.1 | PATCH | Ensure permissions on /etc/passwd are configured"
-  ansible.builtin.file:
-      path: /etc/passwd
-      owner: root
-      group: root
-      mode: '0644'
+- name: "6.1.1 | PATCH | Ensure AIDE is installed"
   when:
-      - ubtu22cis_rule_6_1_1
+    - ubtu22cis_rule_6_1_1
+    - ubtu22cis_config_aide
   tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.1
-
-- name: "6.1.2 | PATCH | Ensure permissions on /etc/passwd- are configured"
-  ansible.builtin.file:
-      path: /etc/passwd-
-      owner: root
-      group: root
-      mode: '0644'
-  when:
-      - ubtu22cis_rule_6_1_2
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.2
-
-- name: "6.1.3 | PATCH | Ensure permissions on /etc/group are configured"
-  ansible.builtin.file:
-      path: /etc/group
-      owner: root
-      group: root
-      mode: '0644'
-  when:
-      - ubtu22cis_rule_6_1_3
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.3
-
-- name: "6.1.4 | PATCH | Ensure permissions on /etc/group- are configured"
-  ansible.builtin.file:
-      path: /etc/group-
-      owner: root
-      group: root
-      mode: '0644'
-  when:
-      - ubtu22cis_rule_6_1_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissionss
-      - rule_6.1.4
-
-- name: "6.1.5 | PATCH | Ensure permissions on /etc/shadow are configured"
-  ansible.builtin.file:
-      path: /etc/shadow
-      owner: root
-      group: root
-      mode: '0640'
-  when:
-      - ubtu22cis_rule_6_1_5
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.5
-
-- name: "6.1.6 | PATCH | Ensure permissions on /etc/shadow- are configured"
-  ansible.builtin.file:
-      path: /etc/shadow-
-      owner: root
-      group: root
-      mode: '0640'
-  when:
-      - ubtu22cis_rule_6_1_6
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.6
-
-- name: "6.1.7 | PATCH | Ensure permissions on /etc/gshadow are configured"
-  ansible.builtin.file:
-      path: /etc/gshadow
-      owner: root
-      group: root
-      mode: '0640'
-  when:
-      - ubtu22cis_rule_6_1_7
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.7
-
-- name: "6.1.8 | PATCH | Ensure permissions on /etc/gshadow- are configured"
-  ansible.builtin.file:
-      path: /etc/gshadow-
-      owner: root
-      group: root
-      mode: '0640'
-  when:
-      - ubtu22cis_rule_6_1_8
-  tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - permissions
-      - rule_6.1.8
-
-- name: "6.1.9 | PATCH | Ensure no world writable files exist"
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_6.1.1
+    - aide
   block:
-      - name: "6.1.9 | AUDIT | Ensure no world writable files exist | Get list of world-writable files"
-        ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
-        failed_when: false
-        changed_when: false
-        register: rhel_09_6_1_9_perms_results
+    - name: "6.1.1 | PATCH | Ensure AIDE is installed"
+      when:
+        - "'aide' not in ansible_facts.packages or
+          'aide-common' not in ansible_facts.packages"
+      ansible.builtin.package:
+        name: ['aide', 'aide-common']
+        state: present
+        update_cache: true
+      register: ubtu22cis_rule_6_1_1_aide_added
 
-      - name: "6.1.9 | PATCH | Ensure no world writable files exist | Adjust world-writable files if they exist (Configurable)"
-        ansible.builtin.file:
-            path: '{{ item }}'
-            mode: o-w
-            state: touch
-        loop: "{{ rhel_09_6_1_9_perms_results.stdout_lines }}"
-        when:
-            - rhel_09_6_1_9_perms_results.stdout_lines is defined
-            - ubtu22cis_no_world_write_adjust
+    - name: "6.1.1 | PATCH | Ensure AIDE is installed | Recapture packages"
+      when: ubtu22cis_rule_6_1_1_aide_added.skipped is not defined
+      ansible.builtin.package_facts:
+        manager: auto
+
+    - name: "6.1.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
+      ansible.builtin.shell: aideinit && mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
+      args:
+        creates: /var/lib/aide/aide.db
+      changed_when: false
+      failed_when: false
+      async: "{{ ubtu22cis_aide_init.async }}"
+      poll: "{{ ubtu22cis_aide_init.poll }}"
+      when: not ansible_check_mode
+
+- name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked"
   when:
-      - ubtu22cis_rule_6_1_9
+    - ubtu22cis_config_aide
+    - ubtu22cis_rule_6_1_2
   tags:
-      - level1-server
-      - level1-workstation
-      - patch
-      - files
-      - permissions
-      - rule_6.1.9
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_6.1.2
+    - cron
+    - aide
+  ansible.builtin.cron:
+    name: Run AIDE integrity check
+    cron_file: "{{ ubtu22cis_aide_cron['cron_file'] }}"
+    user: "{{ ubtu22cis_aide_cron['cron_user'] }}"
+    minute: "{{ ubtu22cis_aide_cron['aide_minute'] | default('0') }}"
+    hour: "{{ ubtu22cis_aide_cron['aide_hour'] | default('5') }}"
+    day: "{{ ubtu22cis_aide_cron['aide_day'] | default('*') }}"
+    month: "{{ ubtu22cis_aide_cron['aide_month'] | default('*') }}"
+    weekday: "{{ ubtu22cis_aide_cron['aide_weekday'] | default('*') }}"
+    job: "{{ ubtu22cis_aide_cron['aide_job'] }}"
 
-- name: "6.1.10 | PATCH | Ensure no unowned files or directories exist"
-  block:
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Get unowned files or directories"
-        ansible.builtin.shell: find {{ item.mount }} -xdev -nouser -not -fstype nfs
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_10_no_user_items
-        with_items:
-            - "{{ ansible_facts.mounts }}"
-        loop_control:
-            label: "{{ item.mount }}"
-
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Flatten no_user_items results for easier use"
-        ansible.builtin.set_fact:
-            ubtu22cis_6_1_10_no_user_items_flatten: "{{ ubtu22cis_6_1_10_no_user_items.results | map(attribute='stdout_lines') | flatten }}"
-
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Alert on unowned files and directories"
-        ansible.builtin.debug:
-            msg:
-                - "Warning!! You have unowned files and are configured to not auto-remediate for this task"
-                - "Please review the files/directories below and assign an owner"
-                - "{{ ubtu22cis_6_1_10_no_user_items_flatten }}"
-        when:
-            - not ubtu22cis_no_owner_adjust
-            - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
-
-      - name: "6.1.10 | PATCH | Ensure no unowned files or directories exist | Set unowned files/directories to configured owner"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            owner: "{{ ubtu22cis_unowned_owner }}"
-        with_items:
-            - "{{ ubtu22cis_6_1_10_no_user_items_flatten }}"
-        when:
-            - ubtu22cis_no_owner_adjust
-            - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
-
-      - name: "6.1.10 | AUDIT | Ensure no unowned files or directories exist | Warn Count"
-        ansible.builtin.import_tasks:
-            file: warning_facts.yml
-        when:
-            - not ubtu22cis_no_owner_adjust
-            - ubtu22cis_6_1_10_no_user_items_flatten | length > 0
-        vars:
-            warn_control_id: '6.1.10'
+- name: "6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when:
-      - ubtu22cis_rule_6_1_10
+    - ubtu22cis_rule_6_1_3
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.1.10
-      - permissions
-
-- name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist"
-  block:
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Get ungrouped files or directories"
-        ansible.builtin.shell: find {{ item.mount }} -xdev -nogroup -not -fstype nfs
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_11_ungrouped_items
-        with_items:
-            - "{{ ansible_facts.mounts }}"
-        loop_control:
-            label: "{{ item.mount }}"
-
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Flatten ungrouped_items results for easier use"
-        ansible.builtin.set_fact:
-            ubtu22cis_6_1_11_ungrouped_items_flatten: "{{ ubtu22cis_6_1_11_ungrouped_items.results | map(attribute='stdout_lines') | flatten }}"
-
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Alert on ungrouped files and directories"
-        ansible.builtin.debug:
-            msg:
-                - "Warning!! You have ungrouped files/directories and are configured to not auto-remediate for this task"
-                - "Please review the files/directories below and assign a group"
-                - "{{ ubtu22cis_6_1_11_ungrouped_items_flatten }}"
-        when:
-            - not ubtu22cis_no_group_adjust
-            - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
-
-      - name: "6.1.11 | PATCH | Ensure no ungrouped files or directories exist | Set ungrouped files/directories to configured group"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            group: "{{ ubtu22cis_ungrouped_group }}"
-        with_items:
-            - "{{ ubtu22cis_6_1_11_ungrouped_items_flatten }}"
-        when:
-            - ubtu22cis_no_group_adjust
-            - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
-
-      - name: "6.1.11 | AUDIT | Ensure no ungrouped files or directories exist | Warn Count"
-        ansible.builtin.import_tasks:
-            file: warning_facts.yml
-        when:
-            - not ubtu22cis_no_group_adjust
-            - ubtu22cis_6_1_11_ungrouped_items_flatten | length > 0
-        vars:
-            warn_control_id: '6.1.11'
-  when:
-      - ubtu22cis_rule_6_1_11
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_6.1.11
-      - permissions
-
-- name: "6.1.12 | AUDIT | Audit SUID executables"
-  block:
-      - name: "6.1.12 | AUDIT | Audit SUID executables | Find SUID executables"
-        ansible.builtin.shell: find {{ item.mount }} -xdev -type f -perm -4000 -not -fstype nfs
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_12_suid_executables
-        with_items:
-            - "{{ ansible_facts.mounts }}"
-        loop_control:
-            label: "{{ item.mount }}"
-
-      - name: "6.1.12 | AUDIT | Audit SUID executables | Flatten suid_executables results for easier use"
-        ansible.builtin.set_fact:
-            ubtu22cis_6_1_12_suid_executables_flatten: "{{ ubtu22cis_6_1_12_suid_executables.results | map(attribute='stdout_lines') | flatten }}"
-
-      - name: "6.1.12 | AUDIT | Audit SUID executables | Alert SUID executables exist"
-        ansible.builtin.debug:
-            msg:
-                - "Warning!! You have SUID executables"
-                - "The files are listed below, please confirm the integrity of these binaries"
-                - "{{ ubtu22cis_6_1_12_suid_executables_flatten }}"
-        when:
-            - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
-            - not ubtu22cis_suid_adjust
-
-      - name: "6.1.12 | PATCH | Audit SUID executables | Remove SUID bit"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            mode: 'u-s'
-        with_items:
-            - "{{ ubtu22cis_6_1_12_suid_executables_flatten }}"
-        when:
-            - ubtu22cis_suid_adjust
-            - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
-
-      - name: "6.1.12 | AUDIT | Audit SUID executables | Warn Count"
-        ansible.builtin.import_tasks:
-            file: warning_facts.yml
-        when:
-            - ubtu22cis_6_1_12_suid_executables_flatten | length > 0
-            - not ubtu22cis_suid_adjust
-        vars:
-            warn_control_id: '6.1.12'
-  when:
-      - ubtu22cis_rule_6_1_12
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_6.1.12
-      - permissions
-
-- name: "6.1.13 | AUDIT | Audit SGID executables"
-  block:
-      - name: "6.1.13 | AUDIT | Audit SGID executables | Find SGID executables"
-        ansible.builtin.shell: find {{ item }} -xdev -type f -perm -2000 -not -fstype nfs
-        changed_when: false
-        failed_when: false
-        check_mode: false
-        register: ubtu22cis_6_1_13_sgid_executables
-        with_items:
-            - "{{ ansible_facts.mounts }}"
-        loop_control:
-            label: "{{ item.mount }}"
-
-      - name: "6.1.13 | AUDIT | Audit SGID executables | Flatten sgid_executables results for easier use"
-        ansible.builtin.set_fact:
-            ubtu22cis_6_1_13_sgid_executables_flatten: "{{ ubtu22cis_6_1_13_sgid_executables.results | map(attribute='stdout_lines') | flatten }}"
-
-      - name: "6.1.13 | AUDIT | Audit SGID executables | Alert SGID executables exist"
-        ansible.builtin.debug:
-            msg:
-                - "Warning!! You have SGID executables"
-                - "The files are listed below, please review the integrity of these binaries"
-                - "{{ ubtu22cis_6_1_13_sgid_executables_flatten }}"
-        when:
-            - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
-            - not ubtu22cis_sgid_adjust
-
-      - name: "6.1.13 | AUDIT | Audit SGID executables | Warn Count"
-        ansible.builtin.import_tasks:
-            file: warning_facts.yml
-        when:
-            - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
-            - not ubtu22cis_sgid_adjust
-
-      - name: "6.1.13 | PATCH | Audit SGID executables | Remove SGID bit"
-        ansible.builtin.file:
-            path: "{{ item }}"
-            mode: 'g-s'
-        with_items:
-            - "{{ ubtu22cis_6_1_13_sgid_executables_flatten }}"
-        when:
-            - ubtu22cis_sgid_adjust
-            - ubtu22cis_6_1_13_sgid_executables_flatten | length > 0
-  vars:
-      warn_control_id: '6.1.13'
-  when:
-      - ubtu22cis_rule_6_1_13
-  tags:
-      - level1-server
-      - level1-workstation
-      - manual
-      - audit
-      - rule_6.1.13
-      - permissions
+    - level1-server
+    - level1-workstation
+    - aide
+    - file_integrity
+    - patch
+    - rule_6.1.3
+  ansible.builtin.blockinfile:
+    path: /etc/aide.conf
+    marker: "# {mark} Audit tools - CIS benchmark - Ansible-lockdown"
+    block: |
+      /usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512
+      /usr/sbin/auditd p+i+n+u+g+s+b+acl+xattrs+sha512
+      /usr/sbin/ausearch p+i+n+u+g+s+b+acl+xattrs+sha512
+      /usr/sbin/aureport p+i+n+u+g+s+b+acl+xattrs+sha512
+      /usr/sbin/autrace p+i+n+u+g+s+b+acl+xattrs+sha512
+      /usr/sbin/augenrules p+i+n+u+g+s+b+acl+xattrs+sha512
+    validate: aide -D --config %s

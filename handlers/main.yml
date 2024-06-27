@@ -147,6 +147,21 @@
   failed_when: ubtu22cis_ip6tables_save.rc > 0
   register: ubtu22cis_ip6tables_save
 
+- name: pam_auth_update_pwunix
+  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_pwunix_file }}
+
+- name: pam_auth_update_pwfaillock
+  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_faillock_file }}
+
+- name: pam_auth_update_pwfaillock_notify
+  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_faillock_file_notify }}
+
+- name: pam_auth_update_pwquality
+  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_pwquality_file }}
+
+- name: pam_auth_update_pwhistory
+  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_pwhistory_file }}
+
 - name: Auditd rules reload
   ansible.builtin.shell: augenrules --load
   when:

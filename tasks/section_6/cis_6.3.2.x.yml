@@ -1,0 +1,69 @@
+---
+
+- name: "6.3.2.1 | PATCH | Ensure audit log storage size is configured"
+  when:
+    - ubtu22cis_rule_6_3_2_1
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_6.3.2.1
+    - auditd
+  notify: Restart auditd
+  ansible.builtin.lineinfile:
+    dest: /etc/audit/auditd.conf
+    regexp: "^max_log_file( |=)"
+    line: "max_log_file = {{ ubtu22cis_max_log_file_size }}"
+    state: present
+
+- name: "6.3.2.2 | PATCH | Ensure audit logs are not automatically deleted"
+  when:
+    - ubtu22cis_rule_6_3_2_2
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_6.3.2.2
+    - auditd
+  notify: Restart auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: '^max_log_file_action'
+    line: "max_log_file_action = {{ ubtu22cis_auditd['max_log_file_action'] }}"
+
+- name: "6.3.2.3 | PATCH | Ensure system is disabled when audit logs are full"
+  when:
+    - ubtu22cis_rule_6_3_2_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_6.3.2.3
+    - auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  with_items:
+    - { regexp: '^space_left_action', line: "space_left_action = {{ ubtu22cis_auditd['space_left_action'] }}" }
+    - { regexp: '^action_mail_acct', line: "action_mail_acct = {{ ubtu22cis_auditd['action_mail_acct'] }}" }
+    - { regexp: '^admin_space_left_action', line: "admin_space_left_action = {{ ubtu22cis_auditd['admin_space_left_action'] }}" }
+  notify: Restart auditd
+
+- name: "6.3.2.4 | PATCH | Ensure system warns when audit logs are low on space"
+  when:
+    - ubtu22cis_rule_6_3_2_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - auditd
+    - rule_6.3.2.4
+  notify: Restart_auditd
+  ansible.builtin.lineinfile:
+    path: /etc/audit/auditd.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: '^admin_space_left_action', line: 'admin_space_left_action = {{ ubtu22cis_auditd_admin_space_left_action }}' }
+    - { regexp: '^space_left_action', line: 'space_left_action = {{ ubtu22cis_auditd_space_left_action }}' }

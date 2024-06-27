@@ -1,0 +1,6 @@
+Name: Enable pam_faillock to deny access
+Default: yes
+Priority: 0
+Auth-Type: Primary
+Auth:
+        [default=die]                   pam_faillock.so authfail

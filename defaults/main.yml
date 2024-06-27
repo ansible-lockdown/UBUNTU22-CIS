@@ -10,6 +10,7 @@ ubtu22cis_section3: true
 ubtu22cis_section4: true
 ubtu22cis_section5: true
 ubtu22cis_section6: true
+ubtu22cis_section7: true
 
 ## Reboot system before audit
 # System will reboot if false, can give better audit results
@@ -18,7 +19,7 @@ skip_reboot: true
 ## Benchmark name and profiles used by auditing control role
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
-benchmark_version: v1.0.0
+benchmark_version: v2.0.0
 # Used for audit
 ubtu22cis_level_1: true
 ubtu22cis_level_2: true
@@ -118,124 +119,173 @@ system_is_ec2: false
 ## Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
 # Additional Process Hardening, Mandatory Access Control, Command Line Warning Banners, and GNOME Display Manager)
+
+# 1.1 Filesystems
+# 1.1.1 Configure Filesystem Kernel Modules
 ubtu22cis_rule_1_1_1_1: true
 ubtu22cis_rule_1_1_1_2: true
 ubtu22cis_rule_1_1_1_3: true
-ubtu22cis_rule_1_1_2_1: true
-ubtu22cis_rule_1_1_2_2: true
-ubtu22cis_rule_1_1_2_3: true
-ubtu22cis_rule_1_1_2_4: true
-ubtu22cis_rule_1_1_3_1: true
-ubtu22cis_rule_1_1_3_2: true
-ubtu22cis_rule_1_1_3_3: true
-ubtu22cis_rule_1_1_4_1: true
-ubtu22cis_rule_1_1_4_2: true
-ubtu22cis_rule_1_1_4_3: true
-ubtu22cis_rule_1_1_4_4: true
-ubtu22cis_rule_1_1_5_1: true
-ubtu22cis_rule_1_1_5_2: true
-ubtu22cis_rule_1_1_5_3: true
-ubtu22cis_rule_1_1_5_4: true
-ubtu22cis_rule_1_1_6_1: true
-ubtu22cis_rule_1_1_6_2: true
-ubtu22cis_rule_1_1_6_3: true
-ubtu22cis_rule_1_1_6_4: true
-ubtu22cis_rule_1_1_7_1: true
-ubtu22cis_rule_1_1_7_2: true
-ubtu22cis_rule_1_1_7_3: true
-ubtu22cis_rule_1_1_8_1: true
-ubtu22cis_rule_1_1_8_2: true
-ubtu22cis_rule_1_1_8_3: true
-ubtu22cis_rule_1_1_9: true
-ubtu22cis_rule_1_1_10: true
-ubtu22cis_rule_1_2_1: true
-ubtu22cis_rule_1_2_2: true
-ubtu22cis_rule_1_3_1: true
-ubtu22cis_rule_1_3_2: true
-ubtu22cis_rule_1_4_1: true
-ubtu22cis_rule_1_4_2: true
-ubtu22cis_rule_1_4_3: true
-ubtu22cis_rule_1_5_1: true
-ubtu22cis_rule_1_5_2: true
-ubtu22cis_rule_1_5_3: true
-ubtu22cis_rule_1_5_4: true
-ubtu22cis_rule_1_6_1_1: true
-ubtu22cis_rule_1_6_1_2: true
-ubtu22cis_rule_1_6_1_3: true
-ubtu22cis_rule_1_6_1_4: true
-ubtu22cis_rule_1_7_1: true
-ubtu22cis_rule_1_7_2: true
-ubtu22cis_rule_1_7_3: true
-ubtu22cis_rule_1_7_4: true
-ubtu22cis_rule_1_7_5: true
-ubtu22cis_rule_1_7_6: true
-ubtu22cis_rule_1_8_1: true
-ubtu22cis_rule_1_8_2: true
-ubtu22cis_rule_1_8_3: true
-ubtu22cis_rule_1_8_4: true
-ubtu22cis_rule_1_8_5: true
-ubtu22cis_rule_1_8_6: true
-ubtu22cis_rule_1_8_7: true
-ubtu22cis_rule_1_8_8: true
-ubtu22cis_rule_1_8_9: true
-ubtu22cis_rule_1_8_10: true
-ubtu22cis_rule_1_9: true
+ubtu22cis_rule_1_1_1_4: true
+ubtu22cis_rule_1_1_1_5: true
+ubtu22cis_rule_1_1_1_6: true
+ubtu22cis_rule_1_1_1_7: true
+ubtu22cis_rule_1_1_1_8: true
+
+# 1.1.2 Configure Filesystem Partitions
+# /tmp
+ubtu22cis_rule_1_1_2_1_1: true
+ubtu22cis_rule_1_1_2_1_2: true
+ubtu22cis_rule_1_1_2_1_3: true
+ubtu22cis_rule_1_1_2_1_4: true
+
+# /dev/shm
+ubtu22cis_rule_1_1_2_2_1: true
+ubtu22cis_rule_1_1_2_2_2: true
+ubtu22cis_rule_1_1_2_2_3: true
+ubtu22cis_rule_1_1_2_2_4: true
+
+# /home
+ubtu22cis_rule_1_1_2_3_1: true
+ubtu22cis_rule_1_1_2_3_2: true
+ubtu22cis_rule_1_1_2_3_3: true
+
+# /var
+ubtu22cis_rule_1_1_2_4_1: true
+ubtu22cis_rule_1_1_2_4_2: true
+ubtu22cis_rule_1_1_2_4_3: true
+
+# /var/tmp
+ubtu22cis_rule_1_1_2_5_1: true
+ubtu22cis_rule_1_1_2_5_2: true
+ubtu22cis_rule_1_1_2_5_3: true
+ubtu22cis_rule_1_1_2_5_4: true
+
+# /var/log
+ubtu22cis_rule_1_1_2_6_1: true
+ubtu22cis_rule_1_1_2_6_2: true
+ubtu22cis_rule_1_1_2_6_3: true
+ubtu22cis_rule_1_1_2_6_4: true
+
+# /var/log/audit
+ubtu22cis_rule_1_1_2_7_1: true
+ubtu22cis_rule_1_1_2_7_2: true
+ubtu22cis_rule_1_1_2_7_3: true
+ubtu22cis_rule_1_1_2_7_4: true
+
+# 1.2 Package mgmt
+# 1.2.1 Configure Package repositories
+ubtu22cis_rule_1_2_1_1: true
+ubtu22cis_rule_1_2_1_2: true
+# 1.2.2 Configure Package updates
+ubtu22cis_rule_1_2_2_1: true
+
+# 1.3 Mandatory Access Control
+## 1.3.1 Configure AppArmor
+ubtu22cis_1_3_1_1: true
+ubtu22cis_1_3_1_2: true
+ubtu22cis_1_3_1_3: true
+ubtu22cis_1_3_1_4: true
+
+# 1.4 Configure Bootloader
+ubtu22cis_1_4_1: true
+ubtu22cis_1_4_2: true
+
+# 1.5 Configure additional Process Hardening
+ubtu22cis_1_5_1: true
+ubtu22cis_1_5_2: true
+ubtu22cis_1_5_3: true
+ubtu22cis_1_5_4: true
+ubtu22cis_1_5_5: true
+
+# 1.6 Configure Command Line Warning Banners
+ubtu22cis_1_6_1: true
+ubtu22cis_1_6_2: true
+ubtu22cis_1_6_3: true
+ubtu22cis_1_6_4: true
+ubtu22cis_1_6_5: true
+ubtu22cis_1_6_6: true
+
+# 1.7 Configure GNOME Display Manager
+ubtu22cis_1_7_1: true
+ubtu22cis_1_7_2: true
+ubtu22cis_1_7_3: true
+ubtu22cis_1_7_4: true
+ubtu22cis_1_7_5: true
+ubtu22cis_1_7_6: true
+ubtu22cis_1_7_7: true
+ubtu22cis_1_7_8: true
+ubtu22cis_1_7_9: true
+ubtu22cis_1_7_10: true
 
 ## Section 2 Fixes
 # Section 2 is Services (Special Purpose Services, and service clients)
-ubtu22cis_rule_2_1_1_1: true
-ubtu22cis_rule_2_1_1_2: true
-ubtu22cis_rule_2_1_1_3: true
-ubtu22cis_rule_2_1_1_4: true
-# Chrony
-ubtu22cis_rule_2_1_2_1: true
-ubtu22cis_rule_2_1_2_2: true
-ubtu22cis_rule_2_1_2_3: true
-# systemd-timesyncd
-ubtu22cis_rule_2_1_3_1: true
-ubtu22cis_rule_2_1_3_2: true
 
-# ntp
-ubtu22cis_rule_2_1_4_1: true
-ubtu22cis_rule_2_1_4_2: true
-ubtu22cis_rule_2_1_4_3: true
-ubtu22cis_rule_2_1_4_4: true
-# Services
+# 2.1 Configure Server Services
+ubtu22cis_rule_2_1_1: true
+ubtu22cis_rule_2_1_2: true
+ubtu22cis_rule_2_1_3: true
+ubtu22cis_rule_2_1_4: true
+ubtu22cis_rule_2_1_5: true
+ubtu22cis_rule_2_1_6: true
+ubtu22cis_rule_2_1_7: true
+ubtu22cis_rule_2_1_8: true
+ubtu22cis_rule_2_1_9: true
+ubtu22cis_rule_2_1_10: true
+ubtu22cis_rule_2_1_11: true
+ubtu22cis_rule_2_1_12: true
+ubtu22cis_rule_2_1_13: true
+ubtu22cis_rule_2_1_14: true
+ubtu22cis_rule_2_1_15: true
+ubtu22cis_rule_2_1_16: true
+ubtu22cis_rule_2_1_17: true
+ubtu22cis_rule_2_1_18: true
+ubtu22cis_rule_2_1_19: true
+ubtu22cis_rule_2_1_20: true
+ubtu22cis_rule_2_1_21: true
+ubtu22cis_rule_2_1_22: true
+
+# 2.2 Configure client services
 ubtu22cis_rule_2_2_1: true
 ubtu22cis_rule_2_2_2: true
 ubtu22cis_rule_2_2_3: true
 ubtu22cis_rule_2_2_4: true
 ubtu22cis_rule_2_2_5: true
 ubtu22cis_rule_2_2_6: true
-ubtu22cis_rule_2_2_7: true
-ubtu22cis_rule_2_2_8: true
-ubtu22cis_rule_2_2_9: true
-ubtu22cis_rule_2_2_10: true
-ubtu22cis_rule_2_2_11: true
-ubtu22cis_rule_2_2_12: true
-ubtu22cis_rule_2_2_13: true
-ubtu22cis_rule_2_2_14: true
-ubtu22cis_rule_2_2_15: true
-ubtu22cis_rule_2_2_16: true
-ubtu22cis_rule_2_2_17: true
-# Service Client
-ubtu22cis_rule_2_3_1: true
-ubtu22cis_rule_2_3_2: true
-ubtu22cis_rule_2_3_3: true
-ubtu22cis_rule_2_3_4: true
-ubtu22cis_rule_2_3_5: true
-ubtu22cis_rule_2_3_6: true
-# Non-essential services
-ubtu22cis_rule_2_4: true
+
+# Ensure time synchronization is in use
+ubtu22cis_rule_2_3_1_1: true
+# Configure systemd-timesyncd
+ubtu22cis_rule_2_3_2_1: true
+ubtu22cis_rule_2_3_2_2: true
+# Configure Chrony
+ubtu22cis_rule_2_3_3_1: true
+ubtu22cis_rule_2_3_3_2: true
+ubtu22cis_rule_2_3_3_3: true
+
+# 2.4 Job Schedulers
+# 2.4.1 Configure Cron
+ubtu22cis_rule_2_4_1_1: true
+ubtu22cis_rule_2_4_1_2: true
+ubtu22cis_rule_2_4_1_3: true
+ubtu22cis_rule_2_4_1_4: true
+ubtu22cis_rule_2_4_1_5: true
+ubtu22cis_rule_2_4_1_6: true
+ubtu22cis_rule_2_4_1_7: true
+ubtu22cis_rule_2_4_1_8: true
+# Configure At
+ubtu22cis_rule_2_4_2_1: true
 
 ## Section 3 Network Configuration
-# Disable Unused Network
+# 3.1 Configure Network Devices
 ubtu22cis_rule_3_1_1: true
 ubtu22cis_rule_3_1_2: true
-# Network Parameters (Host Only)
+ubtu22cis_rule_3_1_3: true
+# 3.2 Configure Network Kernel Modules (Host Only)
 ubtu22cis_rule_3_2_1: true
 ubtu22cis_rule_3_2_2: true
-# Network Parameters (Host and Router)
+ubtu22cis_rule_3_2_3: true
+ubtu22cis_rule_3_2_4: true
+# 3.3 Configure Network Kernel Parameters (Host and Router)
 ubtu22cis_rule_3_3_1: true
 ubtu22cis_rule_3_3_2: true
 ubtu22cis_rule_3_3_3: true
@@ -245,115 +295,47 @@ ubtu22cis_rule_3_3_6: true
 ubtu22cis_rule_3_3_7: true
 ubtu22cis_rule_3_3_8: true
 ubtu22cis_rule_3_3_9: true
-# Uncommon Network Protocols
-ubtu22cis_rule_3_4_1: true
-ubtu22cis_rule_3_4_2: true
-ubtu22cis_rule_3_4_3: true
-ubtu22cis_rule_3_4_4: true
-# Firewall Configuration
-# UFW
-ubtu22cis_rule_3_5_1_1: true
-ubtu22cis_rule_3_5_1_2: true
-ubtu22cis_rule_3_5_1_3: true
-ubtu22cis_rule_3_5_1_4: true
-ubtu22cis_rule_3_5_1_5: true
-ubtu22cis_rule_3_5_1_6: true
-ubtu22cis_rule_3_5_1_7: true
-# nftables
-ubtu22cis_rule_3_5_2_1: true
-ubtu22cis_rule_3_5_2_2: true
-ubtu22cis_rule_3_5_2_3: true
-ubtu22cis_rule_3_5_2_4: true
-ubtu22cis_rule_3_5_2_5: true
-ubtu22cis_rule_3_5_2_6: true
-ubtu22cis_rule_3_5_2_7: true
-ubtu22cis_rule_3_5_2_8: true
-ubtu22cis_rule_3_5_2_9: true
-ubtu22cis_rule_3_5_2_10: true
-# iptables
-ubtu22cis_rule_3_5_3_1_1: true
-ubtu22cis_rule_3_5_3_1_2: true
-ubtu22cis_rule_3_5_3_1_3: true
-ubtu22cis_rule_3_5_3_2_1: true
-ubtu22cis_rule_3_5_3_2_2: true
-ubtu22cis_rule_3_5_3_2_3: true
-ubtu22cis_rule_3_5_3_2_4: true
-ubtu22cis_rule_3_5_3_3_1: true
-ubtu22cis_rule_3_5_3_3_2: true
-ubtu22cis_rule_3_5_3_3_3: true
-ubtu22cis_rule_3_5_3_3_4: true
+ubtu22cis_rule_3_3_10: true
+ubtu22cis_rule_3_3_11: true
 
-## Section 4 Fixes
-# Section 4 is Logging and Auditing (Configure System Accounting (auditd), Configure Data Retention, and Configure Logging)
-ubtu22cis_rule_4_1_1_1: true
-ubtu22cis_rule_4_1_1_2: true
-ubtu22cis_rule_4_1_1_3: true
-ubtu22cis_rule_4_1_1_4: true
-ubtu22cis_rule_4_1_2_1: true
-ubtu22cis_rule_4_1_2_2: true
-ubtu22cis_rule_4_1_2_3: true
-# Auditd rules
-ubtu22cis_rule_4_1_3_1: true
-ubtu22cis_rule_4_1_3_2: true
-ubtu22cis_rule_4_1_3_3: true
-ubtu22cis_rule_4_1_3_4: true
-ubtu22cis_rule_4_1_3_5: true
-ubtu22cis_rule_4_1_3_6: true
-ubtu22cis_rule_4_1_3_7: true
-ubtu22cis_rule_4_1_3_8: true
-ubtu22cis_rule_4_1_3_9: true
-ubtu22cis_rule_4_1_3_10: true
-ubtu22cis_rule_4_1_3_11: true
-ubtu22cis_rule_4_1_3_12: true
-ubtu22cis_rule_4_1_3_13: true
-ubtu22cis_rule_4_1_3_14: true
-ubtu22cis_rule_4_1_3_15: true
-ubtu22cis_rule_4_1_3_16: true
-ubtu22cis_rule_4_1_3_17: true
-ubtu22cis_rule_4_1_3_18: true
-ubtu22cis_rule_4_1_3_19: true
-ubtu22cis_rule_4_1_3_20: true
-ubtu22cis_rule_4_1_3_21: true
-# Auditd file access
-ubtu22cis_rule_4_1_4_1: true
-ubtu22cis_rule_4_1_4_2: true
-ubtu22cis_rule_4_1_4_3: true
-ubtu22cis_rule_4_1_4_4: true
-ubtu22cis_rule_4_1_4_5: true
-ubtu22cis_rule_4_1_4_6: true
-ubtu22cis_rule_4_1_4_7: true
-ubtu22cis_rule_4_1_4_8: true
-ubtu22cis_rule_4_1_4_9: true
-ubtu22cis_rule_4_1_4_10: true
-ubtu22cis_rule_4_1_4_11: true
-# Configure Logging
-## journald
-ubtu22cis_rule_4_2_1_1_1: true
-ubtu22cis_rule_4_2_1_1_2: true
-ubtu22cis_rule_4_2_1_1_3: true
-ubtu22cis_rule_4_2_1_1_4: true
-ubtu22cis_rule_4_2_1_1: true
-ubtu22cis_rule_4_2_1_2: true
-ubtu22cis_rule_4_2_1_3: true
-ubtu22cis_rule_4_2_1_4: true
-ubtu22cis_rule_4_2_1_5: true
-ubtu22cis_rule_4_2_1_6: true
-ubtu22cis_rule_4_2_1_7: true
-# rsyslog
-ubtu22cis_rule_4_2_2_1: true
-ubtu22cis_rule_4_2_2_2: true
-ubtu22cis_rule_4_2_2_3: true
-ubtu22cis_rule_4_2_2_4: true
-ubtu22cis_rule_4_2_2_5: true
-ubtu22cis_rule_4_2_2_6: true
-ubtu22cis_rule_4_2_2_7: true
+## Section 4 Host Based Firewall
+# 4.1 Configure UncomplicatedFirewall
+ubtu22cis_rule_4_1_1: true
+ubtu22cis_rule_4_1_2: true
+ubtu22cis_rule_4_1_3: true
+ubtu22cis_rule_4_1_4: true
+ubtu22cis_rule_4_1_5: true
+ubtu22cis_rule_4_1_6: true
+ubtu22cis_rule_4_1_7: true
+# 4.2 Configure nftables
+ubtu22cis_rule_4_2_1: true
+ubtu22cis_rule_4_2_2: true
 ubtu22cis_rule_4_2_3: true
-ubtu22cis_rule_4_3: true
-ubtu22cis_rule_4_4: true
+ubtu22cis_rule_4_2_4: true
+ubtu22cis_rule_4_2_5: true
+ubtu22cis_rule_4_2_6: true
+ubtu22cis_rule_4_2_7: true
+ubtu22cis_rule_4_2_8: true
+ubtu22cis_rule_4_2_9: true
+ubtu22cis_rule_4_2_10: true
+# Configure iptables software
+ubtu22cis_rule_4_3_1_1: true
+ubtu22cis_rule_4_3_1_2: true
+ubtu22cis_rule_4_3_1_3: true
 
-## Section 5 Fixes
-# Section 5 is Access, Authentication, and Authorization (Configure time-based job schedulers, Configure sudo, Configure SSH Server, Configure PAM
-# and User Accounts and Environment)
+# Configure IPv4 iptables
+ubtu22cis_rule_4_3_2_1: true
+ubtu22cis_rule_4_3_2_2: true
+ubtu22cis_rule_4_3_2_3: true
+ubtu22cis_rule_4_3_2_4: true
+# Configure IPv5 iptables
+ubtu22cis_rule_4_3_3_1: true
+ubtu22cis_rule_4_3_3_2: true
+ubtu22cis_rule_4_3_3_3: true
+ubtu22cis_rule_4_3_3_4: true
+
+## Section 5 Access Control
+# 5.1 Configure SSH Server
 ubtu22cis_rule_5_1_1: true
 ubtu22cis_rule_5_1_2: true
 ubtu22cis_rule_5_1_3: true
@@ -363,7 +345,20 @@ ubtu22cis_rule_5_1_6: true
 ubtu22cis_rule_5_1_7: true
 ubtu22cis_rule_5_1_8: true
 ubtu22cis_rule_5_1_9: true
-
+ubtu22cis_rule_5_1_10: true
+ubtu22cis_rule_5_1_11: true
+ubtu22cis_rule_5_1_12: true
+ubtu22cis_rule_5_1_13: true
+ubtu22cis_rule_5_1_14: true
+ubtu22cis_rule_5_1_15: true
+ubtu22cis_rule_5_1_16: true
+ubtu22cis_rule_5_1_17: true
+ubtu22cis_rule_5_1_18: true
+ubtu22cis_rule_5_1_19: true
+ubtu22cis_rule_5_1_20: true
+ubtu22cis_rule_5_1_21: true
+ubtu22cis_rule_5_1_22: true
+# 5.2 Configure privilege escalation
 ubtu22cis_rule_5_2_1: true
 ubtu22cis_rule_5_2_2: true
 ubtu22cis_rule_5_2_3: true
@@ -371,77 +366,149 @@ ubtu22cis_rule_5_2_4: true
 ubtu22cis_rule_5_2_5: true
 ubtu22cis_rule_5_2_6: true
 ubtu22cis_rule_5_2_7: true
-ubtu22cis_rule_5_2_8: true
-ubtu22cis_rule_5_2_9: true
-ubtu22cis_rule_5_2_10: true
-ubtu22cis_rule_5_2_11: true
-ubtu22cis_rule_5_2_12: true
-ubtu22cis_rule_5_2_13: true
-ubtu22cis_rule_5_2_14: true
-ubtu22cis_rule_5_2_15: true
-ubtu22cis_rule_5_2_16: true
-ubtu22cis_rule_5_2_17: true
-ubtu22cis_rule_5_2_18: true
-ubtu22cis_rule_5_2_19: true
-ubtu22cis_rule_5_2_20: true
-ubtu22cis_rule_5_2_21: true
-ubtu22cis_rule_5_2_22: true
-ubtu22cis_rule_5_3_1: true
-ubtu22cis_rule_5_3_2: true
-ubtu22cis_rule_5_3_3: true
-ubtu22cis_rule_5_3_4: true
-ubtu22cis_rule_5_3_5: true
-ubtu22cis_rule_5_3_6: true
-ubtu22cis_rule_5_3_7: true
-ubtu22cis_rule_5_4_1: true
-ubtu22cis_rule_5_4_2: true
-ubtu22cis_rule_5_4_3: true
-ubtu22cis_rule_5_4_4: true
-ubtu22cis_rule_5_4_5: true
-ubtu22cis_rule_5_5_1_1: true
-ubtu22cis_rule_5_5_1_2: true
-ubtu22cis_rule_5_5_1_3: true
-ubtu22cis_rule_5_5_1_4: true
-ubtu22cis_rule_5_5_1_5: true
-ubtu22cis_rule_5_5_2: true
-ubtu22cis_rule_5_5_3: true
-ubtu22cis_rule_5_5_4: true
-ubtu22cis_rule_5_5_5: true
-ubtu22cis_rule_5_6: true
-ubtu22cis_rule_5_7: true
+# 5.3.1 Configure PAM software packages
+ubtu22cis_rule_5_3_1_1: true
+ubtu22cis_rule_5_3_1_2: true
+ubtu22cis_rule_5_3_1_3: true
+# 5.3.2 Configure pam-auth-update profiles
+ubtu22cis_rule_5_3_2_1: true
+ubtu22cis_rule_5_3_2_2: true
+ubtu22cis_rule_5_3_2_3: true
+ubtu22cis_rule_5_3_2_4: true
+# 5.3.3.1 Configure pam_faillock module
+ubtu22cis_rule_5_3_3_1_1: true
+ubtu22cis_rule_5_3_3_1_2: true
+ubtu22cis_rule_5_3_3_1_3: true
+# 5.3.3.2 Configure pam_quality module
+ubtu22cis_rule_5_3_3_2_1: true
+ubtu22cis_rule_5_3_3_2_2: true
+ubtu22cis_rule_5_3_3_2_3: true
+ubtu22cis_rule_5_3_3_2_4: true
+ubtu22cis_rule_5_3_3_2_5: true
+ubtu22cis_rule_5_3_3_2_6: true
+ubtu22cis_rule_5_3_3_2_7: true
+ubtu22cis_rule_5_3_3_2_8: true
+# 5.3.3.3 Configure pam_history module
+# This are added as part of 5.3.2.4 using jinja2 template
+ubtu22cis_rule_5_3_3_3_1: true
+ubtu22cis_rule_5_3_3_3_2: true
+ubtu22cis_rule_5_3_3_3_3: true
+# 5.3.3.4 Configure pam_unix module
+ubtu22cis_rule_5_3_3_4_1: true
+ubtu22cis_rule_5_3_3_4_2: true
+ubtu22cis_rule_5_3_3_4_3: true
+ubtu22cis_rule_5_3_3_4_4: true
+# 5.4 User Accounts and Environment
+# 5.4.1 Configure shadow password suite parameters
+ubtu22cis_rule_5_4_1_1: true
+ubtu22cis_rule_5_4_1_2: true
+ubtu22cis_rule_5_4_1_3: true
+ubtu22cis_rule_5_4_1_4: true
+ubtu22cis_rule_5_4_1_5: true
+ubtu22cis_rule_5_4_1_6: true
+# 5.4.2 Configure root and system accounts and environment
+ubtu22cis_rule_5_4_2_1: true
+ubtu22cis_rule_5_4_2_2: true
+ubtu22cis_rule_5_4_2_3: true
+ubtu22cis_rule_5_4_2_4: true
+ubtu22cis_rule_5_4_2_5: true
+ubtu22cis_rule_5_4_2_6: true
+ubtu22cis_rule_5_4_2_7: true
+ubtu22cis_rule_5_4_2_8: true
+# 5.4.2 Configure user default environment
+ubtu22cis_rule_5_4_3_1: true
+ubtu22cis_rule_5_4_3_2: true
+ubtu22cis_rule_5_4_3_3: true
 
-## Section 6 Fixes
-# Section is System Maintenance (System File Permissions and User and Group Settings)
+## Section 6
+# 6.1 Configure Filesystem Integrity Checking
 ubtu22cis_rule_6_1_1: true
 ubtu22cis_rule_6_1_2: true
 ubtu22cis_rule_6_1_3: true
-ubtu22cis_rule_6_1_4: true
-ubtu22cis_rule_6_1_5: true
-ubtu22cis_rule_6_1_6: true
-ubtu22cis_rule_6_1_7: true
-ubtu22cis_rule_6_1_8: true
-ubtu22cis_rule_6_1_9: true
-ubtu22cis_rule_6_1_10: true
-ubtu22cis_rule_6_1_11: true
-ubtu22cis_rule_6_1_12: true
-ubtu22cis_rule_6_1_13: true
-ubtu22cis_rule_6_2_1: true
+# 6.2.1.1 Configure systemd-journald service
+ubtu22cis_rule_6_1_1_1_1: true
+ubtu22cis_rule_6_1_1_1_2: true
+ubtu22cis_rule_6_1_1_1_3: true
+ubtu22cis_rule_6_1_1_1_4: true
+ubtu22cis_rule_6_1_1_1_5: true
+ubtu22cis_rule_6_1_1_1_6: true
+# 6.2.1.2 Configure systemd-journald service
+ubtu22cis_rule_6_1_1_2_1: true
+ubtu22cis_rule_6_1_1_2_2: true
+ubtu22cis_rule_6_1_1_2_3: true
+ubtu22cis_rule_6_1_1_2_4: true
+# 6.2.2 Configure Logfiles
 ubtu22cis_rule_6_2_2: true
-ubtu22cis_rule_6_2_3: true
-ubtu22cis_rule_6_2_4: true
-ubtu22cis_rule_6_2_5: true
-ubtu22cis_rule_6_2_6: true
-ubtu22cis_rule_6_2_7: true
-ubtu22cis_rule_6_2_8: true
-ubtu22cis_rule_6_2_9: true
-ubtu22cis_rule_6_2_10: true
-ubtu22cis_rule_6_2_11: true
-ubtu22cis_rule_6_2_12: true
-ubtu22cis_rule_6_2_13: true
-ubtu22cis_rule_6_2_14: true
-ubtu22cis_rule_6_2_15: true
-ubtu22cis_rule_6_2_16: true
-ubtu22cis_rule_6_2_17: true
+# 6.3.1 Configure auditd Service
+ubtu22cis_rule_6_3_1_1: true
+ubtu22cis_rule_6_3_1_2: true
+ubtu22cis_rule_6_3_1_3: true
+ubtu22cis_rule_6_3_1_4: true
+# 6.3.2 Configure data retention
+ubtu22cis_rule_6_3_2_1: true
+ubtu22cis_rule_6_3_2_2: true
+ubtu22cis_rule_6_3_2_3: true
+ubtu22cis_rule_6_3_2_4: true
+# 6.3.3 Configure auditd rules
+ubtu22cis_rule_6_3_3_1: true
+ubtu22cis_rule_6_3_3_2: true
+ubtu22cis_rule_6_3_3_3: true
+ubtu22cis_rule_6_3_3_4: true
+ubtu22cis_rule_6_3_3_5: true
+ubtu22cis_rule_6_3_3_6: true
+ubtu22cis_rule_6_3_3_7: true
+ubtu22cis_rule_6_3_3_8: true
+ubtu22cis_rule_6_3_3_9: true
+ubtu22cis_rule_6_3_3_10: true
+ubtu22cis_rule_6_3_3_11: true
+ubtu22cis_rule_6_3_3_12: true
+ubtu22cis_rule_6_3_3_13: true
+ubtu22cis_rule_6_3_3_14: true
+ubtu22cis_rule_6_3_3_15: true
+ubtu22cis_rule_6_3_3_16: true
+ubtu22cis_rule_6_3_3_17: true
+ubtu22cis_rule_6_3_3_18: true
+ubtu22cis_rule_6_3_3_19: true
+ubtu22cis_rule_6_3_3_20: true
+ubtu22cis_rule_6_3_3_21: true
+# 6.3.4 Configure audit file access
+ubtu22cis_rule_6_3_4_1: true
+ubtu22cis_rule_6_3_4_2: true
+ubtu22cis_rule_6_3_4_3: true
+ubtu22cis_rule_6_3_4_4: true
+ubtu22cis_rule_6_3_4_5: true
+ubtu22cis_rule_6_3_4_6: true
+ubtu22cis_rule_6_3_4_7: true
+ubtu22cis_rule_6_3_4_8: true
+ubtu22cis_rule_6_3_4_9: true
+ubtu22cis_rule_6_3_4_10: true
+
+## Section 7
+# 7.1 System File Permissions
+ubtu22cis_rule_7_1_1: true
+ubtu22cis_rule_7_1_2: true
+ubtu22cis_rule_7_1_3: true
+ubtu22cis_rule_7_1_4: true
+ubtu22cis_rule_7_1_5: true
+ubtu22cis_rule_7_1_6: true
+ubtu22cis_rule_7_1_7: true
+ubtu22cis_rule_7_1_8: true
+ubtu22cis_rule_7_1_9: true
+ubtu22cis_rule_7_1_10: true
+ubtu22cis_rule_7_1_11: true
+ubtu22cis_rule_7_1_12: true
+ubtu22cis_rule_7_1_13: true
+# 7.2 Local User and Group Settings
+ubtu22cis_rule_7_2_1: true
+ubtu22cis_rule_7_2_2: true
+ubtu22cis_rule_7_2_3: true
+ubtu22cis_rule_7_2_4: true
+ubtu22cis_rule_7_2_5: true
+ubtu22cis_rule_7_2_6: true
+ubtu22cis_rule_7_2_7: true
+ubtu22cis_rule_7_2_8: true
+ubtu22cis_rule_7_2_9: true
+ubtu22cis_rule_7_2_10: true
 
 ##
 ## Service configuration variables.
@@ -449,44 +516,65 @@ ubtu22cis_rule_6_2_17: true
 ## Set the respective variable to true to keep the service.
 ## otherwise the service is stopped and disabled
 ##
-
-ubtu22cis_allow_autofs: false
-ubtu22cis_allow_usb_storage: false
+# Service configuration
+# Options are
+# true to leave installed if exists not changes take place
+# false - this removes the package
+# mask - if a dependancy for product so cannot be removed
+# Server Services
+ubtu22cis_autofs_services: false
+ubtu22cis_autofs_mask: true
 ubtu22cis_avahi_server: false
-ubtu22cis_cups_server: false
+ubtu22cis_avahi_mask: false
 ubtu22cis_dhcp_server: false
-ubtu22cis_ldap_server: false
-ubtu22cis_nfs_server: false
+ubtu22cis_dhcp_mask: false
 ubtu22cis_dns_server: false
-ubtu22cis_vsftpd_server: false
-ubtu22cis_httpd_server: false
-ubtu22cis_dovecot_server: false
-ubtu22cis_smb_server: false
-ubtu22cis_squid_server: false
+ubtu22cis_dns_mask: false
+ubtu22cis_dnsmasq_server: false
+ubtu22cis_dnsmasq_mask: false
+ubtu22cis_ftp_server: false
+ubtu22cis_ftp_mask: false
+ubtu22cis_ldap_server: false
+ubtu22cis_ldap_mask: false
+ubtu22cis_message_server: false  # This is for messaging dovecot and cyrus-imap
+ubtu22cis_message_mask: false
+ubtu22cis_nfs_server: true
+ubtu22cis_nfs_mask: true
+ubtu22cis_nis_server: true  # set to mask if nis client required
+ubtu22cis_nis_mask: false
+ubtu22cis_print_server: false  # replaces cups
+ubtu22cis_print_mask: false
+ubtu22cis_rpc_server: true
+ubtu22cis_rpc_mask: true
+ubtu22cis_rsync_server: false
+ubtu22cis_rsync_mask: false
+ubtu22cis_samba_server: false
+ubtu22cis_samba_mask: false
 ubtu22cis_snmp_server: false
-ubtu22cis_rsync_server: mask  # Can be set to true, mask or remove depending on requirements
-ubtu22cis_nis_server: false
-ubtu22cis_nfs_client: false
+ubtu22cis_snmp_mask: false
+ubtu22cis_telnet_server: false
+ubtu22cis_telnet_mask: false
+ubtu22cis_tftp_server: false
+ubtu22cis_tftp_mask: false
+ubtu22cis_squid_server: false
+ubtu22cis_squid_mask: false
+ubtu22cis_httpd_server: false
+ubtu22cis_httpd_mask: false
+ubtu22cis_nginx_server: false
+ubtu22cis_nginx_mask: false
+ubtu22cis_xinetd_server: false
+ubtu22cis_xinetd_mask: false
+ubtu22cis_xwindow_server: false  # will remove mask not an option
+ubtu22cis_is_mail_server: false
 
-# rpcbind is required by nfs-common which is required on client and server
-# The value of the variable is determined automatically, based on the variables
-# for NFS server and NFS client.
-ubtu22cis_rpc_required: "{{ ubtu22cis_nfs_server or ubtu22cis_nfs_client }}"
-
-##
-## Client package configuration variables.
-##
-## Set the respective variable to `true` to keep the
-## client package, otherwise it is uninstalled.
-##
-
-ubtu22cis_nis_required: false
-ubtu22cis_rsh_required: false
-ubtu22cis_talk_required: false
+# Client Services
+ubtu22cis_nis_client_required: false  # Same package as NIS server
+ubtu22cis_rsh_client: false
+ubtu22cis_talk_client: false
 ubtu22cis_telnet_required: false
 ubtu22cis_ldap_clients_required: false
+ubtu22cis_ftp_client: false
 
-##
 ## System functionality configuration variables
 ##
 ## There are certain functionalities of a system
@@ -545,43 +633,6 @@ ubtu22cis_aide_init:
     async: 45
     # Polling Interval in seconds
     poll: 0
-
-## Control 1.3.2
-# These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
-# The sub-settings of this variable provide the parameters required to configure
-# the cron job on the target system.
-# Cron is a time-based job scheduling program in Unix OS, which allows tasks to be scheduled
-# and executed automatically at a certain point in time.
-ubtu22cis_aide_cron:
-    # This variable represents the user account under which the cron job for AIDE will run.
-    cron_user: root
-    # This variable represents the path to the AIDE crontab file.
-    cron_file: /etc/cron.d/aide_cron
-    # This variable represents the actual command or script that the cron job
-    # will execute for running AIDE.
-    aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
-    # These variables define the schedule for the cron job
-    # This variable governs the minute of the time of day when the AIDE cronjob is run.
-    # It must be in the range `0-59`.
-    aide_minute: 0
-    # This variable governs the hour of the time of day when the AIDE cronjob is run.
-    # It must be in the range `0-23`.
-    aide_hour: 5
-    # This variable governs the day of the month when the AIDE cronjob is run.
-    # `*` signifies that the job is run on all days; furthermore, specific days
-    # can be given in the range `1-31`; several days can be concatenated with a comma.
-    # The specified day(s) can must be in the range  `1-31`.
-    aide_day: '*'
-    # This variable governs months when the AIDE cronjob is run.
-    # `*` signifies that the job is run in every month; furthermore, specific months
-    # can be given in the range `1-12`; several months can be concatenated with commas.
-    # The specified month(s) can must be in the range  `1-12`.
-    aide_month: '*'
-    # This variable governs the weekdays, when the AIDE cronjob is run.
-    # `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
-    # can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
-    # can be concatenated with commas.
-    aide_weekday: '*'
 
 ## Controls 1.4.x - Boot password
 #
@@ -673,13 +724,6 @@ ubtu22cis_time_servers:
     - name: time-c-g.nist.gov
       options: iburst
 
-## Control 2.2.15 - Local only mode for mail server
-# This variable is used to determine whether you intend to use your machine as a mail server or not.
-# If you do not intend to use it as such, the mail transfer agent (MTA) will be configured to only
-# process local mail, in order to reduce chances of security risks. Set to `false` if your machine
-# is not a mail server or to `true` if it is!
-ubtu22cis_is_mail_server: false
-
 ##
 ## Section 3 Control Variables
 ##
@@ -734,20 +778,6 @@ ubtu22cis_ufw_allow_out_ports:
 ## Section 4 Control Variables
 ##
 
-##  Control 4.1.1.4 - Ensure audit_backlog_limit is sufficient
-# This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
-# system can buffer in memory, if the audit subsystem is unable to process them in real-time.
-# Buffering in memory is useful in situations, where the audit system is overwhelmed
-# with incoming audit events, and needs to temporarily store them until they can be processed.
-# This variable should be set to a sufficient value. The CIS baseline recommends at least `8192` as value.
-ubtu22cis_audit_back_log_limit: 8192
-
-## Control 4.1.2.1 - Ensure audit log storage size is configured
-# This variable specifies the maximum size in MB that an audit log file can reach
-# before it is archived or deleted to make space for the new audit data.
-# This should be set based on your sites policy. CIS does not provide a specific value.
-ubtu22cis_max_log_file_size: 10
-
 ## Controls 4.1.3.x - Audit template
 # This variable is set to true by tasks 4.1.3.1 to 4.1.3.20. As a result, the
 # audit settings are overwritten with the role's template. In order to exclude
@@ -789,7 +819,7 @@ ubtu22cis_auditd:
     # CIS prescribes the value `keep_logs`.
     max_log_file_action: keep_logs
 
-## Controls 4.2.1.x (`journald`) and 4.2.2.x (`rsyslog`)
+## Controls 6.2.1.x journald
 # This variable governs which logging system is used.
 # The options for this variable are `rsyslog` or `journald`.
 ubtu22cis_syslog_service: rsyslog
@@ -800,7 +830,7 @@ ubtu22cis_remote_log_server: 192.168.2.100
 # require that own system logs be sent to some other log server are skipped.
 ubtu22cis_system_is_log_server: false
 
-## Controls 4.2.1.1.x & 4.2.1.x journald
+## Controls 6.2.1.2.x & 6.2.1.x journald
 # This variable specifies the path to the private key file used by the remote journal
 # server to authenticate itself to the client. This key is used alongside the server's
 # public certificate to establish secure communication.
@@ -812,59 +842,39 @@ ubtu22cis_journal_servercertificatefile:
 # of certificate authorities (CAs) that the client trusts. These trusted certificates are used
 # to validate the authenticity of the remote server's certificate.
 ubtu22cis_journal_trustedcertificatefile:
-# These variable specifies how much disk space the journal may use up at most
-# Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes.
-# See https://www.freedesktop.org/software/systemd/man/journald.conf.html for more information.
-# ATTENTION: Uncomment the keyword below when values are set!
-ubtu22cis_journald_systemmaxuse: "#SystemMaxUse="
-ubtu22cis_journald_systemkeepfree: "#SystemKeepFree="
-ubtu22cis_journald_runtimemaxuse: "#RuntimeMaxUse="
-ubtu22cis_journald_runtimekeepfree: "#RuntimeKeepFree="
-# This variable specifies, the maximum time to store entries in a single journal
-# file before rotating to the next one. Set to 0 to turn off this feature.
-# The given values is interpreted as seconds, unless suffixed with the units
-# `year`, `month`, `week`, `day`, `h` or `m` to override the default time unit of seconds.
-# ATTENTION: Uncomment the keyword below when values are set!
-ubtu22cis_journald_maxfilesec: "#MaxFileSec="
-
-## Controls 4.2.2.x Rsyslog
-# This variable governs whether the rsyslog configuration is to be set by this Ansible role.
-# Set it to `true` to configure via Ansible and to `false` otherwise.
-ubtu22cis_rsyslog_ansible_managed: true
 
 ##
 ## Section 5 Control Variables
 ##
-
-## Controls 5.2.4/5/13/14/15/18/20/21/22 -- various sshd settings
+## Controls 5.1.x -- various sshd settings
 ubtu22cis_sshd_default_log_level: "INFO"
+ubtu22cis_sshd_default_max_auth_tries: 4
+ubtu22cis_sshd_default_max_sessions: 8
+ubtu22cis_sshd_default_login_grace_time: 60
+ubtu22cis_sshd_default_client_alive_interval: 300
+ubtu22cis_sshd_default_client_alive_count_max: 3
+# Removed chacha20-poly1305 due to cve2023-48795
+# all Ciphers, KEX and Macs set to FIPS 140
+# This will nee dto be adjusted according to your site requirements
 ubtu22cis_sshd_default_ciphers:
-    - chacha20-poly1305@openssh.com
     - aes256-gcm@openssh.com
     - aes128-gcm@openssh.com
     - aes256-ctr
     - aes192-ctr
     - aes128-ctr
 ubtu22cis_sshd_default_macs:
-    - hmac-sha2-512-etm@openssh.com
-    - hmac-sha2-256-etm@openssh.com
-    - hmac-sha2-512
+    - hmac-sha1
     - hmac-sha2-256
+    - hmac-sha2-384
+    - hmac-sha2-512
 ubtu22cis_sshd_default_kex_algorithms:
-    - curve25519-sha256
-    - curve25519-sha256@libssh.org
-    - diffie-hellman-group14-sha256
+    - ecdh-sha2-nistp256
+    - ecdh-sha2-nistp384
+    - ecdh-sha2-nistp521
+    - diffie-hellman-group-exchange-sha256
     - diffie-hellman-group16-sha512
     - diffie-hellman-group18-sha512
-    - ecdh-sha2-nistp521
-    - ecdh-sha2-nistp384
-    - ecdh-sha2-nistp256
-    - diffie-hellman-group-exchange-sha256
-ubtu22cis_sshd_default_max_auth_tries: 4
-ubtu22cis_sshd_default_max_sessions: 8
-ubtu22cis_sshd_default_login_grace_time: 60
-ubtu22cis_sshd_default_client_alive_interval: 300
-ubtu22cis_sshd_default_client_alive_count_max: 3
+    - diffie-hellman-group14-sha256
 
 ubtu22cis_sshd:
     # This variable is used to control the verbosity of the logging produced by the SSH server.
@@ -928,6 +938,189 @@ ubtu22cis_sshd:
     # For more info, see https://linux.die.net/man/5/sshd_config
     deny_groups: ""
 
+## 5.3.2.x
+# Path to find templates and where to put file for pam-auth
+ubtu22cis_pam_confd_dir: 'usr/share/pam-config.d/'
+
+# Controls 5.3.2.1 - pam_unix
+# Note: controls also managed with disruption high due to the nature of pam changes
+# Allow pam-auth-update --enable unix to run
+# should not be enabled if allowing custom config that enabled pam_faillock
+ubtu22cis_pam_create_pamunix_file: false
+ubtu22cis_pam_auth_unix: false
+ubtu22cis_pam_pwunix_file: 'pam_unix'
+
+# 5.3.2.2 - pam_faillock
+# Enables pam auth update with new files
+ubtu22cis_pam_auth_faillock: false
+# Will create file - change paths to existing files if managed elsewhere
+ubtu22cis_pam_create_faillock_files: false
+ubtu22cis_pam_faillock_file: 'faillock'
+ubtu22cis_pam_faillock_notify_file: 'faillock_notify'
+
+# 5.3.2.3 - pam_pwquality
+# Enables pam auth update with new files
+ubtu22cis_pam_auth_pwquality: false
+# Will create file - change paths to existing files if managed elsewhere
+ubtu22cis_pam_create_pwquality_files: false
+ubtu22cis_pam_pwquality_file: 'pwquality'
+
+# 5.3.2.4 - pam_pwhistory
+# Enables pam auth update with new files
+ubtu22cis_pam_auth_pwhistory: false
+# Will create file - change paths to existing files if managed elsewhere
+# filepath also affects controls 5.3.3.3.1, 5.3.3.3.2, 5.3.3.3.3
+ubtu22cis_pam_create_pwhistory_files: false
+ubtu22cis_pam_pwhistory_file: 'pwhistory'
+
+# 5.3.3.1.1 - faillock_deny
+ubtu22cis_faillock_deny: 3
+
+# 5.3.3.1.3 - lock root
+# This allow optional - even_deny_root or root_unlock_time
+ubtu22cis_pamroot_lock_option: even_deny_root
+ubtu22cis_pamroot_lock_string: even_deny_root
+
+# 5.3.3.2.1 - password difok
+ubtu22cis_passwd_difok_file: etc/security/pwquality.conf.d/50-pwdifok.conf
+ubtu22cis_passwd_difok_value: 2
+
+# 5.3.3.2.2 - password minlength
+ubtu22cis_passwd_minlen_file: etc/security/pwquality.conf.d/50-pwlength.conf
+ubtu22cis_passwd_minlen_value: 14
+
+# 5.3.3.2.3 - password complex
+ubtu22cis_passwd_complex_file: etc/security/pwquality.conf.d/50-pwcomplexity.conf
+ubtu22cis_passwd_minclass: 3
+ubtu22cis_passwd_dcredit: -1
+ubtu22cis_passwd_ucredit: -2
+ubtu22cis_passwd_ocredit: 0
+ubtu22cis_passwd_lcredit: -2
+
+# 5.3.3.2.4 - password maxrepeat
+ubtu22cis_passwd_maxrepeat_file: etc/security/pwquality.conf.d/50-pwrepeat.conf
+ubtu22cis_passwd_maxrepeat_value: 3
+
+# 5.3.3.2.5 - password maxsequence
+ubtu22cis_passwd_maxsequence_file: etc/security/pwquality.conf.d/50-pwmaxsequence.conf
+ubtu22cis_passwd_maxsequence_value: 3
+
+# 5.3.3.2.6 - password dictcheck
+ubtu22cis_passwd_dictcheck_file: etc/security/pwquality.conf.d/50-pwdictcheck.conf
+ubtu22cis_passwd_dictcheck_value: 1
+
+# 5.3.3.2.7 - password quality enforce
+ubtu22cis_passwd_quality_enforce_file: etc/security/pwquality.conf.d/50-pwquality_enforce.conf
+ubtu22cis_passwd_quality_enforce_value: 1
+
+# 5.3.3.2.8 - password quality enforce for root included with 5.3.3.2.7
+ubtu22cis_passwd_quality_enforce_root_file: etc/security/pwquality.conf.d/50-pwroot.conf
+ubtu22cis_passwd_quality_enforce_root_value: enforce_for_root
+
+## 5.3.3.3 Configure pam_pwhistory module
+# Uses value for ubtu22cis_pam_pwhistory_file in 5.3.2.4
+# Control 5.3.3.3.1
+# This variable represents the number of password change cycles, after which
+# a user can re-use a password. # CIS requires a value of 24 or more.
+ubtu22cis_pamd_pwhistory_remember: 24
+
+## Controls 5.4.1.x - Password settings
+ubtu22cis_pass:
+    ## Control 5.4.1.1
+    # This variable governs after how many days a  password expires.
+    # CIS requires a value of 365 or less.
+    max_days: 365
+    ## Control 5.4.1.2
+    # This variable specifies the minimum number of days allowed between changing passwords.
+    # CIS requires a value of at least 1.
+    min_days: 1
+    ## Control 5.5.1.3
+    # This variable governs, how many days before a password expires, the user will be warned.
+    # CIS requires a value of at least 7.
+    warn_age: 7
+    ## Control 5.4.1.5
+    # This variable specifies the number of days of inactivity before an account will be locked.
+    # CIS requires a value of 45 days or less.
+    inactive: 45
+
+# 5.4.2.6 root umask
+ubtu22cis_root_umask: '0027'  # 0027 or more restrictive
+
+###
+# Section 6
+###
+## Control 6.1.2
+# These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
+# The sub-settings of this variable provide the parameters required to configure
+# the cron job on the target system.
+# Cron is a time-based job scheduling program in Unix OS, which allows tasks to be scheduled
+# and executed automatically at a certain point in time.
+ubtu22cis_aide_cron:
+    # This variable represents the user account under which the cron job for AIDE will run.
+    cron_user: root
+    # This variable represents the path to the AIDE crontab file.
+    cron_file: /etc/cron.d/aide_cron
+    # This variable represents the actual command or script that the cron job
+    # will execute for running AIDE.
+    aide_job: '/usr/bin/aide --config /etc/aide/aide.conf --check'
+    # These variables define the schedule for the cron job
+    # This variable governs the minute of the time of day when the AIDE cronjob is run.
+    # It must be in the range `0-59`.
+    aide_minute: 0
+    # This variable governs the hour of the time of day when the AIDE cronjob is run.
+    # It must be in the range `0-23`.
+    aide_hour: 5
+    # This variable governs the day of the month when the AIDE cronjob is run.
+    # `*` signifies that the job is run on all days; furthermore, specific days
+    # can be given in the range `1-31`; several days can be concatenated with a comma.
+    # The specified day(s) can must be in the range  `1-31`.
+    aide_day: '*'
+    # This variable governs months when the AIDE cronjob is run.
+    # `*` signifies that the job is run in every month; furthermore, specific months
+    # can be given in the range `1-12`; several months can be concatenated with commas.
+    # The specified month(s) can must be in the range  `1-12`.
+    aide_month: '*'
+    # This variable governs the weekdays, when the AIDE cronjob is run.
+    # `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
+    # can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
+    # can be concatenated with commas.
+    aide_weekday: '*'
+
+# 6.2.1.1.3
+# These variable specifies how much disk space the journal may use up at most
+# Specify values in bytes or use K, M, G, T, P, E as units for the specified sizes.
+# See https://www.freedesktop.org/software/systemd/man/journald.conf.html for more information.
+# ATTENTION: Uncomment the keyword below when values are set!
+ubtu22cis_journald_systemmaxuse: "#SystemMaxUse="
+ubtu22cis_journald_systemkeepfree: "#SystemKeepFree="
+ubtu22cis_journald_runtimemaxuse: "#RuntimeMaxUse="
+ubtu22cis_journald_runtimekeepfree: "#RuntimeKeepFree="
+# This variable specifies, the maximum time to store entries in a single journal
+# file before rotating to the next one. Set to 0 to turn off this feature.
+# The given values is interpreted as seconds, unless suffixed with the units
+# `year`, `month`, `week`, `day`, `h` or `m` to override the default time unit of seconds.
+# ATTENTION: Uncomment the keyword below when values are set!
+ubtu22cis_journald_maxfilesec: "#MaxFileSec="
+
+##  Control 6.3.1.4 - Ensure audit_backlog_limit is sufficient
+# This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
+# system can buffer in memory, if the audit subsystem is unable to process them in real-time.
+# Buffering in memory is useful in situations, where the audit system is overwhelmed
+# with incoming audit events, and needs to temporarily store them until they can be processed.
+# This variable should be set to a sufficient value. The CIS baseline recommends at least `8192` as value.
+ubtu22cis_audit_back_log_limit: 8192
+
+## Control 6.3.2.1 - Ensure audit log storage size is configured
+# This variable specifies the maximum size in MB that an audit log file can reach
+# before it is archived or deleted to make space for the new audit data.
+# This should be set based on your sites policy. CIS does not provide a specific value.
+ubtu22cis_max_log_file_size: 10
+
+# Control 6.3.2.4
+# Wait to do when space left is low.
+ubtu22cis_auditd_space_left_action: email
+ubtu22cis_auditd_admin_space_left_action: email
+
 ## Control 5.3.1
 # This variable represents the name of the sudo package to install
 # CIS recommends `sudo` or, if LDAP functionality is required, `sudo-ldap`.
@@ -948,32 +1141,6 @@ ubtu22cis_sudo_timestamp_timeout: 15
 # CIS requires that such a group be created (named according to site policy) and be kept empty.
 ubtu22cis_sugroup: nosugroup
 
-## Control 5.4.1
-# This variable allows us to use either
-#
-
-ubtu22cis_pwquality_minclass: true
-ubtu22cis_pwquality_minclass_value: '4'
-ubtu22cis_pwquality:
-    - key: '#minclass'
-      value: "{{ ubtu22cis_pwquality_minclass_value }}"
-    - key: 'minlen'
-      value: '14'
-    - key: 'dcredit'
-      value: '-1'
-    - key: 'ucredit'
-      value: '-1'
-    - key: 'ocredit'
-      value: '-1'
-    - key: 'lcredit'
-      value: '-1'
-
-## Control 5.4.3
-# This variable represents the number of password change cycles, after which
-# a user can re-use a password.
-# CIS requires a value of 5 or more.
-ubtu22cis_pamd_pwhistory_remember: 5
-
 ## Control 5.4.2
 # This can seriously break access to a system
 ## The end state the file /etc/pam.d/common-auth need to be understood
@@ -990,25 +1157,6 @@ ubtu22cis_rule_5_4_2_faillock_config: |
 ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
 # Set pam as well as login defs if PAM is required
 ubtu22cis_passwd_setpam_hash_algo: false
-
-## Controls 5.5.1.x - Password settings
-ubtu22cis_pass:
-    ## Control 5.5.1.2
-    # This variable governs after how many days a  password expires.
-    # CIS requires a value of 365 or less.
-    max_days: 365
-    ## Control 5.5.1.1
-    # This variable specifies the minimum number of days allowed between changing passwords.
-    # CIS requires a value of at least 1.
-    min_days: 1
-    ## Control 5.5.1.3
-    # This variable governs, how many days before a password expires, the user will be warned.
-    # CIS requires a value of at least 7.
-    warn_age: 7
-    ## Control 5.5.1.4
-    # This variable specifies the number of days of inactivity before an account will be locked.
-    # CIS requires a value of 30 days or less.
-    inactive: 30
 
 ## Control 5.5.4 - Default user mask
 # The following variable specifies the "umask" to set in the `/etc/bash.bashrc` and `/etc/profile`.
@@ -1058,38 +1206,29 @@ max_int_uid: 65533
 # Possible values are `true` and `false`.
 ubtu22cis_no_world_write_adjust: true
 
-# Control 6.1.10
-# The value of this variable specifies the owner that will be set for unowned files and directories.
-ubtu22cis_unowned_owner: root
-# This variable is a toggle for enabling/disabling the automated
-# setting of an owner (specified in variable `ubtu22cis_unowned_owner`)
-# for all unowned files and directories.
-# Possible values are `true` and `false`.
-ubtu22cis_no_owner_adjust: true
-
-## Control 6.1.11
-# This variable represents the group that will be set for files without group.
-ubtu22cis_ungrouped_group: root
-# This variable is a toggle for enabling/disabling the automated
-# assignment of a group (specified in variable `ubtu22cis_unowned_group`)
-# for all group-less files and directories.
-# Possible values are `true` and `false`.
-ubtu22cis_no_group_adjust: true
-
-## Control 6.1.12
-# This variable is a toggle for enabling/disabling the automated removal
-# of the SUID bit from all files on all mounts.
-# Possible values are `true` and `false`.
-ubtu22cis_suid_adjust: false
-
-## Control 6.1.13
-# This variable is a toggle for enabling/disabling the automated removal the SGID
-# bit from all files on all mounts
-# Possible values are `true` and `false`.
-ubtu22cis_sgid_adjust: false
-
 ## Control 6.2.7
 # This variable is a toggle foe enabling/disabling the automated modification of
 # permissions on dot files.
 # Possible values are `true` and `false`.
 ubtu22cis_dotperm_ansiblemanaged: true
+
+## Section 7
+
+# 7.1.12 Ensure no files or directories without an owner and a group exist
+ubtu22cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
+
+# Control 7.1.12
+# The value of this variable specifies the owner that will be set for unowned files and directories.
+ubtu22cis_unowned_owner: root
+ubtu22cis_ungrouped_group: root
+# This variable is a toggle for enabling/disabling the automated
+# setting of an owner (specified in variable `ubtu22cis_unowned_owner`)
+# for all unowned files and directories.
+# Possible values are `true` and `false`.
+ubtu22cis_ownership_adjust: true
+
+## Control 7.1.13
+# This variable is a toggle for enabling/disabling the automated removal
+# of the SUID bit from all files on all mounts.
+# Possible values are `true` and `false`.
+ubtu22cis_suid_sgid_adjust: false
