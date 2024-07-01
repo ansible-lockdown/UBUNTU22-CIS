@@ -5,12 +5,12 @@
 # E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
 # to "true". If you do not want the tasks from that section to get executed you simply set the variable to "false".
 ubtu22cis_section1: true
-ubtu22cis_section2: true
-ubtu22cis_section3: true
-ubtu22cis_section4: true
-ubtu22cis_section5: true
-ubtu22cis_section6: true
-ubtu22cis_section7: true
+ubtu22cis_section2: false
+ubtu22cis_section3: false
+ubtu22cis_section4: false
+ubtu22cis_section5: false
+ubtu22cis_section6: false
+ubtu22cis_section7: false
 
 ## Reboot system before audit
 # System will reboot if false, can give better audit results
@@ -1163,20 +1163,21 @@ ubtu22cis_passwd_setpam_hash_algo: false
 # The value needs to be `027` or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
 
-## Control 5.5.5 - Configuring user shell timeout
+## Control 5.4.3.2 - Configuring user shell timeout
 # This dictionary is related to ensuring the rule about user shell timeout
-ubtu22cis_shell_session_timeout:
+    # This variable represents the amount of seconds a command or process is allowed to
+    # run before being forcefully terminated.
+    # CIS requires a value of at most 900 seconds.
+ubtu22cis_shell_session_timeout: 900
     # This variable specifies the path of the timeout setting file.
     # (TMOUT setting can be set in multiple files, but only one is required for the
     # rule to pass. Options are:
     # - a file in `/etc/profile.d/` ending in `.s`,
     # - `/etc/profile`, or
     # - `/etc/bash.bashrc`.
-    file: /etc/profile.d/tmout.sh
-    # This variable represents the amount of seconds a command or process is allowed to
-    # run before being forcefully terminated.
-    # CIS requires a value of at most 900 seconds.
-    timeout: 900
+ubtu22cis_shell_session_file: /etc/profile.d/tmout.sh
+
+
 
 ##
 ## Section 6 Control Variables
