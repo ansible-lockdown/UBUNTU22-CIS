@@ -3,7 +3,7 @@
 - name: "2.2.1 | PATCH | Ensure NIS Client is not installed"
   when:
     - ubtu22cis_rule_2_2_1
-    - not ubtu22cis_nis_required
+    - not ubtu22cis_nis_server
   tags:
     - level1-server
     - level1-workstation
@@ -17,7 +17,7 @@
 - name: "2.2.2 | PATCH | Ensure rsh client is not installed"
   when:
     - ubtu22cis_rule_2_2_2
-    - not ubtu22cis_rsh_required
+    - not ubtu22cis_rsh_client
   tags:
     - level1-server
     - level1-workstation
@@ -32,7 +32,7 @@
 - name: "2.2.3 | PATCH | Ensure talk client is not installed"
   when:
     - ubtu22cis_rule_2_2_3
-    - not ubtu22cis_talk_required
+    - not ubtu22cis_talk_client
   tags:
     - level1-server
     - level1-workstation
@@ -77,7 +77,7 @@
 - name: "2.2.6 | PATCH | Ensure ftp is not installed"
   when:
     - ubtu22cis_rule_2_2_6
-    - not ubtu22cis_ftp_required
+    - not ubtu22cis_ftp_client
   tags:
     - level1-server
     - level1-workstation
