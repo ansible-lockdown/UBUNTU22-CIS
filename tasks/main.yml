@@ -20,7 +20,7 @@
 #  This control should always run as this can pass on unintended issues.
 - name: "Check password set for connecting user"
   when:
-    - ubtu22cis_rule_5_3_4
+    - ubtu22cis_rule_5_2_4
     - ansible_env.SUDO_USER is defined
   tags:
     - always
@@ -38,7 +38,7 @@
         fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
         success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
       vars:
-        sudo_password_rule: ubtu22cis_rule_5_3_4  # pragma: allowlist secret
+        sudo_password_rule: ubtu22cis_rule_5_2_4  # pragma: allowlist secret
 
 - name: Ensure root password is set
   when:
@@ -69,7 +69,7 @@
     msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
 
 - name: Check ubtu22cis_grub_user password variable has been changed
-  when: ubtu22cis_rule_1_4_3
+  when: ubtu22cis_rule_1_4_1
   tags:
     - always
   block:
@@ -82,7 +82,7 @@
       when:
         - "'$y$' in ubtu22cis_password_set_grub_user.stdout"
         - ubtu22cis_set_grub_user_pass
-        - ubtu22cis_rule_1_4_3
+        - ubtu22cis_rule_1_4_1
       ansible.builtin.assert:
         that: ubtu22cis_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
         msg: "This role will not set the {{ ubtu22cis_grub_user }} user password is not set or ubtu22cis_grub_user_passwd variable has not been set correctly"
