@@ -15,7 +15,7 @@
     - rule_1.1.1.2
     - always
   when:
-    - ubtu22cis_rule_1_1_1_2
+    - ubtu22cis_rule_1_1_1_6
 
 - name: "PRELIM | AUDIT | Register if squashfs is built into the kernel"
   ansible.builtin.shell: cat /lib/modules/$(uname -r)/modules.builtin | grep  -c "squashfs"
@@ -25,7 +25,7 @@
   tags:
     - always
   when:
-    - ubtu22cis_rule_1_1_1_2
+    - ubtu22cis_rule_1_1_1_6
 
 - name: "PRELIM | AUDIT | Section 1.1 | Create list of mount points"
   ansible.builtin.set_fact:
@@ -78,7 +78,7 @@
 
 - name: "PRELIM | AUDIT | Check for autofs service"
   when:
-    - ubtu22cis_rule_1_1_9
+    - ubtu22cis_rule_2_1_1
   tags:
     - skip_ansible_lint
     - section1
@@ -109,8 +109,8 @@
 
 - name: "PRELIM | PATCH | Run apt update"
   when:
-    - ubtu22cis_rule_1_3_1 or
-      ubtu22cis_rule_1_9
+    - ubtu22cis_rule_1_2_1_1 or
+      ubtu22cis_rule_1_2_2_1
   tags:
     - always
   ansible.builtin.package:
@@ -129,7 +129,7 @@
       changed_when: false
       failed_when: discover_wireless_adapters.rc not in [ 0, 1 ]
 
-    - name: "PRELIM | PATCH | Install Network-Manager | if wireless adpater present"
+    - name: "PRELIM | PATCH | Install Network-Manager | if wireless adapter present"
       when:
         - ubtu22cis_install_network_manager
         - discover_wireless_adapters.rc == 0
@@ -140,10 +140,10 @@
 
 - name: "PRELIM | PATCH | Ensure auditd is installed"
   when:
-    - ubtu22cis_rule_4_1_1_1 or
-      ubtu22cis_rule_4_1_4_5 or
-      ubtu22cis_rule_4_1_4_6 or
-      ubtu22cis_rule_4_1_4_7
+    - ubtu22cis_rule_6_3_1_1 or
+      ubtu22cis_rule_6_3_4_1 or
+      ubtu22cis_rule_6_3_4_6 or
+      ubtu22cis_rule_6_3_4_8
   tags:
     - level2-server
     - level2-workstation
@@ -183,8 +183,8 @@
   check_mode: false
   register: ubtu22cis_sudoers_files
   when:
-    - ubtu22cis_rule_5_3_4 or
-      ubtu22cis_rule_5_3_5
+    - ubtu22cis_rule_5_2_4 or
+      ubtu22cis_rule_5_2_5
   tags:
     - always
 
@@ -241,7 +241,7 @@
 
 - name: "PRELIM | PATCH | Install ACL"
   when:
-    - ubtu22cis_rule_6_2_6
+    - ubtu22cis_rule_7_2_9
     - "'acl' not in ansible_facts.packages"
   tags:
     - always
@@ -251,9 +251,9 @@
 
 - name: "PRELIM | AUDIT | Gather UID 0 accounts other than root"
   when:
-    - ubtu22cis_rule_6_2_10
+    - ubtu22cis_rule_5_4_2_1
   tags:
-    - rule_6.2.10
+    - rule_5.4.2.1
     - level1-server
     - level1-workstation
     - users
