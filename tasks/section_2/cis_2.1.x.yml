@@ -654,7 +654,6 @@
 - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode"
   when:
     - not ubtu22cis_is_mail_server
-    - "'postfix' in ansible_facts.packages"
     - ubtu22cis_rule_2_1_21
   tags:
     - level1-server
@@ -662,11 +661,52 @@
     - patch
     - postfix
     - rule_2.1.21
-  notify: Restart postfix
-  ansible.builtin.lineinfile:
-    path: /etc/postfix/main.cf
-    regexp: "^(#)?inet_interfaces"
-    line: "inet_interfaces = loopback-only"
+  vars:
+    warn_control_id: '2.2.21'
+  block:
+    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if exim4 installed"
+      when: "'exim4' in ansible_facts.packages"
+      notify: Restart exim4
+      ansible.builtin.lineinfile:
+        path: /etc/exim4/update-exim4.conf.conf
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        with_items:
+          - { regexp: '^dc_eximconfig_configtype', line: "dc_eximconfig_configtype='local'" }
+          - { regexp: '^dc_local_interfaces', line: "dc_local_interfaces='127.0.0.1 ; ::1'" }
+          - { regexp: '^dc_readhost', line: "dc_readhost=''" }
+          - { regexp: '^dc_relay_domains', line: "dc_relay_domains=''" }
+          - { regexp: '^dc_minimaldns', line: "dc_minimaldns='false'" }
+          - { regexp: '^dc_relay_nets', line: "dc_relay_nets=''" }
+          - { regexp: '^dc_smarthost', line: "dc_smarthost=''" }
+          - { regexp: '^dc_use_split_config', line: "dc_use_split_config='false'" }
+          - { regexp: '^dc_hide_mailname', line: "dc_hide_mailname=''" }
+          - { regexp: '^dc_mailname_in_oh', line: "dc_mailname_in_oh='true'" }
+          - { regexp: '^dc_localdelivery', line: "dc_localdelivery='mail_spool'" }
+
+    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if postfix is installed"
+      when: "'postfix' in ansible_facts.packages"
+      notify: Restart postfix
+      ansible.builtin.lineinfile:
+        path: /etc/postfix/main.cf
+        regexp: '^(#)?inet_interfaces'
+        line: 'inet_interfaces = loopback-only'
+
+    - name: "2.1.21 | WARN | Ensure mail transfer agents are configured for local-only mode | Message out other main agents"
+      when:
+        - "'exim4' not in ansible_facts.packages"
+        - "'postfix' not in ansible_facts.packages"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! You are not using either exim4 or postfix, please ensure mail services set for local only mode"
+          - "Please review your vendors documentation to configure local-only mode"
+
+    - name: "2.1.21 | WARN | Ensure mail transfer agents are configured for local-only mode | warn_count"
+      when:
+        - "'exim4' not in ansible_facts.packages"
+        - "'postfix' not in ansible_facts.packages"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
 
 - name: "2.1.22 | AUDIT | Ensure only approved services are listening on a network interface"
   when:
