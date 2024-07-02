@@ -16,27 +16,11 @@
     - rule_6.3.4.1
     - rule_6.3.4.2
     - rule_6.3.4.3
-  block:
-    - name: "6.3.4.1 | AUDIT | Ensure audit log files mode is configured | discover file"
-      ansible.builtin.shell: grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'
-      changed_when: false
-      register: discovered_audit_logfile
-
-    - name: "6.3.4.1 | AUDIT | Ensure audit log files mode is configured | stat file"
-      ansible.builtin.stat:
-        path: "{{ discovered_audit_logfile.stdout }}"
-      changed_when: false
-      register: auditd_logfile
-
-    - name: |
-        "6.3.4.1 | PATCH | Ensure audit log files mode is configured"
-        "6.3.4.2 | PATCH | Ensure audit log files owner is configured"
-        "6.3.4.3 | PATCH | Ensure audit log files group owner is configured"
-      ansible.builtin.file:
-        path: "{{ discovered_audit_logfile.stdout }}"
-        mode: "{% if auditd_logfile.stat.mode > '0640' %}0640{% endif %}"
-        owner: root
-        group: root
+  ansible.builtin.file:
+    path: "{{ prelim_auditd_logfile.stdout }}"
+    owner: root
+    group: root
+    mode: u-x,g-wx-o-rwx
 
 - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured"
   when:

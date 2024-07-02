@@ -274,12 +274,18 @@
 
 - name: "PRELIM | AUDIT | 6.3.4.x | Capture information about auditd logfile path | discover file"
   when:
-      - ubtu22cis_rule_6_3_4_4
+      - ubtu22cis_rule_6_3_4_1 or
+        ubtu22cis_rule_6_3_4_2 or
+        ubtu22cis_rule_6_3_4_3 or
+        ubtu22cis_rule_6_3_4_4
   tags:
       - level2-server
       - level2-workstation
       - patch
       - auditd
+      - rule_6.3.4.1
+      - rule_6.3.4.2
+      - rule_6.3.4.3
       - rule_6.3.4.4
   ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
   changed_when: false
