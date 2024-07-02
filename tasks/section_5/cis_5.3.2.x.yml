@@ -52,13 +52,13 @@
     - ubtu22cis_rule_5_3_2_3
     - ubtu22cis_disruption_high
     - ubtu22cis_pam_create_pwquality_files
-    - pam_quality
   tags:
     - level1-server
     - level1-workstation
     - patch
     - rule_5.3.2.3
     - Pam_auth_update
+    - pam_quality
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwquality_file }}.j2"
     dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwquality_file }}"
@@ -72,13 +72,13 @@
     - ubtu22cis_rule_5_3_2_4
     - ubtu22cis_disruption_high
     - ubtu22cis_pam_create_pwhistory_files
-    - pam_history
   tags:
     - level1-server
     - level1-workstation
     - patch
     - rule_5.3.2.4
     - Pam_auth_update
+    - pam_history
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}.j2"
     dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
