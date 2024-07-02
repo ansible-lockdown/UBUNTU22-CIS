@@ -20,7 +20,7 @@
     path: "{{ prelim_auditd_logfile.stdout }}"
     owner: root
     group: root
-    mode: u-x,g-wx-o-rwx
+    mode: u-x,g-wx,o-rwx
 
 - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured"
   when:
