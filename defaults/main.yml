@@ -1095,32 +1095,6 @@ ubtu22cis_auditd_uid_exclude:
 ubtu22cis_audit_back_log_limit: 8192
 
 ## Controls 6.3.2.x - What to do when log files fill up
-# This variable controls how the audit system behaves when
-# log files are getting too full and space is getting too low.
-ubtu22cis_auditd:
-    action_mail_acct: root
-    space_left_action: email
-    # This variable determines the action the audit system should take when disk
-    # space runs low.
-    # The options for setting this variable are as follows:
-    # - `ignore`: the system does nothing when presented with the aforementioned issue;
-    # - `syslog`: a message is sent to the system log about disk space running low;
-    # - `suspend`: the system suspends recording audit events until more space is available;
-    # - `halt`: the system is halted when disk space is critically low.
-    # - `single`: the audit daemon will put the computer system in single user mode
-    # CIS prescribes either `halt` or `single`.
-    admin_space_left_action: halt
-    # This variable determines what action the audit system should take when the maximum
-    # size of a log file is reached.
-    # The options for setting this variable are as follows:
-    # - `ignore`: the system does nothing when the size of a log file is full;
-    # - `syslog`: a message is sent to the system log indicating the problem;
-    # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
-    # - `rotate`: the log file is rotated (archived) and a new empty log file is created;
-    # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
-    # CIS prescribes the value `keep_logs`.
-    max_log_file_action: keep_logs
-
 ## Control 6.3.2.1 - Ensure audit log storage size is configured
 # This variable specifies the maximum size in MB that an audit log file can reach
 # before it is archived or deleted to make space for the new audit data.
@@ -1138,6 +1112,26 @@ ubtu22cis_max_log_file_size: 10
     # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
     # CIS prescribes the value `keep_logs`.
 ubtu22cis_auditd_max_log_file_action: keep_logs
+
+## Control 6.2.3.3
+# This variable determines how the system should act in case of issues with disk
+# The disk_full_action parameter tells the system what action to take when no free space is available on the partition that holds the audit log files.
+# Valid values are ignore, syslog, rotate, exec, suspend, single, and halt.
+#
+# The disk_error_action parameter tells the system what action to take when an error is detected on the partition that holds the audit log files.
+# Valid values are ignore, syslog, exec, suspend, single, and halt.
+#
+# CIS prescribes
+# disk_full_action parameter:
+# Set to halt - the auditd daemon will shutdown the system when the disk partition containing the audit logs becomes full.
+# Set to single - the auditd daemon will put the computer system in single user mode when the disk partition containing the audit logs becomes full.
+#
+# disk_error_action parameter:
+# Set to halt - the auditd daemon will shutdown the system when an error is detected on the partition that holds the audit log files.
+# Set to single - the auditd daemon will put the computer system in single user mode when an error is detected on the partition that holds the audit log files.
+# Set to syslog - the auditd daemon will issue no more than 5 consecutive warnings to syslog when an error is detected on the partition that holds the audit log files.
+ubtu22cis_auditd_disk_full_action: halt
+ubtu22cis_auditd_disk_error_action: syslog
 
 # Control 6.3.2.4
 # Wait to do when space left is low.

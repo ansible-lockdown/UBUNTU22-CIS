@@ -40,15 +40,14 @@
     - patch
     - rule_6.3.2.3
     - auditd
+  notify: Restart auditd
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
   with_items:
-    - { regexp: '^space_left_action', line: "space_left_action = {{ ubtu22cis_auditd['space_left_action'] }}" }
-    - { regexp: '^action_mail_acct', line: "action_mail_acct = {{ ubtu22cis_auditd['action_mail_acct'] }}" }
-    - { regexp: '^admin_space_left_action', line: "admin_space_left_action = {{ ubtu22cis_auditd['admin_space_left_action'] }}" }
-  notify: Restart auditd
+    - { regexp: '^disk_full_action', line: "disk_full_action = {{ ubtu22cis_auditd_disk_full_action }}" }
+    - { regexp: '^disk_error_action', line: "disk_error_action = {{ ubtu22cis_auditd_disk_error_action }}" }
 
 - name: "6.3.2.4 | PATCH | Ensure system warns when audit logs are low on space"
   when:
