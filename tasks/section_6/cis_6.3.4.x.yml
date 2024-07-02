@@ -50,15 +50,14 @@
   block:
     - name: "6.3.4.4 | AUDIT | Ensure the audit log file directory mode is configured | get current permissions"
       ansible.builtin.stat:
-        path: "{{ audit_discovered_logfile.stdout | dirname }}"
+        path: "{{ prelim_auditd_logfile.stdout | dirname }}"
       register: auditlog_dir
 
-    - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured | set"
-      when: not auditlog_dir.stat.mode is match('07(0|5)0')
+    - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured | set permissions"
       ansible.builtin.file:
-        path: "{{ audit_discovered_logfile.stdout | dirname }}"
+        path: "{{ auditlog_dir.stat.path }}"
         state: directory
-        mode: '0750'
+        mode: g-w,o-rwx
 
 - name: "6.3.4.5 | PATCH | Ensure audit configuration files mode is configured"
   when:
