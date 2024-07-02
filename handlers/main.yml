@@ -31,7 +31,7 @@
   with_items:
     - "{{ ansible_facts.mounts }}"
   loop_control:
-      label: "{{ item.device }}"
+    label: "{{ item.device }}"
   listen: Writing and remounting tmp
 
 - name: Update_Initramfs
@@ -133,7 +133,7 @@
 
 - name: Reload ufw
   community.general.ufw:
-      state: reloaded
+    state: reloaded
 
 - name: Iptables persistent
   ansible.builtin.shell: bash -c "iptables-save > /etc/iptables/rules.v4"

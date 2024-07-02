@@ -65,8 +65,8 @@
 
     - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Warning if others gid 0 groups"
       when:
-      - discovered_gid0_groups is defined
-      - discovered_gid0_groups.stdout | length > 0
+        - discovered_gid0_groups is defined
+        - discovered_gid0_groups.stdout | length > 0
       ansible.builtin.debug:
         msg:
           - "Warning!! You have other groups assigned to GID 0 - Please resolve"
@@ -74,8 +74,8 @@
 
     - name: "5.4.2.3 | WARN | Ensure group root is the only GID 0 group | warn_count"
       when:
-      - discovered_gid0_groups is defined
-      - discovered_gid0_groups.stdout | length > 0
+        - discovered_gid0_groups is defined
+        - discovered_gid0_groups.stdout | length > 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
       vars:

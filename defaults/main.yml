@@ -724,7 +724,6 @@ ubtu22cis_ipv6_disable: grub
 # it, ensuring that wireless interfaces are disabled will not be possible!
 ubtu22cis_install_network_manager: true
 
-
 ## Control 3.1.3 - Ensure bluetooth Services are not in use
 # This control managed how the bluetooth service is managaed
 # Options are
@@ -815,7 +814,7 @@ ubtu22cis_sshd_default_ciphers:
 ubtu22cis_sshd_default_macs:
     - hmac-sha1
     - hmac-sha2-256
-#    - hmac-sha2-384  # hashed out seen as bad ssh2 MAC
+    #  - hmac-sha2-384  # hashed out seen as bad ssh2 MAC
     - hmac-sha2-512
 ubtu22cis_sshd_default_kex_algorithms:
     - ecdh-sha2-nistp256
@@ -935,15 +934,15 @@ ubtu22cis_pamroot_lock_option: even_deny_root
 ubtu22cis_pamroot_lock_string: even_deny_root
 
 # 5.3.3.2.1 - password difok
-ubtu22cis_passwd_difok_file: etc/security/pwquality.conf.d/50-pwdifok.conf
+ubtu22cis_passwd_difok_file: etc/security/pwquality.conf.d/50-pwdifok.conf  # pragma: allowlist secret
 ubtu22cis_passwd_difok_value: 2
 
 # 5.3.3.2.2 - password minlength
-ubtu22cis_passwd_minlen_file: etc/security/pwquality.conf.d/50-pwlength.conf
+ubtu22cis_passwd_minlen_file: etc/security/pwquality.conf.d/50-pwlength.conf  # pragma: allowlist secret
 ubtu22cis_passwd_minlen_value: 14
 
 # 5.3.3.2.3 - password complex
-ubtu22cis_passwd_complex_file: etc/security/pwquality.conf.d/50-pwcomplexity.conf
+ubtu22cis_passwd_complex_file: etc/security/pwquality.conf.d/50-pwcomplexity.conf  # pragma: allowlist secret
 ubtu22cis_passwd_minclass: 3
 ubtu22cis_passwd_dcredit: -1
 ubtu22cis_passwd_ucredit: -2
@@ -951,24 +950,24 @@ ubtu22cis_passwd_ocredit: 0
 ubtu22cis_passwd_lcredit: -2
 
 # 5.3.3.2.4 - password maxrepeat
-ubtu22cis_passwd_maxrepeat_file: etc/security/pwquality.conf.d/50-pwrepeat.conf
+ubtu22cis_passwd_maxrepeat_file: etc/security/pwquality.conf.d/50-pwrepeat.conf  # pragma: allowlist secret
 ubtu22cis_passwd_maxrepeat_value: 3
 
 # 5.3.3.2.5 - password maxsequence
-ubtu22cis_passwd_maxsequence_file: etc/security/pwquality.conf.d/50-pwmaxsequence.conf
+ubtu22cis_passwd_maxsequence_file: etc/security/pwquality.conf.d/50-pwmaxsequence.conf  # pragma: allowlist secret
 ubtu22cis_passwd_maxsequence_value: 3
 
 # 5.3.3.2.6 - password dictcheck
-ubtu22cis_passwd_dictcheck_file: etc/security/pwquality.conf.d/50-pwdictcheck.conf
+ubtu22cis_passwd_dictcheck_file: etc/security/pwquality.conf.d/50-pwdictcheck.conf  # pragma: allowlist secret
 ubtu22cis_passwd_dictcheck_value: 1
 
 # 5.3.3.2.7 - password quality enforce
-ubtu22cis_passwd_quality_enforce_file: etc/security/pwquality.conf.d/50-pwquality_enforce.conf
+ubtu22cis_passwd_quality_enforce_file: etc/security/pwquality.conf.d/50-pwquality_enforce.conf  # pragma: allowlist secret
 ubtu22cis_passwd_quality_enforce_value: 1
 
 # 5.3.3.2.8 - password quality enforce for root included with 5.3.3.2.7
-ubtu22cis_passwd_quality_enforce_root_file: etc/security/pwquality.conf.d/50-pwroot.conf
-ubtu22cis_passwd_quality_enforce_root_value: enforce_for_root
+ubtu22cis_passwd_quality_enforce_root_file: etc/security/pwquality.conf.d/50-pwroot.conf  # pragma: allowlist secret
+ubtu22cis_passwd_quality_enforce_root_value: enforce_for_root  # pragma: allowlist secret
 
 ## 5.3.3.3 Configure pam_pwhistory module
 # Uses value for ubtu22cis_pam_pwhistory_file in 5.3.2.4
@@ -1103,14 +1102,14 @@ ubtu22cis_max_log_file_size: 10
 
 ## Control 6.2.3.2
 # This variable determines what action the audit system should take when the maximum
-    # size of a log file is reached.
-    # The options for setting this variable are as follows:
-    # - `ignore`: the system does nothing when the size of a log file is full;
-    # - `syslog`: a message is sent to the system log indicating the problem;
-    # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
-    # - `rotate`: the log file is rotated (archived) and a new empty log file is created;
-    # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
-    # CIS prescribes the value `keep_logs`.
+# size of a log file is reached.
+# The options for setting this variable are as follows:
+# - `ignore`: the system does nothing when the size of a log file is full;
+# - `syslog`: a message is sent to the system log indicating the problem;
+# - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
+# - `rotate`: the log file is rotated (archived) and a new empty log file is created;
+# - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
+# CIS prescribes the value `keep_logs`.
 ubtu22cis_auditd_max_log_file_action: keep_logs
 
 ## Control 6.2.3.3
@@ -1182,19 +1181,17 @@ ubtu22cis_bash_umask: '027'
 
 ## Control 5.4.3.2 - Configuring user shell timeout
 # This dictionary is related to ensuring the rule about user shell timeout
-    # This variable represents the amount of seconds a command or process is allowed to
-    # run before being forcefully terminated.
-    # CIS requires a value of at most 900 seconds.
+# This variable represents the amount of seconds a command or process is allowed to
+# run before being forcefully terminated.
+# CIS requires a value of at most 900 seconds.
 ubtu22cis_shell_session_timeout: 900
-    # This variable specifies the path of the timeout setting file.
-    # (TMOUT setting can be set in multiple files, but only one is required for the
-    # rule to pass. Options are:
-    # - a file in `/etc/profile.d/` ending in `.s`,
-    # - `/etc/profile`, or
-    # - `/etc/bash.bashrc`.
+# This variable specifies the path of the timeout setting file.
+# (TMOUT setting can be set in multiple files, but only one is required for the
+# rule to pass. Options are:
+# - a file in `/etc/profile.d/` ending in `.s`,
+# - `/etc/profile`, or
+# - `/etc/bash.bashrc`.
 ubtu22cis_shell_session_file: /etc/profile.d/tmout.sh
-
-
 
 ##
 ## Section 6 Control Variables
