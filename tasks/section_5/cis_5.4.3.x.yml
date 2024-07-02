@@ -49,8 +49,7 @@
   ansible.builtin.replace:
     path: "{{ item.path }}"
     regexp: (?i)(umask\s+\d\d\d)
-    replace: '{{ item.line }} 027'
+    replace: '{{ item.line }} {{ ubtu22cis_bash_umask }}'
   loop:
-    - { path: '/etc/bashrc', line: 'umask' }
     - { path: '/etc/profile', line: 'umask' }
     - { path: '/etc/login.defs', line: 'UMASK' }
