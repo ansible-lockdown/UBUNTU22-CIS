@@ -5,12 +5,12 @@
 # E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
 # to "true". If you do not want the tasks from that section to get executed you simply set the variable to "false".
 ubtu22cis_section1: true
-ubtu22cis_section2: false
-ubtu22cis_section3: false
-ubtu22cis_section4: false
-ubtu22cis_section5: false
-ubtu22cis_section6: false
-ubtu22cis_section7: false
+ubtu22cis_section2: true
+ubtu22cis_section3: true
+ubtu22cis_section4: true
+ubtu22cis_section5: true
+ubtu22cis_section6: true
+ubtu22cis_section7: true
 
 ## Reboot system before audit
 # System will reboot if false, can give better audit results
@@ -181,41 +181,41 @@ ubtu22cis_rule_1_2_2_1: true
 
 # 1.3 Mandatory Access Control
 ## 1.3.1 Configure AppArmor
-ubtu22cis_1_3_1_1: true
-ubtu22cis_1_3_1_2: true
-ubtu22cis_1_3_1_3: true
-ubtu22cis_1_3_1_4: true
+ubtu22cis_rule_1_3_1_1: true
+ubtu22cis_rule_1_3_1_2: true
+ubtu22cis_rule_1_3_1_3: true
+ubtu22cis_rule_1_3_1_4: true
 
 # 1.4 Configure Bootloader
-ubtu22cis_1_4_1: true
-ubtu22cis_1_4_2: true
+ubtu22cis_rule_1_4_1: true
+ubtu22cis_rule_1_4_2: true
 
 # 1.5 Configure additional Process Hardening
-ubtu22cis_1_5_1: true
-ubtu22cis_1_5_2: true
-ubtu22cis_1_5_3: true
-ubtu22cis_1_5_4: true
-ubtu22cis_1_5_5: true
+ubtu22cis_rule_1_5_1: true
+ubtu22cis_rule_1_5_2: true
+ubtu22cis_rule_1_5_3: true
+ubtu22cis_rule_1_5_4: true
+ubtu22cis_rule_1_5_5: true
 
 # 1.6 Configure Command Line Warning Banners
-ubtu22cis_1_6_1: true
-ubtu22cis_1_6_2: true
-ubtu22cis_1_6_3: true
-ubtu22cis_1_6_4: true
-ubtu22cis_1_6_5: true
-ubtu22cis_1_6_6: true
+ubtu22cis_rule_1_6_1: true
+ubtu22cis_rule_1_6_2: true
+ubtu22cis_rule_1_6_3: true
+ubtu22cis_rule_1_6_4: true
+ubtu22cis_rule_1_6_5: true
+ubtu22cis_rule_1_6_6: true
 
 # 1.7 Configure GNOME Display Manager
-ubtu22cis_1_7_1: true
-ubtu22cis_1_7_2: true
-ubtu22cis_1_7_3: true
-ubtu22cis_1_7_4: true
-ubtu22cis_1_7_5: true
-ubtu22cis_1_7_6: true
-ubtu22cis_1_7_7: true
-ubtu22cis_1_7_8: true
-ubtu22cis_1_7_9: true
-ubtu22cis_1_7_10: true
+ubtu22cis_rule_1_7_1: true
+ubtu22cis_rule_1_7_2: true
+ubtu22cis_rule_1_7_3: true
+ubtu22cis_rule_1_7_4: true
+ubtu22cis_rule_1_7_5: true
+ubtu22cis_rule_1_7_6: true
+ubtu22cis_rule_1_7_7: true
+ubtu22cis_rule_1_7_8: true
+ubtu22cis_rule_1_7_9: true
+ubtu22cis_rule_1_7_10: true
 
 ## Section 2 Fixes
 # Section 2 is Services (Special Purpose Services, and service clients)
@@ -426,17 +426,17 @@ ubtu22cis_rule_6_1_1: true
 ubtu22cis_rule_6_1_2: true
 ubtu22cis_rule_6_1_3: true
 # 6.2.1.1 Configure systemd-journald service
-ubtu22cis_rule_6_1_1_1_1: true
-ubtu22cis_rule_6_1_1_1_2: true
-ubtu22cis_rule_6_1_1_1_3: true
-ubtu22cis_rule_6_1_1_1_4: true
-ubtu22cis_rule_6_1_1_1_5: true
-ubtu22cis_rule_6_1_1_1_6: true
+ubtu22cis_rule_6_2_1_1_1: true
+ubtu22cis_rule_6_2_1_1_2: true
+ubtu22cis_rule_6_2_1_1_3: true
+ubtu22cis_rule_6_2_1_1_4: true
+ubtu22cis_rule_6_2_1_1_5: true
+ubtu22cis_rule_6_2_1_1_6: true
 # 6.2.1.2 Configure systemd-journald service
-ubtu22cis_rule_6_1_1_2_1: true
-ubtu22cis_rule_6_1_1_2_2: true
-ubtu22cis_rule_6_1_1_2_3: true
-ubtu22cis_rule_6_1_1_2_4: true
+ubtu22cis_rule_6_2_1_2_1: true
+ubtu22cis_rule_6_2_1_2_2: true
+ubtu22cis_rule_6_2_1_2_3: true
+ubtu22cis_rule_6_2_1_2_4: true
 # 6.2.2 Configure Logfiles
 ubtu22cis_rule_6_2_2: true
 # 6.3.1 Configure auditd Service
@@ -740,12 +740,26 @@ ubtu22cis_ipv6_disable: grub
 # it, ensuring that wireless interfaces are disabled will not be possible!
 ubtu22cis_install_network_manager: true
 
+
+## Control 3.1.3 - Ensure bluetooth Services are not in use
+# This control managed how the bluetooth service is managaed
+# Options are
+# true to leave installed if exists not changes take place
+# false - this removes the package
+# mask - if a dependancy for product so cannot be removed
+ubtu22cis_bluetooth_service: false
+ubtu22cis_bluetooth_mask: false
+
 ## Control 3.3.x - Networking configuration
 # This variable contains the path to the file in which, sysctl saves its configurations.
 # Its default value is `/etc/sysctl.conf`.
 ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
 
-## Controls 3.5.1.x, 3.5.2.x, and 3.5.3.x - Firewall configuration
+##
+## Section 4 Control Variables
+##
+
+## Controls 4.1.x, 4.2.x, and 4.3.x - Firewall configuration
 # This variable represents the toggle for which firewall package is used.
 # The options that have an effect on the system are `ufw` and `iptables`.
 # The option `nftables` is also possible, but will only result in a message,
@@ -757,7 +771,7 @@ ubtu22cis_firewall_package: "ufw"
 # settings. If set to "true" the task will get done in the prelim section of the role.
 ubtu22cis_ufw_use_sysctl: true
 
-## Control 3.5.1.5 - Ensure ufw outbound connections are configured
+## Control 4.1.5 - Ensure ufw outbound connections are configured
 # The value of this variable represents the ports for the firewall to allow oubound traffic from.
 # If you want to allow outbound traffic on all ports, set the variable to  `all`, e.g.,
 # `ubtu22cis_ufw_allow_out_ports: "all"`.
@@ -766,7 +780,7 @@ ubtu22cis_ufw_allow_out_ports:
     - 80
     - 443
 
-## Controls 3.5.2.x - nftables
+## Controls 4.2.x - nftables
 # Nftables is not supported in this role. Some tasks have parts of them commented out, this is one example
 # of such a task.
 # "ubtu22cis_nftables_table_name" is the name of the table in nftables you want to create.
@@ -774,55 +788,7 @@ ubtu22cis_ufw_allow_out_ports:
 # nftables configs are applied to.
 # ubtu22cis_nftables_table_name: "inet filter"
 
-##
-## Section 4 Control Variables
-##
-
-## Controls 4.1.3.x - Audit template
-# This variable is set to true by tasks 4.1.3.1 to 4.1.3.20. As a result, the
-# audit settings are overwritten with the role's template. In order to exclude
-# specific rules, you must set the variable of form `ubtu22cis_rule_4_1_3_x` above
-# to `false`.
-update_audit_template: false
-
-## Advanced option found in auditd post
-## users whose actions are not logged by auditd
-ubtu22cis_allow_auditd_uid_user_exclusions: false
-# add a list of uids
-ubtu22cis_auditd_uid_exclude:
-    - 1999
-
-## Controls 4.1.2.2 and 4.1.2.3 - What to do when log files fill up
-# This variable controls how the audit system behaves when
-# log files are getting too full and space is getting too low.
-ubtu22cis_auditd:
-    action_mail_acct: root
-    space_left_action: email
-    # This variable determines the action the audit system should take when disk
-    # space runs low.
-    # The options for setting this variable are as follows:
-    # - `ignore`: the system does nothing when presented with the aforementioned issue;
-    # - `syslog`: a message is sent to the system log about disk space running low;
-    # - `suspend`: the system suspends recording audit events until more space is available;
-    # - `halt`: the system is halted when disk space is critically low.
-    # - `single`: the audit daemon will put the computer system in single user mode
-    # CIS prescribes either `halt` or `single`.
-    admin_space_left_action: halt
-    # This variable determines what action the audit system should take when the maximum
-    # size of a log file is reached.
-    # The options for setting this variable are as follows:
-    # - `ignore`: the system does nothing when the size of a log file is full;
-    # - `syslog`: a message is sent to the system log indicating the problem;
-    # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
-    # - `rotate`: the log file is rotated (archived) and a new empty log file is created;
-    # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
-    # CIS prescribes the value `keep_logs`.
-    max_log_file_action: keep_logs
-
 ## Controls 6.2.1.x journald
-# This variable governs which logging system is used.
-# The options for this variable are `rsyslog` or `journald`.
-ubtu22cis_syslog_service: rsyslog
 # This variable specifies the address of the remote log host where logs are being sent.
 ubtu22cis_remote_log_server: 192.168.2.100
 # This variable expresses whether the system is used as a log server or not.
@@ -865,7 +831,7 @@ ubtu22cis_sshd_default_ciphers:
 ubtu22cis_sshd_default_macs:
     - hmac-sha1
     - hmac-sha2-256
-    - hmac-sha2-384
+#    - hmac-sha2-384  # hashed out seen as bad ssh2 MAC
     - hmac-sha2-512
 ubtu22cis_sshd_default_kex_algorithms:
     - ecdh-sha2-nistp256
@@ -975,6 +941,9 @@ ubtu22cis_pam_pwhistory_file: 'pwhistory'
 
 # 5.3.3.1.1 - faillock_deny
 ubtu22cis_faillock_deny: 3
+
+# 5.3.3.1.2 - faillock unlock time
+ubtu22cis_faillock_unlock_time: 900
 
 # 5.3.3.1.3 - lock root
 # This allow optional - even_deny_root or root_unlock_time
@@ -1102,6 +1071,21 @@ ubtu22cis_journald_runtimekeepfree: "#RuntimeKeepFree="
 # ATTENTION: Uncomment the keyword below when values are set!
 ubtu22cis_journald_maxfilesec: "#MaxFileSec="
 
+## Controls 6.3.3.x - Audit template
+# This variable is set to true by tasks 6.3.3.1 to 6.3.3.20. As a result, the
+# audit settings are overwritten with the role's template. In order to exclude
+# specific rules, you must set the variable of form `ubtu22cis_rule_4_1_3_x` above
+# to `false`.
+update_audit_template: false
+
+## Advanced option found in auditd post
+## users whose actions are not logged by auditd
+ubtu22cis_allow_auditd_uid_user_exclusions: false
+
+# add a list of uids
+ubtu22cis_auditd_uid_exclude:
+    - 1999
+
 ##  Control 6.3.1.4 - Ensure audit_backlog_limit is sufficient
 # This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
 # system can buffer in memory, if the audit subsystem is unable to process them in real-time.
@@ -1110,11 +1094,50 @@ ubtu22cis_journald_maxfilesec: "#MaxFileSec="
 # This variable should be set to a sufficient value. The CIS baseline recommends at least `8192` as value.
 ubtu22cis_audit_back_log_limit: 8192
 
+## Controls 6.3.2.x - What to do when log files fill up
+# This variable controls how the audit system behaves when
+# log files are getting too full and space is getting too low.
+ubtu22cis_auditd:
+    action_mail_acct: root
+    space_left_action: email
+    # This variable determines the action the audit system should take when disk
+    # space runs low.
+    # The options for setting this variable are as follows:
+    # - `ignore`: the system does nothing when presented with the aforementioned issue;
+    # - `syslog`: a message is sent to the system log about disk space running low;
+    # - `suspend`: the system suspends recording audit events until more space is available;
+    # - `halt`: the system is halted when disk space is critically low.
+    # - `single`: the audit daemon will put the computer system in single user mode
+    # CIS prescribes either `halt` or `single`.
+    admin_space_left_action: halt
+    # This variable determines what action the audit system should take when the maximum
+    # size of a log file is reached.
+    # The options for setting this variable are as follows:
+    # - `ignore`: the system does nothing when the size of a log file is full;
+    # - `syslog`: a message is sent to the system log indicating the problem;
+    # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
+    # - `rotate`: the log file is rotated (archived) and a new empty log file is created;
+    # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
+    # CIS prescribes the value `keep_logs`.
+    max_log_file_action: keep_logs
+
 ## Control 6.3.2.1 - Ensure audit log storage size is configured
 # This variable specifies the maximum size in MB that an audit log file can reach
 # before it is archived or deleted to make space for the new audit data.
 # This should be set based on your sites policy. CIS does not provide a specific value.
 ubtu22cis_max_log_file_size: 10
+
+## Control 6.2.3.2
+# This variable determines what action the audit system should take when the maximum
+    # size of a log file is reached.
+    # The options for setting this variable are as follows:
+    # - `ignore`: the system does nothing when the size of a log file is full;
+    # - `syslog`: a message is sent to the system log indicating the problem;
+    # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
+    # - `rotate`: the log file is rotated (archived) and a new empty log file is created;
+    # - `keep_logs`: the system attempts to keep as many logs as possible without violating disk space constraints.
+    # CIS prescribes the value `keep_logs`.
+ubtu22cis_auditd_max_log_file_action: keep_logs
 
 # Control 6.3.2.4
 # Wait to do when space left is low.
