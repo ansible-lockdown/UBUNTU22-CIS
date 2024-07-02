@@ -23,7 +23,7 @@
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
         regexp: nullok
         replace: ''
-      notify: pam_auth_update_pwunix
+      notify: Pam_auth_update_pwunix
 
 - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember"
   when:
@@ -47,7 +47,7 @@
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
         regexp: remember=\d+
         replace: ''
-      notify: pam_auth_update_pwunix
+      notify: Pam_auth_update_pwunix
 
 - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm"
   when:
@@ -71,7 +71,7 @@
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
         regexp: "(md5|bigcrypt|sha256|blowfish|gost_yescrypt|sha512|yescrypt)"
         replace: '{{ ubtu22cis_passwd_hash_algo }}'
-      notify: pam_auth_update_pwunix
+      notify: Pam_auth_update_pwunix
 
 - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok"
   when:
