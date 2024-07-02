@@ -257,7 +257,7 @@
         etype: group
         permissions: rx
         state: present
-      loop: "{{ discovered_interactive_users_home.stdout_lines }}"
+      loop: "{{ prelim_interactive_users_home.stdout_lines }}"
 
     - name: "7.2.9 | PATCH | Ensure local interactive user home directories are configured | Set other ACL"
       when: not system_is_container
@@ -267,7 +267,7 @@
         etype: other
         permissions: 0
         state: present
-      loop: "{{ discovered_interactive_users_home.stdout_lines }}"
+      loop: "{{ prelim_interactive_users_home.stdout_lines }}"
 
 - name: "7.2.10 | PATCH | Ensure local interactive user dot files access is configured"
   when:

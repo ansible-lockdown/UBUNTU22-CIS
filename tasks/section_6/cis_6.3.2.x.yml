@@ -29,7 +29,7 @@
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: '^max_log_file_action'
-    line: "max_log_file_action = {{ ubtu22cis_auditd['max_log_file_action'] }}"
+    line: "max_log_file_action = {{ ubtu22cis_auditd_max_log_file_action }}"
 
 - name: "6.3.2.3 | PATCH | Ensure system is disabled when audit logs are full"
   when:

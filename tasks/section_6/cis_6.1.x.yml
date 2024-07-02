@@ -69,7 +69,7 @@
     - patch
     - rule_6.1.3
   ansible.builtin.blockinfile:
-    path: /etc/aide.conf
+    path: /etc/aide/aide.conf
     marker: "# {mark} Audit tools - CIS benchmark - Ansible-lockdown"
     block: |
       /usr/sbin/auditctl p+i+n+u+g+s+b+acl+xattrs+sha512
