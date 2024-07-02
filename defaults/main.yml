@@ -890,37 +890,44 @@ ubtu22cis_sshd:
 ## 5.3.2.x
 # Path to find templates and where to put file for pam-auth
 ubtu22cis_pam_confd_dir: 'usr/share/pam-config.d/'
+### Note: controls also managed with disruption high due to the nature of pam changes
+# Create file will create/replace with the name
 
 # Controls 5.3.2.1 - pam_unix
-# Note: controls also managed with disruption high due to the nature of pam changes
-# Allow pam-auth-update --enable unix to run
-# should not be enabled if allowing custom config that enabled pam_faillock
-ubtu22cis_pam_create_pamunix_file: false
-ubtu22cis_pam_auth_unix: false
+# Name of file
 ubtu22cis_pam_pwunix_file: 'pam_unix'
+# Should NOT be enabled if allowing custom config that enabled pam_faillock
+ubtu22cis_pam_create_pamunix_file: false
+# Allow pam-auth-update --enable ubtu22cis_pam_pwunix_file to run
+ubtu22cis_pam_auth_unix: true
 
 # 5.3.2.2 - pam_faillock
-# Enables pam auth update with new files
-ubtu22cis_pam_auth_faillock: false
-# Will create file - change paths to existing files if managed elsewhere
-ubtu22cis_pam_create_faillock_files: false
+# Name of files
 ubtu22cis_pam_faillock_file: 'faillock'
 ubtu22cis_pam_faillock_notify_file: 'faillock_notify'
+# Allow pam-auth-update --enable ubtu22cis_pam_faillock_file
+# and
+# Allow pam-auth-update --enable ubtu22cis_pam_faillock_notify_file
+ubtu22cis_pam_auth_faillock: true
+# Allow new file to be created or overwrite existing with same name
+ubtu22cis_pam_create_faillock_files: true
 
 # 5.3.2.3 - pam_pwquality
-# Enables pam auth update with new files
-ubtu22cis_pam_auth_pwquality: false
-# Will create file - change paths to existing files if managed elsewhere
-ubtu22cis_pam_create_pwquality_files: false
+# Name of files
 ubtu22cis_pam_pwquality_file: 'pwquality'
+# Allow new file to be created or overwrite existing with same name
+ubtu22cis_pam_create_pwquality_files: true
+# Allow pam-auth-update --enable ubtu22cis_pam_pwquality_file
+ubtu22cis_pam_auth_pwquality: true
 
 # 5.3.2.4 - pam_pwhistory
-# Enables pam auth update with new files
-ubtu22cis_pam_auth_pwhistory: false
-# Will create file - change paths to existing files if managed elsewhere
-# filepath also affects controls 5.3.3.3.1, 5.3.3.3.2, 5.3.3.3.3
-ubtu22cis_pam_create_pwhistory_files: false
+# Name of file
 ubtu22cis_pam_pwhistory_file: 'pwhistory'
+# Allow new file to be created or overwrite existing with same name
+# filepath also affects controls 5.3.3.3.1, 5.3.3.3.2, 5.3.3.3.3
+ubtu22cis_pam_create_pwhistory_files: true
+# Allow pam-auth-update --enable ubtu22cis_pam_pwhistory_file
+ubtu22cis_pam_auth_pwhistory: true
 
 # 5.3.3.1.1 - faillock_deny
 ubtu22cis_faillock_deny: 3
