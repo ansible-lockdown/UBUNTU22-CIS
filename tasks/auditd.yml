@@ -13,7 +13,7 @@
     - Auditd rules reload
     - Audit_immutable_fact
     - Restart auditd
-    - set_reboot_required
+    - Set_reboot_required
 
 - name: POST | Set up auditd user logging exceptions
   when: ubtu22cis_allow_auditd_uid_user_exclusions

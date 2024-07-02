@@ -59,7 +59,7 @@
     - patch
     - auditd
     - rule_6.3.2.4
-  notify: Restart_auditd
+  notify: Restart auditd
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: "{{ item.regexp }}"
