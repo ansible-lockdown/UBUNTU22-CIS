@@ -47,7 +47,7 @@
     - rule_6.2.1.2.3
   ansible.builtin.systemd:
     name: systemd-journal-upload
-    state: started
+    masked: false
     enabled: true
 
 - name: "6.2.1.2.4 | PATCH | Ensure systemd-journal-remote service is not in use"
