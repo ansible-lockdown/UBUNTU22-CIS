@@ -438,7 +438,7 @@ ubtu22cis_rule_6_2_1_2_2: true
 ubtu22cis_rule_6_2_1_2_3: true
 ubtu22cis_rule_6_2_1_2_4: true
 # 6.2.2 Configure Logfiles
-ubtu22cis_rule_6_2_2: true
+ubtu22cis_rule_6_2_2_1: true
 # 6.3.1 Configure auditd Service
 ubtu22cis_rule_6_3_1_1: true
 ubtu22cis_rule_6_3_1_2: true
@@ -889,7 +889,7 @@ ubtu22cis_sshd:
 
 ## 5.3.2.x
 # Path to find templates and where to put file for pam-auth
-ubtu22cis_pam_confd_dir: 'usr/share/pam-config.d/'
+ubtu22cis_pam_confd_dir: 'usr/share/pam-configs/'
 ### Note: controls also managed with disruption high due to the nature of pam changes
 # Create file will create/replace with the name
 
