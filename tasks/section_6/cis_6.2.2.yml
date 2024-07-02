@@ -2,7 +2,7 @@
 
 - name: "6.2.2 | PATCH | Ensure access to all logfiles has been configured"
   when:
-    - rhel8cis_rule_6_2_2
+    - ubtu22cis_rule_6_2_2
   tags:
     - level1-server
     - level1-workstation
