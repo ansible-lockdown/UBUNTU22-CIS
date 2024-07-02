@@ -11,7 +11,7 @@
     - rule_6.2.1.1.1
   ansible.builtin.systemd:
     name: systemd-journald.service
-    mask: false
+    masked: false
     state: started
 
 - name: "6.2.1.1.2 | PATCH | Ensure journald log file access is configured"
@@ -110,7 +110,7 @@
     - name: "6.2.1.1.4 | PATCH | Ensure journald ForwardToSyslog is disabled | comment out current entries"
       ansible.builtin.replace:
         path: /etc/systemd/journald.conf
-        regexp: ^\s*ForwardToSyslog
+        regexp: ^(\s*ForwardToSyslog)
         replace: '#\1'
 
 - name: "6.2.1.1.5 | PATCH | Ensure journald Storage is configured"
@@ -135,7 +135,7 @@
     - name: "6.2.1.1.5 | PATCH | Ensure journald Storage is configured | comment out current entries"
       ansible.builtin.replace:
         path: /etc/systemd/journald.conf
-        regexp: ^(?i)\s*storage=
+        regexp: ^(?i)(\s*storage=)
         replace: '#\1'
 
 - name: "6.2.1.1.6 | PATCH | Ensure journald Compress is configured"
@@ -160,5 +160,5 @@
     - name: "6.2.1.1.6 | PATCH | Ensure journald Compress is configured | comment out current entries"
       ansible.builtin.replace:
         path: /etc/systemd/journald.conf
-        regexp: ^(?i)\s*compress=
+        regexp: ^(?i)(\s*compress=)
         replace: '#\1'
