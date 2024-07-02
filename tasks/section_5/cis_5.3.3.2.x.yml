@@ -1,20 +1,5 @@
 ---
 
-- name: "Ensure conf.d directory exists required for 5.3.3.2.x"
-  when:
-    - ubtu22cis_rule_5_3_3_2_1 or
-      ubtu22cis_rule_5_3_3_2_2 or
-      ubtu22cis_rule_5_3_3_2_3 or
-      ubtu22cis_rule_5_3_3_2_4 or
-      ubtu22cis_rule_5_3_3_2_5 or
-      ubtu22cis_rule_5_3_3_2_6
-  ansible.builtin.file:
-    path: '/etc/security/pwquality.conf.d'
-    state: directory
-    owner: root
-    group: root
-    mode: '0750'
-
 - name: "5.3.3.2.1 | PATCH | Ensure password number of changed characters is configured"
   when:
     - ubtu22cis_rule_5_3_3_2_1
