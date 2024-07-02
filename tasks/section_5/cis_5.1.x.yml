@@ -367,7 +367,7 @@
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
-- name: "5.120 | PATCH | Ensure sshd PermitRootLogin is disabled"
+- name: "5.1.20 | PATCH | Ensure sshd PermitRootLogin is disabled"
   when:
     - ubtu22cis_rule_5_1_20
   tags:
