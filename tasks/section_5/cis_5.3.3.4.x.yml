@@ -94,7 +94,7 @@
         - ubtu22cis_pam_authtok is defined
         - ubtu22cis_pam_authtok | length > 0
       ansible.builtin.lineinfile:
-        path: "/etc/pam.d/{{ item }}-auth"
+        path: "/etc/pam.d/common-password"
         regexp: ^(\s*password\s+[success=end.*]\s+pam_unix\.so)(.*)\s+use_authtok\s*=\s*\S+(.*$)
         line: \1\2\3 use_authtok
         backrefs: true
