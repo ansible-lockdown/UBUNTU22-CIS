@@ -244,7 +244,7 @@
         state: directory
         owner: "{{ item.id }}"
         group: "{{ item.gid }}"
-      loop: "{{ ubtu22cis_passwd | selectattr('uid', '>=', ubtu22uid_uid_start | int ) | selectattr('uid', '<=', ubtu22uid_uid_stop | int ) | list }}"
+      loop: "{{ ubtu22cis_passwd | selectattr('uid', '>=', min_int_uid | int ) | selectattr('uid', '<=', max_int_uid | int ) | list }}"
       loop_control:
         label: "{{ item.id }}"
 
@@ -285,13 +285,13 @@
     - name: "7.2.10 | AUDIT | Ensure local interactive user dot files access is configured | Check for files"
       ansible.builtin.shell: find /home/ -name "\.*" -perm /g+w,o+w
       changed_when: false
-      failed_when: discovered_dot_files.rc not in [ 0, 1 ]
+      failed_when: discovered_homedir_dot_files.rc not in [ 0, 1 ]
       check_mode: false
-      register: discovered_dot_files
+      register: discovered_homedir_dot_files
 
     - name: "7.2.10 | AUDIT | Ensure local interactive user dot files access is configured | Warning on files found"
       when:
-        - discovered_dot_files.stdout | length > 0
+        - discovered_homedir_dot_files.stdout | length > 0
         - ubtu22cis_dotperm_ansiblemanaged
       ansible.builtin.debug:
         msg:
@@ -299,16 +299,16 @@
 
     - name: "7.2.10 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
       when:
-        - discovered_dot_files.stdout | length > 0
+        - discovered_homedir_dot_files.stdout | length > 0
         - ubtu22cis_dotperm_ansiblemanaged
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
     - name: "7.2.10 | PATCH | Ensure local interactive user dot files access is configured | Changes files if configured"
       when:
-        - discovered_dot_files.stdout | length > 0
+        - discovered_homedir_dot_files.stdout | length > 0
         - ubtu22cis_dotperm_ansiblemanaged
       ansible.builtin.file:
         path: '{{ item }}'
         mode: go-w
-      with_items: "{{ discovered_dot_files.stdout_lines }}"
+      with_items: "{{ discovered_homedir_dot_files.stdout_lines }}"
