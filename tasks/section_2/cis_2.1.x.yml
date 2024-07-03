@@ -82,7 +82,7 @@
         - not ubtu22cis_dhcp_server
         - not ubtu22cis_dhcp_mask
       ansible.builtin.package:
-        name: dhcp-server
+        name: isc-dhcp-server
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
 
@@ -97,12 +97,12 @@
         state: stopped
         masked: true
       loop:
-        - dhcpd.service
-        - dhcpd6.service
+        - isc-dhcp-server.service
+        - isc-dhcp-server6.service
 
 - name: "2.1.4 | PATCH | Ensure dns server services are not in use"
   when:
-    - "'bind' in ansible_facts.packages"
+    - "'bind9' in ansible_facts.packages"
     - ubtu22cis_rule_2_1_4
   tags:
     - level1-server
@@ -116,7 +116,7 @@
         - not ubtu22cis_dns_server
         - not ubtu22cis_dns_mask
       ansible.builtin.package:
-        name: bind
+        name: bind9
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
 
@@ -126,7 +126,7 @@
         - ubtu22cis_dns_mask
       notify: Systemd_daemon_reload
       ansible.builtin.systemd:
-        name: named.service
+        name: bind9.service
         enabled: false
         state: stopped
         masked: true
@@ -395,7 +395,7 @@
 
 - name: "2.1.13 | PATCH | Ensure rsync services are not in use"
   when:
-    - "'rsync-daemon' in ansible_facts.packages"
+    - "'rsync' in ansible_facts.packages"
     - ubtu22cis_rule_2_1_13
   tags:
     - level1-server
@@ -563,11 +563,11 @@
   block:
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Remove httpd server"
       when:
-        - not ubtu22cis_httpd_server
-        - not ubtu22cis_httpd_mask
-        - "'httpd' in ansible_facts.packages"
+        - not ubtu22cis_apache2_server
+        - not ubtu22cis_apache2_mask
+        - "'apache2' in ansible_facts.packages"
       ansible.builtin.package:
-        name: httpd
+        name: apache2
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
 
@@ -583,15 +583,18 @@
 
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Mask httpd service"
       when:
-        - not ubtu22cis_httpd_server
-        - ubtu22cis_httpd_mask
-        - "'httpd' in ansible_facts.packages"
+        - not ubtu22cis_apache2_server
+        - ubtu22cis_apache2_mask
+        - "'apache2' in ansible_facts.packages"
       notify: Systemd_daemon_reload
       ansible.builtin.systemd:
-        name: httpd.service
+        name:
         enabled: false
         state: stopped
         masked: true
+      loop:
+        - apache2.service
+        - apache2.socket
 
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Mask nginx service"
       when:
