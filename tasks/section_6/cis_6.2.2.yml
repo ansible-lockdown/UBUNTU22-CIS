@@ -11,37 +11,37 @@
     - rule_6.2.2.1
   block:
     - name: "6.2.2.1 | AUDIT | Ensure access to all logfiles has been configured | find files"
-      ansible.builtin.shell: find /var/log/ -type f -perm /g+wx,o+rwx -exec ls {} \;
+      ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
       changed_when: false
       failed_when: false
       register: discovered_logfiles
 
     - name: "6.2.2.1 | AUDIT | Ensure access to all logfiles has been configured | set_fact"
-      ansible.builtin.set_fact:
-        discovered_logfiles_flattened: "{{ discovered_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
       when:
         - discovered_logfiles.stdout_lines | length > 0
         - discovered_logfiles is defined
+      ansible.builtin.set_fact:
+        discovered_logfiles_flattened: "{{ discovered_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
 
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
-      ansible.builtin.file:
-        path: "{{ item }}"
-        mode: u-x,g-wx,o-rwx
-      loop: "{{ discovered_logfiles_flattened }}"
       when:
         - discovered_logfiles_flattened is defined
         - item != "/var/log/btmp"
         - item != "/var/log/utmp"
         - item != "/var/log/wtmp"
         - item != "/var/log/lastlog"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        mode: u-x,g-wx,o-rwx
+      loop: "{{ discovered_logfiles_flattened }}"
 
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
       ansible.builtin.file:
-        path: "{{ item.file }}"
-        mode: "{{ item.mode | default('ug-x,o-wx') }}"
+        path: "{{ item }}"
+        mode: 'ug-x,o-wx'
       with_fileglob:
-        - { file: /var/log/*tmp }
-        - { file: /var/log/lastlog* }
-        - { file: /var/log/sssd* }
-        - { file: /var/log/SSSD* }
+        - "/var/log/*tmp"
+        - "/var/log/lastlog*"
+        - "/var/log/sssd*"
+        - "/var/log/SSSD*"
 

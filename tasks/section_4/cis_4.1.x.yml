@@ -51,7 +51,6 @@
         name: ufw
         enabled: true
         state: started
-        masked: false
 
 - name: "4.1.4 | PATCH | Ensure loopback traffic is configured"
   when:

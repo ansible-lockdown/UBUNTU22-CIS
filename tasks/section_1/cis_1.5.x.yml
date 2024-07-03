@@ -77,7 +77,6 @@
       notify: Reload systemctl
 
     - name: "1.5.3 | PATCH | Ensure core dumps are restricted | coredump.conf"
-      when: "'systemd-coredump' in ansible_facts.packages"
       ansible.builtin.lineinfile:
         path: /etc/systemd/coredump.conf
         regexp: "{{ item.regexp }}"

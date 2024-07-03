@@ -43,7 +43,6 @@
         name: systemd-timesyncd
         state: started
         enabled: true
-        masked: false
 
     - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running | disable other time sources | chrony"
       when: "'chrony' in ansible_facts.packages"
