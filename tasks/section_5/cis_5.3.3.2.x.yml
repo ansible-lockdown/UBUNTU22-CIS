@@ -45,7 +45,7 @@
         - item != ubtu22cis_passwd_minlen_file
       ansible.builtin.replace:
         path: "{{ item }}"
-        regexp: 'difok\s*=\s*\d+\b'
+        regexp: 'minlen\s*=\s*\d+\b'
         replace: ''
       with_fileglob:
         - '/etc/security/pwquality.conf'
