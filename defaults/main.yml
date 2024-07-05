@@ -771,27 +771,6 @@ ubtu22cis_ufw_allow_out_ports:
 # nftables configs are applied to.
 # ubtu22cis_nftables_table_name: "inet filter"
 
-## Controls 6.2.1.x journald
-# This variable specifies the address of the remote log host where logs are being sent.
-ubtu22cis_remote_log_server: 192.168.2.100
-# This variable expresses whether the system is used as a log server or not.
-# If set to `true`, controls that interfere with log server functionality or
-# require that own system logs be sent to some other log server are skipped.
-ubtu22cis_system_is_log_server: false
-
-## Controls 6.2.1.2.x & 6.2.1.x journald
-# This variable specifies the path to the private key file used by the remote journal
-# server to authenticate itself to the client. This key is used alongside the server's
-# public certificate to establish secure communication.
-ubtu22cis_journal_upload_serverkeyfile:
-# This variable specifies the path to the public certificate file of the remote journal
-# server. This certificate is used to verify the authenticity of the remote server.
-ubtu22cis_journal_servercertificatefile:
-# This variable specifies the path to a file containing one or more public certificates
-# of certificate authorities (CAs) that the client trusts. These trusted certificates are used
-# to validate the authenticity of the remote server's certificate.
-ubtu22cis_journal_trustedcertificatefile:
-
 ##
 ## Section 5 Control Variables
 ##
@@ -886,6 +865,26 @@ ubtu22cis_sshd:
     # The allow/deny directives process order: DenyUsers, AllowUsers, DenyGroups, AllowGroups.
     # For more info, see https://linux.die.net/man/5/sshd_config
     deny_groups: ""
+
+## Control 5.2.1
+# This variable represents the name of the sudo package to install
+# CIS recommends `sudo` or, if LDAP functionality is required, `sudo-ldap`.
+ubtu22cis_sudo_package: "sudo"
+
+## Control 5.2.3
+# This variable defines the path and file name of the sudo log file.
+ubtu22cis_sudo_logfile: "/var/log/sudo.log"
+##  Control 5.2.6
+# This variable sets the duration (in minutes) during which a user's authentication credentials
+# are cached after successfully authenticating using "sudo". This allows the user to execute
+# multiple commands with elevated privileges without needing to re-enter their password for each
+# command within the specified time period. CIS requires a value of at most 15 minutes.
+ubtu22cis_sudo_timestamp_timeout: 15
+## Control 5.2.7
+# This variable determines the group of users that are allowed to use the su command.
+# one to specify a user group that is allowed to use the "su" command.
+# CIS requires that such a group be created (named according to site policy) and be kept empty.
+ubtu22cis_sugroup: nosugroup
 
 ## 5.3.2.x
 # Path to find templates and where to put file for pam-auth
@@ -1004,6 +1003,30 @@ ubtu22cis_pass:
 
 # 5.4.2.6 root umask
 ubtu22cis_root_umask: '0027'  # 0027 or more restrictive
+## Control 5.4.4
+# ubtu22cis_passwd_hash_algo is the hashing algorithm used
+ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
+# Set pam as well as login defs if PAM is required
+ubtu22cis_passwd_setpam_hash_algo: false
+
+## Control 5.4.3 - Default user mask
+# The following variable specifies the "umask" to set in the `/etc/bash.bashrc` and `/etc/profile`.
+# The value needs to be `027` or more restrictive to comply with CIS standards
+ubtu22cis_bash_umask: '027'
+
+## Control 5.4.3.2 - Configuring user shell timeout
+# This dictionary is related to ensuring the rule about user shell timeout
+# This variable represents the amount of seconds a command or process is allowed to
+# run before being forcefully terminated.
+# CIS requires a value of at most 900 seconds.
+ubtu22cis_shell_session_timeout: 900
+# This variable specifies the path of the timeout setting file.
+# (TMOUT setting can be set in multiple files, but only one is required for the
+# rule to pass. Options are:
+# - a file in `/etc/profile.d/` ending in `.s`,
+# - `/etc/profile`, or
+# - `/etc/bash.bashrc`.
+ubtu22cis_shell_session_file: /etc/profile.d/tmout.sh
 
 ##
 ## Section 6 Control Variables
@@ -1060,6 +1083,28 @@ ubtu22cis_aide_cron:
     # can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
     # can be concatenated with commas.
     aide_weekday: '*'
+
+## Controls 6.2.1.x journald
+
+# This variable specifies the address of the remote log host where logs are being sent.
+ubtu22cis_remote_log_server: 192.168.2.100
+# This variable expresses whether the system is used as a log server or not.
+# If set to `true`, controls that interfere with log server functionality or
+# require that own system logs be sent to some other log server are skipped.
+ubtu22cis_system_is_log_server: false
+
+## Controls 6.2.1.2.x & 6.2.1.x journald
+# This variable specifies the path to the private key file used by the remote journal
+# server to authenticate itself to the client. This key is used alongside the server's
+# public certificate to establish secure communication.
+ubtu22cis_journal_upload_serverkeyfile:
+# This variable specifies the path to the public certificate file of the remote journal
+# server. This certificate is used to verify the authenticity of the remote server.
+ubtu22cis_journal_servercertificatefile:
+# This variable specifies the path to a file containing one or more public certificates
+# of certificate authorities (CAs) that the client trusts. These trusted certificates are used
+# to validate the authenticity of the remote server's certificate.
+ubtu22cis_journal_trustedcertificatefile:
 
 # 6.2.1.1.3
 # These variable specifies how much disk space the journal may use up at most
@@ -1144,64 +1189,8 @@ ubtu22cis_auditd_disk_error_action: syslog
 ubtu22cis_auditd_space_left_action: email
 ubtu22cis_auditd_admin_space_left_action: email
 
-## Control 5.3.1
-# This variable represents the name of the sudo package to install
-# CIS recommends `sudo` or, if LDAP functionality is required, `sudo-ldap`.
-ubtu22cis_sudo_package: "sudo"
-
-## Control 5.3.3
-# This variable defines the path and file name of the sudo log file.
-ubtu22cis_sudo_logfile: "/var/log/sudo.log"
-##  Control 5.3.6
-# This variable sets the duration (in minutes) during which a user's authentication credentials
-# are cached after successfully authenticating using "sudo". This allows the user to execute
-# multiple commands with elevated privileges without needing to re-enter their password for each
-# command within the specified time period. CIS requires a value of at most 15 minutes.
-ubtu22cis_sudo_timestamp_timeout: 15
-## Control 5.3.7
-# This variable determines the group of users that are allowed to use the su command.
-# one to specify a user group that is allowed to use the "su" command.
-# CIS requires that such a group be created (named according to site policy) and be kept empty.
-ubtu22cis_sugroup: nosugroup
-
-## Control 5.4.2
-# This can seriously break access to a system
-## The end state the file /etc/pam.d/common-auth need to be understood
-## If using external auth providers this will be very different
-ubtu22cis_allow_common_auth_rewrite: false
-ubtu22cis_rule_5_4_2_faillock_config: |
-    auth       required pam_faillock.so preauth
-    auth       [success=1 default=ignore] pam_unix.so nullok
-    auth       [default=die] pam_faillock.so authfail
-    auth       sufficient pam_faillock.so authsucc
-
-## Control 5.4.4
-# ubtu22cis_passwd_hash_algo is the hashing algorithm used
-ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
-# Set pam as well as login defs if PAM is required
-ubtu22cis_passwd_setpam_hash_algo: false
-
-## Control 5.5.4 - Default user mask
-# The following variable specifies the "umask" to set in the `/etc/bash.bashrc` and `/etc/profile`.
-# The value needs to be `027` or more restrictive to comply with CIS standards
-ubtu22cis_bash_umask: '027'
-
-## Control 5.4.3.2 - Configuring user shell timeout
-# This dictionary is related to ensuring the rule about user shell timeout
-# This variable represents the amount of seconds a command or process is allowed to
-# run before being forcefully terminated.
-# CIS requires a value of at most 900 seconds.
-ubtu22cis_shell_session_timeout: 900
-# This variable specifies the path of the timeout setting file.
-# (TMOUT setting can be set in multiple files, but only one is required for the
-# rule to pass. Options are:
-# - a file in `/etc/profile.d/` ending in `.s`,
-# - `/etc/profile`, or
-# - `/etc/bash.bashrc`.
-ubtu22cis_shell_session_file: /etc/profile.d/tmout.sh
-
 ##
-## Section 6 Control Variables
+## Section 7 Control Variables
 ##
 
 ## Controls 6.2.11 & 6.2.12
