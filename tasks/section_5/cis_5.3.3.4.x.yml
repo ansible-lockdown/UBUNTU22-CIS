@@ -12,7 +12,7 @@
     - pam
   block:
     - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | capture state"
-      ansible.builtin.shell: grep -PH -- '^\h*^\h*[^#\n\r]+\h+pam_unix\.so\b' /etc/pam.d/common-{password,auth,account,session,session-noninteractive} | grep -P -- '\bnullok\b'
+      ansible.builtin.shell: grep -E "pam_unix.so.*nullok" /etc/pam.d/common-* /usr/share/pam-configs/* | cut -d ':' -f1 | uniq
       changed_when: false
       failed_when: ubtu22cis_pam_nullok.rc not in [ 0, 1 ]
       register: ubtu22cis_pam_nullok
@@ -20,10 +20,12 @@
     - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | Ensure nullok removed"
       when: ubtu22cis_pam_nullok.stdout | length > 0
       ansible.builtin.replace:
-        path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
+        path: "{{ item }}"
         regexp: nullok
         replace: ''
+      loop: "{{ ubtu22cis_pam_nullok.stdout_lines }}"
       notify: Pam_auth_update_pwunix
+
 
 - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember"
   when:
