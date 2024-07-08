@@ -66,5 +66,5 @@
     enabled: false
     masked: true
   loop:
-  - systemd-journal-remote.socket
-  - systemd-journal-remote.service
+    - systemd-journal-remote.socket
+    - systemd-journal-remote.service
