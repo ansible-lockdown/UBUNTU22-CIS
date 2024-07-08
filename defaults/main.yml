@@ -1187,7 +1187,7 @@ ubtu22cis_auditd_disk_error_action: syslog
 # Control 6.3.2.4
 # Wait to do when space left is low.
 ubtu22cis_auditd_space_left_action: email
-ubtu22cis_auditd_admin_space_left_action: email
+ubtu22cis_auditd_admin_space_left_action: halt
 
 ##
 ## Section 7 Control Variables
