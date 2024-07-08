@@ -61,7 +61,10 @@
     - journald
     - rule_6.2.1.2.4
   ansible.builtin.systemd:
-    name: systemd-journal-remote.socket
+    name: "{{ item }}"
     state: stopped
     enabled: false
     masked: true
+  loop:
+  - systemd-journal-remote.socket
+  - systemd-journal-remote.service
