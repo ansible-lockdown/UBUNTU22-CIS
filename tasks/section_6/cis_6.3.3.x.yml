@@ -19,7 +19,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.2
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -31,7 +31,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.3
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -43,7 +43,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.4
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -55,7 +55,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.5
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -87,7 +87,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.7
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -99,7 +99,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.8
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -123,7 +123,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.10
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -135,7 +135,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.11
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -147,7 +147,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.12
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -159,7 +159,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.13
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -171,7 +171,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.14
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -183,7 +183,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.15
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -195,7 +195,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.16
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -207,7 +207,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.17
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -219,7 +219,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.18
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -231,7 +231,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.19
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true
@@ -243,7 +243,7 @@
     - level2-server
     - level2-workstation
     - patch
-    - rule_6.3.3.1
+    - rule_6.3.3.20
     - auditd
   ansible.builtin.set_fact:
     update_audit_template: true

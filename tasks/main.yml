@@ -207,6 +207,8 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Reboot system
+  tags:
+    - always
   block:
     - name: Reboot system if not skipped
       when:
