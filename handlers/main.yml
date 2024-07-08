@@ -154,7 +154,7 @@
   ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_faillock_file }}
 
 - name: Pam_auth_update_pwfaillock_notify
-  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_faillock_file_notify }}
+  ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_faillock_notify_file }}
 
 - name: Pam_auth_update_pwquality
   ansible.builtin.shell: pam-auth-update --enable {{ ubtu22cis_pam_pwquality_file }}
