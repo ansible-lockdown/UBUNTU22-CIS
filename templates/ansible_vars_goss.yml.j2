@@ -23,8 +23,6 @@ run_heavy_tests: true
 #  True is BIOS based system else set to false
 ubtu22_legacy_boot: true
 
-ubtu22_set_boot_pass: true
-
 ##
 ## Rule-specific switches
 ##
@@ -455,24 +453,7 @@ ubtu22cis_desktop_required: {{ ubtu22cis_desktop_required }}
 ## Section 1
 
 # If system uses squahshfs e.gf. snap package manager set true
-ubtu22cis_squashfs_required: {{ ubtu22cis_squashfs_required }}
-
-# AIDE
-ubtu22cis_config_aide: {{ ubtu22cis_config_aide }}
-
-# aide setup via - cron, timer
-ubtu22cis_aide_scan: cron
-
-# AIDE cron settings
-ubtu22_aide_cron:
-  cron_user: root
-  cron_file: /etc/crontab
-  aide_job: '/usr/sbin/aide --check'
-  aide_minute: 0
-  aide_hour: 5
-  aide_day: '*'
-  aide_month: '*'
-  aide_weekday: '*'
+ubtu22cis_squashfs_required:{% if prelim_snap_pkg_mgr.rc == 0 %} true {% else %} false{% endif %}
 
 ## Controls 1.3.1.3 and 1.3.1.4 Ensure all AppArmor Profiles are in enforce (1.3.1.3/4) or complain (1.3.1.3) mode
 
@@ -480,29 +461,15 @@ ubtu22_aide_cron:
 # regarding enforcing profiles or putting them in complain mode
 ubtu22cis_apparmor_disable: {{ ubtu22cis_apparmor_disable }}
 
-# This variable specifies whether enforce mode or complain  mode is set in Control 1.3.1.3.
-# Possible values are `enforce` and `complain`.
-# ATTENTION: if Control 1.3.1.4 is run (e.g., when running level 2 rules), it OVERRIDES control 1.3.1.3
-# and sets `enforce` mode, no matter what this variable's value is.
-ubtu22cis_apparmor_mode: complain
-
 ## Controls 1.4.x - Boot password
 #
 # THIS VARIABLE SHOULD BE CHANGED AND INCORPORATED INTO VAULT
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
-ubtu22cis_grub_user: root
-ubtu22cis_set_grub_user_pass: {{ ubtu22cis_set_grub_user_pass }}
-ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
-ubtu22cis_grub_user_file: /etc/grub.d/00_user
-ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"  # pragma: allowlist secret
-ubtu22cis_set_boot_pass: {{ ubtu22cis_set_boot_pass }}
-
-ubtu22cis_grub_file: /boot/grub/grub.cfg
+ubtu22cis_grub_user: {{ ubtu22cis_grub_user }}
+ubtu22cis_bootloader_password_hash: {{ grub_user_pass }}  # pragma: allowlist secret
 
 ## Controls 1.5.x
-# Ability to set file in which the kernel systcl changes are placed
-ubtu22cis_sysctl_kernel_conf: /etc/sysctl.d/98_cis_kernel.conf
 
 ## Controls 1.6.x  - Warning banners
 # The controls 1.6.x set various warning banners and protect the respective files
@@ -523,10 +490,6 @@ ubtu22cis_disable_dynamic_motd: {{ ubtu22cis_disable_dynamic_motd }}
 # (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en)
 # The default database is `local`.
 ubtu22cis_dconf_db_name: local
-# This variable governs the number of seconds of inactivity before the screen goes blank.
-ubtu22cis_screensaver_idle_delay: 900
-# This variable governs the number of seconds the screen remains blank before it is locked.
-ubtu22cis_screensaver_lock_delay: 5
 
 ##
 # Section 2
@@ -608,20 +571,22 @@ ubtu22cis_time_sync_tool: "systemd-timesyncd"
 # Each list item contains two settings, `name` (the domain name of the pool) and synchronization `options`.
 # The default setting for the `options` is `iburst maxsources 4` -- please refer to the documentation
 # of the time synchronization mechanism you are using.
-ubtu22cis_time_pool_name: time.nist.gov
-ubtu22cis_time_pool_options: iburst maxsources 4
+ubtu22cis_time_pool_name:
+{% for pool in ubtu22cis_time_pool %}
+- name: {{ pool.name }}
+  options: {{ pool.options }}
+{% endfor %}
+
 # The following variable represents a list of of time servers used
 # for configuring chrony and timesyncd
 # Each list item contains two settings, `name` (the domain name of the server) and synchronization `options`.
 # The default setting for the `options` is `iburst` -- please refer to the documentation
 # of the time synchronization mechanism you are using.
 ubtu22cis_time_servers:
-- name: time-a-g.nist.gov
-  options: iburst
-- name: time-b-g.nist.gov
-  options: iburst
-- name: time-c-g.nist.gov
-  options: iburst
+{% for servers in ubtu22cis_time_servers %}
+- name: {{ servers.name }}
+  options: {{ servers.options }}
+{% endfor %}
 
 # Section 3
 ## Control 3.1.1 - Ensure system is checked to determine if IPv6 is enabled
@@ -656,25 +621,22 @@ ubtu22cis_firewall_package: {{ ubtu22cis_firewall_package }}
 
 ## auditd settings
 ubtu22cis_auditd:
-  space_left_action: {{ ubtu22cis_auditd.space_left_action }}
-  action_mail_acct: {{ ubtu22cis_auditd.action_mail_acct }}
-  admin_space_left_action: {{ ubtu22cis_auditd.admin_space_left_action }}
-  max_log_file_action: {{ ubtu22cis_auditd.max_log_file_action }}
-  auditd_backlog_limit: {{ ubtu22cis_auditd.auditd_backlog_limit }}
+  space_left_action: {{ ubtu22cis_auditd_space_left_action }}
+  admin_space_left_action: {{ ubtu22cis_auditd_admin_space_left_action }}
+  max_log_file_action: {{ ubtu22cis_auditd_max_log_file_action }}
+  auditd_backlog_limit: {{ ubtu22cis_audit_back_log_limit }}
 
 ## syslog
-ubtu22cis_is_syslog_server: {{ ubtu22cis_is_syslog_server }}
-
-ubtu22cis_syslog_service: {{ ubtu22cis_syslog_service }}
+ubtu22cis_is_syslog_server: {{ ubtu22cis_system_is_log_server }}
 
 ### Section 5
-ubtu22cis_sshd_limited: {{ ubtu22cis_sshd_limited }}
+
 # Note the following to understand precedence and layout
 ubtu22cis_sshd_access:
-  - AllowUser
-  - AllowGroup
-  - DenyUser
-  - DenyGroup
+  - AllowUser {{ ubtu22cis_sshd.allow_users }}
+  - AllowGroup {{ ubtu22cis_sshd.allow_groups }}
+  - DenyUser {{ ubtu22cis_sshd.deny_users }}
+  - DenyGroup {{ ubtu22cis_sshd.deny_groups }}
 
 ubtu22cis_ssh_strong_ciphers:
   - aes256-gcm@openssh.com
@@ -737,23 +699,25 @@ ubtu22cis_pam_password:
 
 ubtu22cis_pam_passwd_retry: "3"
 
-# choose one of below
-ubtu22cis_pwhistory_so: "14"
-ubtu22cis_unix_so: {{ ubtu22cis_unix_so }}
-ubtu22cis_passwd_remember: "5"
-
 # logins.def password settings
 ubtu22cis_pass:
-  max_days: "365"
-  min_days: "1"
-  warn_age: "7"
+  max_days: {{ ubtu22cis_pass.max_days }}
+  min_days: {{ ubtu22cis_pass.min_days }}
+  warn_age: {{ ubtu22cis_pass.warn_age }}
 
 # set sugroup if differs from wheel
 ubtu22cis_sugroup: nosugroup
 
-# sugroup users list
-ubtu22_sugroup_users: "root"
 
 # var log location variable
-ubtu22_varlog_location: "/var/log/sudo.log"
+ubtu22_varlog_location: {{ ubtu22cis_sudo_logfile }}
 
+# Section 6
+
+# 6.1.2
+
+# AIDE
+ubtu22cis_config_aide: {{ ubtu22cis_config_aide }}
+
+# aide setup via - cron, timer
+ubtu22cis_aide_scan: {{ ubtu22cis_aide_scan }}
