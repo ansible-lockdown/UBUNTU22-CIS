@@ -1048,6 +1048,8 @@ ubtu22cis_aide_init:
     poll: 0
 
 ## Control 6.1.2
+# Set how aide is scanned either cron or timer
+ubtu22cis_aide_scan: cron
 # These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
 # The sub-settings of this variable provide the parameters required to configure
 # the cron job on the target system.
