@@ -1,0 +1,9 @@
+[Unit]
+Description=Aide check
+
+[Timer]
+OnCalendar={{ ubtu22cis_aide_cron.aide_day }}-{{ ubtu22cis_aide_cron.aide_month }}-{{ ubtu22cis_aide_cron.aide_weekday }} {{ ubtu22cis_aide_cron.aide_hour }}:{{ ubtu22cis_aide_cron.aide_minute }}:00
+Unit=aidecheck.service
+
+[Install]
+WantedBy=multi-user.target
