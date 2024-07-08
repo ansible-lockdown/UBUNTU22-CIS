@@ -15,7 +15,7 @@
     - Restart auditd
     - Set_reboot_required
 
-- name: POST | Set up auditd user logging exceptions
+- name: POST | AUDITD | Set up auditd user logging exceptions
   when: ubtu22cis_allow_auditd_uid_user_exclusions
   ansible.builtin.template:
     src: audit/98_auditd_exception.rules.j2
@@ -24,3 +24,6 @@
     group: root
     mode: '0600'
   notify: Restart auditd
+
+- name: POST | AUDITD | Flush handlers
+  ansible.builtin.meta: flush_handlers
