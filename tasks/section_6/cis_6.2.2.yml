@@ -44,4 +44,3 @@
         - "/var/log/lastlog*"
         - "/var/log/sssd*"
         - "/var/log/SSSD*"
-
