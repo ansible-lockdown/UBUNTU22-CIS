@@ -26,7 +26,6 @@
       loop: "{{ ubtu22cis_pam_nullok.stdout_lines }}"
       notify: Pam_auth_update_pwunix
 
-
 - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember"
   when:
     - ubtu22cis_rule_5_3_3_4_2
