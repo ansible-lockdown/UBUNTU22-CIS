@@ -92,8 +92,6 @@ This role is designed so the end user should not have to edit the tasks themselv
 
 - **devel** - This is the default branch and the working development branch. Community pull requests will be pulled into this branch
 - **main** - This is the release branch
-- **reports** - This is a protected branch for our scoring reports, no code should ever go here
-- **gh-pages** - This is the GitHub pages branch
 - **all other branches** - Individual community member branches
 
 ## Community Contribution
@@ -109,7 +107,7 @@ We encourage you (the community) to contribute to this role. Please read the rul
 
 uses:
 
-- ansible-core 2.12
+- ansible-core 2.16.6
 - ansible collections - pulls in the latest version based on the requirements file
 - runs the audit using the devel branch
 - This is an automated test that occurs on pull requests into devel
