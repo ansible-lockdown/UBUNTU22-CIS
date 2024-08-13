@@ -2,6 +2,26 @@
 
 ## Based on CIS V1.0.0
 
+### 1.1.1
+
+- Huge thanks to
+  - @rostskadat
+    - #175 - Allowing changes to the ssh default variables
+  - @DianaMariaDDM
+    - #200 - new approach to tmp mount options
+
+### 1.1.0
+
+- #223 thanks to feedback @txsastre
+- audit
+  - moved the audit to run prior to any changes taking place on the system (exception of required)
+  - improvements to copy/archive/get_url content methods incl notes in defaults/main.yml
+  - tidy up and logic of var naming
+- lint and tidy up
+- ansible version update
+- unused filesystem added to skip if container list
+- unused vars removed
+
 ### 1.0.9
 
 - updated audit command to allow multiple groups from inventory

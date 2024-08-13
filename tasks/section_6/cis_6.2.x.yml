@@ -283,7 +283,7 @@
                   state: directory
                   owner: root
                   group: root
-                  mode: "0755"
+                  mode: '0755'
                   follow: false
               loop: "{{ root_path_perms.results }}"
               loop_control:
@@ -309,8 +309,8 @@
   failed_when: false
   loop: "{{ ubtu22cis_uid_zero_accounts_except_root.stdout_lines }}"
   when:
-      - ubtu22cis_uid_zero_accounts_except_root.rc
       - ubtu22cis_rule_6_2_10
+      - ubtu22cis_uid_zero_accounts_except_root.rc
   tags:
       - level1-server
       - level1-workstation
@@ -394,7 +394,7 @@
         ansible.builtin.file:
             path: "{{ item.stat.path }}"
             state: directory
-            mode: "0750"
+            mode: '0750'
         loop: "{{ rhel_09_6_2_13_home_dir_perms.results }}"
         loop_control:
             label: "{{ item }}"

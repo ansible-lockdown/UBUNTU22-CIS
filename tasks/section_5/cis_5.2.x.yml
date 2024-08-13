@@ -80,7 +80,7 @@
             regexp: '^AllowUsers|^#AllowUsers'
             line: 'AllowUsers {{ ubtu22cis_sshd.allow_users }}'
             validate: 'sshd -t -f %s'
-        notify: restart sshd
+        notify: Restart sshd
         when: "ubtu22cis_sshd['allow_users']| default('') | length > 0 "
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add allowed groups"
@@ -89,7 +89,7 @@
             regexp: '^AllowGroups|^#AllowGroups'
             line: 'AllowGroups {{ ubtu22cis_sshd.allow_groups }}'
             validate: 'sshd -t -f %s'
-        notify: restart sshd
+        notify: Restart sshd
         when: "ubtu22cis_sshd['allow_groups']| default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add deny users"
@@ -98,7 +98,7 @@
             regexp: '^DenyUsers|^#DenyUsers'
             line: 'DenyUsers {{ ubtu22cis_sshd.deny_users }} '
             validate: 'sshd -t -f %s'
-        notify: restart sshd
+        notify: Restart sshd
         when: "ubtu22cis_sshd['deny_users']| default('') | length > 0"
 
       - name: "5.2.4 | PATCH | Ensure SSH access is limited | Add deny groups"
@@ -107,7 +107,7 @@
             regexp: '^DenyGroups|^#DenyGroups'
             line: 'DenyGroups {{ ubtu22cis_sshd.deny_groups }}'
             validate: 'sshd -t -f %s'
-        notify: restart sshd
+        notify: Restart sshd
         when: "ubtu22cis_sshd['deny_groups']| default('') | length > 0"
   when:
       - ubtu22cis_rule_5_2_4
@@ -123,10 +123,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^LogLevel|^#LogLevel'
-      line: "LogLevel {{ ubtu22cis_sshd.log_level }}"
+      line: 'LogLevel {{ ubtu22cis_sshd.log_level | default(ubtu22cis_sshd_default_log_level) }}'
       insertafter: '^# Logging'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_5
   tags:
@@ -144,7 +144,7 @@
       line: 'UsePAM yes'
       insertafter: '^# and ChallengeResponseAuthentication'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_6
   tags:
@@ -162,7 +162,7 @@
       regexp: '^PermitRootLogin|^#PermitRootLogin'
       line: 'PermitRootLogin no'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_7
   tags:
@@ -179,7 +179,7 @@
       regexp: '^HostbasedAuthentication|^#HostbasedAuthentication'
       line: 'HostbasedAuthentication no'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_8
   tags:
@@ -197,7 +197,7 @@
       line: 'PermitEmptyPasswords no'
       insertafter: '# To disable tunneled clear text passwords'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_9
   tags:
@@ -214,7 +214,7 @@
       regexp: '^PermitUserEnvironment|^#PermitUserEnvironment'
       line: 'PermitUserEnvironment no'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_10
   tags:
@@ -231,7 +231,7 @@
       regexp: '^IgnoreRhosts|^#IgnoreRhosts'
       line: 'IgnoreRhosts yes'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_11
   tags:
@@ -248,7 +248,7 @@
       regexp: '^X11Forwarding|^#X11Forwarding'
       line: 'X11Forwarding no'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_12
   tags:
@@ -263,10 +263,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^Ciphers|^#Ciphers'
-      line: "Ciphers {{ ubtu22cis_sshd.ciphers | join(',') }}"
+      line: "Ciphers {{ ubtu22cis_sshd.ciphers | default(ubtu22cis_sshd_default_ciphers) | join(',') }}"
       insertafter: '^# Ciphers and keying'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_13
   tags:
@@ -281,10 +281,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MACs|^#MACs'
-      line: "MACs {{ ubtu22cis_sshd.macs | join(',') }}"
+      line: "MACs {{ ubtu22cis_sshd.macs | default(ubtu22cis_sshd_default_macs) | join(',') }}"
       insertafter: '^# Ciphers and keying'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_14
   tags:
@@ -299,10 +299,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^KexAlgorithms|^#KexAlgorithms'
-      line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | join(',') }}"
+      line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | default(ubtu22cis_sshd_default_kex_algorithms) | join(',') }}"
       insertafter: '^# Ciphers and keying'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_15
   tags:
@@ -319,7 +319,7 @@
       regexp: '^AllowTcpForwarding|^#AllowTcpForwarding'
       line: 'AllowTcpForwarding no'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_16
   tags:
@@ -337,7 +337,7 @@
       line: Banner /etc/issue.net
       insertafter: '^# no default banner path'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_17
   tags:
@@ -352,10 +352,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MaxAuthTries|^#MaxAuthTries'
-      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries }}'
+      line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
       insertafter: '^# Authentication'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_18
   tags:
@@ -372,7 +372,7 @@
       regexp: '^MaxStartups|^#MaxStartups'
       line: 'MaxStartups 10:30:60'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_19
   tags:
@@ -387,10 +387,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^MaxSessions|^#MaxSessions'
-      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions }}'
+      line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
       insertafter: '^# Authentication'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_20
   tags:
@@ -405,10 +405,10 @@
   ansible.builtin.lineinfile:
       path: /etc/ssh/sshd_config
       regexp: '^LoginGraceTime|^#LoginGraceTime'
-      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time }}'
+      line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
       insertafter: '^# Authentication'
       validate: 'sshd -t -f %s'
-  notify: restart sshd
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_21
   tags:
@@ -426,9 +426,9 @@
       line: "{{ item.line }}"
       validate: 'sshd -t -f %s'
   with_items:
-      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval }}' }
-      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max }}' }
-  notify: restart sshd
+      - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
+      - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
+  notify: Restart sshd
   when:
       - ubtu22cis_rule_5_2_22
   tags:

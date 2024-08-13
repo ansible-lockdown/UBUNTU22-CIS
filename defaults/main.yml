@@ -52,23 +52,26 @@ ubtu22cis_uses_root: false
 ### Settings for associated Audit role using Goss
 ###
 
-##########################################
+###########################################
 ### Goss is required on the remote host ###
-## Refer to vars/auditd.yml for any other settings ##
+### vars/auditd.yml for other settings  ###
 
 # Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
 setup_audit: false
 
 # enable audits to run - this runs the audit and get the latest content
 run_audit: false
+# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
+audit_run_heavy_tests: true
 
-# Only run Audit do not remediate
+## Only run Audit do not remediate
 audit_only: false
-# As part of audit_only
-# This will enable files to be copied back to control node
+### As part of audit_only ###
+# This will enable files to be copied back to control node in audit_only mode
 fetch_audit_files: false
-# Path to copy the files to will create dir structure
+# Path to copy the files to will create dir structure in audit_only mode
 audit_capture_files_dir: /some/location to copy to on control node
+#############################
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
@@ -81,29 +84,24 @@ get_audit_binary_method: download
 audit_bin_copy_location: /some/accessible/path
 
 # how to get audit files onto host options
-# options are git/copy/get_url other e.g. if you wish to run from already downloaded conf
+# options are git/copy/archive/get_url other e.g. if you wish to run from already downloaded conf
 audit_content: git
 
-# archive or copy:
-audit_conf_copy: "some path to copy from"
+# If using either archive, copy, get_url:
+## Note will work with .tar files - zip will require extra configuration
+### If using get_url this is expecting github url in tar.gz format e.g.
+### https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
+audit_conf_source: "some path or url to copy from"
 
-# get_url:
-audit_files_url: "some url maybe s3?"
+# Destination for the audit content to be placed on managed node
+# note may not need full path e.g. /opt with the directory being the {{ benchmark }}-Audit directory
+audit_conf_dest: "/opt"
 
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
-audit_run_heavy_tests: true
+# Where the audit logs are stored
+audit_log_dir: '/opt'
 
-# This variable specifies the timeout (in ms) for audit commands that
-# take a very long time: if a command takes too long to complete,
-# it will be forcefully terminated after the specified duration.
-audit_cmd_timeout: 120000
-
-### End Goss enablements ####
-
-## Running role under chroot
-# Tweak role to run in a chroot, such as in a kickstart %post script.
-# The correct value of this variable is auto-determined.
-ubtu22cis_system_is_chroot: "{{ ansible_is_chroot | default(False) }}"
+### Goss Settings ##
+####### END ########
 
 ## Running in EC2 pipeline
 # Skip events for EC2 instance testing pipeline.
@@ -839,6 +837,35 @@ ubtu22cis_rsyslog_ansible_managed: true
 ##
 
 ## Controls 5.2.4/5/13/14/15/18/20/21/22 -- various sshd settings
+ubtu22cis_sshd_default_log_level: "INFO"
+ubtu22cis_sshd_default_ciphers:
+    - chacha20-poly1305@openssh.com
+    - aes256-gcm@openssh.com
+    - aes128-gcm@openssh.com
+    - aes256-ctr
+    - aes192-ctr
+    - aes128-ctr
+ubtu22cis_sshd_default_macs:
+    - hmac-sha2-512-etm@openssh.com
+    - hmac-sha2-256-etm@openssh.com
+    - hmac-sha2-512
+    - hmac-sha2-256
+ubtu22cis_sshd_default_kex_algorithms:
+    - curve25519-sha256
+    - curve25519-sha256@libssh.org
+    - diffie-hellman-group14-sha256
+    - diffie-hellman-group16-sha512
+    - diffie-hellman-group18-sha512
+    - ecdh-sha2-nistp521
+    - ecdh-sha2-nistp384
+    - ecdh-sha2-nistp256
+    - diffie-hellman-group-exchange-sha256
+ubtu22cis_sshd_default_max_auth_tries: 4
+ubtu22cis_sshd_default_max_sessions: 8
+ubtu22cis_sshd_default_login_grace_time: 60
+ubtu22cis_sshd_default_client_alive_interval: 300
+ubtu22cis_sshd_default_client_alive_count_max: 3
+
 ubtu22cis_sshd:
     # This variable is used to control the verbosity of the logging produced by the SSH server.
     # The options for setting it are as follows:
@@ -848,51 +875,32 @@ ubtu22cis_sshd:
     # - `INFO`: logs informational messages in addition to errors;
     # - `VERBOSE`: logs a higher level of detail, including login attempts and key exchanges;
     # - `DEBUG`: generates very detailed debugging information including sensitive information.
-    log_level: "INFO"
+    log_level: "{{ubtu22cis_sshd_default_log_level}}"
     # This variable specifies the maximum number of authentication attempts that are
     # allowed for a single SSH session.
-    max_auth_tries: 4
+    max_auth_tries: "{{ubtu22cis_sshd_default_max_auth_tries}}"
     # This variable specifies the encryption algorithms that can be used for securing
     # data transmission.
-    ciphers:
-        - chacha20-poly1305@openssh.com
-        - aes256-gcm@openssh.com
-        - aes128-gcm@openssh.com
-        - aes256-ctr
-        - aes192-ctr
-        - aes128-ctr
+    ciphers: "{{ubtu22cis_sshd_default_ciphers}}"
     # This variable specifies a list of message authentication code algorithms (MACs) that are allowed for verifying
     # the integrity of data exchanged.
-    macs:
-        - hmac-sha2-512-etm@openssh.com
-        - hmac-sha2-256-etm@openssh.com
-        - hmac-sha2-512
-        - hmac-sha2-256
+    macs: "{{ubtu22cis_sshd_default_macs}}"
     # This variable is used to state the key exchange algorithms used to establish secure encryption
     # keys during the initial connection setup.
-    kex_algorithms:
-        - curve25519-sha256
-        - curve25519-sha256@libssh.org
-        - diffie-hellman-group14-sha256
-        - diffie-hellman-group16-sha512
-        - diffie-hellman-group18-sha512
-        - ecdh-sha2-nistp521
-        - ecdh-sha2-nistp384
-        - ecdh-sha2-nistp256
-        - diffie-hellman-group-exchange-sha256
+    kex_algorithms: "{{ubtu22cis_sshd_default_kex_algorithms}}"
     # This variable sets the time interval in seconds between sending "keep-alive"
     # messages from the server to the client. These types of messages are intended to
     # keep the connection alive and prevent it being terminated due to inactivity.
-    client_alive_interval: 300
+    client_alive_interval: "{{ubtu22cis_sshd_default_client_alive_interval}}"
     # This variable sets the maximum number of unresponsive "keep-alive" messages
     # that can be sent from the server to the client before the connection is considered
     # inactive and thus, closed.
-    client_alive_count_max: 3
+    client_alive_count_max: "{{ubtu22cis_sshd_default_client_alive_count_max}}"
     # This variable specifies the amount of seconds allowed for successful authentication to
     # the SSH server.
-    login_grace_time: 60
+    login_grace_time: "{{ubtu22cis_sshd_default_login_grace_time}}"
     # This variables is used to set the maximum number of open sessions per connection.
-    max_sessions: 8
+    max_sessions: "{{ubtu22cis_sshd_default_max_sessions}}"
     # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
     # access for users whose user name matches one of the patterns. This is done
     # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.

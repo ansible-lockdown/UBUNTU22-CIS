@@ -5,7 +5,8 @@
       - setup_audit
   tags:
       - setup_audit
-  ansible.builtin.include_tasks: LE_audit_setup.yml
+  ansible.builtin.include_tasks:
+      file: LE_audit_setup.yml
 
 - name: Pre Audit Setup | Ensure {{ audit_conf_dir }} exists
   ansible.builtin.file:
@@ -32,23 +33,25 @@
   when:
       - audit_content == 'copy'
   ansible.builtin.copy:
-      src: "{{ audit_local_copy }}"
+      src: "{{ audit_conf_source }}"
       dest: "{{ audit_conf_dest }}"
       mode: preserve
 
 - name: Pre Audit Setup | Unarchive audit content files on server
   when:
-      - audit_content == 'archived'
+      - audit_content == 'archive'
   ansible.builtin.unarchive:
-      src: "{{ audit_conf_copy  }}"
-      dest: "{{ audit_conf_dir }}"
+      src: "{{ audit_conf_source }}"
+      dest: "{{ audit_conf_dest }}"
 
 - name: Pre Audit Setup | Get audit content from url
   when:
       - audit_content == 'get_url'
-  ansible.builtin.get_url:
-      url: "{{ audit_files_url }}"
-      dest: "{{ audit_conf_dir }}"
+  ansible.builtin.unarchive:
+      src: "{{ audit_conf_source }}"
+      dest: "{{ audit_conf_dest }}/{{ benchmark }}-Audit"
+      remote_src: "{{ ( audit_conf_source is contains ('http'))| ternary(true, false ) }}"
+      extra_opts: "{{ (audit_conf_source is contains ('github')) | ternary('--strip-components=1', [] ) }}"
 
 - name: Pre Audit Setup | Check Goss is available
   when:
@@ -77,42 +80,41 @@
       mode: '0600'
 
 - name: Pre Audit | Run pre_remediation {{ benchmark }} audit
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
+  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
   changed_when: true
   environment:
       AUDIT_BIN: "{{ audit_bin }}"
-      AUDIT_CONTENT_LOCATION: "{{ audit_out_dir }}"
+      AUDIT_CONTENT_LOCATION: "{{ audit_conf_dest | default('/opt') }}"
       AUDIT_FILE: goss.yml
 
 - name: Pre Audit | Capture audit data if json format
   when:
       - audit_format == "json"
   block:
-      - name: capture data {{ pre_audit_outfile }}
-        ansible.builtin.shell: cat {{ pre_audit_outfile }}
-        register: pre_audit
+      - name: Pre Audit | Capture audit data if json format
+        ansible.builtin.shell: grep -E '\"summary-line.*Count:.*Failed' "{{ pre_audit_outfile }}" | cut -d'"' -f4
+        register: pre_audit_summary
         changed_when: false
 
-      - name: Pre Audit | Capture pre-audit result
+      - name: Pre Audit | Set Fact for audit summary
         ansible.builtin.set_fact:
-            pre_audit_summary: "{{ pre_audit.stdout | from_json | json_query(summary) }}"
-        vars:
-            summary: summary."summary-line"
+            pre_audit_results: "{{ pre_audit_summary.stdout }}"
 
 - name: Pre Audit | Capture audit data if documentation format
   when:
       - audit_format == "documentation"
   block:
-      - name: Pre Audit | capture data {{ pre_audit_outfile }} | documentation format
-        ansible.builtin.shell: tail -2 {{ pre_audit_outfile }}
-        register: pre_audit
+      - name: Pre Audit | Capture audit data if documentation format
+        ansible.builtin.shell: tail -2 "{{ pre_audit_outfile }}"  | tac | tr '\n' ' '
+        register: pre_audit_summary
         changed_when: false
 
-      - name: Pre Audit | Capture pre-audit result | documentation format
+      - name: Pre Audit | Set Fact for audit summary
         ansible.builtin.set_fact:
-            pre_audit_summary: "{{ pre_audit.stdout_lines }}"
+            pre_audit_results: "{{ pre_audit_summary.stdout }}"
 
 - name: Audit_Only | Run Audit Only
   when:
       - audit_only
-  ansible.builtin.import_tasks: audit_only.yml
+  ansible.builtin.import_tasks:
+      file: audit_only.yml
