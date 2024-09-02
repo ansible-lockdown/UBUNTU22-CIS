@@ -119,7 +119,7 @@
     - level1-server
     - level1-workstation
     - audit
-    - rule_7.2.4
+    - rule_7.2.5
     - user
   vars:
     warn_control_id: '7.2.5'
