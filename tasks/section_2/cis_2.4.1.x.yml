@@ -43,6 +43,7 @@
     owner: root
     group: root
     mode: '0700'
+    state: directory
 
 - name: "2.4.1.4 | PATCH | Ensure permissions on /etc/cron.daily are configured"
   when:
@@ -58,6 +59,7 @@
     owner: root
     group: root
     mode: '0700'
+    state: directory
 
 - name: "2.4.1.5 | PATCH | Ensure permissions on /etc/cron.weekly are configured"
   when:
@@ -73,6 +75,7 @@
     owner: root
     group: root
     mode: '0700'
+    state: directory
 
 - name: "2.4.1.6 | PATCH | Ensure permissions on /etc/cron.monthly are configured"
   when:
@@ -88,6 +91,7 @@
     owner: root
     group: root
     mode: '0700'
+    state: directory
 
 - name: "2.4.1.7 | PATCH | Ensure permissions on /etc/cron.d are configured"
   when:
@@ -103,6 +107,7 @@
     owner: root
     group: root
     mode: '0700'
+    state: directory
 
 - name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users"
   when:
@@ -130,7 +135,7 @@
         path: /etc/cron.allow
         owner: root
         group: root
-        mode: '0640'
+        mode: 'u-x,g-wx,o-rwx'
         state: touch
 
     - name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users |  Update cron.allow if exists"
@@ -139,4 +144,4 @@
         path: /etc/cron.allow
         owner: root
         group: root
-        mode: '0640'
+        mode: 'u-x,g-wx,o-rwx'
