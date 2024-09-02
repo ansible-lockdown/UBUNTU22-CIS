@@ -43,7 +43,7 @@
     - rule_1.1.2.7.2
     - rule_1.1.2.7.3
     - rule_1.1.2.7.4
-  notify: Change_requires_reboot
+  notify: Set_reboot_required
   ansible.posix.mount:
     name: /var/log/audit
     src: "{{ item.device }}"
