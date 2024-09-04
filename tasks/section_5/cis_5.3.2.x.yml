@@ -36,7 +36,7 @@
     - pam_faillock
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ item }}.j2"
-    dest: "/{ ubtu22cis_pam_confd_dir }}{{ item }}"
+    dest: "/{{ ubtu22cis_pam_confd_dir }}{{ item }}"
     owner: root
     group: root
     mode: '0600'
