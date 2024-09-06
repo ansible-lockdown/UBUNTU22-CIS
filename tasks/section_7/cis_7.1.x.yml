@@ -13,7 +13,7 @@
     path: /etc/passwd
     owner: root
     group: root
-    mode: '0644'
+    mode: 'u-x,go-wx'
 
 - name: "7.1.2 | PATCH | Ensure permissions on /etc/passwd- are configured"
   when:
@@ -28,7 +28,7 @@
     path: /etc/passwd-
     owner: root
     group: root
-    mode: '0644'
+    mode: 'u-x,go-wx'
 
 - name: "7.1.3 | PATCH | Ensure permissions on /etc/group are configured"
   when:
@@ -43,7 +43,7 @@
     path: /etc/group
     owner: root
     group: root
-    mode: '0644'
+    mode: 'u-x,go-wx'
 
 - name: "7.1.4 | PATCH | Ensure permissions on /etc/group- are configured"
   when:
@@ -58,7 +58,7 @@
     path: /etc/group-
     owner: root
     group: root
-    mode: '0644'
+    mode: 'u-x,go-wx'
 
 - name: "7.1.5 | PATCH | Ensure permissions on /etc/shadow are configured"
   when:
@@ -73,7 +73,7 @@
     path: /etc/shadow
     owner: root
     group: root
-    mode: '0640'
+    mode: 'u-x,g-wx,o-rwx'
 
 - name: "7.1.6 | PATCH | Ensure permissions on /etc/shadow- are configured"
   when:
@@ -88,7 +88,7 @@
     path: /etc/shadow-
     owner: root
     group: root
-    mode: '0640'
+    mode: 'u-x,g-wx,o-rwx'
 
 - name: "7.1.7 | PATCH | Ensure permissions on /etc/gshadow are configured"
   when:
@@ -103,7 +103,7 @@
     path: /etc/gshadow
     owner: root
     group: root
-    mode: '0640'
+    mode: 'u-x,g-wx,o-rwx'
 
 - name: "7.1.8 | PATCH | Ensure permissions on /etc/gshadow- are configured"
   when:
@@ -118,7 +118,7 @@
     path: /etc/gshadow-
     owner: root
     group: root
-    mode: '0640'
+    mode: 'u-x,g-wx,o-rwx'
 
 - name: "7.1.9 | PATCH | Ensure permissions on /etc/shells are configured"
   when:
@@ -133,7 +133,7 @@
     path: /etc/shells
     owner: root
     group: root
-    mode: u-x,go-wx
+    mode: 'u-x,go-wx'
 
 - name: "7.1.10 | PATCH | Ensure permissions on /etc/security/opasswd are configured"
   loop:
@@ -151,7 +151,7 @@
     path: /etc/security/opasswd
     owner: root
     group: root
-    mode: u-x,go-rwx
+    mode: 'u-x,go-rwx'
 
 - name: "7.1.11 | PATCH | Ensure world writable files and directories are secured"
   when:

@@ -126,7 +126,7 @@
         - ubtu22cis_dns_mask
       notify: Systemd_daemon_reload
       ansible.builtin.systemd:
-        name: bind9.service
+        name: named.service
         enabled: false
         state: stopped
         masked: true
@@ -175,7 +175,7 @@
   block:
     - name: "2.1.6 | PATCH | Ensure ftp server services are not in use | Remove package"
       when:
-        - "'ftp' in ansible_facts.packages"
+        - "'vsftp' in ansible_facts.packages"
         - not ubtu22cis_ftp_server
         - not ubtu22cis_ftp_mask
       ansible.builtin.package:

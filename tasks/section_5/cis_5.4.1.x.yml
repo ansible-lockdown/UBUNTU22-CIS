@@ -151,16 +151,16 @@
 
 - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past"
   when:
-    - ubtu22cis_rule_5_4_1_5
+    - ubtu22cis_rule_5_4_1_6
   tags:
     - level1-server
     - level1-workstation
     - patch
-    - rule_5.4.1.5
+    - rule_5.4.1.6
     - user
     - login
   vars:
-    warn_control_id: '5.4.1.5'
+    warn_control_id: '5.4.1.6'
   block:
     - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
       ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
@@ -183,12 +183,12 @@
           - "WARNING!! The following accounts have the last PW change date in the future"
           - "{{ ubtu22cis_passwd_future_user_list.stdout_lines }}"
 
-    - name: "5.4.1.5 | WARN | Ensure all users last password change date is in the past | warn_count"
+    - name: "5.4.1.6 | WARN | Ensure all users last password change date is in the past | warn_count"
       when: ubtu22cis_passwd_future_user_list.stdout | length > 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
-    - name: "5.4.1.5 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
+    - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
       when:
         - ubtu22cis_disruption_high
         - ubtu22cis_passwd_future_user_list.stdout | length > 0

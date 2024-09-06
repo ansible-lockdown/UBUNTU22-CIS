@@ -53,7 +53,7 @@
     - level1-server
     - level1-workstation
     - patch
-    - rule_5.4.2.2
+    - rule_5.4.2.3
     - user
     - system
   block:

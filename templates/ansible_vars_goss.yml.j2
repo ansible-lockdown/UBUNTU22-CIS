@@ -1,9 +1,9 @@
 ## metadata for Audit benchmark
-benchmark_version: '2.0.0'
+benchmark_version: {{ benchmark_version }}
 
 
 #  timeout for each command to run where set - default = 10seconds/10000ms
-timeout_ms: 120000
+timeout_ms: {{ audit_cmd_timeout }}
 
 ubtu22cis_section1: {{ ubtu22cis_section1 }}
 ubtu22cis_section2: {{ ubtu22cis_section2 }}
@@ -18,7 +18,7 @@ ubtu22cis_level_2: {{ ubtu22cis_level_2 }}
 
 
 #  to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
-run_heavy_tests: true
+run_heavy_tests: {{ audit_run_heavy_tests }}
 
 #  True is BIOS based system else set to false
 ubtu22_legacy_boot: true
