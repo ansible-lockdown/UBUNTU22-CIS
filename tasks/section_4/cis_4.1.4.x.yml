@@ -23,7 +23,7 @@
             "4.1.4.3 | PATCH | Ensure only authorized groups are assigned ownership of audit log files"
         ansible.builtin.file:
             path: "{{ audit_discovered_logfile.stdout }}"
-            mode: "{% if auditd_logfile.stat.mode > '0640' %}0640{% endif %}"
+            mode: 'u-x,g-wx,o-rwx'
             owner: root
             group: root
   when:
