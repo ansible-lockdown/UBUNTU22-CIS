@@ -14,6 +14,8 @@
         ansible.builtin.file:
             path: "{{ item.path }}"
             mode: '0640'
+        failed_when: logfiles_perms_update.state not in '[ file, absent ]'
+        register: logfiles_perms_update
         loop: "{{ logfiles.files }}"
         loop_control:
             label: "{{ item.path }}"
