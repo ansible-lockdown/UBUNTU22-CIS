@@ -36,10 +36,10 @@
 - name: PRELIM | AUDIT | Capture tmp mount type | discover mount tmp type
   when:
     - "'/tmp' in mount_names"
-    - ubtu22cis_rule_1_1_2_1 or
-      ubtu22cis_rule_1_1_2_2 or
-      ubtu22cis_rule_1_1_2_3 or
-      ubtu22cis_rule_1_1_2_4
+    - ubtu22cis_rule_1_1_2_1_1 or
+      ubtu22cis_rule_1_1_2_1_2 or
+      ubtu22cis_rule_1_1_2_1_3 or
+      ubtu22cis_rule_1_1_2_1_4
   tags:
     - always
   block:
@@ -125,6 +125,22 @@
       ansible.builtin.package:
         name: network-manager
         state: present
+
+- name: "PRELIM | 4.1.1 | PATCH | Ensure ufw is installed"
+  when:
+    - ubtu22cis_rule_4_1_1
+    - ubtu22cis_ufw_use_sysctl
+    - "'ufw' not in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.1
+    - apt
+    - ufw
+  ansible.builtin.package:
+    name: ufw
+    state: present
 
 - name: "PRELIM | PATCH | 5.3.4/5 | Find all sudoers files."
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
@@ -305,12 +321,12 @@
 ## Optional
 
 - name: "Optional | PATCH | UFW firewall force to use /etc/sysctl.conf settings"
-  ansible.builtin.lineinfile:
-    path: /etc/default/ufw
-    regexp: ^IPT_SYSCTL=.*
-    line: IPT_SYSCTL=/etc/sysctl.conf
   when:
     - ubtu22cis_firewall_package == "ufw"
     - ubtu22cis_ufw_use_sysctl
   tags:
     - always
+  ansible.builtin.lineinfile:
+    path: /etc/default/ufw
+    regexp: ^IPT_SYSCTL=.*
+    line: IPT_SYSCTL=/etc/sysctl.conf
