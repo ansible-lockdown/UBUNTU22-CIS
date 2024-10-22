@@ -16,16 +16,9 @@
       failed_when: false
       register: discovered_logfiles
 
-    - name: "6.2.2.1 | AUDIT | Ensure access to all logfiles has been configured | set_fact"
-      when:
-        - discovered_logfiles.stdout_lines | length > 0
-        - discovered_logfiles is defined
-      ansible.builtin.set_fact:
-        discovered_logfiles_flattened: "{{ discovered_logfiles | json_query('stdout_lines[*]') | flatten }}"  # noqa: jinja[invalid]
-
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
       when:
-        - discovered_logfiles_flattened is defined
+        - discovered_logfiles.stdout_lines is defined
         - item != "/var/log/btmp"
         - item != "/var/log/utmp"
         - item != "/var/log/wtmp"
@@ -33,7 +26,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: u-x,g-wx,o-rwx
-      loop: "{{ discovered_logfiles_flattened }}"
+      loop: "{{ discovered_logfiles.stdout_lines }}"
 
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
       ansible.builtin.file:
