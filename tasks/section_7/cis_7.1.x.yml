@@ -29,6 +29,8 @@
     owner: root
     group: root
     mode: 'u-x,go-wx'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
 
 - name: "7.1.3 | PATCH | Ensure permissions on /etc/group are configured"
   when:
