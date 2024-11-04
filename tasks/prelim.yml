@@ -252,32 +252,30 @@
 
 - name: "PRELIM | PATCH | Ensure auditd is installed"
   when:
-    - ubtu22cis_rule_6_3_1_1 or
-      ubtu22cis_rule_6_3_4_1 or
-      ubtu22cis_rule_6_3_4_6 or
-      ubtu22cis_rule_6_3_4_8
+    - ubtu22cis_rule_6_3_1_1
+    - "'auditd' not in ansible_facts.packages or
+       'auditd-plugins' not in ansible_facts.packages"
   tags:
     - level2-server
     - level2-workstation
     - patch
     - auditd
     - always
-  block:
-    - name: "PRELIM | PATCH | Ensure auditd is installed"
-      when:
-        - "'auditd' not in ansible_facts.packages or
-          'auditd-plugins' not in ansible_facts.packages"
-      ansible.builtin.package:
-        name: ['auditd', 'audispd-plugins']
-        state: present
+  ansible.builtin.package:
+    name: ['auditd', 'audispd-plugins']
+    state: present
 
-    - name: "PRELIM | AUDIT | Audit conf and rules files | list files"
-      ansible.builtin.find:
-        path: /etc/audit/
-        file_type: file
-        recurse: true
-        patterns: '*.conf,*.rules'
-      register: prelim_auditd_conf_files
+- name: "PRELIM | AUDIT | Audit conf and rules files | list files"
+  ansible.builtin.find:
+    path: /etc/audit/
+    file_type: file
+    recurse: true
+    patterns: '*.conf,*.rules'
+  register: prelim_auditd_conf_files
+  tags:
+    - patch
+    - auditd
+    - always
 
 - name: "PRELIM | AUDIT | Check if auditd is immutable before changes"
   tags:
