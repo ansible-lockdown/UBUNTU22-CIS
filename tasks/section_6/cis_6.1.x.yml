@@ -21,6 +21,8 @@
       owner: root
       group: root
       mode: '0644'
+  failed_when: discovered_file_exists.state not in '[ file, absent ]'
+  register: discovered_file_exists
   when:
       - ubtu22cis_rule_6_1_2
   tags:
