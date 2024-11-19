@@ -26,15 +26,39 @@
       ansible.builtin.package_facts:
         manager: auto
 
+    - name: "6.1.1 | AUDIT | Ensure AIDE is installed | Check file exists"
+      ansible.builtin.stat:
+        path: "{{ ubtu22cis_aide_db_file }}"
+      register: discovered_aide_db_file
+
+    - name: "6.1.1 | AUDIT | Ensure AIDE is installed | Check current db file age"
+      when: discovered_aide_db_file.stat.exists
+      ansible.builtin.find:
+        path: "{{ ubtu22cis_aide_db_file | dirname }}"
+        pattern: "{{ ubtu22cis_aide_db_file | basename }}"
+        age: "{{ ubtu22cis_aide_db_file_age }}"
+      register: discovered_aide_db_age
+
     - name: "6.1.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
-      ansible.builtin.shell: aideinit && mv /var/lib/aide/aide.db.new /var/lib/aide/aide.db
-      args:
-        creates: /var/lib/aide/aide.db
-      changed_when: false
-      failed_when: false
-      async: "{{ ubtu22cis_aide_init.async }}"
-      poll: "{{ ubtu22cis_aide_init.poll }}"
-      when: not ansible_check_mode
+      when:
+        - not ansible_check_mode
+        - not discovered_aide_db_file.stat.exists or
+          (discovered_aide_db_age.files | length > 0) or
+          ubtu22cis_aide_db_recreate
+      block:
+        - name: "6.1.1 | PATCH | Ensure AIDE is installed | Remove current db file"
+          ansible.builtin.file:
+            path: "{{ ubtu22cis_aide_db_file }}"
+            state: absent
+
+        - name: "6.1.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
+          when:
+            - not ansible_check_mode
+          ansible.builtin.shell: aideinit -y -f
+          args:
+            creates: "{{ ubtu22cis_aide_db_file }}"
+          async: "{{ ubtu22cis_aide_init.async }}"
+          poll: "{{ ubtu22cis_aide_init.poll }}"
 
 - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked"
   when:

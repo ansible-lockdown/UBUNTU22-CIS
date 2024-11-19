@@ -1039,13 +1039,23 @@ ubtu22cis_shell_session_file: /etc/profile.d/tmout.sh
 # By setting this variable to `true`, all of the settings related to AIDE will be applied!
 ubtu22cis_config_aide: true
 
+# If DB file older than below will automatically rebuild DB
+# e.g. options:1w = 1 week, 1d = 1day 1h = 1 hour
+ubtu22cis_aide_db_file_age: 1w
+
+# If aide already setup this forces a new DB to be created
+ubtu22cis_aide_db_recreate: false
+
+# allows to change db file, not config need to be adjusted too
+ubtu22cis_aide_db_file: /var/lib/aide/aide.db
+
 ## When Initializing aide this can take longer on some systems
 # changing the values enables user to change to thier own requirements
 ubtu22cis_aide_init:
     # Maximum Time in seconds
-    async: 45
+    async: 600
     # Polling Interval in seconds
-    poll: 0
+    poll: 15
 
 ## Control 6.1.2
 # Set how aide is scanned either cron or timer
