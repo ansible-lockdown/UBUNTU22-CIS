@@ -17,7 +17,7 @@
   block:
     - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is a separate partition | Absent"
       ansible.builtin.debug:
-        msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
+        msg: "Warning!! {{ required_mount }} doesn't exist. Please investigate this manual task"
 
     - name: "1.1.2.1.1 | WARN | Ensure /tmp is a separate partition | warn_count"
       ansible.builtin.import_tasks:

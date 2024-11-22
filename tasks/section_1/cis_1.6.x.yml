@@ -1,8 +1,7 @@
 ---
 
 - name: "1.6.1 | PATCH | Ensure message of the day is configured properly"
-  when:
-    - ubtu22cis_rule_1_6_1
+  when: ubtu22cis_rule_1_6_1
   tags:
     - level1-server
     - level1-workstation
@@ -28,8 +27,7 @@
         - { regexp: '# Pam_motd.so disabled for CIS benchmark', line: '# Pam_motd.so disabled for CIS benchmark' }
 
 - name: "1.6.2 | PATCH | Ensure local login warning banner is configured properly"
-  when:
-    - ubtu22cis_rule_1_6_2
+  when: ubtu22cis_rule_1_6_2
   tags:
     - level1-server
     - level1-workstation
@@ -47,8 +45,7 @@
         path: /etc/issue
 
 - name: "1.6.3 | PATCH | Ensure remote login warning banner is configured properly"
-  when:
-    - ubtu22cis_rule_1_6_3
+  when: ubtu22cis_rule_1_6_3
   tags:
     - level1-server
     - level1-workstation
@@ -66,8 +63,7 @@
         path: /etc/issue.net
 
 - name: "1.6.4 | PATCH | Ensure permissions on /etc/motd are configured"
-  when:
-    - ubtu22cis_rule_1_6_4
+  when: ubtu22cis_rule_1_6_4
   tags:
     - level1-server
     - level1-workstation
@@ -82,8 +78,7 @@
     mode: 'u-x,go-wx'
 
 - name: "1.6.5 | PATCH | Ensure permissions on /etc/issue are configured"
-  when:
-    - ubtu22cis_rule_1_6_5
+  when: ubtu22cis_rule_1_6_5
   tags:
     - level1-server
     - level1-workstation
@@ -98,8 +93,7 @@
     mode: 'u-x,go-wx'
 
 - name: "1.6.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
-  when:
-    - ubtu22cis_rule_1_6_6
+  when: ubtu22cis_rule_1_6_6
   tags:
     - level1-server
     - level1-workstation

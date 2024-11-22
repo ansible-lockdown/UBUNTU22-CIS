@@ -30,8 +30,7 @@
       notify: Grub update
 
 - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured"
-  when:
-    - ubtu22cis_rule_1_4_2
+  when: ubtu22cis_rule_1_4_2
   tags:
     - level1-server
     - level1-workstation
@@ -46,8 +45,7 @@
       register: ubtu22cis_1_4_2_grub_cfg_status
 
     - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | Set permissions"
-      when:
-        - ubtu22cis_1_4_2_grub_cfg_status.stat.exists
+      when: ubtu22cis_1_4_2_grub_cfg_status.stat.exists
       ansible.builtin.file:
         path: "{{ ubtu22cis_grub_file }}"
         owner: root

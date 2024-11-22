@@ -1,9 +1,6 @@
 ---
 
 - name: "1.7.1 | PATCH | Ensure GNOME Display Manager is removed"
-  ansible.builtin.package:
-    name: gdm3
-    state: absent
   when:
     - ubtu22cis_rule_1_7_1
     - not ubtu22cis_desktop_required
@@ -14,6 +11,9 @@
     - patch
     - rule_1.7.1
     - gnome
+  ansible.builtin.package:
+    name: gdm3
+    state: absent
 
 - name: "1.7.2 | PATCH | Ensure GDM login banner is configured"
   when:
@@ -288,8 +288,7 @@
       notify: Update dconf
 
 - name: "1.7.10 | PATCH | Ensure XDCMP is not enabled"
-  when:
-    - ubtu22cis_rule_1_7_10
+  when: ubtu22cis_rule_1_7_10
   tags:
     - level1-server
     - level1-workstation

@@ -1,8 +1,7 @@
 ---
 
 - name: "1.5.1 | PATCH | Ensure address space layout randomization (ASLR) is enabled | Set active kernel parameter"
-  when:
-    - ubtu22cis_rule_1_5_1
+  when: ubtu22cis_rule_1_5_1
   tags:
     - level1-server
     - level1-workstation
@@ -19,8 +18,7 @@
     ignoreerrors: true
 
 - name: "1.5.2 | PATCH | Ensure ptrace_scope is restricted"
-  when:
-    - ubtu22cis_rule_1_5_2
+  when: ubtu22cis_rule_1_5_2
   tags:
     - level1-server
     - level1-workstation
@@ -37,8 +35,7 @@
     ignoreerrors: true
 
 - name: "1.5.3 | PATCH | Ensure core dumps are restricted"
-  when:
-    - ubtu22cis_rule_1_5_3
+  when: ubtu22cis_rule_1_5_3
   tags:
     - level1-server
     - level1-workstation
@@ -112,8 +109,7 @@
         purge: "{{ ubtu22cis_purge_apt }}"
 
 - name: "1.5.5 | PATCH | Ensure Automatic Error Reporting is not enabled"
-  when:
-    - ubtu22cis_rule_1_5_5
+  when: ubtu22cis_rule_1_5_5
   tags:
     - level1-server
     - level1-workstation
@@ -132,8 +128,7 @@
         mode: '0644'
 
     - name: "1.5.5 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
-      when:
-        - "'apport' in ansible_facts.packages"
+      when: "'apport' in ansible_facts.packages"
       ansible.builtin.package:
         name: apport
         state: absent

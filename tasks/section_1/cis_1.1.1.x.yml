@@ -1,8 +1,7 @@
 ---
 
 - name: "1.1.1.1 | PATCH | Ensure cramfs kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_1
+  when: ubtu22cis_rule_1_1_1_1
   tags:
     - level1-server
     - level1-workstation
@@ -27,15 +26,13 @@
         mode: '0600'
 
     - name: "1.1.1.1 | PATCH | Ensure cramfs kernel module is not available | Disable cramfs"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: cramfs
         state: absent
 
 - name: "1.1.1.2 | PATCH | Ensure freevxfs kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_2
+  when: ubtu22cis_rule_1_1_1_2
   tags:
     - level1-server
     - level1-workstation
@@ -60,15 +57,13 @@
         mode: '0600'
 
     - name: "1.1.1.2 | PATCH | Ensure freevxfs kernel module is not available | Disable freevxfs"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: freevxfs
         state: absent
 
 - name: "1.1.1.3 | PATCH | Ensure hfs kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_3
+  when: ubtu22cis_rule_1_1_1_3
   tags:
     - level1-server
     - level1-workstation
@@ -93,15 +88,13 @@
         mode: '0600'
 
     - name: "1.1.1.3 | PATCH | Ensure hfs kernel module is not available | Disable hfs"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: hfs
         state: absent
 
 - name: "1.1.1.4 | PATCH | Ensure hfsplus kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_4
+  when: ubtu22cis_rule_1_1_1_4
   tags:
     - level1-server
     - level1-workstation
@@ -126,15 +119,13 @@
         mode: '0600'
 
     - name: "1.1.1.4 | PATCH | Ensure hfsplus kernel module is not available | Disable hfsplus"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: hfsplus
         state: absent
 
 - name: "1.1.1.5 | PATCH | Ensure jffs2 kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_5
+  when: ubtu22cis_rule_1_1_1_5
   tags:
     - level1-server
     - level1-workstation
@@ -159,8 +150,7 @@
         mode: '0600'
 
     - name: "1.1.1.5 | PATCH | Ensure jffs2 kernel module is not available | Disable jffs2"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: jffs2
         state: absent
@@ -194,15 +184,13 @@
         mode: '0600'
 
     - name: "1.1.1.6 | PATCH | Ensure squashfs kernel module is not available | Disable squashfs"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: squashfs
         state: absent
 
 - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_7
+  when: ubtu22cis_rule_1_1_1_7
   tags:
     - level2-server
     - level2-workstation
@@ -227,15 +215,13 @@
         mode: '0600'
 
     - name: "1.1.1.7 | PATCH | Ensure udf kernel module is not available | Disable udf"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: udf
         state: absent
 
 - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_8
+  when: ubtu22cis_rule_1_1_1_8
   tags:
     - level1-server
     - level2-workstation
@@ -260,8 +246,7 @@
         mode: '0600'
 
     - name: "1.1.1.8 | PATCH | Ensure usb-storage kernel module is not available | Disable usb"
-      when:
-        - not system_is_container
+      when: not system_is_container
       community.general.modprobe:
         name: usb-storage
         state: absent

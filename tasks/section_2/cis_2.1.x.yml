@@ -588,7 +588,7 @@
         - "'apache2' in ansible_facts.packages"
       notify: Systemd_daemon_reload
       ansible.builtin.systemd:
-        name:
+        name: "{{ item }}"
         enabled: false
         state: stopped
         masked: true
@@ -625,8 +625,8 @@
         - not ubtu22cis_xinetd_mask
       ansible.builtin.package:
         name: xinetd
-        state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
+        state: absent
 
     - name: "2.1.19 | PATCH | Ensure xinetd services are not in use | Mask service"
       when:
@@ -636,8 +636,8 @@
       ansible.builtin.systemd:
         name: xinetd.service
         enabled: false
-        state: stopped
         masked: true
+        state: stopped
 
 - name: "2.1.20 | PATCH | Ensure X window server services are not in use"
   when:

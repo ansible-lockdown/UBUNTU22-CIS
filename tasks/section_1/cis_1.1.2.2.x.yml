@@ -3,7 +3,7 @@
 - name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is a separate partition"
   when:
     - ubtu22cis_rule_1_1_2_2_1
-    - "'/tmp' not in mount_names"
+    - required_mount not in mount_names
   tags:
     - level1-server
     - level1-workstation
