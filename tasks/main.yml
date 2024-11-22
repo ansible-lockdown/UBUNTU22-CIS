@@ -4,57 +4,52 @@
   when:
     - ansible_facts.distribution == 'Ubuntu'
     - ansible_facts.distribution_major_version is version_compare('22', '!=')
-  tags:
-    - always
+  tags: always
   ansible.builtin.fail:
     msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
 
 - name: Check ansible version
+  tags: always
   ansible.builtin.assert:
     that: ansible_version.full is version_compare(min_ansible_version, '>=')
     fail_msg: "You must use Ansible {{ min_ansible_version }} or greater"
     success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
-  tags:
-    - always
 
 #  This control should always run as this can pass on unintended issues.
 - name: "Check password set for connecting user"
   when:
     - ubtu22cis_rule_5_2_4
     - ansible_env.SUDO_USER is defined
-  tags:
-    - always
+  tags: always
   block:
     - name: Capture current password state of connecting user"
       ansible.builtin.shell: "grep -w {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ansible_user_password_set
+      register: prelim_ansible_user_password_set
 
     - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
       ansible.builtin.assert:
-        that: ansible_user_password_set.stdout != "!!" and ansible_user_password_set.stdout | length > 10
+        that: prelim_ansible_user_password_set.stdout != "!!" and prelim_ansible_user_password_set.stdout | length > 10
         fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
         success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
       vars:
         sudo_password_rule: ubtu22cis_rule_5_2_4  # pragma: allowlist secret
 
 - name: Ensure root password is set
-  when:
-    - ubtu22cis_rule_5_4_2_4
-  tags:
-    - always
+  when: ubtu22cis_rule_5_4_2_4
+  tags: always
   block:
     - name: Ensure root password is set
       ansible.builtin.shell: passwd -S root | grep -E "root P"
       changed_when: false
       failed_when: false
-      register: root_passwd_set
+      register: prelim_root_passwd_set
 
     - name: Ensure root password is set
       ansible.builtin.assert:
-        that: root_passwd_set.rc == 0
+        that: prelim_root_passwd_set.rc == 0
         fail_msg: "You have rule 5.4.2.4 enabled this requires that you have a root password set - Please manually set a root password"
         success_msg: "You have a root password set"
 
@@ -62,36 +57,34 @@
   when:
     - ubtu22cis_set_boot_pass
     - ubtu22cis_rule_1_4_1
-  tags:
-    - always
+  tags: always
   ansible.builtin.assert:
     that: ubtu22cis_bootloader_password_hash.find('grub.pbkdf2.sha512') != -1 and ubtu22cis_bootloader_password_hash != 'grub.pbkdf2.sha512.changethispassword'  # pragma: allowlist secret
     msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
 
 - name: Check ubtu22cis_grub_user password variable has been changed
   when: ubtu22cis_rule_1_4_1
-  tags:
-    - always
+  tags: always
   block:
     - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
       ansible.builtin.shell: "grep ^{{ ubtu22cis_grub_user }} /etc/shadow | awk -F : '{print $2}'"
       changed_when: false
-      register: ubtu22cis_password_set_grub_user
+      register: prelim_password_set_grub_user
 
     - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
       when:
-        - "'$y$' in ubtu22cis_password_set_grub_user.stdout"
+        - "'$y$' in prelim_password_set_grub_user.stdout"
         - ubtu22cis_set_grub_user_pass
         - ubtu22cis_rule_1_4_1
       ansible.builtin.assert:
-        that: ubtu22cis_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
+        that: prelim_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
         msg: "This role will not set the {{ ubtu22cis_grub_user }} user password is not set or ubtu22cis_grub_user_passwd variable has not been set correctly"
 
     - name: Check ubtu22cis_grub_user password variable has been changed | if password blank or incorrect type and not being set
       when:
         - not ubtu22cis_set_grub_user_pass
       ansible.builtin.assert:
-        that: ( ubtu22cis_password_set_grub_user.stdout | length > 10 ) and '$y$' in ubtu22cis_password_set_grub_user.stdout
+        that: ( prelim_password_set_grub_user.stdout | length > 10 ) and '$y$' in prelim_password_set_grub_user.stdout
         fail_msg: "Grub User {{ ubtu22cis_grub_user }} has no password set or incorrect encryption"
         success_msg: "Grub User {{ ubtu22cis_grub_user }} has a valid password set to be used in single user mode"
 
@@ -112,14 +105,12 @@
         file: "{{ container_vars_file }}"
 
     - name: Output if discovered is a container
-      when:
-        - system_is_container
+      when: system_is_container
       ansible.builtin.debug:
         msg: system has been discovered as a container
 
 - name: Gather the package facts before prelim
-  tags:
-    - always
+  tags: always
   ansible.builtin.package_facts:
     manager: auto
 
@@ -132,8 +123,7 @@
     file: prelim.yml
 
 - name: Gather the package facts after prelim
-  tags:
-    - always
+  tags: always
   ansible.builtin.package_facts:
     manager: auto
 
@@ -142,64 +132,55 @@
     - ubtu22cis_section5 or
       ubtu22cis_section6 or
       ubtu22cis_section7
-  tags:
-    - always
+  tags:  always
   ansible.builtin.import_tasks:
     file: parse_etc_password.yml
 
 - name: Include section 1 patches
   when: ubtu22cis_section1
-  tags:
-    - section1
+  tags: section1
   ansible.builtin.import_tasks:
     file: section_1/main.yml
 
 - name: Include section 2 patches
   when: ubtu22cis_section2
-  tags:
-    - section2
+  tags: section2
   ansible.builtin.import_tasks:
     file: section_2/main.yml
 
 - name: Include section 3 patches
   when: ubtu22cis_section3
-  tags:
-    - section3
+  tags: section3
   ansible.builtin.import_tasks:
     file: section_3/main.yml
 
 - name: Include section 4 patches
   when: ubtu22cis_section4
-  tags:
-    - section4
+  tags: section4
   ansible.builtin.import_tasks:
     file: section_4/main.yml
 
 - name: Include section 5 patches
   when: ubtu22cis_section5
-  tags:
-    - section5
+  tags: section5
   ansible.builtin.import_tasks:
     file: section_5/main.yml
 
 - name: Include section 6 patches
   when: ubtu22cis_section6
-  tags:
-    - section6
+  tags: section6
   ansible.builtin.import_tasks:
     file: section_6/main.yml
 
 - name: Include section 7 patches
   when: ubtu22cis_section7
-  tags:
-    - section7
+  tags: section7
   ansible.builtin.import_tasks:
     file: section_7/main.yml
 
 - name: Run auditd logic
   when: update_audit_template
-  tags:
-    - always
+  tags: always
   ansible.builtin.import_tasks:
     file: auditd.yml
 
@@ -207,8 +188,7 @@
   ansible.builtin.meta: flush_handlers
 
 - name: Reboot system
-  tags:
-    - always
+  tags: always
   block:
     - name: Reboot system if not skipped
       when:
@@ -225,24 +205,19 @@
       changed_when: true
 
 - name: Run post remediation audit
-  when:
-    - run_audit
-  tags:
-    - run_audit
+  when: run_audit
+  tags: run_audit
   ansible.builtin.import_tasks:
     file: post_remediation_audit.yml
 
 - name: Show Audit Summary
-  when:
-    - run_audit
-  tags:
-    - run_audit
+  when: run_audit
+  tags: run_audit
   ansible.builtin.debug:
     msg: "{{ audit_results.split('\n') }}"
 
 - name: If Warnings found Output count and control IDs affected
   when: warn_count != 0
-  tags:
-    - always
+  tags: always
   ansible.builtin.debug:
     msg: "You have {{ warn_count }} Warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"
