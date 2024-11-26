@@ -2,8 +2,8 @@
 ##### CI for use by github no need for action to be added
 ##### Inherited
 ci:
-    autofix_prs: false
-    skip: [detect-aws-credentials, ansible-lint ]
+  autofix_prs: false
+  skip: [detect-aws-credentials, ansible-lint ]
 
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
@@ -33,13 +33,11 @@ repos:
   rev: v1.5.0
   hooks:
   - id: detect-secrets
-    args: [ '--baseline', '.config/.secrets.baseline' ]
 
 - repo: https://github.com/gitleaks/gitleaks
   rev: v8.21.2
   hooks:
   - id: gitleaks
-    args: ['--baseline-path', '.config/.gitleaks-report.json']
 
 - repo: https://github.com/ansible-community/ansible-lint
   rev: v24.9.2
@@ -53,12 +51,12 @@ repos:
     # https://github.com/ansible/ansible-lint/issues/611
     pass_filenames: false
     always_run: true
-    additional_dependencies:
+    # additional_dependencies:
     # https://github.com/pre-commit/pre-commit/issues/1526
     # If you want to use specific version of ansible-core or ansible, feel
     # free to override `additional_dependencies` in your own hook config
     # file.
-    - ansible-core>=2.10.1
+    # - ansible-core>=2.10.1
 
 - repo: https://github.com/adrienverge/yamllint.git
   rev: v1.35.1  # or higher tag
