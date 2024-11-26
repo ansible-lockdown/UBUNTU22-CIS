@@ -21,7 +21,7 @@
       when: discovered_pwhistory_remember.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
-        regexp: ^(password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+)(.*)(remember=\d+)
+        regexp: ^(password\s+[^#\n\r]+\s+pam_pwhistory\.so\s+)(.*)(remember=\d+)
         line: '\1\2\3 remember={{ ubtu22cis_pamd_pwhistory_remember }}'
         backrefs: true
       notify: Pam_auth_update_pwhistory
@@ -47,7 +47,7 @@
       when: discovered_pwhistory_remember.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
-        regexp: ^(password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+)(.*)(enforce_for_root)
+        regexp: ^(password\s+[^#\n\r]+\s+pam_pwhistory\.so\s+)(.*)(enforce_for_root)
         line: '\1\2\3 enforce_for_root'
         backrefs: true
       notify: Pam_auth_update_pwhistory
@@ -73,7 +73,7 @@
       when: discovered_pwhistory_use_authtok.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
-        regexp: ^(password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+)(.*)(use_authtok)
+        regexp: ^(password\s+[^#\n\r]+\s+pam_pwhistory\.so\s+)(.*)(use_authtok)
         line: '\1\2\3 use_authtok'
         backrefs: true
       notify: Pam_auth_update_pwhistory
