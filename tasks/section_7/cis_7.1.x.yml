@@ -196,13 +196,12 @@
     warn_control_id: '7.1.12'
   block:
     - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Get list files or directories"
-      ansible.builtin.shell: find {{ ubtu22cis_exclude_unowned_search_path }} {{ item.mount }} -xdev \( -nouser -o -nogroup \) -not -fstype nfs
+      ansible.builtin.shell: 'find {{ ubtu22cis_exclude_unowned_search_path }} {{ item.mount }} -xdev \( -nouser -o -nogroup \) -not -fstype nfs'
       changed_when: false
       failed_when: false
       check_mode: false
       register: discovered_unowned_files
-      loop:
-        - "{{ ansible_facts.mounts }}"
+      loop: "{{ ansible_facts.mounts }}"
       loop_control:
         label: "{{ item.mount }}"
 
@@ -229,7 +228,7 @@
         owner: "{{ ubtu22cis_unowned_owner }}"
         group: "{{ ubtu22cis_unowned_group }}"
       with_items:
-        - "{{ udiscovered_unowned_files_flatten }}"
+        - "{{ discovered_unowned_files_flatten }}"
 
     - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Warn Count"
       when:
@@ -255,8 +254,7 @@
       failed_when: false
       check_mode: false
       register: discovered_suid_sgid_files
-      loop:
-        - "{{ ansible_facts.mounts }}"
+      loop: "{{ ansible_facts.mounts }}"
       loop_control:
         label: "{{ item.mount }}"
 
@@ -281,8 +279,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'u-s'
-      loop:
-        - "{{ discovered_suid_sgid_files_flatten }}"
+      loop: "{{ discovered_suid_sgid_files_flatten }}"
 
     - name: "7.1.13 | AUDIT | Audit SUID executables | Warn Count"
       when:
