@@ -895,7 +895,7 @@ ubtu22cis_pam_confd_dir: 'usr/share/pam-configs/'
 # Create file will create/replace with the name
 
 # Controls 5.3.2.1 - pam_unix
-# Name of file
+# Name of file for the pam unix configuration
 ubtu22cis_pam_pwunix_file: 'pam_unix'
 # Should NOT be enabled if allowing custom config that enabled pam_faillock
 ubtu22cis_pam_create_pamunix_file: false
@@ -903,7 +903,7 @@ ubtu22cis_pam_create_pamunix_file: false
 ubtu22cis_pam_auth_unix: true
 
 # 5.3.2.2 - pam_faillock
-# Name of files
+# Name of files for pam
 ubtu22cis_pam_faillock_file: 'faillock'
 ubtu22cis_pam_faillock_notify_file: 'faillock_notify'
 # Allow pam-auth-update --enable ubtu22cis_pam_faillock_file
@@ -914,7 +914,7 @@ ubtu22cis_pam_auth_faillock: true
 ubtu22cis_pam_create_faillock_files: true
 
 # 5.3.2.3 - pam_pwquality
-# Name of files
+# Name of file for pwquality
 ubtu22cis_pam_pwquality_file: 'pwquality'
 # Allow new file to be created or overwrite existing with same name
 ubtu22cis_pam_create_pwquality_files: true
@@ -922,7 +922,7 @@ ubtu22cis_pam_create_pwquality_files: true
 ubtu22cis_pam_auth_pwquality: true
 
 # 5.3.2.4 - pam_pwhistory
-# Name of file
+# Name of file for the pam history file
 ubtu22cis_pam_pwhistory_file: 'pwhistory'
 # Allow new file to be created or overwrite existing with same name
 # filepath also affects controls 5.3.3.3.1, 5.3.3.3.2, 5.3.3.3.3
@@ -931,33 +931,40 @@ ubtu22cis_pam_create_pwhistory_files: true
 ubtu22cis_pam_auth_pwhistory: true
 
 # 5.3.3.1.1 - faillock_deny
+# Lock systen using faillock fate 3 bad tries
 ubtu22cis_faillock_deny: 3
 
 # 5.3.3.1.2 - faillock unlock time
+# Timeout before releasing the faillock on an account
 ubtu22cis_faillock_unlock_time: 900
 
 # 5.3.3.1.3 - lock root
-# This allow optional - even_deny_root or root_unlock_time
+# This gives the ablity to even_deny_root and or add a root_unlock_time in the options
+# Option is used for the regexp to be amended and stirng is what to replace with.
 ubtu22cis_pamroot_lock_option: even_deny_root
 ubtu22cis_pamroot_lock_string: even_deny_root
 
 # 5.3.3.2.1 - password difok
+# Pam difok settings - file and number of difference that must take place in the file
+# difok = the minimum number of characters that must be different from the old password
 ubtu22cis_passwd_difok_file: etc/security/pwquality.conf.d/50-pwdifok.conf  # pragma: allowlist secret
 ubtu22cis_passwd_difok_value: 2
 
 # 5.3.3.2.2 - password minlength
+# minlen = minimum password length
 ubtu22cis_passwd_minlen_file: etc/security/pwquality.conf.d/50-pwlength.conf  # pragma: allowlist secret
 ubtu22cis_passwd_minlen_value: 14
 
 # 5.3.3.2.3 - password complex
 ubtu22cis_passwd_complex_file: etc/security/pwquality.conf.d/50-pwcomplexity.conf  # pragma: allowlist secret
-ubtu22cis_passwd_minclass: 3
-ubtu22cis_passwd_dcredit: -1
-ubtu22cis_passwd_ucredit: -2
-ubtu22cis_passwd_ocredit: 0
-ubtu22cis_passwd_lcredit: -2
+ubtu22cis_passwd_minclass: 3  # minclass = the minimum number of character types that must be used (i.e., uppercase, lowercase, digits, other)
+ubtu22cis_passwd_dcredit: -1  # dcredit = maximum number of digits that will generate a credit
+ubtu22cis_passwd_ucredit: -2  # ucredit = maximum number of uppercase characters that will generate a credit
+ubtu22cis_passwd_ocredit: 0  # ocredit = maximum number of other characters that will generate a credit
+ubtu22cis_passwd_lcredit: -2  # lcredit = maximum number of lowercase characters that will generate a credit
 
 # 5.3.3.2.4 - password maxrepeat
+# maxrepeat = the maximum number of times a single character may be repeated
 ubtu22cis_passwd_maxrepeat_file: etc/security/pwquality.conf.d/50-pwrepeat.conf  # pragma: allowlist secret
 ubtu22cis_passwd_maxrepeat_value: 3
 
@@ -966,14 +973,17 @@ ubtu22cis_passwd_maxsequence_file: etc/security/pwquality.conf.d/50-pwmaxsequenc
 ubtu22cis_passwd_maxsequence_value: 3
 
 # 5.3.3.2.6 - password dictcheck
+# dictcheck = whether to check for the words from the cracklib dictionary (enabled if the value is not 0)
 ubtu22cis_passwd_dictcheck_file: etc/security/pwquality.conf.d/50-pwdictcheck.conf  # pragma: allowlist secret
 ubtu22cis_passwd_dictcheck_value: 1
 
 # 5.3.3.2.7 - password quality enforce
+# enforcing = new password is rejected if it fails the check and the value is not 0
 ubtu22cis_passwd_quality_enforce_file: etc/security/pwquality.conf.d/50-pwquality_enforce.conf  # pragma: allowlist secret
 ubtu22cis_passwd_quality_enforce_value: 1
 
 # 5.3.3.2.8 - password quality enforce for root included with 5.3.3.2.7
+# enforce_for_root: This ensures that the password policies are adhered to even if it’s the root user configuring the passwords.
 ubtu22cis_passwd_quality_enforce_root_file: etc/security/pwquality.conf.d/50-pwroot.conf  # pragma: allowlist secret
 ubtu22cis_passwd_quality_enforce_root_value: enforce_for_root  # pragma: allowlist secret
 
