@@ -1,8 +1,7 @@
 ---
 
 - name: "2.3.2.1 | PATCH | Ensure systemd-timesyncd configured with authorized timeserver"
-  when:
-    - ubtu22cis_rule_2_3_2_1
+  when: ubtu22cis_rule_2_3_2_1
   tags:
     - level1-server
     - level1-workstation
@@ -30,8 +29,7 @@
       notify: Restart timeservice
 
 - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running"
-  when:
-    - ubtu22cis_rule_2_3_2_2
+  when: ubtu22cis_rule_2_3_2_2
   tags:
     - level1-server
     - level1-workstation

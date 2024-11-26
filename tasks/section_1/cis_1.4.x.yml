@@ -42,10 +42,10 @@
       ansible.builtin.stat:
         path: "{{ ubtu22cis_grub_file }}"
       check_mode: false
-      register: ubtu22cis_1_4_2_grub_cfg_status
+      register: discovered_grub_cfg_status
 
     - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | Set permissions"
-      when: ubtu22cis_1_4_2_grub_cfg_status.stat.exists
+      when: discovered_grub_cfg_status.stat.exists
       ansible.builtin.file:
         path: "{{ ubtu22cis_grub_file }}"
         owner: root

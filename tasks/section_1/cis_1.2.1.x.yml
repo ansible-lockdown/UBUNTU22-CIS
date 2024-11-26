@@ -17,7 +17,7 @@
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_1_2_1_1_apt_gpgkeys
+      register: discovered_apt_gpgkeys
 
     - name: "1.2.1.1 | AUDIT | Ensure GPG keys are configured | Message out apt gpg keys"
       ansible.builtin.debug:
@@ -25,7 +25,7 @@
           - "Warning!! Below are the apt gpg keys configured"
           - "Please review to make sure they are configured"
           - "in accordance with site policy"
-          - "{{ ubtu22cis_1_2_1_1_apt_gpgkeys.stdout_lines }}"
+          - "{{ discovered_apt_gpgkeys.stdout_lines }}"
 
     - name: "1.2.1.1 | WARN | Ensure GPG keys are configured | warn_count"
       ansible.builtin.import_tasks:

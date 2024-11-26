@@ -24,7 +24,6 @@
     - patch
     - journald
     - rule_6.2.1.2.2
-  notify: Restart journald
   ansible.builtin.lineinfile:
     path: /etc/systemd/journal-upload.conf
     regexp: "{{ item.regexp }}"
@@ -34,6 +33,7 @@
     - { regexp: 'ServerKeyFile=', line: 'ServerKeyFile={{ ubtu22cis_journal_upload_serverkeyfile }}'}
     - { regexp: 'ServerCertificateFile=', line: 'ServerCertificateFile={{ ubtu22cis_journal_servercertificatefile }}'}
     - { regexp: 'TrustedCertificateFile=', line: 'TrustedCertificateFile={{ ubtu22cis_journal_trustedcertificatefile }}'}
+  notify: Restart journald
 
 - name: "6.2.1.2.3 | PATCH | Ensure systemd-journal-remote is enabled and active"
   when:

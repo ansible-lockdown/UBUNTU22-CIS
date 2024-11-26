@@ -96,6 +96,19 @@
   ansible.builtin.package:
     update_cache: true
 
+- name: PRELIM | Discover Gnome Desktop Environment
+  tags: always
+  ansible.builtin.stat:
+    path: /usr/share/gnome/gnome-version.xml
+  register: prelim_gnome_present
+
+- name: PRELIM | Discover dconf systemdb
+  when: ubtu22cis_gui
+  ansible.builtin.shell: grep system-db /etc/dconf/profile/user | cut -d ':' -f2
+  changed_when: false
+  failed_when: ubtu22cis_dconf_db.rc not in [ 0, 1 ]
+  register: prelim_dconf_system_db
+
 - name: PRELIM | AUDIT | Wireless adapter pre-requisites
   when:
     - ubtu22cis_rule_3_1_2
@@ -105,13 +118,13 @@
     - name: PRELIM | AUDIT | Discover is wirelss adapter on system
       ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
       changed_when: false
-      failed_when: prelim_wireless_adapters.rc not in [ 0, 1 ]
-      register: prelim_wireless_adapters
+      failed_when: prelim_wireless_adapters_exist.rc not in [ 0, 1 ]
+      register: prelim_wireless_adapters_exist
 
     - name: PRELIM | PATCH | Install Network-Manager | if wireless adapter present
       when:
         - ubtu22cis_install_network_manager
-        - prelim_wireless_adapters.rc == 0
+        - prelim_wireless_adapters_exist.rc == 0
         - "'network-manager' not in ansible_facts.packages"
       ansible.builtin.package:
         name: network-manager
@@ -143,7 +156,6 @@
   failed_when: false
   check_mode: false
   register: prelim_sudoers_files
-
 
 - name: PRELIM | PATCH | Ensure conf.d directory exists required for 5.3.3.2.x
   when:

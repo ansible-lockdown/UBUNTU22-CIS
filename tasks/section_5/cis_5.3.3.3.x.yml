@@ -13,12 +13,12 @@
   block:
     - name: "5.3.3.3.1 | AUDIT | Ensure password history remember is configured | Check existing files"
       ansible.builtin.shell: grep -Psi -- '^\h*password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?remember=\d+\b' /etc/pam.d/common-password
-      register: ubtu22_pwhistory_remember
+      register: discovered_pwhistory_remember
       changed_when: false
-      failed_when: ubtu22_pwhistory_remember.rc not in [0, 1]
+      failed_when: discovered_pwhistory_remember.rc not in [0, 1]
 
     - name: "5.3.3.3.1 | PATCH | Ensure password number of changed characters is configured | Ensure remember is set"
-      when: ubtu22_pwhistory_remember.stdout | length > 0
+      when: discovered_pwhistory_remember.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
         regexp: ^(password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+)(.*)(remember=\d+)
@@ -39,12 +39,12 @@
   block:
     - name: "5.3.3.3.2 | AUDIT | Ensure password history is enforced for the root user | Check existing files"
       ansible.builtin.shell: grep -Psi -- '^\h*password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?enforce_for_root\b' /etc/pam.d/common-password
-      register: ubtu22_pwhistory_enforce_for_root
+      register: discovered_pwhistory_remember
       changed_when: false
-      failed_when: ubtu22_pwhistory_enforce_for_root.rc not in [0, 1]
+      failed_when: discovered_pwhistory_remember.rc not in [0, 1]
 
     - name: "5.3.3.3.2 | PATCH | Ensure password history is enforced for the root user | Ensure remember is set"
-      when: ubtu22_pwhistory_enforce_for_root.stdout | length > 0
+      when: discovered_pwhistory_remember.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
         regexp: ^(password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+)(.*)(enforce_for_root)
@@ -65,12 +65,12 @@
   block:
     - name: "5.3.3.3.3 | AUDIT | Ensure pam_pwhistory includes use_authtok | Check existing files"
       ansible.builtin.shell: grep -Psi -- '^\h*password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/common-password
-      register: ubtu22_pwhistory_use_authtok
+      register: discovered_pwhistory_use_authtok
       changed_when: false
-      failed_when: ubtu22_pwhistory_use_authtok.rc not in [0, 1]
+      failed_when: discovered_pwhistory_use_authtok.rc not in [0, 1]
 
     - name: "5.3.3.3.3 | PATCH | Ensure pam_pwhistory includes use_authtok | Ensure remember is set"
-      when: ubtu22_pwhistory_use_authtok.stdout | length > 0
+      when: discovered_pwhistory_use_authtok.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
         regexp: ^(password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+)(.*)(use_authtok)

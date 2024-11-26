@@ -10,7 +10,6 @@
   ansible.builtin.import_tasks:
     file: cis_1.1.2.1.x.yml
 
-
 - name: "SECTION | 1.1.2.2 | Configure /dev/shm"
   when: not system_is_container
   ansible.builtin.import_tasks:
@@ -66,8 +65,6 @@
     file: cis_1.6.x.yml
 
 - name: "SECTION | 1.7 | Configure DNOME Display Manager"
-  when:
-    - "'gdm3' in ansible_facts.packages"
-    - not system_is_container
+  when: ubtu22cis_gui
   ansible.builtin.import_tasks:
     file: cis_1.7.x.yml

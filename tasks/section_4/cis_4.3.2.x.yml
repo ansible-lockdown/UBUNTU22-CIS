@@ -41,11 +41,11 @@
       ansible.builtin.iptables:
         policy: DROP
         chain: "{{ item }}"
-      notify: Iptables persistent
       loop:
         - INPUT
         - FORWARD
         - OUTPUT
+      notify: Iptables persistent
 
 - name: "4.3.2.2 | PATCH | Ensure iptables loopback traffic is configured"
   when:
@@ -101,7 +101,6 @@
     match: state
     ctstate: '{{ item.ctstate }}'
     jump: ACCEPT
-  notify: Iptables persistent
   with_items:
     - { chain: OUTPUT, protocol: tcp, ctstate: 'NEW,ESTABLISHED' }
     - { chain: OUTPUT, protocol: udp, ctstate: 'NEW,ESTABLISHED' }
@@ -109,6 +108,7 @@
     - { chain: INPUT, protocol: tcp, ctstate: 'ESTABLISHED' }
     - { chain: INPUT, protocol: udp, ctstate: 'ESTABLISHED' }
     - { chain: INPUT, protocol: icmp, ctstate: 'ESTABLISHED' }
+  notify: Iptables persistent
 
 - name: "4.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports"
   when:
@@ -129,14 +129,14 @@
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_4_3_1_4_open_ports
+      register: discovered_list_open_ports
 
     - name: "4.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Get list of rules"
       ansible.builtin.shell: iptables -L INPUT -v -n
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_4_3_2_4_current_rules
+      register: discovered_current_iptables_rules
 
     - name: "4.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Warn about settings"
       ansible.builtin.debug:
@@ -144,9 +144,9 @@
           - "Warning!! Below is the list the open ports and current rules"
           - "Please create a rule for any open port that does not have a current rule"
           - "Open Ports:"
-          - "{{ ubtu22cis_4_3_2_4_open_ports.stdout_lines }}"
+          - "{{ discovered_list_open_ports.stdout_lines }}"
           - "Current Rules:"
-          - "{{ ubtu22cis_4_3_2_4_current_rules.stdout_lines }}"
+          - "{{ discovered_current_iptables_rules.stdout_lines }}"
 
     - name: "4.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Set warning count"
       ansible.builtin.import_tasks:

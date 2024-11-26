@@ -132,7 +132,7 @@
     - ubtu22cis_section5 or
       ubtu22cis_section6 or
       ubtu22cis_section7
-  tags:  always
+  tags: always
   ansible.builtin.import_tasks:
     file: parse_etc_password.yml
 

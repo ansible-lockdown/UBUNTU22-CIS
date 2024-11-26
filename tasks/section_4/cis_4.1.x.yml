@@ -92,8 +92,7 @@
       notify: Reload ufw
 
 - name: "4.1.5 | PATCH | Ensure ufw outbound connections are configured"
-  when:
-    - ubtu22cis_rule_4_1_5
+  when: ubtu22cis_rule_4_1_5
   tags:
     - level1-server
     - level1-workstation
@@ -119,8 +118,7 @@
       notify: Reload ufw
 
 - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports"
-  when:
-    - ubtu22cis_rule_4_1_6
+  when: ubtu22cis_rule_4_1_6
   tags:
     - level1-server
     - level1-workstation
@@ -135,14 +133,14 @@
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_4_1_6_open_listen_ports
+      register: discovered_list_open_listen_ports
 
     - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Get list of firewall rules"
       ansible.builtin.shell: ufw status
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_4_1_6_firewall_rules
+      register: discovered_firewall_rules
 
     - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Message out settings"
       ansible.builtin.debug:
@@ -150,17 +148,16 @@
           - "Warning!! Below are the listening ports and firewall rules"
           - "Please create firewall rule for any open ports if not already done"
           - "*****---Open Listen Ports---*****"
-          - "{{ ubtu22cis_4_1_6_open_listen_ports.stdout_lines }}"
+          - "{{ discovered_list_open_listen_ports.stdout_lines }}"
           - "*****---Firewall Rules---*****"
-          - "{{ ubtu22cis_4_1_6_firewall_rules.stdout_lines }}"
+          - "{{ discovered_firewall_rules.stdout_lines }}"
 
     - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Set warning count"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
 - name: "4.1.7 | PATCH | Ensure ufw default deny firewall policy"
-  when:
-    - ubtu22cis_rule_4_1_7
+  when: ubtu22cis_rule_4_1_7
   tags:
     - level1-server
     - level1-workstation

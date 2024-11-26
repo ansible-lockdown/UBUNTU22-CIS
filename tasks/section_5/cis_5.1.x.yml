@@ -1,8 +1,7 @@
 ---
 
 - name: "5.1.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured"
-  when:
-    - ubtu22cis_rule_5_1_1
+  when: ubtu22cis_rule_5_1_1
   tags:
     - level1-server
     - level1-workstation
@@ -16,8 +15,7 @@
     mode: '0600'
 
 - name: "5.1.2 | PATCH | Ensure permissions on SSH private host key files are configured"
-  when:
-    - ubtu22cis_rule_5_1_2
+  when: ubtu22cis_rule_5_1_2
   tags:
     - level1-server
     - level1-workstation
@@ -29,7 +27,7 @@
       ansible.builtin.find:
         paths: /etc/ssh
         patterns: 'ssh_host_*_key'
-      register: ubtu22cis_5_1_2_ssh_host_priv_keys
+      register: discovered_ssh_host_priv_keys
 
     - name: "5.1.2 | PATCH | Ensure permissions on SSH private host key files are configured | Set permissions"
       ansible.builtin.file:
@@ -38,13 +36,12 @@
         group: root
         mode: 'o-x,go-rwx'
       with_items:
-        - "{{ ubtu22cis_5_1_2_ssh_host_priv_keys.files }}"
+        - "{{ discovered_ssh_host_priv_keys.files }}"
       loop_control:
         label: "{{ item.path }}"
 
 - name: "5.1.3 | PATCH | Ensure permissions on SSH public host key files are configured"
-  when:
-    - ubtu22cis_rule_5_1_3
+  when: ubtu22cis_rule_5_1_3
   tags:
     - level1-server
     - level1-workstation
@@ -56,7 +53,7 @@
       ansible.builtin.find:
         paths: /etc/ssh
         patterns: 'ssh_host_*_key.pub'
-      register: ubtu22cis_5_1_3_ssh_host_pub_keys
+      register: discovered_ssh_host_pub_keys
 
     - name: "5.1.3 | PATCH | Ensure permissions on SSH public host key files are configured | Set permissions"
       ansible.builtin.file:
@@ -65,13 +62,12 @@
         group: root
         mode: '0644'
       with_items:
-        - "{{ ubtu22cis_5_1_3_ssh_host_pub_keys.files }}"
+        - "{{ discovered_ssh_host_pub_keys.files }}"
       loop_control:
         label: "{{ item.path }}"
 
 - name: "5.1.4 | PATCH | Ensure sshd access is configured"
-  when:
-    - ubtu22cis_rule_5_1_4
+  when: ubtu22cis_rule_5_1_4
   tags:
     - level1-server
     - level1-workstation
@@ -84,7 +80,7 @@
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers|^#AllowUsers'
-        line: 'AllowUsers {{ ubtu22cis_sshd.allow_users }}'
+        line: 'AllowUsers {{ ubtu22cis_sshd_allow_users }}'
         validate: 'sshd -t -f %s'
       notify: Restart sshd
 
@@ -93,7 +89,7 @@
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowGroups|^#AllowGroups'
-        line: 'AllowGroups {{ ubtu22cis_sshd.allow_groups }}'
+        line: 'AllowGroups {{ ubtu22cis_sshd_allow_groups }}'
         validate: 'sshd -t -f %s'
       notify: Restart sshd
 
@@ -102,7 +98,7 @@
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^DenyUsers|^#DenyUsers'
-        line: 'DenyUsers {{ ubtu22cis_sshd.deny_users }} '
+        line: 'DenyUsers {{ ubtu22cis_sshd_deny_users }} '
         validate: 'sshd -t -f %s'
       notify: Restart sshd
 
@@ -111,13 +107,12 @@
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^DenyGroups|^#DenyGroups'
-        line: 'DenyGroups {{ ubtu22cis_sshd.deny_groups }}'
+        line: 'DenyGroups {{ ubtu22cis_sshd_deny_groups }}'
         validate: 'sshd -t -f %s'
       notify: Restart sshd
 
 - name: "5.1.5| PATCH | Ensure sshd Banner is configured"
-  when:
-    - ubtu22cis_rule_5_1_5
+  when: ubtu22cis_rule_5_1_5
   tags:
     - level1-server
     - level1-workstation
@@ -133,8 +128,7 @@
   notify: Restart sshd
 
 - name: "5.1.6 | PATCH | Ensure only strong Ciphers are used"
-  when:
-    - ubtu22cis_rule_5_1_6
+  when: ubtu22cis_rule_5_1_6
   tags:
     - level1-server
     - level1-workstation
@@ -144,14 +138,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^Ciphers|^#Ciphers'
-    line: "Ciphers {{ ubtu22cis_sshd.ciphers | default(ubtu22cis_sshd_default_ciphers) | join(',') }}"
+    line: "Ciphers {{ ubtu22cis_sshd_ciphers | default(ubtu22cis_sshd_default_ciphers) | join(',') }}"
     insertafter: '^# Ciphers and keying'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured"
-  when:
-    - ubtu22cis_rule_5_1_7
+  when: ubtu22cis_rule_5_1_7
   tags:
     - level1-server
     - level1-workstation
@@ -164,13 +157,12 @@
     line: "{{ item.line }}"
     validate: 'sshd -t -f %s'
   with_items:
-    - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd.client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
-    - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd.client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
+    - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd_client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
+    - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd_client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
   notify: Restart sshd
 
 - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled"
-  when:
-    - ubtu22cis_rule_5_1_8
+  when: ubtu22cis_rule_5_1_8
   tags:
     - level2-server
     - level1-workstation
@@ -185,8 +177,7 @@
   notify: Restart sshd
 
 - name: "5.1.9 | PATCH | Ensure sshd GSSAPIAuthentication is  is disabled"
-  when:
-    - ubtu22cis_rule_5_1_9
+  when: ubtu22cis_rule_5_1_9
   tags:
     - level2-server
     - level1-workstation
@@ -201,8 +192,7 @@
   notify: Restart sshd
 
 - name: "5.1.10 | PATCH | Ensure SSH HostbasedAuthentication is disabled"
-  when:
-    - ubtu22cis_rule_5_1_10
+  when: ubtu22cis_rule_5_1_10
   tags:
     - level1-server
     - level1-workstation
@@ -217,8 +207,7 @@
   notify: Restart sshd
 
 - name: "5.1.11 | PATCH | Ensure SSH IgnoreRhosts is enabled"
-  when:
-    - ubtu22cis_rule_5_1_11
+  when: ubtu22cis_rule_5_1_11
   tags:
     - level1-server
     - level1-workstation
@@ -233,8 +222,7 @@
   notify: Restart sshd
 
 - name: "5.1.12 | PATCH | Ensure only strong Key Exchange algorithms are used"
-  when:
-    - ubtu22cis_rule_5_1_12
+  when: ubtu22cis_rule_5_1_12
   tags:
     - level1-server
     - level1-workstation
@@ -244,14 +232,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^KexAlgorithms|^#KexAlgorithms'
-    line: "KexAlgorithms {{ ubtu22cis_sshd.kex_algorithms | default(ubtu22cis_sshd_default_kex_algorithms) | join(',') }}"
+    line: "KexAlgorithms {{ ubtu22cis_sshd_kex_algorithms | default(ubtu22cis_sshd_default_kex_algorithms) | join(',') }}"
     insertafter: '^# Ciphers and keying'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.13 | PATCH | Ensure SSH LoginGraceTime is configured"
-  when:
-    - ubtu22cis_rule_5_1_13
+  when: ubtu22cis_rule_5_1_13
   tags:
     - level1-server
     - level1-workstation
@@ -261,14 +248,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^LoginGraceTime|^#LoginGraceTime'
-    line: 'LoginGraceTime {{ ubtu22cis_sshd.login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
+    line: 'LoginGraceTime {{ ubtu22cis_sshd_login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
     insertafter: '^# Authentication'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.14 | PATCH | Ensure SSH LogLevel is configured"
-  when:
-    - ubtu22cis_rule_5_1_14
+  when: ubtu22cis_rule_5_1_14
   tags:
     - level1-server
     - level1-workstation
@@ -278,14 +264,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^LogLevel|^#LogLevel'
-    line: 'LogLevel {{ ubtu22cis_sshd.log_level | default(ubtu22cis_sshd_default_log_level) }}'
+    line: 'LogLevel {{ ubtu22cis_sshd_log_level | default(ubtu22cis_sshd_default_log_level) }}'
     insertafter: '^# Logging'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.15 | PATCH | Ensure only strong MAC algorithms are used"
-  when:
-    - ubtu22cis_rule_5_1_15
+  when: ubtu22cis_rule_5_1_15
   tags:
     - level1-server
     - level1-workstation
@@ -295,14 +280,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MACs|^#MACs'
-    line: "MACs {{ ubtu22cis_sshd.macs | default(ubtu22cis_sshd_default_macs) | join(',') }}"
+    line: "MACs {{ ubtu22cis_sshd_macs | default(ubtu22cis_sshd_default_macs) | join(',') }}"
     insertafter: '^# Ciphers and keying'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.16 | PATCH | Ensure SSH MaxAuthTries is set to 4 or less"
-  when:
-    - ubtu22cis_rule_5_1_16
+  when: ubtu22cis_rule_5_1_16
   tags:
     - level1-server
     - level1-workstation
@@ -312,14 +296,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MaxAuthTries|^#MaxAuthTries'
-    line: 'MaxAuthTries {{ ubtu22cis_sshd.max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
+    line: 'MaxAuthTries {{ ubtu22cis_sshd_max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
     insertafter: '^# Authentication'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.17 | PATCH | Ensure sshd MaxSessions is configured"
-  when:
-    - ubtu22cis_rule_5_1_17
+  when: ubtu22cis_rule_5_1_17
   tags:
     - level1-server
     - level1-workstation
@@ -329,14 +312,13 @@
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MaxSessions|^#MaxSessions'
-    line: 'MaxSessions {{ ubtu22cis_sshd.max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
+    line: 'MaxSessions {{ ubtu22cis_sshd_max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
     insertafter: '^# Authentication'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
 - name: "5.1.18 | PATCH | Ensure SSH MaxStartups is configured"
-  when:
-    - ubtu22cis_rule_5_1_18
+  when: ubtu22cis_rule_5_1_18
   tags:
     - level1-server
     - level1-workstation
@@ -351,8 +333,7 @@
   notify: Restart sshd
 
 - name: "5.1.19 | PATCH | Ensure SSH PermitEmptyPasswords is disabled"
-  when:
-    - ubtu22cis_rule_5_1_19
+  when: ubtu22cis_rule_5_1_19
   tags:
     - level1-server
     - level1-workstation
@@ -368,8 +349,7 @@
   notify: Restart sshd
 
 - name: "5.1.20 | PATCH | Ensure sshd PermitRootLogin is disabled"
-  when:
-    - ubtu22cis_rule_5_1_20
+  when: ubtu22cis_rule_5_1_20
   tags:
     - level1-server
     - level1-workstation
@@ -384,8 +364,7 @@
   notify: Restart sshd
 
 - name: "5.1.21 | PATCH | Ensure SSH PermitUserEnvironment is disabled"
-  when:
-    - ubtu22cis_rule_5_1_21
+  when: ubtu22cis_rule_5_1_21
   tags:
     - level1-server
     - level1-workstation
@@ -400,8 +379,7 @@
   notify: Restart sshd
 
 - name: "5.1.22 | PATCH | Ensure sshd UsePAM is enabled"
-  when:
-    - ubtu22cis_rule_5_1_22
+  when: ubtu22cis_rule_5_1_22
   tags:
     - level1-server
     - level1-workstation

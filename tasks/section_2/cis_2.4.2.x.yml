@@ -1,8 +1,7 @@
 ---
 
 - name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users"
-  when:
-    - - ubtu22cis_rule_2_4_2_1
+  when: ubtu22cis_rule_2_4_2_1
   tags:
     - level1-server
     - level1-workstation

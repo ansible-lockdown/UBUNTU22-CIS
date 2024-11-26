@@ -23,8 +23,7 @@
     mode: u-x,g-wx,o-rwx
 
 - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_4
+  when: ubtu22cis_rule_6_3_4_4
   tags:
     - level1-server
     - level1-workstation
@@ -35,17 +34,16 @@
     - name: "6.3.4.4 | AUDIT | Ensure the audit log file directory mode is configured | get current permissions"
       ansible.builtin.stat:
         path: "{{ prelim_auditd_logfile.stdout | dirname }}"
-      register: auditlog_dir
+      register: discovered_auditlog_dir
 
     - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured | set permissions"
       ansible.builtin.file:
-        path: "{{ auditlog_dir.stat.path }}"
+        path: "{{ discovered_auditlog_dir.stat.path }}"
         state: directory
         mode: g-w,o-rwx
 
 - name: "6.3.4.5 | PATCH | Ensure audit configuration files mode is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_5
+  when: ubtu22cis_rule_6_3_4_5
   tags:
     - level1-server
     - level1-workstation
@@ -60,8 +58,7 @@
     label: "{{ item.path }}"
 
 - name: "6.3.4.6 | PATCH | Ensure audit configuration files owner is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_6
+  when: ubtu22cis_rule_6_3_4_6
   tags:
     - level1-server
     - level1-workstation
@@ -76,8 +73,7 @@
     label: "{{ item.path }}"
 
 - name: "6.3.4.7 | PATCH | Ensure audit configuration files group owner is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_7
+  when: ubtu22cis_rule_6_3_4_7
   tags:
     - level1-server
     - level1-workstation
@@ -92,39 +88,26 @@
     label: "{{ item.path }}"
 
 - name: "6.3.4.8 | PATCH | Ensure audit tools mode is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_8
+  when: ubtu22cis_rule_6_3_4_8
   tags:
     - level1-server
     - level1-workstation
     - patch
     - auditd
     - rule_6.3.4.8
-  block:
-    - name: "6.3.4.8 | AUDIT | Ensure audit tools mode is configured | get current mode"
-      ansible.builtin.stat:
-        path: "{{ item }}"
-      register: "audit_bins"
-      loop:
-        - /sbin/auditctl
-        - /sbin/aureport
-        - /sbin/ausearch
-        - /sbin/autrace
-        - /sbin/auditd
-        - /sbin/augenrules
-
-    - name: "6.3.4.8 | PATCH | Ensure audit tools mode is configured | set if required"
-      when: not item.stat.mode is match('07(0|5)0')
-      ansible.builtin.file:
-        path: "{{ item.item }}"
-        mode: '0750'
-      loop: "{{ audit_bins.results }}"
-      loop_control:
-        label: "{{ item.item }}"
+  ansible.builtin.file:
+    path: "{{ item.item }}"
+    mode: 'g-w,o-rwx'
+  loop:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules
 
 - name: "6.3.4.9 | PATCH | Ensure audit tools owner is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_9
+  when: ubtu22cis_rule_6_3_4_9
   tags:
     - level1-server
     - level1-workstation
@@ -144,8 +127,7 @@
     - /sbin/augenrules
 
 - name: "6.3.4.10 | PATCH | Ensure audit tools group owner is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_10
+  when: ubtu22cis_rule_6_3_4_10
   tags:
     - level1-server
     - level1-workstation
