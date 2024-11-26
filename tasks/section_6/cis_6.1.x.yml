@@ -57,8 +57,8 @@
           ansible.builtin.shell: aideinit -y -f
           args:
             creates: "{{ ubtu22cis_aide_db_file }}"
-          async: "{{ ubtu22cis_aide_init.async }}"
-          poll: "{{ ubtu22cis_aide_init.poll }}"
+          async: "{{ ubtu22cis_aide_init_async }}"
+          poll: "{{ ubtu22cis_aide_init_poll }}"
 
 - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked"
   when:
