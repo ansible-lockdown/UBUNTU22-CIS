@@ -3,6 +3,7 @@
 - name: "2.1.1 | PATCH | Ensure autofs services are not in use"
   when:
     - ubtu22cis_rule_2_1_1
+    - "'autofs' in ansible_facts.packages"
   tags:
     - level1-server
     - level2-workstation
