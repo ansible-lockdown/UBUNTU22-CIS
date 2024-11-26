@@ -96,7 +96,7 @@
     - auditd
     - rule_6.3.4.8
   ansible.builtin.file:
-    path: "{{ item.item }}"
+    path: "{{ item }}"
     mode: 'g-w,o-rwx'
   loop:
     - /sbin/auditctl
