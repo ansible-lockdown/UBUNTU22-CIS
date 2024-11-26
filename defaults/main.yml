@@ -601,6 +601,9 @@ ubtu22cis_ipv6_required: false
 ## Graphical/Gnome interface required
 ubtu22cis_gui: "{{ prelim_gnome_present.stat.exists | default(false) }}"
 
+# If desktop is required this will set the relevant controls but not remove
+ubtu22cis_desktop_required: false
+
 ## Purge apt packages
 # This will allow the purging of any packages that are marked to be removed
 # This will also purge any packages not removed via this playbook

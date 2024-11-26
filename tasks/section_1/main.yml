@@ -64,7 +64,6 @@
   ansible.builtin.import_tasks:
     file: cis_1.6.x.yml
 
-- name: "SECTION | 1.7 | Configure DNOME Display Manager"
-  when: ubtu22cis_gui
+- name: "SECTION | 1.7 | Configure GNOME Display Manager"
   ansible.builtin.import_tasks:
     file: cis_1.7.x.yml

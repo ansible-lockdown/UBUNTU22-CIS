@@ -16,7 +16,9 @@
     state: absent
 
 - name: "1.7.2 | PATCH | Ensure GDM login banner is configured"
-  when: ubtu22cis_rule_1_7_2
+  when:
+    - ubtu22cis_rule_1_7_2
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level1-workstation
@@ -49,7 +51,9 @@
   notify: Update dconf
 
 - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled"
-  when: ubtu22cis_rule_1_7_3
+  when:
+    - ubtu22cis_rule_1_7_3
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level1-workstation
@@ -99,7 +103,9 @@
   notify: Update dconf
 
 - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle"
-  when: ubtu22cis_rule_1_7_4
+  when:
+    - ubtu22cis_rule_1_7_4
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level1-workstation
@@ -137,7 +143,9 @@
       notify: Update dconf
 
 - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden"
-  when: ubtu22cis_rule_1_7_5
+  when:
+    - ubtu22cis_rule_1_7_5
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level1-workstation
@@ -164,7 +172,9 @@
       notify: Update dconf
 
 - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled"
-  when: ubtu22cis_rule_1_7_6
+  when:
+    - ubtu22cis_rule_1_7_6
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level2-workstation
@@ -191,7 +201,9 @@
       notify: Update dconf
 
 - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden"
-  when: ubtu22cis_rule_1_7_7
+  when:
+    - ubtu22cis_rule_1_7_7
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level2-workstation
@@ -218,7 +230,9 @@
       notify: Update dconf
 
 - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled"
-  when: ubtu22cis_rule_1_7_8
+  when:
+    - ubtu22cis_rule_1_7_8
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level2-workstation
@@ -245,8 +259,9 @@
       notify: Update dconf
 
 - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden"
-  when: ubtu22cis_rule_1_7_9
-
+  when:
+    - ubtu22cis_rule_1_7_9
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level2-workstation
@@ -273,7 +288,9 @@
       notify: Update dconf
 
 - name: "1.7.10 | PATCH | Ensure XDCMP is not enabled"
-  when: ubtu22cis_rule_1_7_10
+  when:
+    - ubtu22cis_rule_1_7_10
+    - ubtu22cis_desktop_required
   tags:
     - level1-server
     - level1-workstation
