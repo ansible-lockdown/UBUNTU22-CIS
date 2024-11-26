@@ -1,8 +1,7 @@
 ---
 
 - name: "2.3.3.1 | PATCH | Ensure chrony is configured with authorized timeserver"
-  when:
-    - ubtu22cis_rule_2_3_3_1
+  when: ubtu22cis_rule_2_3_3_1
   tags:
     - level1-server
     - level1-workstation
@@ -30,8 +29,7 @@
       notify: Restart timeservice
 
 - name: "2.3.3.2 | PATCH | Ensure chrony is running as user _chrony"
-  when:
-    - ubtu22cis_rule_2_3_3_2
+  when: ubtu22cis_rule_2_3_3_2
   tags:
     - level1-server
     - level1-workstation
@@ -44,8 +42,7 @@
     line: 'user _chrony'
 
 - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running"
-  when:
-    - ubtu22cis_rule_2_3_3_3
+  when: ubtu22cis_rule_2_3_3_3
   tags:
     - level1-server
     - level1-workstation

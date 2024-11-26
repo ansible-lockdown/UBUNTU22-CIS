@@ -1,9 +1,6 @@
 ---
 
 - name: "1.7.1 | PATCH | Ensure GNOME Display Manager is removed"
-  ansible.builtin.package:
-    name: gdm3
-    state: absent
   when:
     - ubtu22cis_rule_1_7_1
     - not ubtu22cis_desktop_required
@@ -14,11 +11,12 @@
     - patch
     - rule_1.7.1
     - gnome
+  ansible.builtin.package:
+    name: gdm3
+    state: absent
 
 - name: "1.7.2 | PATCH | Ensure GDM login banner is configured"
-  when:
-    - ubtu22cis_rule_1_7_2
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_2
   tags:
     - level1-server
     - level1-workstation
@@ -28,7 +26,7 @@
   block:
     - name: "1.7.2 | PATCH | Ensure GDM login banner is configured | make directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d"
         owner: root
         group: root
         mode: '0755'
@@ -36,7 +34,7 @@
 
     - name: "1.7.2 | PATCH | Ensure GDM login banner is configured | banner settings"
       ansible.builtin.lineinfile:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-login-screen"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/00-login-screen"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         insertafter: "{{ item.insertafter }}"
@@ -51,9 +49,7 @@
   notify: Update dconf
 
 - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled"
-  when:
-    - ubtu22cis_rule_1_7_3
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_3
   tags:
     - level1-server
     - level1-workstation
@@ -69,12 +65,12 @@
         mode: '0755'
         state: directory
       loop:
-        - /etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d
+        - /etc/dconf/db/{{ prelim_dconf_system_db }}.d
         - /etc/dconf/profile
 
     - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | disable-user-list setting login-screen"
       ansible.builtin.lineinfile:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-login-screen"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/00-login-screen"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         insertafter: "{{ item.insertafter }}"
@@ -88,7 +84,7 @@
 
     - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | disable-user-list setting profile"
       ansible.builtin.lineinfile:
-        path: "/etc/dconf/profile/{{ ubtu22cis_dconf_db_name }}"
+        path: "/etc/dconf/profile/{{ prelim_dconf_system_db }}"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         insertafter: "{{ item.insertafter }}"
@@ -98,14 +94,12 @@
         mode: '0644'
       loop:
         - { regexp: '^user-db:user', line: 'user-db:user', insertafter: EOF }
-        - { regexp: '^system-db:{{ ubtu22cis_dconf_db_name }}', line: 'system-db:{{ ubtu22cis_dconf_db_name }}', insertafter: 'user-db:user'}
-        - { regexp: '^file-db:/usr/share/gdm/greeter-dconf-defaults', line: 'file-db:/usr/share/gdm/greeter-dconf-defaults', insertafter: 'system-db:{{ ubtu22cis_dconf_db_name }}'}
+        - { regexp: '^system-db:{{ prelim_dconf_system_db }}', line: 'system-db:{{ prelim_dconf_system_db }}', insertafter: 'user-db:user'}
+        - { regexp: '^file-db:/usr/share/gdm/greeter-dconf-defaults', line: 'file-db:/usr/share/gdm/greeter-dconf-defaults', insertafter: 'system-db:{{ prelim_dconf_system_db }}'}
   notify: Update dconf
 
 - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle"
-  when:
-    - ubtu22cis_rule_1_7_4
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_4
   tags:
     - level1-server
     - level1-workstation
@@ -115,18 +109,18 @@
   block:
     - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | session profile"
       ansible.builtin.lineinfile:
-        path: "/etc/dconf/profile/{{ ubtu22cis_dconf_db_name }}"
+        path: "/etc/dconf/profile/{{ prelim_dconf_system_db }}"
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
         insertafter: "{{ item.after | default(omit) }}"
         create: true
       loop:
         - { regexp: 'user-db:user', line: 'user-db:user' }
-        - { regexp: 'system-db:{{ ubtu22cis_dconf_db_name }}', line: 'system-db:{{ ubtu22cis_dconf_db_name }}', after: '^user-db.*' }
+        - { regexp: 'system-db:{{ prelim_dconf_system_db }}', line: 'system-db:{{ prelim_dconf_system_db }}', after: '^user-db.*' }
 
     - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | make directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d"
         owner: root
         group: root
         mode: '0755'
@@ -136,16 +130,14 @@
     - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | session script"
       ansible.builtin.template:
         src: etc/dconf/db/00-screensaver.j2
-        dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-screensaver"
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/00-screensaver"
         owner: root
         group: root
         mode: '0644'
       notify: Update dconf
 
 - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden"
-  when:
-    - ubtu22cis_rule_1_7_5
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_5
   tags:
     - level1-server
     - level1-workstation
@@ -155,7 +147,7 @@
   block:
     - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lock directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/locks"
         owner: root
         group: root
         mode: '0755'
@@ -165,16 +157,14 @@
     - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lockfile"
       ansible.builtin.template:
         src: etc/dconf/db/00-screensaver_lock.j2
-        dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-screensaver"
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/locks/00-screensaver"
         owner: root
         group: root
         mode: '0644'
       notify: Update dconf
 
 - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled"
-  when:
-    - ubtu22cis_rule_1_7_6
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_6
   tags:
     - level1-server
     - level2-workstation
@@ -184,7 +174,7 @@
   block:
     - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled | make directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d"
         owner: root
         group: root
         mode: '0755'
@@ -194,16 +184,14 @@
     - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled | session script"
       ansible.builtin.template:
         src: etc/dconf/db/00-media-automount.j2
-        dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-media-automount"
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/00-media-automount"
         owner: root
         group: root
         mode: '0644'
       notify: Update dconf
 
 - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden"
-  when:
-    - ubtu22cis_rule_1_7_7
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_7
   tags:
     - level1-server
     - level2-workstation
@@ -213,7 +201,7 @@
   block:
     - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lock directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/locks"
         owner: root
         group: root
         mode: '0755'
@@ -223,16 +211,14 @@
     - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lockfile"
       ansible.builtin.template:
         src: etc/dconf/db/00-automount_lock.j2
-        dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-automount_lock"
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/locks/00-automount_lock"
         owner: root
         group: root
         mode: '0644'
       notify: Update dconf
 
 - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled"
-  when:
-    - ubtu22cis_rule_1_7_8
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_8
   tags:
     - level1-server
     - level2-workstation
@@ -242,7 +228,7 @@
   block:
     - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled | make directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d"
         owner: root
         group: root
         mode: '0755'
@@ -252,16 +238,15 @@
     - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled | session script"
       ansible.builtin.template:
         src: etc/dconf/db/00-media-autorun.j2
-        dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/00-media-autorun"
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/00-media-autorun"
         owner: root
         group: root
         mode: '0644'
       notify: Update dconf
 
 - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden"
-  when:
-    - ubtu22cis_rule_1_7_9
-    - ubtu22cis_desktop_required
+  when: ubtu22cis_rule_1_7_9
+
   tags:
     - level1-server
     - level2-workstation
@@ -271,7 +256,7 @@
   block:
     - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden | make lock directory"
       ansible.builtin.file:
-        path: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks"
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/locks"
         owner: root
         group: root
         mode: '0755'
@@ -281,15 +266,14 @@
     - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden | make lockfile"
       ansible.builtin.template:
         src: etc/dconf/db/00-autorun_lock.j2
-        dest: "/etc/dconf/db/{{ ubtu22cis_dconf_db_name }}.d/locks/00-autorun_lock"
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db }}.d/locks/00-autorun_lock"
         owner: root
         group: root
         mode: '0644'
       notify: Update dconf
 
 - name: "1.7.10 | PATCH | Ensure XDCMP is not enabled"
-  when:
-    - ubtu22cis_rule_1_7_10
+  when: ubtu22cis_rule_1_7_10
   tags:
     - level1-server
     - level1-workstation

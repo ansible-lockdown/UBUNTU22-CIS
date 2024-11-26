@@ -7,31 +7,27 @@
   changed_when: false
 
 - name: PRELIM | AUDIT | Register if snap being used
+  when: ubtu22cis_rule_1_1_1_6
+  tags:
+    - rule_1.1.1.2
+    - always
   ansible.builtin.shell: df -h | grep -wc "/snap"
   changed_when: false
   failed_when: prelim_snap_pkg_mgr.rc not in [ 0, 1 ]
   register: prelim_snap_pkg_mgr
-  tags:
-    - rule_1.1.1.2
-    - always
-  when:
-    - ubtu22cis_rule_1_1_1_6
 
 - name: PRELIM | AUDIT | Register if squashfs is built into the kernel
+  when: ubtu22cis_rule_1_1_1_6
+  tags: always
   ansible.builtin.shell: cat /lib/modules/$(uname -r)/modules.builtin | grep -c "squashfs"
   changed_when: false
   failed_when: prelim_squashfs_builtin.rc not in [ 0, 1 ]
   register: prelim_squashfs_builtin
-  tags:
-    - always
-  when:
-    - ubtu22cis_rule_1_1_1_6
 
 - name: PRELIM | AUDIT | Section 1.1 | Create list of mount points
+  tags: always
   ansible.builtin.set_fact:
     mount_names: "{{ ansible_facts.mounts | map(attribute='mount') | list }}"
-  tags:
-    - always
 
 - name: PRELIM | AUDIT | Capture tmp mount type | discover mount tmp type
   when:
@@ -40,8 +36,7 @@
       ubtu22cis_rule_1_1_2_1_2 or
       ubtu22cis_rule_1_1_2_1_3 or
       ubtu22cis_rule_1_1_2_1_4
-  tags:
-    - always
+  tags: always
   block:
     - name: PRELIM | AUDIT | Capture tmp mount type | discover mount tmp type
       ansible.builtin.shell: systemctl is-enabled tmp.mount
@@ -60,8 +55,7 @@
         tmp_mnt_type: tmp_systemd
 
 - name: PRELIM | Initialize the mount options variable
-  tags:
-    - always
+  tags: always
   block:
     - name: PRELIM | Initializing the var if there is no /tmp mount | set_fact
       when: "'/tmp' not in mount_names"
@@ -90,8 +84,7 @@
   when:
     - run_audit or audit_only
     - setup_audit
-  tags:
-    - run_audit
+  tags: run_audit
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
 
@@ -99,28 +92,39 @@
   when:
     - ubtu22cis_rule_1_2_1_1 or
       ubtu22cis_rule_1_2_2_1
-  tags:
-    - always
+  tags: always
   ansible.builtin.package:
     update_cache: true
+
+- name: PRELIM | Discover Gnome Desktop Environment
+  tags: always
+  ansible.builtin.stat:
+    path: /usr/share/gnome/gnome-version.xml
+  register: prelim_gnome_present
+
+- name: PRELIM | Discover dconf systemdb
+  when: ubtu22cis_gui
+  ansible.builtin.shell: grep system-db /etc/dconf/profile/user | cut -d ':' -f2
+  changed_when: false
+  failed_when: ubtu22cis_dconf_db.rc not in [ 0, 1 ]
+  register: prelim_dconf_system_db
 
 - name: PRELIM | AUDIT | Wireless adapter pre-requisites
   when:
     - ubtu22cis_rule_3_1_2
     - not system_is_container
-  tags:
-    - always
+  tags: always
   block:
     - name: PRELIM | AUDIT | Discover is wirelss adapter on system
       ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
-      register: prelim_wireless_adapters
       changed_when: false
-      failed_when: prelim_wireless_adapters.rc not in [ 0, 1 ]
+      failed_when: prelim_wireless_adapters_exist.rc not in [ 0, 1 ]
+      register: prelim_wireless_adapters_exist
 
     - name: PRELIM | PATCH | Install Network-Manager | if wireless adapter present
       when:
         - ubtu22cis_install_network_manager
-        - prelim_wireless_adapters.rc == 0
+        - prelim_wireless_adapters_exist.rc == 0
         - "'network-manager' not in ansible_facts.packages"
       ansible.builtin.package:
         name: network-manager
@@ -143,16 +147,15 @@
     state: present
 
 - name: PRELIM | PATCH | 5.3.4/5 | Find all sudoers files.
+  when:
+    - ubtu22cis_rule_5_2_4 or
+      ubtu22cis_rule_5_2_5
+  tags: always
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
   changed_when: false
   failed_when: false
   check_mode: false
   register: prelim_sudoers_files
-  when:
-    - ubtu22cis_rule_5_2_4 or
-      ubtu22cis_rule_5_2_5
-  tags:
-    - always
 
 - name: PRELIM | PATCH | Ensure conf.d directory exists required for 5.3.3.2.x
   when:
@@ -162,8 +165,7 @@
       ubtu22cis_rule_5_3_3_2_4 or
       ubtu22cis_rule_5_3_3_2_5 or
       ubtu22cis_rule_5_3_3_2_6
-  tags:
-    - always
+  tags: always
   ansible.builtin.file:
     path: '/etc/security/pwquality.conf.d'
     state: directory
@@ -172,10 +174,8 @@
     mode: '0750'
 
 - name: PRELIM | AUDIT | Discover Interactive UID MIN and MIN from logins.def
-  when:
-    - not discover_int_uid
-  tags:
-    - always
+  when: not discover_int_uid
+  tags: always
   block:
     - name: PRELIM | AUDIT | Capture UID_MIN information from logins.def
       ansible.builtin.shell: grep -w "^UID_MIN" /etc/login.defs | awk '{print $NF}'
@@ -199,32 +199,28 @@
         min_int_gid: "{{ prelim_gid_min_id.stdout }}"
 
 - name: PRELIM | AUDIT | Interactive Users
-  tags:
-    - always
+  tags: always
   ansible.builtin.shell: >
     grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $1 }'
   changed_when: false
   register: prelim_interactive_usernames
 
 - name: PRELIM | AUDIT | Interactive User accounts home directories
-  tags:
-    - always
+  tags: always
   ansible.builtin.shell: >
     grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false" && $7 != "/dev/null") { print $6 }'
   changed_when: false
   register: prelim_interactive_users_home
 
 - name: PRELIM | AUDIT | Interactive UIDs
-  tags:
-    - always
+  tags: always
   ansible.builtin.shell: >
     grep -E -v '^(root|halt|sync|shutdown)' /etc/passwd | awk -F: '(!index($7, "sbin/nologin") && $7 != "/bin/nologin" && $7 != "/bin/false") { print $3 }'
   changed_when: false
   register: prelim_interactive_uids
 
 - name: PRELIM | AUDIT | Gather UID 0 accounts other than root
-  when:
-    - ubtu22cis_rule_5_4_2_1
+  when: ubtu22cis_rule_5_4_2_1
   tags:
     - rule_5.4.2.1
     - level1-server
@@ -241,8 +237,7 @@
     - ubtu22cis_rule_6_2_1_1_3 or
       ubtu22cis_rule_6_2_1_1_5 or
       ubtu22cis_rule_6_2_1_1_6
-  tags:
-    - always
+  tags: always
   ansible.builtin.file:
     path: /etc/systemd/journald.conf.d
     state: directory
@@ -266,25 +261,24 @@
     state: present
 
 - name: PRELIM | AUDIT | Audit conf and rules files | list files
+  tags:
+    - patch
+    - auditd
+    - always
   ansible.builtin.find:
     path: /etc/audit/
     file_type: file
     recurse: true
     patterns: '*.conf,*.rules'
   register: prelim_auditd_conf_files
-  tags:
-    - patch
-    - auditd
-    - always
 
 - name: PRELIM | AUDIT | Check if auditd is immutable before changes
-  tags:
-    - always
+  when: "'auditd' in ansible_facts.packages"
+  tags: always
   ansible.builtin.shell: auditctl -l | grep -c '-e 2'
   changed_when: false
   failed_when: prelim_auditd_immutable_check.rc not in [ 0, 1 ]
   register: prelim_auditd_immutable_check
-  when: "'auditd' in ansible_facts.packages"
 
 - name: PRELIM | AUDIT | 6.3.4.x | Capture information about auditd logfile path | discover file
   when:
@@ -310,8 +304,7 @@
   when:
     - ubtu22cis_rule_7_2_9
     - "'acl' not in ansible_facts.packages"
-  tags:
-    - always
+  tags: always
   ansible.builtin.package:
     name: acl
     state: present
@@ -322,8 +315,7 @@
   when:
     - ubtu22cis_firewall_package == "ufw"
     - ubtu22cis_ufw_use_sysctl
-  tags:
-    - always
+  tags: always
   ansible.builtin.lineinfile:
     path: /etc/default/ufw
     regexp: ^IPT_SYSCTL=.*

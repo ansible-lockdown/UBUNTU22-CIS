@@ -13,14 +13,12 @@
     file: cis_2.3.1.x.yml
 
 - name: "SECTION | 2.3.2.x | Configure systemd-timesyncd"
-  when:
-    - ubtu22cis_time_sync_tool == "systemd-timesyncd"
+  when: ubtu22cis_time_sync_tool == "systemd-timesyncd"
   ansible.builtin.import_tasks:
     file: cis_2.3.2.x.yml
 
 - name: "SECTION | 2.3.3.x | Configure Chrony"
-  when:
-    - ubtu22cis_time_sync_tool == "chrony"
+  when: ubtu22cis_time_sync_tool == "chrony"
   ansible.builtin.import_tasks:
     file: cis_2.3.3.x.yml
 

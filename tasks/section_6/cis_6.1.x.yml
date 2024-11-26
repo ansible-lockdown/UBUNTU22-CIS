@@ -19,10 +19,10 @@
         name: ['aide', 'aide-common']
         state: present
         update_cache: true
-      register: ubtu22cis_rule_6_1_1_aide_added
+      register: discovered_aide_pkg_added
 
     - name: "6.1.1 | PATCH | Ensure AIDE is installed | Recapture packages"
-      when: ubtu22cis_rule_6_1_1_aide_added.skipped is not defined
+      when: discovered_aide_pkg_added.skipped is not defined
       ansible.builtin.package_facts:
         manager: auto
 
@@ -76,14 +76,14 @@
       when: ubtu22cis_aide_scan == 'cron'
       ansible.builtin.cron:
         name: Run AIDE integrity check
-        cron_file: "{{ ubtu22cis_aide_cron['cron_file'] }}"
-        user: "{{ ubtu22cis_aide_cron['cron_user'] }}"
-        minute: "{{ ubtu22cis_aide_cron['aide_minute'] | default('0') }}"
-        hour: "{{ ubtu22cis_aide_cron['aide_hour'] | default('5') }}"
-        day: "{{ ubtu22cis_aide_cron['aide_day'] | default('*') }}"
-        month: "{{ ubtu22cis_aide_cron['aide_month'] | default('*') }}"
-        weekday: "{{ ubtu22cis_aide_cron['aide_weekday'] | default('*') }}"
-        job: "{{ ubtu22cis_aide_cron['aide_job'] }}"
+        cron_file: "{{ ubtu22cis_aide_cron_file }}"
+        user: "{{ ubtu22cis_aide_cron_user }}"
+        minute: "{{ ubtu22cis_aide_cron_minute | default('0') }}"
+        hour: "{{ ubtu22cis_aide_cron_hour | default('5') }}"
+        day: "{{ ubtu22cis_aide_cron_day | default('*') }}"
+        month: "{{ ubtu22cis_aide_cron_month | default('*') }}"
+        weekday: "{{ ubtu22cis_aide_cron_weekday | default('*') }}"
+        job: "{{ ubtu22cis_aide_cron_job }}"
 
     - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked | timer template"
       when: ubtu22cis_aide_scan == 'timer'
@@ -109,8 +109,7 @@
         - aidecheck.timer
 
 - name: "6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
-  when:
-    - ubtu22cis_rule_6_1_3
+  when: ubtu22cis_rule_6_1_3
   tags:
     - level1-server
     - level1-workstation

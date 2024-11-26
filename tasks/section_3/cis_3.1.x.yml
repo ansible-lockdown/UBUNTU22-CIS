@@ -17,7 +17,7 @@
         path: /etc/default/grub
         regexp: '^(GRUB_CMDLINE_LINUX=.*)\bipv6\.disable=\d\b(.*$)'
         replace: '\1ipv6.disable=1\2'
-      register: ipv6disable_replaced
+      register: discovered_ipv6disable_replaced
       notify: Grub update
 
     - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Check grub cmdline linux"
@@ -25,13 +25,13 @@
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_3_1_1_cmdline_settings
+      register: discovered_grub_cmdline_settings
 
     - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Insert ipv6.disable if it doesn't exist"
       when:
         - ubtu22cis_ipv6_disable == 'grub'
-        - ipv6disable_replaced is not changed
-        - "'ipv6.disable' not in ubtu22cis_3_1_1_cmdline_settings.stdout"
+        - discovered_ipv6disable_replaced is not changed
+        - "'ipv6.disable' not in discovered_grub_cmdline_settings.stdout"
       ansible.builtin.lineinfile:
         path: /etc/default/grub
         regexp: '^(GRUB_CMDLINE_LINUX=".*)"$'
@@ -54,6 +54,7 @@
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled"
   when:
     - ubtu22cis_rule_3_1_2
+    - prelim_wireless_adapters_exist
   tags:
     - level1-server
     - patch
@@ -68,15 +69,15 @@
       changed_when: false
       failed_when: false
       check_mode: false
-      register: ubtu22cis_3_1_2_wifi_status
+      register: discovered_wifi_status
 
     - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"
       when:
         - "'network-manager' in ansible_facts.packages"
-        - "'enabled' in ubtu22cis_3_1_2_wifi_status.stdout"
+        - "'enabled' in discovered_wifi_status.stdout"
       ansible.builtin.shell: nmcli radio all off
-      changed_when: ubtu22cis_3_1_2_nmcli_radio_off.rc == 0
-      register: ubtu22cis_3_1_2_nmcli_radio_off
+      changed_when: discovered_nmcli_radio_off.rc == 0
+      register: discovered_nmcli_radio_off
 
     - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Warn about wireless if network-manager not installed"
       when: "'network-manager' not in ansible_facts.packages"
@@ -89,8 +90,7 @@
         file: warning_facts.yml
 
 - name: "3.1.3 | PATCH | Ensure bluetooth services are not in use"
-  when:
-    - ubtu22cis_rule_3_1_3
+  when: ubtu22cis_rule_3_1_3
   tags:
     - level1-server
     - level2-workstation

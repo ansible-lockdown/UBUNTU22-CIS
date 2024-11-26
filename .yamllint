@@ -11,6 +11,7 @@ ignore: |
 
 rules:
   indentation:
+    spaces: 2
     # Requiring consistent indentation within a file, either indented or not
     indent-sequences: consistent
   braces:

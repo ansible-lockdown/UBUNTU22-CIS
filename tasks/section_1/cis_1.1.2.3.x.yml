@@ -3,7 +3,7 @@
 - name: "1.1.2.3.1 | AUDIT | Ensure separate partition exists for /home"
   when:
     - ubtu22cis_rule_1_1_2_3_1
-    - "'/home' not in mount_names"
+    - required_mount not in mount_names
   tags:
     - level2-server
     - level2-workstation
@@ -16,9 +16,7 @@
   block:
     - name: "1.1.2.3.1 | AUDIT | Ensure separate partition exists for /home | Warn if partition is absent"
       ansible.builtin.debug:
-        msg: "Warning!! {{ required_mount }} doesn't exist. This is a manual task"
-      register: home_mount_absent
-      changed_when: home_mount_absent.skipped is undefined
+        msg: "Warning!! {{ required_mount }} doesn't exist. Please investigate this manual task"
 
     - name: "1.1.2.3.1 | AUDIT | Ensure separate partition exists for /home | Present"
       ansible.builtin.import_tasks:
@@ -46,7 +44,7 @@
     src: "{{ item.device }}"
     fstype: "{{ item.fstype }}"
     state: present
-    opts: defaults,{% if ubtu22cis_rule_1_1_2_3_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_3_3 %}nosuid{% endif %}
+    opts: "{{ item.options }}{% if ('nodev' not in item.options and ubtu22cis_rule_1_1_2_3_2) %},nodev{% endif %}{% if ('nosuid' not in item.options and ubtu22cis_rule_1_1_2_3_3) %},nosuid{% endif %}"
   loop: "{{ ansible_facts.mounts }}"
   loop_control:
     label: "{{ item.device }}"
