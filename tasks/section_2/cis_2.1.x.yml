@@ -4,6 +4,7 @@
   when:
     - ubtu22cis_rule_2_1_1
     - "'autofs' in ansible_facts.packages"
+    - not when system_is_ec2
   tags:
     - level1-server
     - level2-workstation
