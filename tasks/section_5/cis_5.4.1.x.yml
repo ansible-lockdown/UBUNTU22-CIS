@@ -177,7 +177,7 @@
       register: discovered_passwd_future_user_list
 
     - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past | Warn about users"
-      when: ubtu22cis_passwd_future_user_list.stdout | length > 0
+      when: discovered_passwd_future_user_list.stdout | length > 0
       ansible.builtin.debug:
         msg:
           - "WARNING!! The following accounts have the last PW change date in the future"
