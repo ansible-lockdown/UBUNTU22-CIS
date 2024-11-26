@@ -9,6 +9,7 @@
     - rule_1.2.1.1
     - gpg
     - keys
+    - NIST800-53R5_SI-2
   vars:
     warn_control_id: '1.2.1.1'
   block:
@@ -39,6 +40,7 @@
     - audit
     - rule_1.2.1.2
     - apt
+    - NIST800-53R5_SI-2
   vars:
     warn_control_id: '1.2.1.2'
   block:

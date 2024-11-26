@@ -11,6 +11,7 @@
     - patch
     - rule_1.7.1
     - gnome
+    - NIST800-53R5_CM-11
   ansible.builtin.package:
     name: gdm3
     state: absent
@@ -25,6 +26,11 @@
     - patch
     - rule_1.7.2
     - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "1.7.2 | PATCH | Ensure GDM login banner is configured | make directory"
       ansible.builtin.file:
@@ -60,6 +66,11 @@
     - patch
     - rule_1.7.3
     - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | make directories"
       ansible.builtin.file:
@@ -112,6 +123,7 @@
     - patch
     - rule_1.7.4
     - gnome
+    - NIST800-53R5_NA
   block:
     - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | session profile"
       ansible.builtin.lineinfile:
@@ -152,6 +164,7 @@
     - patch
     - rule_1.7.5
     - gnome
+    - NIST800-53R5_CM-11
   block:
     - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lock directory"
       ansible.builtin.file:
@@ -181,6 +194,11 @@
     - patch
     - rule_1.7.6
     - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled | make directory"
       ansible.builtin.file:
@@ -210,6 +228,11 @@
     - patch
     - rule_1.7.7
     - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lock directory"
       ansible.builtin.file:
@@ -239,6 +262,11 @@
     - patch
     - rule_1.7.8
     - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled | make directory"
       ansible.builtin.file:
@@ -268,6 +296,11 @@
     - patch
     - rule_1.7.9
     - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden | make lock directory"
       ansible.builtin.file:
@@ -298,6 +331,7 @@
     - rule_1.7.10
     - gnome
     - xdcmp
+    - NIST800-53R5_SI-4
   ansible.builtin.lineinfile:
     path: /etc/gdm3/custom.conf
     regexp: '^Enable.*=.*true'

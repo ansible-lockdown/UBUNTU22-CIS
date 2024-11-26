@@ -8,6 +8,9 @@
     - patch
     - rule_1.6.1
     - motd
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
   block:
     - name: "1.6.1 | PATCH | Ensure message of the day is configured properly | motd"
       ansible.builtin.template:
@@ -34,6 +37,9 @@
     - patch
     - rule_1.6.2
     - banner
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
   block:
     - name: "1.6.2 | PATCH | Ensure local login warning banner is configured properly | issue"
       ansible.builtin.template:
@@ -52,6 +58,9 @@
     - patch
     - rule_1.6.3
     - banner
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
   block:
     - name: "1.6.3 | PATCH | Ensure remote login warning banner is configured properly | issue.net"
       ansible.builtin.template:
@@ -71,6 +80,8 @@
     - rule_1.6.4
     - permissions
     - motd
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   ansible.builtin.file:
     path: /etc/motd
     owner: root
@@ -86,6 +97,8 @@
     - rule_1.6.5
     - permissions
     - banner
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   ansible.builtin.file:
     path: /etc/issue
     owner: root
@@ -101,6 +114,8 @@
     - rule_1.6.6
     - permissions
     - banner
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   ansible.builtin.file:
     path: /etc/issue.net
     owner: root

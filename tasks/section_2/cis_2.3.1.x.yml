@@ -10,6 +10,8 @@
     - chrony
     - ntp
     - systemd-timesyncd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   block:
     - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | Pkg installed"
       ansible.builtin.package:

@@ -8,6 +8,8 @@
     - patch
     - rule_2.4.2.1
     - cron
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   block:
     - name: "2.4.2.1 | PATCH | Ensure at is restricted to authorized users | Remove at.deny"
       ansible.builtin.file:

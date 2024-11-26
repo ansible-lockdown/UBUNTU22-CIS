@@ -8,6 +8,7 @@
     - patch
     - rule_1.2.2.1
     - patch
+    - NIST800-53R5_SI-2
   ansible.builtin.package:
     name: "*"
     state: latest

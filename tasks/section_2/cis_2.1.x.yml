@@ -10,6 +10,8 @@
     - level2-workstation
     - patch
     - rule_2.1.1
+    - NIST800-53R5_SI-3
+    - NIST800-53R5_MP-7
   block:
     - name: "2.1.1 | PATCH | Ensure autofs services are not in use | Remove Package"
       when:
@@ -39,6 +41,7 @@
     - patch
     - avahi
     - rule_2.1.2
+    - NIST800-53R5_SI-4
   block:
     - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use | Remove package"
       when:
@@ -74,6 +77,7 @@
     - patch
     - dhcp
     - rule_2.1.3
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.3 | PATCH | Ensure dhcp server services are not in use | Remove package"
       when:
@@ -107,6 +111,7 @@
     - patch
     - dns
     - rule_2.1.4
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.4 | PATCH | Ensure dns server services are not in use | Remove package"
       when:
@@ -137,6 +142,7 @@
     - patch
     - dns
     - rule_2.1.5
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use | Remove package"
       when:
@@ -168,6 +174,7 @@
     - patch
     - ftp
     - rule_2.1.6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.6 | PATCH | Ensure ftp server services are not in use | Remove package"
       when:
@@ -198,6 +205,7 @@
     - patch
     - ldap
     - rule_2.1.7
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.7 | PATCH | Ensure ldap server services are not in use | Remove package"
       when:
@@ -230,6 +238,7 @@
     - imap
     - pop3
     - rule_2.1.8
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.8 | PATCH | Ensure message access server services are not in use | Remove package"
       when:
@@ -266,6 +275,8 @@
     - nfs
     - services
     - rule_2.1.9
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.9 | PATCH | Ensure network file system services are not in use | Remove package"
       when:
@@ -296,6 +307,7 @@
     - patch
     - nis
     - rule_2.1.10
+    - NIST800-53R5_CM-7
   notify: Systemd_daemon_reload
   block:
     - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Remove package"
@@ -326,6 +338,7 @@
     - patch
     - cups
     - rule_2.1.11
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.11 | PATCH | Ensure print server services are not in use | Remove package"
       when:
@@ -359,6 +372,8 @@
     - patch
     - rpc
     - rule_2.1.12
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use | Remove package"
       when:
@@ -392,6 +407,7 @@
     - patch
     - rsync
     - rule_2.1.13
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.13 | PATCH | Ensure rsync services are not in use | Remove package"
       when:
@@ -423,6 +439,8 @@
     - patch
     - samba
     - rule_2.1.14
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.14 | PATCH | Ensure samba file server services are not in use | Remove package"
       when:
@@ -455,6 +473,7 @@
     - patch
     - samba
     - rule_2.1.15
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.15 | PATCH | Ensure snmp services are not in use | Remove package"
       when:
@@ -485,6 +504,7 @@
     - patch
     - tftp
     - rule_2.1.16
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.16 | PATCH | Ensure tftp server services are not in use | Remove package"
       when:
@@ -515,6 +535,7 @@
     - patch
     - squid
     - rule_2.1.17
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.17 | PATCH | Ensure web proxy server services are not in use | Remove package"
       when:
@@ -547,6 +568,7 @@
     - nginx
     - webserver
     - rule_2.1.18
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Remove httpd server"
       when:
@@ -603,6 +625,7 @@
     - patch
     - xinetd
     - rule_2.1.19
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.19 | PATCH | Ensure xinetd services are not in use | Remove package"
       when:
@@ -635,6 +658,7 @@
     - patch
     - xwindow
     - rule_2.1.20
+    - NIST800-53R5_CM-11
   ansible.builtin.package:
     name: xorg-x11-server-common
     state: absent
@@ -650,6 +674,7 @@
     - patch
     - postfix
     - rule_2.1.21
+    - NIST800-53R5_CM-7
   vars:
     warn_control_id: '2.2.21'
   block:
@@ -705,6 +730,7 @@
     - audit
     - services
     - rule_2.1.22
+    - NIST800-53R5_CM-7
   vars:
     warn_control_id: '2.1.22'
   block:

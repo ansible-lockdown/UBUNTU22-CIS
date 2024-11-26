@@ -15,6 +15,7 @@
     - audit
     - rule_4.2.1
     - nftables
+    - NIST800-53R5_CA-9
   vars:
     warn_control_id: '4.2.1'
   block:
@@ -36,6 +37,7 @@
     - audit
     - rule_4.2.2
     - nftables
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.2'
   block:
@@ -60,6 +62,8 @@
     - audit
     - rule_4.2.3
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.3'
   block:
@@ -83,6 +87,8 @@
     - patch
     - rule_4.2.4
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.4'
   block:
@@ -109,6 +115,7 @@
     - audit
     - rule_4.2.5
     - nftables
+    - NIST800-53R5_NA
   vars:
     warn_control_id: '4.2.5'
   block:
@@ -130,6 +137,8 @@
     - audit
     - rule_4.2.6
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.6'
   block:
@@ -151,6 +160,8 @@
     - audit
     - rule_4.2.7
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.7'
   block:
@@ -172,6 +183,8 @@
     - audit
     - rule_4.2.8
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.8'
   block:
@@ -193,6 +206,8 @@
     - audit
     - rule_4.2.9
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.9'
   block:
@@ -218,6 +233,8 @@
     - audit
     - rule_4.2.10
     - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.2.10'
   block:

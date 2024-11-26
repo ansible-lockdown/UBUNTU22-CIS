@@ -8,6 +8,8 @@
     - patch
     - rule_2.3.3.1
     - chrony
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   block:
     - name: "2.3.3.1 | PATCH | Ensure chrony is configured with authorized timeserver | sources"
       ansible.builtin.template:
@@ -36,6 +38,7 @@
     - patch
     - rule_2.3.3.2
     - chrony
+    - NIST800-53R5_AU-8
   ansible.builtin.lineinfile:
     path: /etc/chrony/chrony.conf
     regexp: '^user _chrony'
@@ -48,6 +51,7 @@
     - level1-workstation
     - rule_2.3.3.3
     - chrony
+    - NIST800-53R5_AU-8
   block:
     - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running"
       ansible.builtin.systemd:

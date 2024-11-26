@@ -11,6 +11,7 @@
     - mounts
     - rule_1.1.2.1.1
     - tmp
+    - NIST800-53R5_CM-7
   vars:
     warn_control_id: '1.1.2.1.1'
     required_mount: '/tmp'
@@ -33,6 +34,9 @@
     - patch
     - rule_1.1.2.1.2
     - tmp
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   vars:
     required_mount: '/tmp'
   ansible.builtin.set_fact:

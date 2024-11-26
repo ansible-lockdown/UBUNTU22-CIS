@@ -11,6 +11,8 @@
     - patch
     - rule_4.3.2.1
     - iptables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   block:
     - name: "4.3.2.1 | PATCH | Ensure iptables default deny firewall policy | Configure SSH to be allowed in"
       ansible.builtin.iptables:
@@ -58,6 +60,8 @@
     - patch
     - rule_4.3.2.2
     - iptables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   block:
     - name: "4.3.2.2 | PATCH | Ensure iptables loopback traffic is configured | INPUT loopback ACCEPT"
       ansible.builtin.iptables:
@@ -94,6 +98,8 @@
     - patch
     - rule_4.3.2.3
     - iptables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   ansible.builtin.iptables:
     action: append
     chain: '{{ item.chain }}'
@@ -121,6 +127,8 @@
     - audit
     - rule_4.3.2.4
     - iptables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
   vars:
     warn_control_id: '4.3.2.4'
   block:

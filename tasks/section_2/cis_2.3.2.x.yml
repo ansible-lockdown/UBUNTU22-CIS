@@ -8,6 +8,8 @@
     - patch
     - rule_2.3.2.1
     - timesyncd
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-8
   block:
     - name: "2.3.2.1 | PATCH | Ensure systemd-timesyncd configured with authorized timeserver | create conf.d dir"
       ansible.builtin.file:
@@ -35,6 +37,8 @@
     - level1-workstation
     - rule_2.3.2.2
     - timesyncd
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-8
   block:
     - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running | enable if timesyncd"
       ansible.builtin.systemd:

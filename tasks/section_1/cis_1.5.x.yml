@@ -8,6 +8,7 @@
     - patch
     - rule_1.5.1
     - aslr
+    - NIST800-53R5_CM-6
   ansible.posix.sysctl:
     name: kernel.randomize_va_space
     value: '2'
@@ -25,6 +26,7 @@
     - patch
     - rule_1.5.2
     - ptrace
+    - NIST800-53R5_CM-6
   ansible.posix.sysctl:
     name: kernel.yama.ptrace_scope
     value: '1'
@@ -42,6 +44,7 @@
     - patch
     - rule_1.5.3
     - coredump
+    - NIST800-53R5_CM-6
   block:
     - name: "1.5.3 | PATCH | Ensure core dumps are restricted | kernel sysctl"
       ansible.posix.sysctl:
@@ -96,6 +99,9 @@
     - patch
     - rule_1.5.4
     - prelink
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-3
+    - NIST800-53R5_CM-6
   block:
     - name: "1.5.4 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
       ansible.builtin.shell: prelink -ua
@@ -116,6 +122,7 @@
     - patch
     - rule_1.5.5
     - apport
+    - NIST800-53R5_NA
   block:
     - name: "1.5.5 | PATCH | Ensure Automatic Error Reporting is not enabled | disable"
       ansible.builtin.lineinfile:

@@ -9,6 +9,8 @@
     - level1-workstation
     - rule_2.2.1
     - nis
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_CM-11
   ansible.builtin.package:
     name: nis
     state: absent
@@ -24,6 +26,7 @@
     - patch
     - rule_2.2.2
     - rsh
+    - NIST800-53R5_CM-7
   ansible.builtin.package:
     name: rsh-client
     state: absent
@@ -39,6 +42,7 @@
     - patch
     - rule_2.2.3
     - talk
+    - NIST800-53R5_CM-7
   ansible.builtin.package:
     name: talk
     state: absent
@@ -54,6 +58,8 @@
     - patch
     - rule_2.2.4
     - telnet
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_CM-11
   ansible.builtin.package:
     name: telnet
     state: absent
@@ -69,6 +75,7 @@
     - patch
     - rule_2.2.5
     - ldap
+    - NIST800-53R5_CM-7
   ansible.builtin.package:
     name: ldap-utils
     state: absent
@@ -84,6 +91,8 @@
     - patch
     - rule_2.2.6
     - ftp
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_CM-11
   ansible.builtin.package:
     name: ftp
     state: absent

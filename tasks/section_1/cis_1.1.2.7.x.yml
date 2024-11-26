@@ -10,6 +10,7 @@
     - audit
     - mounts
     - rule_1.1.2.7.1
+    - NIST800-53R5_CM-7
   vars:
     warn_control_id: '1.1.2.7.1'
     required_mount: '/var/log/audit'
@@ -33,6 +34,9 @@
     - ubtu22cis_rule_1_1_2_7_2 or
       ubtu22cis_rule_1_1_2_7_3 or
       ubtu22cis_rule_1_1_2_7_4
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   tags:
     - level1-server
     - level1-workstation

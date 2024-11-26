@@ -10,6 +10,7 @@
     - patch
     - rule_3.1.1
     - ipv6
+    - NIST800-53R5_CM-7
   block:
     - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Replace ipv6.disable if it exists"
       when: ubtu22cis_ipv6_disable == 'grub'
@@ -60,6 +61,7 @@
     - patch
     - rule_3.1.2
     - wireless
+    - NIST800-53R5_CM-7
   vars:
     warn_control_id: '3.1.2'
   block:
@@ -97,6 +99,7 @@
     - patch
     - bluetooth
     - rule_3.1.3
+    - NIST800-53R5_CM-7
   block:
     - name: "3.1.3 | PATCH | Ensure bluetooth services are not in use | pkg"
       when:

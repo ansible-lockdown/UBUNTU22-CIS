@@ -10,6 +10,7 @@
     - audit
     - mounts
     - rule_1.1.2.6.1
+    - NIST800-53R5_CM-7
   vars:
     warn_control_id: '1.1.2.6.1'
     required_mount: '/var/log'
@@ -41,6 +42,8 @@
     - rule_1.1.2.6.2
     - rule_1.1.2.6.3
     - rule_1.1.2.6.4
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   notify: Set_reboot_required
   ansible.posix.mount:
     name: /var/log

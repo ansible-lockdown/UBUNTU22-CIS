@@ -10,6 +10,7 @@
     - patch
     - rule_1.4.1
     - grub
+    - NIST800-53R5_AC-3
   block:
     - name: "1.4.1 | PATCH | Ensure bootloader password is set"
       ansible.builtin.template:
@@ -37,6 +38,7 @@
     - patch
     - rule_1.4.2
     - grub
+    - NIST800-53R5_AC-3
   block:
     - name: "1.4.2 | AUDIT | Ensure access to bootloader config is configured | Check for Grub file"
       ansible.builtin.stat:
