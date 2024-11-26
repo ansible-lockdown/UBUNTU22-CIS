@@ -184,15 +184,15 @@
           - "{{ discovered_passwd_future_user_list.stdout_lines }}"
 
     - name: "5.4.1.6 | WARN | Ensure all users last password change date is in the past | warn_count"
-      when: ubtu22cis_passwd_future_user_list.stdout | length > 0
+      when: discovered_passwd_future_user_list.stdout | length > 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
     - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
       when:
         - ubtu22cis_disruption_high
-        - ubtu22cis_passwd_future_user_list.stdout | length > 0
+        - discovered_passwd_future_user_list.stdout | length > 0
       ansible.builtin.shell: passwd --expire {{ item }}
       failed_when: false
       with_items:
-        - "{{ ubtu22cis_passwd_future_user_list.stdout_lines }}"
+        - "{{ discovered_passwd_future_user_list.stdout_lines }}"
