@@ -633,10 +633,10 @@ ubtu22cis_is_syslog_server: {{ ubtu22cis_system_is_log_server }}
 
 # Note the following to understand precedence and layout
 ubtu22cis_sshd_access:
-  - AllowUser {{ ubtu22cis_sshd.allow_users }}
-  - AllowGroup {{ ubtu22cis_sshd.allow_groups }}
-  - DenyUser {{ ubtu22cis_sshd.deny_users }}
-  - DenyGroup {{ ubtu22cis_sshd.deny_groups }}
+  - AllowUser {{ ubtu22cis_sshd_allow_users }}
+  - AllowGroup {{ ubtu22cis_sshd_allow_groups }}
+  - DenyUser {{ ubtu22cis_sshd_deny_users }}
+  - DenyGroup {{ ubtu22cis_sshd_deny_groups }}
 
 ubtu22cis_ssh_strong_ciphers:
   - aes256-gcm@openssh.com
@@ -701,9 +701,9 @@ ubtu22cis_pam_passwd_retry: "3"
 
 # logins.def password settings
 ubtu22cis_pass:
-  max_days: {{ ubtu22cis_pass.max_days }}
-  min_days: {{ ubtu22cis_pass.min_days }}
-  warn_age: {{ ubtu22cis_pass.warn_age }}
+  max_days: {{ ubtu22cis_pass_max_days }}
+  min_days: {{ ubtu22cis_pass_min_days }}
+  warn_age: {{ ubtu22cis_pass_warn_age }}
 
 # set sugroup if differs from wheel
 ubtu22cis_sugroup: nosugroup
