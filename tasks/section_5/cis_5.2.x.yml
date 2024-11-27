@@ -8,6 +8,7 @@
     - patch
     - rule_5.2.1
     - sudo
+    - NIST800-53R5_AC-6
   ansible.builtin.package:
     name: "{{ ubtu22cis_sudo_package }}"
     state: present
@@ -20,6 +21,7 @@
     - patch
     - rule_5.2.2
     - sudo
+    - NIST800-53R5_AC-6
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: '^Defaults\s+use_'
@@ -34,6 +36,8 @@
     - patch
     - rule_5.2.3
     - sudo
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   ansible.builtin.lineinfile:
     path: /etc/sudoers
     regexp: '^Defaults\s+logfile'
@@ -48,6 +52,7 @@
     - patch
     - sudo
     - rule_5.2.4
+    - NIST800-53R5_AC-6
   ansible.builtin.replace:
     path: "{{ item }}"
     regexp: '^([^#|{% if system_is_ec2 %}ec2-user{% endif %}].*)NOPASSWD(.*)'
@@ -63,6 +68,7 @@
     - patch
     - sudo
     - rule_5.2.5
+    - NIST800-53R5_AC-6
   ansible.builtin.replace:
     path: "{{ item }}"
     regexp: '^([^#].*)!authenticate(.*)'
@@ -78,6 +84,7 @@
     - patch
     - sudo
     - rule_5.2.6
+    - NIST800-53R5_AC-6
   block:
     - name: "5.2.6 | AUDIT | Ensure sudo authentication timeout is configured correctly | Get files with timeout set"
       ansible.builtin.shell: grep -is 'timestamp_timeout' /etc/sudoers /etc/sudoers.d/* | cut -d":" -f1 | uniq | sort
@@ -111,6 +118,8 @@
     - patch
     - sudo
     - rule_5.2.7
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   block:
     - name: "5.2.7 | PATCH | Ensure access to the su command is restricted | Ensure sugroup exists"
       ansible.builtin.group:

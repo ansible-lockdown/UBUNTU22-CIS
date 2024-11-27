@@ -10,6 +10,7 @@
     - patch
     - rule_6.1.1
     - aide
+    - NIST800-53R5_AU-2
   block:
     - name: "6.1.1 | PATCH | Ensure AIDE is installed"
       when:
@@ -71,6 +72,7 @@
     - rule_6.1.2
     - cron
     - aide
+    - NIST800-53R5_NA
   block:
     - name: "6.1.2 | PATCH | Ensure filesystem integrity is regularly checked | cron"
       when: ubtu22cis_aide_scan == 'cron'
@@ -117,6 +119,7 @@
     - file_integrity
     - patch
     - rule_6.1.3
+    - NIST800-53R5_NA
   ansible.builtin.blockinfile:
     path: /etc/aide/aide.conf
     marker: "# {mark} Audit tools - CIS benchmark - Ansible-lockdown"

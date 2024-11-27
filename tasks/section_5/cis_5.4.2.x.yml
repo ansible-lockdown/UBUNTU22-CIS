@@ -12,6 +12,11 @@
     - accounts
     - users
     - rule_5.4.2.1
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.shell: passwd -l {{ item }}
   changed_when: false
   failed_when: false
@@ -28,6 +33,11 @@
     - rule_5.4.2.2
     - user
     - system
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "5.4.2.2 | AUDIT | Ensure root is the only GID 0 account | Get members of gid 0"
       ansible.builtin.shell: "awk -F: '($1 !~ /^(sync|shutdown|halt|operator)/ && $4==\"0\") {print $1}' /etc/passwd | grep -wv 'root'"
@@ -56,6 +66,11 @@
     - rule_5.4.2.3
     - user
     - system
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Get groups with gid 0"
       ansible.builtin.shell: "awk -F: '$3==\"0\"{print $1}' /etc/group | grep -vw 'root'"
@@ -90,6 +105,7 @@
     - patch
     - shadow_suite
     - rule_5.4.2.4
+    - NIST800-53R5_NA
   ansible.builtin.debug:
     msg: "This is set as an assert in tasks/main"
 
@@ -102,6 +118,11 @@
     - patch
     - paths
     - rule_5.4.2.5
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
     - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Get root paths"
       ansible.builtin.shell: sudo -Hiu root env | grep '^PATH' | cut -d= -f2
@@ -168,6 +189,8 @@
     - patch
     - shadow_suite
     - rule_5.4.2.6
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   ansible.builtin.lineinfile:
     path: /root/.bash_profile
     regexp: \s*umask
@@ -186,6 +209,10 @@
     - patch
     - shadow_suite
     - rule_5.4.2.7
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-11
+    - NIST800-53R5_MP-2
   ansible.builtin.user:
     name: "{{ item.id }}"
     shell: /usr/sbin/nologin
@@ -205,6 +232,10 @@
     - patch
     - shadow_suite
     - rule_5.4.2.8
+    - NIST800-53R5_AC-2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AC-11
+    - NIST800-53R5_MP-2
   ansible.builtin.user:
     name: "{{ item.id }}"
     password_lock: true

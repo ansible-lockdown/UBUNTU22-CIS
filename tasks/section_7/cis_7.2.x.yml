@@ -8,6 +8,7 @@
     - audit
     - rule_7.2.1
     - user_accounts
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.1'
   block:
@@ -38,6 +39,7 @@
     - rule_7.2.2
     - user
     - permissions
+    - NIST800-53R5_IA-5
   block:
     - name: "7.2.2 | AUDIT | Ensure /etc/shadow password fields are not empty | Find users with no password"
       ansible.builtin.shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow
@@ -61,6 +63,11 @@
     - audit
     - rule_7.2.3
     - groups
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.3'
   block:
@@ -89,6 +96,7 @@
     - patch
     - rule_6.2.4
     - user
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.4'
   block:
@@ -116,6 +124,11 @@
     - audit
     - rule_7.2.5
     - user
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.5'
   block:
@@ -144,6 +157,11 @@
     - audit
     - rule_7.2.6
     - groups
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.6'
   block:
@@ -172,6 +190,11 @@
     - audit
     - rule_7.2.7
     - user
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.7'
   block:
@@ -200,6 +223,11 @@
     - audit
     - rule_7.2.8
     - groups
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.8'
   block:
@@ -228,6 +256,7 @@
     - patch
     - users
     - rule_7.2.9
+    - NIST800-53R5_NA
   block:
     - name: "7.2.9 | PATCH | Ensure local interactive user home directories are configured | Create dir if absent"
       ansible.builtin.file:
@@ -270,6 +299,11 @@
     - patch
     - rule_7.2.10
     - user
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   vars:
     warn_control_id: '7.2.10'
   block:

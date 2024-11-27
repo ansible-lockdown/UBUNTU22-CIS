@@ -8,6 +8,7 @@
     - patch
     - rule_6.3.3.1
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -19,6 +20,7 @@
     - patch
     - rule_6.3.3.2
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -30,6 +32,7 @@
     - patch
     - rule_6.3.3.3
     - auditd
+    - NIST800-53R5_NA
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -41,6 +44,8 @@
     - patch
     - rule_6.3.3.4
     - auditd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -52,6 +57,8 @@
     - patch
     - rule_6.3.3.5
     - auditd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -63,6 +70,7 @@
     - patch
     - rule_6.3.3.6
     - auditd
+    - NIST800-53R5_AU-3
   block:
     - name: "6.3.3.6 | AUDIT | Ensure use of privileged commands is collected | Get list of privileged programs"
       ansible.builtin.shell: for i in  $(findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | grep -Pv "noexec|nosuid" | awk '{print $1}'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
@@ -82,6 +90,7 @@
     - patch
     - rule_6.3.3.7
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -93,6 +102,7 @@
     - patch
     - rule_6.3.3.8
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -104,6 +114,8 @@
     - patch
     - rule_6.3.3.9
     - auditd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -115,6 +127,7 @@
     - patch
     - rule_6.3.3.10
     - auditd
+    - NIST800-53R5_CM-6
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -126,6 +139,7 @@
     - patch
     - rule_6.3.3.11
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -137,6 +151,7 @@
     - patch
     - rule_6.3.3.12
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -148,6 +163,8 @@
     - patch
     - rule_6.3.3.13
     - auditd
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SC-7
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -159,6 +176,8 @@
     - patch
     - rule_6.3.3.14
     - auditd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -170,6 +189,9 @@
     - patch
     - rule_6.3.3.15
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -181,6 +203,9 @@
     - patch
     - rule_6.3.3.16
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -192,6 +217,9 @@
     - patch
     - rule_6.3.3.17
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -203,6 +231,9 @@
     - patch
     - rule_6.3.3.18
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -214,6 +245,8 @@
     - patch
     - rule_6.3.3.19
     - auditd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_CM-6
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -225,6 +258,10 @@
     - patch
     - rule_6.3.3.20
     - auditd
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_MP-2
   ansible.builtin.set_fact:
     update_audit_template: true
 
@@ -237,5 +274,6 @@
     - patch
     - rule_6.3.3.21
     - auditd
+    - NIST800-53R5_AU-3
   ansible.builtin.shell: augenrules --check
   changed_when: false

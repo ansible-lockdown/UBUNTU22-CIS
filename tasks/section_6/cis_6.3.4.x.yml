@@ -16,11 +16,12 @@
     - rule_6.3.4.1
     - rule_6.3.4.2
     - rule_6.3.4.3
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ prelim_auditd_logfile.stdout }}"
     owner: root
     group: root
-    mode: u-x,g-wx,o-rwx
+    mode: 'u-x,g-wx,o-rwx'
 
 - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured"
   when: ubtu22cis_rule_6_3_4_4
@@ -30,6 +31,7 @@
     - patch
     - auditd
     - rule_6.3.4.4
+    - NIST800-53R5_AU-3
   block:
     - name: "6.3.4.4 | AUDIT | Ensure the audit log file directory mode is configured | get current permissions"
       ansible.builtin.stat:
@@ -40,7 +42,7 @@
       ansible.builtin.file:
         path: "{{ discovered_auditlog_dir.stat.path }}"
         state: directory
-        mode: g-w,o-rwx
+        mode: 'g-w,o-rwx'
 
 - name: "6.3.4.5 | PATCH | Ensure audit configuration files mode is configured"
   when: ubtu22cis_rule_6_3_4_5
@@ -50,9 +52,10 @@
     - patch
     - auditd
     - rule_6.3.4.5
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ item.path }}"
-    mode: u-x,g-wx,o-rwx
+    mode: 'u-x,g-wx,o-rwx'
   loop: "{{ prelim_auditd_conf_files.files }}"
   loop_control:
     label: "{{ item.path }}"
@@ -65,6 +68,7 @@
     - patch
     - auditd
     - rule_6.3.4.6
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ item.path }}"
     owner: root
@@ -80,6 +84,7 @@
     - patch
     - auditd
     - rule_6.3.4.7
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ item.path }}"
     group: root
@@ -95,6 +100,7 @@
     - patch
     - auditd
     - rule_6.3.4.8
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ item }}"
     mode: 'g-w,o-rwx'
@@ -114,6 +120,7 @@
     - patch
     - auditd
     - rule_6.3.4.9
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ item }}"
     owner: root
@@ -134,6 +141,7 @@
     - patch
     - auditd
     - rule_6.3.4.10
+    - NIST800-53R5_AU-3
   ansible.builtin.file:
     path: "{{ item }}"
     group: root

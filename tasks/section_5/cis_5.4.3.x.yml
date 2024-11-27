@@ -9,6 +9,11 @@
     - patch
     - shells
     - rule_5.4.3.1
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.replace:
     path: /etc/shells
     regexp: nologin
@@ -23,6 +28,7 @@
     - patch
     - shell
     - rule_5.4.3.2
+    - NIST800-53R5_NA
   ansible.builtin.blockinfile:
     path: "{{ item.path }}"
     state: "{{ item.state }}"
@@ -46,6 +52,8 @@
     - patch
     - umask
     - rule_5.4.3.3
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   ansible.builtin.replace:
     path: "{{ item.path }}"
     regexp: (?i)(umask\s+\d\d\d)

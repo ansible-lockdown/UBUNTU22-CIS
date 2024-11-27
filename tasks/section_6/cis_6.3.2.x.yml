@@ -8,6 +8,7 @@
     - patch
     - rule_6.3.2.1
     - auditd
+    - NIST800-53R5_NA
   ansible.builtin.lineinfile:
     dest: /etc/audit/auditd.conf
     regexp: "^max_log_file( |=)"
@@ -23,6 +24,7 @@
     - patch
     - rule_6.3.2.2
     - auditd
+    - NIST800-53R5_AU-8
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: '^max_log_file_action'
@@ -37,6 +39,10 @@
     - patch
     - rule_6.3.2.3
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-8
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: "{{ item.regexp }}"
@@ -55,6 +61,10 @@
     - patch
     - auditd
     - rule_6.3.2.4
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-8
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.lineinfile:
     path: /etc/audit/auditd.conf
     regexp: "{{ item.regexp }}"

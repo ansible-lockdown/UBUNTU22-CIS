@@ -8,6 +8,10 @@
     - patch
     - rule_6.3.1.1
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.package:
     name: ['auditd', 'audispd-plugins']
     state: present
@@ -20,6 +24,9 @@
     - patch
     - rule_6.3.1.2
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.service:
     name: auditd
     state: started
@@ -34,6 +41,9 @@
     - patch
     - rule_6.3.1.3
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   block:
     - name: "6.3.1.3 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
       ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
@@ -68,6 +78,9 @@
     - patch
     - rule_6.3.1.4
     - auditd
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   block:
     - name: "6.3.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Get current GRUB_CMDLINE_LINUX"
       ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'

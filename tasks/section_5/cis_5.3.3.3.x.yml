@@ -10,6 +10,7 @@
     - patch
     - rule_5.3.3.3.1
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.3.1 | AUDIT | Ensure password history remember is configured | Check existing files"
       ansible.builtin.shell: grep -Psi -- '^\h*password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?remember=\d+\b' /etc/pam.d/common-password
@@ -36,6 +37,7 @@
     - patch
     - rule_5.3.3.3.2
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.3.2 | AUDIT | Ensure password history is enforced for the root user | Check existing files"
       ansible.builtin.shell: grep -Psi -- '^\h*password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?enforce_for_root\b' /etc/pam.d/common-password
@@ -62,6 +64,7 @@
     - patch
     - rule_5.3.3.3.2
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.3.3 | AUDIT | Ensure pam_pwhistory includes use_authtok | Check existing files"
       ansible.builtin.shell: grep -Psi -- '^\h*password\h+[^#\n\r]+\h+pam_pwhistory\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/common-password

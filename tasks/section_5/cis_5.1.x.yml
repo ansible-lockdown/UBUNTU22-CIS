@@ -8,6 +8,8 @@
     - patch
     - rule_5.1.1
     - ssh
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   ansible.builtin.file:
     path: /etc/ssh/sshd_config
     owner: root
@@ -22,6 +24,8 @@
     - patch
     - rule_5.1.2
     - ssh
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   block:
     - name: "5.1.2 | AUDIT | Ensure permissions on SSH private host key files are configured | Find ssh_host private keys"
       ansible.builtin.find:
@@ -48,6 +52,8 @@
     - patch
     - rule_5.1.3
     - ssh
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   block:
     - name: "5.1.3 | AUDIT | Ensure permissions on SSH public host key files are configured | Find ssh_host public keys"
       ansible.builtin.find:
@@ -74,6 +80,8 @@
     - patch
     - rule_5.1.4
     - ssh
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   block:
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add allowed users"
       when: "ubtu22cis_sshd['allow_users']| default('') | length > 0 "
@@ -119,6 +127,11 @@
     - patch
     - rule_5.1.5
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^Banner|^#Banner'
@@ -135,6 +148,7 @@
     - patch
     - rule_5.1.6
     - ssh
+    - NIST800-53R5_SC-8
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^Ciphers|^#Ciphers'
@@ -151,6 +165,11 @@
     - patch
     - rule_5.1.7
     - sshd
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
@@ -169,6 +188,7 @@
     - patch
     - rule_5.1.8
     - ssh
+    - NIST800-53R5_CM-7
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^DisableForwarding|^#DisableForwarding'
@@ -176,7 +196,7 @@
     validate: 'sshd -t -f %s'
   notify: Restart sshd
 
-- name: "5.1.9 | PATCH | Ensure sshd GSSAPIAuthentication is  is disabled"
+- name: "5.1.9 | PATCH | Ensure sshd GSSAPIAuthentication is is disabled"
   when: ubtu22cis_rule_5_1_9
   tags:
     - level2-server
@@ -184,6 +204,11 @@
     - patch
     - rule_5.1.9
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^(?i)GSSAPIAuthentication|^(?i)#GSSAPIAuthentication'
@@ -199,6 +224,11 @@
     - patch
     - rule_5.1.10
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^HostbasedAuthentication|^#HostbasedAuthentication'
@@ -214,6 +244,11 @@
     - patch
     - rule_5.1.11
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^IgnoreRhosts|^#IgnoreRhosts'
@@ -229,6 +264,7 @@
     - patch
     - rule_5.1.12
     - ssh
+    - NIST800-53R5_SC-8
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^KexAlgorithms|^#KexAlgorithms'
@@ -245,6 +281,7 @@
     - patch
     - rule_5.1.13
     - ssh
+    - NIST800-53R5_CM-6
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^LoginGraceTime|^#LoginGraceTime'
@@ -261,6 +298,9 @@
     - patch
     - rule_5.1.14
     - ssh
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_SI-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^LogLevel|^#LogLevel'
@@ -277,6 +317,11 @@
     - patch
     - rule_5.1.15
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MACs|^#MACs'
@@ -293,6 +338,7 @@
     - patch
     - rule_5.1.16
     - ssh
+    - NIST800-53R5_AU-3
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MaxAuthTries|^#MaxAuthTries'
@@ -309,6 +355,11 @@
     - patch
     - rule_5.1.17
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MaxSessions|^#MaxSessions'
@@ -325,6 +376,11 @@
     - patch
     - rule_5.1.18
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^MaxStartups|^#MaxStartups'
@@ -340,6 +396,11 @@
     - patch
     - rule_5.1.19
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^PermitEmptyPasswords|^#PermitEmptyPasswords'
@@ -356,6 +417,7 @@
     - patch
     - rule_5.1.20
     - ssh
+    - NIST800-53R5_AC-6
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^PermitRootLogin|^#PermitRootLogin'
@@ -371,6 +433,11 @@
     - patch
     - rule_5.1.21
     - ssh
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^PermitUserEnvironment|^#PermitUserEnvironment'
@@ -387,6 +454,11 @@
     - rule_5.1.22
     - ssh
     - pam
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
     regexp: '^UsePAM|^#UsePAM'

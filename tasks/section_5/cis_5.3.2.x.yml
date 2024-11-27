@@ -13,6 +13,7 @@
     - rule_5.3.2.1
     - Pam_auth_update
     - pam_unix
+    - NIST800-53R5_IA-5
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}.j2"
     dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
@@ -34,6 +35,7 @@
     - rule_5.3.2.2
     - Pam_auth_update
     - pam_faillock
+    - NIST800-53R5_NA
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ item }}.j2"
     dest: "/{{ ubtu22cis_pam_confd_dir }}{{ item }}"
@@ -59,6 +61,7 @@
     - rule_5.3.2.3
     - Pam_auth_update
     - pam_quality
+    - NIST800-53R5_NA
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwquality_file }}.j2"
     dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwquality_file }}"
@@ -79,6 +82,7 @@
     - rule_5.3.2.4
     - Pam_auth_update
     - pam_history
+    - NIST800-53R5_NA
   ansible.builtin.template:
     src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}.j2"
     dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"

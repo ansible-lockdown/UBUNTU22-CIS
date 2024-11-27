@@ -8,6 +8,9 @@
     - audit
     - journald
     - rule_6.2.1.1.1
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
   ansible.builtin.systemd:
     name: systemd-journald.service
     masked: false
@@ -21,6 +24,11 @@
     - audit
     - journald
     - rule_6.2.1.1.2
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+    - NIST800-53R5_MP-2
+    - NIST800-53R5_SI-5
   block:
     - name: "6.2.1.1.2 | PATCH | Ensure journald log file access is configured | Default file permissions"
       ansible.builtin.file:
@@ -63,6 +71,9 @@
     - patch
     - journald
     - rule_6.2.1.1.3
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
   block:
     - name: "6.2.1.1.3 | PATCH | Ensure journald log file rotation is configured | Add file"
       ansible.builtin.template:
@@ -94,6 +105,10 @@
     - patch
     - journald
     - rule_6.2.1.1.4
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-6
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
   block:
     - name: "6.2.1.1.4 | PATCH | Ensure journald ForwardToSyslog is disabled | Add file"
       ansible.builtin.template:
@@ -119,6 +134,8 @@
     - patch
     - journald
     - rule_6.2.1.1.5
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
   block:
     - name: "6.2.1.1.5 | PATCH | Ensure journald Storage is configured | Add file"
       ansible.builtin.template:
@@ -144,6 +161,7 @@
     - patch
     - journald
     - rule_6.2.1.1.6
+    - NIST800-53R5_AU-4
   block:
     - name: "6.2.1.1.6 | PATCH | Ensure journald Compress is configured | Add file"
       ansible.builtin.template:

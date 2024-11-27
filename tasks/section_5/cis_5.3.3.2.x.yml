@@ -9,6 +9,7 @@
     - patch
     - rule_5.3.3.2.1
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.1 | PATCH | Ensure password number of changed characters is configured | Remove difok from conf files except expected file"
       when:
@@ -39,6 +40,7 @@
     - patch
     - rule_5.3.3.2.2
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.2 | PATCH | Ensure minimum password length is configured | Remove minlen from conf files except expected file"
       when:
@@ -69,6 +71,7 @@
     - patch
     - rule_5.3.3.2.3
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.3 | PATCH | Ensure password complexity is configured | Remove pwd complex settings from conf files except expected file"
       when:
@@ -99,6 +102,7 @@
     - patch
     - rule_5.3.3.2.4
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.4 | PATCH | Ensure password same consecutive characters is configured | Remove maxrepeat settings from conf files except expected file"
       when:
@@ -129,6 +133,7 @@
     - patch
     - rule_5.3.3.2.5
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | Remove maxsequence settings from conf files except expected file"
       when:
@@ -159,6 +164,7 @@
     - patch
     - rule_5.3.3.2.6
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.6 | PATCH | Ensure password dictionary check is enabled | Remove dictcheck settings from conf files except expected file"
       when:
@@ -189,6 +195,7 @@
     - patch
     - rule_5.3.3.2.7
     - pam
+    - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.7 | PATCH | Ensure password quality checking is enforced | Remove quality enforcement settings from conf files except expected file"
       when:
@@ -219,6 +226,7 @@
     - patch
     - rule_5.3.3.2.8
     - pam
+    - NIST800-53R5_IA-5
   ansible.builtin.template:
     src: "{{ ubtu22cis_passwd_quality_enforce_root_file }}.j2"
     dest: "/{{ ubtu22cis_passwd_quality_enforce_root_file }}"
