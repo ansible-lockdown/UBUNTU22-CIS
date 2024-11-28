@@ -40,7 +40,7 @@
     - { regexp: 'TrustedCertificateFile=', line: 'TrustedCertificateFile={{ ubtu22cis_journal_trustedcertificatefile }}'}
   notify: Restart journald
 
-- name: "6.2.1.2.3 | PATCH | Ensure systemd-journal-remote is enabled and active"
+- name: "6.2.1.2.3 | PATCH | Ensure systemd-journal-upload is enabled and active"
   when:
     - not ubtu22cis_system_is_log_server
     - ubtu22cis_rule_6_2_1_2_3

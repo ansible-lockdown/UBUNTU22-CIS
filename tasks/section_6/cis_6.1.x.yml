@@ -53,8 +53,7 @@
             state: absent
 
         - name: "6.1.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
-          when:
-            - not ansible_check_mode
+          when: not ansible_check_mode
           ansible.builtin.shell: aideinit -y -f
           args:
             creates: "{{ ubtu22cis_aide_db_file }}"

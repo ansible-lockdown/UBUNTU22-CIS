@@ -81,7 +81,7 @@
     state: absent
     purge: "{{ ubtu22cis_purge_apt }}"
 
-- name: "2.2.6 | PATCH | Ensure ftp is not installed"
+- name: "2.2.6 | PATCH | Ensure ftp client is not installed"
   when:
     - ubtu22cis_rule_2_2_6
     - not ubtu22cis_ftp_client

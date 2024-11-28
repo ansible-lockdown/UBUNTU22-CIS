@@ -134,7 +134,7 @@
         masked: true
       notify: Systemd_daemon_reload
 
-- name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use"
+- name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use"
   when: ubtu22cis_rule_2_1_5
   tags:
     - level1-server
@@ -144,7 +144,7 @@
     - rule_2.1.5
     - NIST800-53R5_CM-7
   block:
-    - name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use | Remove package"
+    - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use | Remove package"
       when:
         - "'dnsmasq' in ansible_facts.packages"
         - not ubtu22cis_dnsmasq_server
@@ -154,7 +154,7 @@
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
 
-    - name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use | Mask service"
+    - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use | Mask service"
       when:
         - not ubtu22cis_dnsmasq_server
         - ubtu22cis_dnsmasq_mask
@@ -664,7 +664,7 @@
     state: absent
     purge: "{{ ubtu22cis_purge_apt }}"
 
-- name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode"
+- name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode"
   when:
     - not ubtu22cis_is_mail_server
     - ubtu22cis_rule_2_1_21
@@ -678,7 +678,7 @@
   vars:
     warn_control_id: '2.2.21'
   block:
-    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if exim4 installed"
+    - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if exim4 installed"
       when: "'exim4' in ansible_facts.packages"
       ansible.builtin.lineinfile:
         path: /etc/exim4/update-exim4.conf.conf
@@ -698,7 +698,7 @@
           - { regexp: '^dc_localdelivery', line: "dc_localdelivery='mail_spool'" }
         notify: Restart exim4
 
-    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if postfix is installed"
+    - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if postfix is installed"
       when: "'postfix' in ansible_facts.packages"
       notify: Restart postfix
       ansible.builtin.lineinfile:
@@ -706,7 +706,7 @@
         regexp: '^(#)?inet_interfaces'
         line: 'inet_interfaces = loopback-only'
 
-    - name: "2.1.21 | WARN | Ensure mail transfer agents are configured for local-only mode | Message out other main agents"
+    - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | Message out other main agents"
       when:
         - "'exim4' not in ansible_facts.packages"
         - "'postfix' not in ansible_facts.packages"
@@ -715,7 +715,7 @@
           - "Warning!! You are not using either exim4 or postfix, please ensure mail services set for local only mode"
           - "Please review your vendors documentation to configure local-only mode"
 
-    - name: "2.1.21 | WARN | Ensure mail transfer agents are configured for local-only mode | warn_count"
+    - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | warn_count"
       when:
         - "'exim4' not in ansible_facts.packages"
         - "'postfix' not in ansible_facts.packages"

@@ -124,7 +124,7 @@
         group: root
         mode: '0600'
 
-- name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is is configured"
+- name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured"
   when:
     - ubtu22cis_rule_5_3_3_2_5
   tags:

@@ -62,7 +62,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: "6.3.3.6 | PATCH | Ensure use of privileged commands is collected"
+- name: "6.3.3.6 | PATCH | Ensure use of privileged commands are collected"
   when: ubtu22cis_rule_6_3_3_6
   tags:
     - level2-server
@@ -82,7 +82,7 @@
       ansible.builtin.set_fact:
         update_audit_template: true
 
-- name: "6.3.3.7 | PATCH | Ensure unsuccessful unauthorized file access attempts are collected"
+- name: "6.3.3.7 | PATCH | Ensure unsuccessful file access attempts are collected"
   when: ubtu22cis_rule_6_3_3_7
   tags:
     - level2-server
@@ -237,7 +237,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: "6.3.3.19 | PATCH | Ensure kernel module loading and unloading is collected"
+- name: "6.3.3.19 | PATCH | Ensure kernel module loading unloading and modification is collected"
   when: ubtu22cis_rule_6_3_3_19
   tags:
     - level2-server

@@ -1,6 +1,6 @@
 ---
 
-- name: "1.7.1 | PATCH | Ensure GNOME Display Manager is removed"
+- name: "1.7.1 | PATCH | Ensure GDM is removed"
   when:
     - ubtu22cis_rule_1_7_1
     - not ubtu22cis_desktop_required
@@ -56,7 +56,7 @@
           - { regexp: 'banner-message-text', line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: 'banner-message-enable' }
   notify: Update dconf
 
-- name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled"
+- name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled"
   when:
     - ubtu22cis_rule_1_7_3
     - ubtu22cis_desktop_required
@@ -72,7 +72,7 @@
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
   block:
-    - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | make directories"
+    - name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled | make directories"
       ansible.builtin.file:
         path: "{{ item }}"
         owner: root

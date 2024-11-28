@@ -55,7 +55,7 @@
         enabled: true
         state: started
 
-- name: "4.1.4 | PATCH | Ensure loopback traffic is configured"
+- name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured"
   when:
     - ubtu22cis_rule_4_1_4
   tags:
@@ -66,28 +66,28 @@
     - ufw
     - NIST800-53R5_SC-7
   block:
-    - name: "4.1.4 | PATCH | Ensure loopback traffic is configured | Set allow in ufw rules"
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set allow in ufw rules"
       community.general.ufw:
         rule: allow
         direction: in
         interface: lo
       notify: Reload ufw
 
-    - name: "4.1.4 | PATCH | Ensure loopback traffic is configured | Set allow out ufw rules"
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set allow out ufw rules"
       community.general.ufw:
         rule: allow
         direction: out
         interface: lo
       notify: Reload ufw
 
-    - name: "4.1.4 | PATCH | Ensure loopback traffic is configured | Set deny ufw rules IPv4"
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set deny ufw rules IPv4"
       community.general.ufw:
         rule: deny
         direction: in
         from_ip: 127.0.0.0/8
       notify: Reload ufw
 
-    - name: "4.1.4 | PATCH | Ensure loopback traffic is configured | Set deny ufw rules IPv6"
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set deny ufw rules IPv6"
       when: ubtu22cis_ipv6_required
       community.general.ufw:
         rule: deny

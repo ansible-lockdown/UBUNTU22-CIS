@@ -1,6 +1,6 @@
 ---
 
-- name: "2.4.1.1 | PATCH | Ensure cron daemon is enabled and running"
+- name: "2.4.1.1 | PATCH | Ensure cron daemon is enabled and active"
   when: ubtu22cis_rule_2_4_1_1
   tags:
     - level1-server
@@ -119,7 +119,7 @@
     mode: '0700'
     state: directory
 
-- name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users"
+- name: "2.4.1.8 | PATCH | Ensure crontab is restricted to authorized users"
   when: ubtu22cis_rule_2_4_1_8
   tags:
     - level1-server
@@ -130,17 +130,17 @@
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
   block:
-    - name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users | Remove cron.deny"
+    - name: "2.4.1.8 | PATCH | Ensure crontab is restricted to authorized users | Remove cron.deny"
       ansible.builtin.file:
         path: /etc/cron.deny
         state: absent
 
-    - name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users | Check for cron.allow"
+    - name: "2.4.1.8 | PATCH | Ensure crontab is restricted to authorized users | Check for cron.allow"
       ansible.builtin.stat:
         path: /etc/cron.allow
       register: ubtu22cis_2_4_1_8_status
 
-    - name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users | Create cron.allow if doesn't exist"
+    - name: "2.4.1.8 | PATCH | Ensure crontab is restricted to authorized users | Create cron.allow if doesn't exist"
       when: not ubtu22cis_2_4_1_8_status.stat.exists
       ansible.builtin.file:
         path: /etc/cron.allow
@@ -149,7 +149,7 @@
         mode: 'u-x,g-wx,o-rwx'
         state: touch
 
-    - name: "2.4.1.8 | PATCH | Ensure cron is restricted to authorized users |  Update cron.allow if exists"
+    - name: "2.4.1.8 | PATCH | Ensure crontab is restricted to authorized users |  Update cron.allow if exists"
       when: ubtu22cis_2_4_1_8_status.stat.exists
       ansible.builtin.file:
         path: /etc/cron.allow
