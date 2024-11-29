@@ -34,9 +34,6 @@
     - ubtu22cis_rule_1_1_2_7_2 or
       ubtu22cis_rule_1_1_2_7_3 or
       ubtu22cis_rule_1_1_2_7_4
-    - NIST800-53R5_CM-7
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
   tags:
     - level1-server
     - level1-workstation
@@ -45,6 +42,9 @@
     - rule_1.1.2.7.2
     - rule_1.1.2.7.3
     - rule_1.1.2.7.4
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   notify: Set_reboot_required
   ansible.posix.mount:
     name: /var/log/audit

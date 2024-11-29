@@ -94,7 +94,7 @@
     - level1-server
     - level1-workstation
     - patch
-    - rule_6.2.4
+    - rule_7.2.4
     - user
     - NIST800-53R5_IA-5
   vars:

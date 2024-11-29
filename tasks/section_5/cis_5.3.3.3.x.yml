@@ -62,7 +62,7 @@
     - level1-server
     - level1-workstation
     - patch
-    - rule_5.3.3.3.2
+    - rule_5.3.3.3.3
     - pam
     - NIST800-53R5_IA-5
   block:

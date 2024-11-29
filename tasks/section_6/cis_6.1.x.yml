@@ -109,7 +109,7 @@
         - aidecheck.service
         - aidecheck.timer
 
-- name: "6.1.3 | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
+- name: "6.1.3 | PATCH | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when: ubtu22cis_rule_6_1_3
   tags:
     - level1-server

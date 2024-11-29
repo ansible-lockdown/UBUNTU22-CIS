@@ -45,9 +45,9 @@
     - level1-workstation
     - patch
     - mounts
-    - rule_1.1.2.2.1
     - rule_1.1.2.2.2
     - rule_1.1.2.2.3
+    - rule_1.1.2.2.4
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
   notify: Set_reboot_required
