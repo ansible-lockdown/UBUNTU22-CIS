@@ -84,7 +84,7 @@
     - NIST800-53R5_MP-2
   block:
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add allowed users"
-      when: "ubtu22cis_sshd['allow_users']| default('') | length > 0 "
+      when: "ubtu22cis_sshd_allow_users | default('') | length > 0 "
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers|^#AllowUsers'
@@ -93,7 +93,7 @@
       notify: Restart sshd
 
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add allowed groups"
-      when: "ubtu22cis_sshd['allow_groups']| default('') | length > 0"
+      when: "ubtu22cis_sshd_allow_groups | default('') | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^AllowGroups|^#AllowGroups'
@@ -102,7 +102,7 @@
       notify: Restart sshd
 
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add deny users"
-      when: "ubtu22cis_sshd['deny_users']| default('') | length > 0"
+      when: "ubtu22cis_sshd_deny_users | default('') | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^DenyUsers|^#DenyUsers'
@@ -111,7 +111,7 @@
       notify: Restart sshd
 
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add deny groups"
-      when: "ubtu22cis_sshd['deny_groups']| default('') | length > 0"
+      when: "ubtu22cis_sshd_deny_groups | default('') | length > 0"
       ansible.builtin.lineinfile:
         path: /etc/ssh/sshd_config
         regexp: '^DenyGroups|^#DenyGroups'
