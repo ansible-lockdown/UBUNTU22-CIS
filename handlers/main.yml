@@ -47,6 +47,11 @@
     - "'/tmp' in mount_names"
   listen: Writing and remounting tmp
 
+- name: Remount dev_shm
+  ansible.posix.mount:
+    path: /dev/shm
+    state: remounted
+
 - name: Remount var
   ansible.posix.mount:
     path: /var
