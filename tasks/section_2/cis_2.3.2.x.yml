@@ -16,14 +16,14 @@
         path: /etc/systemd/timesyncd.conf.d
         owner: root
         group: root
-        mode: '0755'
+        mode: 'go-w'
         state: directory
 
     - name: "2.3.2.1 | PATCH | Ensure systemd-timesyncd configured with authorized timeserver | sources"
       ansible.builtin.template:
         src: "{{ item }}.j2"
         dest: "/{{ item }}"
-        mode: '0644'
+        mode: 'go-wx'
         owner: root
         group: root
       loop:

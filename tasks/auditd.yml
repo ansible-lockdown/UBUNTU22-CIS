@@ -8,7 +8,7 @@
     owner: root
     group: root
     mode: '0640'
-  register: audit_rules_updated
+  register: discovered_audit_rules_updated
   notify:
     - Auditd rules reload
     - Audit_immutable_fact

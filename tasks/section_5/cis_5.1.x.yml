@@ -14,7 +14,7 @@
     path: /etc/ssh/sshd_config
     owner: root
     group: root
-    mode: '0600'
+    mode: 'go-rwx'
 
 - name: "5.1.2 | PATCH | Ensure permissions on SSH private host key files are configured"
   when: ubtu22cis_rule_5_1_2
@@ -66,7 +66,7 @@
         path: "{{ item.path }}"
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
       with_items:
         - "{{ discovered_ssh_host_pub_keys.files }}"
       loop_control:

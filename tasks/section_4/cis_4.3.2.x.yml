@@ -133,14 +133,14 @@
     warn_control_id: '4.3.2.4'
   block:
     - name: "4.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Get list of open ports"
-      ansible.builtin.shell: ss -4tuln
+      ansible.builtin.command: ss -4tuln
       changed_when: false
       failed_when: false
       check_mode: false
       register: discovered_list_open_ports
 
     - name: "4.3.2.4 | AUDIT | Ensure iptables firewall rules exist for all open ports | Get list of rules"
-      ansible.builtin.shell: iptables -L INPUT -v -n
+      ansible.builtin.command: iptables -L INPUT -v -n
       changed_when: false
       failed_when: false
       check_mode: false
@@ -176,9 +176,9 @@
 
 #       - name: "Make IPTables persistent | Save to persistent files"
 #         ansible.builtin.shell: bash -c "iptables-save > /etc/iptables/rules.v4"
-#         changed_when: ubtu22cis_iptables_save.rc == 0
-#         failed_when: ubtu22cis_iptables_save.rc > 0
-#         register: ubtu22cis_iptables_save
+#         changed_when: discovered_ip4tables_save.rc == 0
+#         failed_when: discovered_ip4tables_save.rc > 0
+#         register: discovered_ip4tables_save
 #   when:
 #       - ubtu22cis_firewall_package == "iptables"
 #       - ubtu22cis_save_iptables_cis_rules

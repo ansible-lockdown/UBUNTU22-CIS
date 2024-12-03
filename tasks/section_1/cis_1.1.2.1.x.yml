@@ -1,6 +1,6 @@
 ---
 
-- name: "1.1.2.1.1 | AUDIT | Ensure /tmp is a separate partition"
+- name: "1.1.2.1.1 | PATCH | Ensure /tmp is a separate partition"
   when:
     - required_mount not in mount_names
     - ubtu22cis_rule_1_1_2_1_1
@@ -10,70 +10,79 @@
     - audit
     - mounts
     - rule_1.1.2.1.1
-    - tmp
     - NIST800-53R5_CM-7
   vars:
     warn_control_id: '1.1.2.1.1'
     required_mount: '/tmp'
   block:
-    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is a separate partition | Absent"
+    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is a separate partition | Absent"
       ansible.builtin.debug:
         msg: "Warning!! {{ required_mount }} doesn't exist. Please investigate this manual task"
 
-    - name: "1.1.2.1.1 | WARN | Ensure /tmp is a separate partition | warn_count"
+    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is a separate partition | Present"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
-- name: "1.1.2.1.2 | PATCH | Ensure nodev option set on /tmp partition"
+# via fstab
+- name: |
+    "1.1.2.1.2 | PATCH | Ensure nodev option set on /tmp partition"
+    "1.1.2.1.3 | PATCH | Ensure nosuid option set on /tmp partition"
+    "1.1.2.1.4 | PATCH | Ensure noexec option set on /tmp partition"
+  ansible.posix.mount:
+    name: /tmp
+    src: "{{ item.device }}"
+    fstype: "{{ item.fstype }}"
+    state: present
+    opts: "{{ item.options }}{% if ('nodev' not in item.options and ubtu22cis_rule_1_1_2_1_2) %},nodev{% endif %}{% if ('nosuid' not in item.options and ubtu22cis_rule_1_1_2_1_3) %},nosuid{% endif %}{% if ('noexec' not in item.options and ubtu22cis_rule_1_1_2_1_4) %},noexec{% endif %}"
+  notify: Remount tmp
+  loop: "{{ ansible_facts.mounts }}"
+  loop_control:
+    label: "{{ item.device }}"
   when:
-    - required_mount in mount_names
-    - ubtu22cis_rule_1_1_2_1_2
+    - item.mount == "/tmp"
+    - not ubtu22cis_tmp_svc
+    - ubtu22cis_rule_1_1_2_1_2 or
+      ubtu22cis_rule_1_1_2_1_3 or
+      ubtu22cis_rule_1_1_2_1_4
   tags:
     - level1-server
     - level1-workstation
     - patch
+    - mounts
     - rule_1.1.2.1.2
-    - tmp
+    - rule_1.1.2.1.3
+    - rule_1.1.2.1.4
     - NIST800-53R5_CM-7
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
-  vars:
-    required_mount: '/tmp'
-  ansible.builtin.set_fact:
-    tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nodev' ] }}"
-  changed_when: true
-  notify: Writing and remounting tmp
 
-- name: "1.1.2.1.3 | PATCH | Ensure nosuid option set on /tmp partition"
+# via systemd
+- name: |
+    "1.1.2.1.1 | PATCH | Ensure /tmp is configured"
+    "1.1.2.1.2 | PATCH | Ensure nodev option set on /tmp partition"
+    "1.1.2.1.3 | PATCH | Ensure noexec option set on /tmp partition"
+    "1.1.2.1.4 | PATCH | Ensure nosuid option set on /tmp partition"
   when:
-    - required_mount in mount_names
-    - ubtu22cis_rule_1_1_2_1_3
+    - ubtu22cis_tmp_svc
+    - ubtu22cis_rule_1_1_2_1_1 or
+      ubtu22cis_rule_1_1_2_1_2 or
+      ubtu22cis_rule_1_1_2_1_3 or
+      ubtu22cis_rule_1_1_2_1_4
   tags:
     - level1-server
     - level1-workstation
     - patch
+    - mounts
+    - rule_1.1.2.1.1
+    - rule_1.1.2.1.2
     - rule_1.1.2.1.3
-    - tmp
-  vars:
-    required_mount: '/tmp'
-  ansible.builtin.set_fact:
-    tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'nosuid' ] }}"
-  changed_when: true
-  notify: Writing and remounting tmp
-
-- name: "1.1.2.1.4 | PATCH | Ensure noexec option set on /tmp partition"
-  when:
-    - required_mount in mount_names
-    - ubtu22cis_rule_1_1_2_1_4
-  tags:
-    - level1-server
-    - level1-workstation
-    - patch
     - rule_1.1.2.1.4
-    - tmp
-  vars:
-    required_mount: '/tmp'
-  ansible.builtin.set_fact:
-    tmp_partition_mount_options: "{{ tmp_partition_mount_options + [ 'noexec' ] }}"
-  changed_when: true
-  notify: Writing and remounting tmp
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  ansible.builtin.template:
+    src: etc/systemd/system/tmp.mount.j2
+    dest: /etc/systemd/system/tmp.mount
+    owner: root
+    group: root
+    mode: 'go-wx'
+  notify: Systemd restart tmp.mount

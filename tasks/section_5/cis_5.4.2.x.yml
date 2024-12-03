@@ -17,7 +17,7 @@
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
-  ansible.builtin.shell: passwd -l {{ item }}
+  ansible.builtin.command: passwd -l {{ item }}
   changed_when: false
   failed_when: false
   loop: "{{ prelim_uid_zero_accounts_except_root.stdout_lines }}"
@@ -41,9 +41,9 @@
   block:
     - name: "5.4.2.2 | AUDIT | Ensure root is the only GID 0 account | Get members of gid 0"
       ansible.builtin.shell: "awk -F: '($1 !~ /^(sync|shutdown|halt|operator)/ && $4==\"0\") {print $1}' /etc/passwd | grep -wv 'root'"
-      register: discovered_gid0_members
       changed_when: false
       failed_when: discovered_gid0_members.rc not in [ 0, 1 ]
+      register: discovered_gid0_members
 
     - name: "5.4.2.2 | PATCH | Ensure root is the only GID 0 account | Remove users not root from gid 0"
       when:
@@ -51,10 +51,9 @@
         - discovered_gid0_members.stdout | length > 0
       ansible.builtin.user:
         name: "{{ item }}"
-        gid: 0
+        group: root
         state: absent
-      loop:
-        - discovered_gid0_members.stdout_lines
+      loop: "{{ discovered_gid0_members.stdout_lines }}"
 
 - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group"
   when:
@@ -74,9 +73,9 @@
   block:
     - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Get groups with gid 0"
       ansible.builtin.shell: "awk -F: '$3==\"0\"{print $1}' /etc/group | grep -vw 'root'"
-      register: discovered_gid0_groups
       changed_when: false
       failed_when: discovered_gid0_groups.rc not in [ 0, 1 ]
+      register: discovered_gid0_groups
 
     - name: "5.4.2.3 | AUDIT | Ensure group root is the only GID 0 group | Warning if others gid 0 groups"
       when:
@@ -174,7 +173,7 @@
             state: directory
             owner: root
             group: root
-            mode: '0755'
+            mode: 'go-w'
             follow: false
           loop: "{{ discovered_root_path_perms.results }}"
           loop_control:
@@ -196,6 +195,9 @@
     regexp: \s*umask
     line: "umask {{ ubtu22cis_root_umask }}"
     create: true
+    owner: root
+    group: root
+    mode: 'g-wx,o-rwx'
 
 - name: "5.4.2.7 | PATCH | Ensure system accounts do not have a valid login shell"
   when:

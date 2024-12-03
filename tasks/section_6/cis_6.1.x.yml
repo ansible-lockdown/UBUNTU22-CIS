@@ -54,7 +54,7 @@
 
         - name: "6.1.1 | PATCH | Ensure AIDE is installed | Configure AIDE"
           when: not ansible_check_mode
-          ansible.builtin.shell: aideinit -y -f
+          ansible.builtin.command: aideinit -y -f
           args:
             creates: "{{ ubtu22cis_aide_db_file }}"
           async: "{{ ubtu22cis_aide_init_async }}"
@@ -93,7 +93,7 @@
         dest: "/{{ item }}"
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
       loop:
         - etc/systemd/system/aidecheck.service
         - etc/systemd/system/aidecheck.timer

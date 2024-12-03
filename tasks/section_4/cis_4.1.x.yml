@@ -135,14 +135,14 @@
     warn_control_id: '4.1.6'
   block:
     - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Get list of open ports"
-      ansible.builtin.shell: ss -4tuln
+      ansible.builtin.command: ss -4tuln
       changed_when: false
       failed_when: false
       check_mode: false
       register: discovered_list_open_listen_ports
 
     - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Get list of firewall rules"
-      ansible.builtin.shell: ufw status
+      ansible.builtin.command: ufw status
       changed_when: false
       failed_when: false
       check_mode: false

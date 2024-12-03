@@ -64,7 +64,7 @@
         create: true
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
 
     - name: "1.5.3 | PATCH | Ensure core dumps are restricted | sysctl.conf"
       ansible.builtin.lineinfile:
@@ -73,7 +73,7 @@
         line: fs.suid_dumpable=0
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
       notify: Reload systemctl
 
     - name: "1.5.3 | PATCH | Ensure core dumps are restricted | coredump.conf"
@@ -84,7 +84,7 @@
         create: true
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
       loop:
         - { regexp: '^Storage', line: 'Storage=none' }
         - { regexp: '^ProcessSizeMax', line: 'ProcessSizeMax=0' }
@@ -104,7 +104,7 @@
     - NIST800-53R5_CM-6
   block:
     - name: "1.5.4 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
-      ansible.builtin.shell: prelink -ua
+      ansible.builtin.command: prelink -ua
       changed_when: false
       failed_when: false
 
@@ -132,7 +132,7 @@
         create: true
         owner: root
         group: root
-        mode: '0644'
+        mode: 'go-wx'
 
     - name: "1.5.5 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
       when: "'apport' in ansible_facts.packages"

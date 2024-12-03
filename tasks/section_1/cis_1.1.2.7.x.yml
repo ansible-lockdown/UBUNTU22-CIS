@@ -45,7 +45,9 @@
     - NIST800-53R5_CM-7
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
-  notify: Set_reboot_required
+  notify:
+    - Remount var_log_audit
+    - Set_reboot_required
   ansible.posix.mount:
     name: /var/log/audit
     src: "{{ item.device }}"

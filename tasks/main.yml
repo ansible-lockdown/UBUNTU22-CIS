@@ -29,7 +29,7 @@
       check_mode: false
       register: prelim_ansible_user_password_set
 
-    - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"
+    - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"  # noqa name[template]
       ansible.builtin.assert:
         that: prelim_ansible_user_password_set.stdout != "!!" and prelim_ansible_user_password_set.stdout | length > 10
         fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"

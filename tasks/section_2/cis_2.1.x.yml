@@ -676,35 +676,35 @@
     - rule_2.1.21
     - NIST800-53R5_CM-7
   vars:
-    warn_control_id: '2.2.21'
+    warn_control_id: "2.2.21"
   block:
     - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if exim4 installed"
       when: "'exim4' in ansible_facts.packages"
-      ansible.builtin.lineinfile:
+      ansible.builtin.lineinfile:  # noqa: args[module]
         path: /etc/exim4/update-exim4.conf.conf
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
-        with_items:
-          - { regexp: '^dc_eximconfig_configtype', line: "dc_eximconfig_configtype='local'" }
-          - { regexp: '^dc_local_interfaces', line: "dc_local_interfaces='127.0.0.1 ; ::1'" }
-          - { regexp: '^dc_readhost', line: "dc_readhost=''" }
-          - { regexp: '^dc_relay_domains', line: "dc_relay_domains=''" }
-          - { regexp: '^dc_minimaldns', line: "dc_minimaldns='false'" }
-          - { regexp: '^dc_relay_nets', line: "dc_relay_nets=''" }
-          - { regexp: '^dc_smarthost', line: "dc_smarthost=''" }
-          - { regexp: '^dc_use_split_config', line: "dc_use_split_config='false'" }
-          - { regexp: '^dc_hide_mailname', line: "dc_hide_mailname=''" }
-          - { regexp: '^dc_mailname_in_oh', line: "dc_mailname_in_oh='true'" }
-          - { regexp: '^dc_localdelivery', line: "dc_localdelivery='mail_spool'" }
-        notify: Restart exim4
+        loop:
+          - { regexp: "^dc_eximconfig_configtype", line: "dc_eximconfig_configtype='local'" }
+          - { regexp: "^dc_local_interfaces", line: "dc_local_interfaces='127.0.0.1 ; ::1'" }
+          - { regexp: "^dc_readhost", line: "dc_readhost=''" }
+          - { regexp: "^dc_relay_domains", line: "dc_relay_domains=''" }
+          - { regexp: "^dc_minimaldns", line: "dc_minimaldns='false'" }
+          - { regexp: "^dc_relay_nets", line: "dc_relay_nets=''" }
+          - { regexp: "^dc_smarthost", line: "dc_smarthost=''" }
+          - { regexp: "^dc_use_split_config", line: "dc_use_split_config='false'" }
+          - { regexp: "^dc_hide_mailname", line: "dc_hide_mailname=''" }
+          - { regexp: "^dc_mailname_in_oh", line: "dc_mailname_in_oh='true'" }
+          - { regexp: "^dc_localdelivery", line: "dc_localdelivery='mail_spool'" }
+      notify: Restart exim4
 
     - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if postfix is installed"
       when: "'postfix' in ansible_facts.packages"
       notify: Restart postfix
       ansible.builtin.lineinfile:
         path: /etc/postfix/main.cf
-        regexp: '^(#)?inet_interfaces'
-        line: 'inet_interfaces = loopback-only'
+        regexp: ^(?#)inet_interfaces
+        line: "inet_interfaces = loopback-only"
 
     - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | Message out other main agents"
       when:
@@ -732,10 +732,10 @@
     - rule_2.1.22
     - NIST800-53R5_CM-7
   vars:
-    warn_control_id: '2.1.22'
+    warn_control_id: "2.1.22"
   block:
     - name: "2.1.22 | AUDIT | Ensure only approved services are listening on a network interface | Get list of services"
-      ansible.builtin.shell: systemctl list-units --type=service
+      ansible.builtin.command: systemctl list-units --type=service # noqa command-instead-of-module
       changed_when: false
       failed_when: discovered_list_of_services.rc not in [ 0, 1 ]
       check_mode: false

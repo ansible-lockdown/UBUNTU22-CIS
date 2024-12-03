@@ -275,5 +275,5 @@
     - rule_6.3.3.21
     - auditd
     - NIST800-53R5_AU-3
-  ansible.builtin.shell: augenrules --check
+  ansible.builtin.command: augenrules --check
   changed_when: false

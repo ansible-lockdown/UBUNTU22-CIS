@@ -16,7 +16,7 @@
     required_mount: '/dev/shm'
   block:
     - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | check for mount"
-      ansible.builtin.shell: findmnt -kn "{{ required_mount }}"
+      ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
       failed_when: discovered_shm_mount.rc not in [ 0, 1 ]
       register: discovered_shm_mount

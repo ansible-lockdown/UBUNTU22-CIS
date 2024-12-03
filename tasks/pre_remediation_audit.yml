@@ -6,7 +6,7 @@
   ansible.builtin.include_tasks:
     file: LE_audit_setup.yml
 
-- name: Pre Audit Setup | Ensure {{ audit_conf_dir }} exists
+- name: Pre Audit Setup | Ensure {{ audit_conf_dir }} exists  # noqa name[template]
   ansible.builtin.file:
     path: "{{ audit_conf_dir }}"
     mode: '0755'
@@ -44,8 +44,8 @@
   ansible.builtin.unarchive:
     src: "{{ audit_conf_source }}"
     dest: "{{ audit_conf_dest }}/{{ benchmark }}-Audit"
-    remote_src: "{{ ( audit_conf_source is contains ('http'))| ternary(true, false ) }}"
-    extra_opts: "{{ (audit_conf_source is contains ('github')) | ternary('--strip-components=1', [] ) }}"
+    remote_src: "{{ (audit_conf_source is contains ('http'))| ternary(true, false) }}"
+    extra_opts: "{{ (audit_conf_source is contains ('github')) | ternary('--strip-components=1', []) }}"
 
 - name: Pre Audit Setup | Check Goss is available
   when: run_audit
@@ -53,10 +53,10 @@
     - name: Pre Audit Setup | Check for goss file
       ansible.builtin.stat:
         path: "{{ audit_bin }}"
-      register: goss_available
+      register: prelim_goss_available
 
     - name: Pre Audit Setup | If audit ensure goss is available
-      when: not goss_available.stat.exists
+      when: not prelim_goss_available.stat.exists
       ansible.builtin.assert:
         msg: "Audit has been selected: unable to find goss binary at {{ audit_bin }}"
 
@@ -70,8 +70,8 @@
     dest: "{{ audit_vars_path }}"
     mode: '0600'
 
-- name: Pre Audit | Run pre_remediation {{ benchmark }} audit
-  ansible.builtin.shell: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
+- name: Pre Audit | Run pre_remediation {{ benchmark }} audit  # noqa name[template]
+  ansible.builtin.command: "{{ audit_conf_dir }}/run_audit.sh -v {{ audit_vars_path }} -f {{ audit_format }} -o {{ pre_audit_outfile }} -g \"{{ group_names }}\""
   changed_when: true
   environment:
     AUDIT_BIN: "{{ audit_bin }}"

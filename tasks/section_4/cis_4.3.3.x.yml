@@ -125,14 +125,14 @@
     warn_control_id: '4.3.3.4'
   block:
     - name: "4.3.3.4 | AUDIT | Ensure ip6tables firewall rules exist for all open ports | Get list of open ports"
-      ansible.builtin.shell: ss -6tuln
+      ansible.builtin.command: ss -6tuln
       changed_when: false
       failed_when: false
       check_mode: false
       register: discovered_list_ip6tables_open_ports
 
     - name: "4.3.3.4 | AUDIT | Ensure ip6tables firewall rules exist for all open ports | Get list of rules"
-      ansible.builtin.shell: ip6tables -L INPUT -v -n
+      ansible.builtin.command: ip6tables -L INPUT -v -n
       changed_when: false
       failed_when: false
       check_mode: false
@@ -170,9 +170,9 @@
 
 #       - name: "Make IP6Tables persistent | Save to persistent files"
 #         ansible.builtin.shell: bash -c "ip6tables-save > /etc/iptables/rules.v6"
-#         changed_when: ubtu22cis_ip6tables_save.rc == 0
-#         failed_when: ubtu22cis_ip6tables_save.rc > 0
-#         register: ubtu22cis_ip6tables_save
+#         changed_when: discovered_ip6tables_save.rc == 0
+#         failed_when: discovered_ip6tables_save.rc > 0
+#         register: discovered_ip6tables_save
 #   when:
 #       - ubtu22cis_firewall_package == "iptables"
 #       - ubtu22cis_ipv6_required

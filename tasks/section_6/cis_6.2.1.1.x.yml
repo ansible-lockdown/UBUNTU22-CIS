@@ -33,7 +33,7 @@
     - name: "6.2.1.1.2 | PATCH | Ensure journald log file access is configured | Default file permissions"
       ansible.builtin.file:
         path: /usr/lib/tmpfiles.d/systemd.conf
-        mode: '0640'
+        mode: 'g-wx,o-rwx'
 
     - name: "6.2.1.1.2 | AUDIT | Ensure journald log file access is configured | Check for override file"
       ansible.builtin.stat:
@@ -81,7 +81,7 @@
         dest: /etc/systemd/journald.conf.d/rotation.conf
         owner: root
         group: root
-        mode: '0640'
+        mode: 'g-wx,o-rwx'
       notify: Restart journald
 
     - name: "6.2.1.1.3 | PATCH | Ensure journald log file rotation is configured | comment out current entries"
@@ -116,7 +116,7 @@
         dest: /etc/systemd/journald.conf.d/forwardtosyslog.conf
         owner: root
         group: root
-        mode: '0640'
+        mode: 'g-wx,o-rwx'
       notify: Restart journald
 
     - name: "6.2.1.1.4 | PATCH | Ensure journald ForwardToSyslog is disabled | comment out current entries"
@@ -143,7 +143,7 @@
         dest: /etc/systemd/journald.conf.d/storage.conf
         owner: root
         group: root
-        mode: '0640'
+        mode: 'g-wx,o-rwx'
       notify: Restart journald
 
     - name: "6.2.1.1.5 | PATCH | Ensure journald Storage is configured | comment out current entries"
@@ -169,7 +169,7 @@
         dest: /etc/systemd/journald.conf.d/storage.conf
         owner: root
         group: root
-        mode: '0640'
+        mode: 'g-wx,o-rwx'
       notify: Restart journald
 
     - name: "6.2.1.1.6 | PATCH | Ensure journald Compress is configured | comment out current entries"

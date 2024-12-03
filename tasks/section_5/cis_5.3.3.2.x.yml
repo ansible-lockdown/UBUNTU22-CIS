@@ -29,7 +29,7 @@
         dest: "/{{ ubtu22cis_passwd_difok_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.2 | PATCH | Ensure minimum password length is configured"
   when:
@@ -60,7 +60,7 @@
         dest: "/{{ ubtu22cis_passwd_minlen_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.3 | PATCH | Ensure password complexity is configured"
   when:
@@ -91,7 +91,7 @@
         dest: "/{{ ubtu22cis_passwd_complex_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.4 | PATCH | Ensure password same consecutive characters is configured"
   when:
@@ -122,7 +122,7 @@
         dest: "/{{ ubtu22cis_passwd_maxrepeat_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured"
   when:
@@ -153,7 +153,7 @@
         dest: "/{{ ubtu22cis_passwd_maxsequence_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.6 | PATCH | Ensure password dictionary check is enabled"
   when:
@@ -184,7 +184,7 @@
         dest: "/{{ ubtu22cis_passwd_dictcheck_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.7 | PATCH | Ensure password quality checking is enforced"
   when:
@@ -215,7 +215,7 @@
         dest: "/{{ ubtu22cis_passwd_quality_enforce_file }}"
         owner: root
         group: root
-        mode: '0600'
+        mode: 'go-rwx'
 
 - name: "5.3.3.2.8 | PATCH | Ensure password quality is enforced for the root user"
   when:
@@ -232,4 +232,4 @@
     dest: "/{{ ubtu22cis_passwd_quality_enforce_root_file }}"
     owner: root
     group: root
-    mode: '0600'
+    mode: 'go-rwx'

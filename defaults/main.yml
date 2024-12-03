@@ -613,13 +613,11 @@ ubtu22cis_purge_apt: false
 ## Section 1 Control Variables
 ##
 
-## tmp mount type
-# This variable determines, to which mount type
-# the tmp mount type will be set, if it cannot be
-# correctly discovered. will force the tmp_mnt type
-# if not correctly discovered.
-# Possible values are `tmp_systemd` or `fstab`-
-expected_tmp_mnt: fstab
+## Control 1.1.2
+# If set to `true`, rule will be implemented using the `tmp.mount` systemd-service,
+# otherwise fstab configuration will be used.
+# These /tmp settings will include nosuid,nodev,noexec to conform to CIS standards.
+ubtu22cis_tmp_svc: false
 
 ## Controls 1.3.1.x - apparmor
 # AppArmor security policies define what system resources applications can access and their privileges.
@@ -674,7 +672,7 @@ ubtu22cis_disable_dynamic_motd: true
 # This variable specifies the GNOME configuration database file to which configurations are written.
 # (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en)
 # The default database is `local`.
-ubtu22cis_dconf_db_name: "{{ prelim_dconf_db_user|default('local') }}"
+ubtu22cis_dconf_db_name: "{{ prelim_dconf_db_user | default('local') }}"
 # This variable governs the number of seconds of inactivity before the screen goes blank.
 ubtu22cis_screensaver_idle_delay: 900
 # This variable governs the number of seconds the screen remains blank before it is locked.
@@ -815,32 +813,32 @@ ubtu22cis_sshd_default_kex_algorithms:
 # - `INFO`: logs informational messages in addition to errors;
 # - `VERBOSE`: logs a higher level of detail, including login attempts and key exchanges;
 # - `DEBUG`: generates very detailed debugging information including sensitive information.
-ubtu22cis_sshd_log_level: "{{ubtu22cis_sshd_default_log_level}}"
+ubtu22cis_sshd_log_level: "{{ ubtu22cis_sshd_default_log_level }}"
 # This variable specifies the maximum number of authentication attempts that are
 # allowed for a single SSH session.
-ubtu22cis_sshd_max_auth_tries: "{{ubtu22cis_sshd_default_max_auth_tries}}"
+ubtu22cis_sshd_max_auth_tries: "{{ ubtu22cis_sshd_default_max_auth_tries }}"
 # This variable specifies the encryption algorithms that can be used for securing
 # data transmission.
-ubtu22cis_sshd_ciphers: "{{ubtu22cis_sshd_default_ciphers}}"
+ubtu22cis_sshd_ciphers: "{{ ubtu22cis_sshd_default_ciphers }}"
 # This variable specifies a list of message authentication code algorithms (MACs) that are allowed for verifying
 # the integrity of data exchanged.
-ubtu22cis_sshd_macs: "{{ubtu22cis_sshd_default_macs}}"
+ubtu22cis_sshd_macs: "{{ ubtu22cis_sshd_default_macs }}"
 # This variable is used to state the key exchange algorithms used to establish secure encryption
 # keys during the initial connection setup.
-ubtu22cis_sshd_kex_algorithms: "{{ubtu22cis_sshd_default_kex_algorithms}}"
+ubtu22cis_sshd_kex_algorithms: "{{ ubtu22cis_sshd_default_kex_algorithms }}"
 # This variable sets the time interval in seconds between sending "keep-alive"
 # messages from the server to the client. These types of messages are intended to
 # keep the connection alive and prevent it being terminated due to inactivity.
-ubtu22cis_sshd_client_alive_interval: "{{ubtu22cis_sshd_default_client_alive_interval}}"
+ubtu22cis_sshd_client_alive_interval: "{{ ubtu22cis_sshd_default_client_alive_interval }}"
 # This variable sets the maximum number of unresponsive "keep-alive" messages
 # that can be sent from the server to the client before the connection is considered
 # inactive and thus, closed.
-ubtu22cis_sshd_client_alive_count_max: "{{ubtu22cis_sshd_default_client_alive_count_max}}"
+ubtu22cis_sshd_client_alive_count_max: "{{ ubtu22cis_sshd_default_client_alive_count_max }}"
 # This variable specifies the amount of seconds allowed for successful authentication to
 # the SSH server.
-ubtu22cis_sshd_login_grace_time: "{{ubtu22cis_sshd_default_login_grace_time}}"
+ubtu22cis_sshd_login_grace_time: "{{ ubtu22cis_sshd_default_login_grace_time }}"
 # This variables is used to set the maximum number of open sessions per connection.
-ubtu22cis_sshd_max_sessions: "{{ubtu22cis_sshd_default_max_sessions}}"
+ubtu22cis_sshd_max_sessions: "{{ ubtu22cis_sshd_default_max_sessions }}"
 # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
 # access for users whose user name matches one of the patterns. This is done
 # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
