@@ -29,6 +29,25 @@
   ansible.builtin.set_fact:
     mount_names: "{{ ansible_facts.mounts | map(attribute='mount') | list }}"
 
+- name: PRELIM | AUDIT | Section 1.1 | Retrieve mount options
+  tags: always
+  block:
+    - name: PRELIM | AUDIT | Section 1.1 | Retrieve mount options - call mount  # noqa command-instead-of-module
+      ansible.builtin.shell: |
+        mount | awk '{print $1, $3, $5, $6}'
+      changed_when: false
+      register: mount_output
+
+    - name: PRELIM | AUDIT | Section 1.1 | Retrieve mount options - build fact
+      ansible.builtin.set_fact:
+        mount_point_fs_and_options: >-
+          {%- set mount_point_fs_and_options = {} -%}
+          {%- for line in mount_output.stdout_lines -%}
+          {%- set fields = line.split() -%}
+          {%- set _ = mount_point_fs_and_options.update({fields[1]: {'src': fields[0], 'fs_type': fields[2], 'original_options': fields[3][1:-1].split(','), 'options': fields[3][1:-1].split(',')}}) -%}
+          {%- endfor -%}
+          {{ mount_point_fs_and_options }}
+
 - name: Include audit specific variables
   when:
     - run_audit or audit_only
@@ -198,7 +217,7 @@
   check_mode: false
   register: prelim_uid_zero_accounts_except_root
 
-- name: PRELIM | PATCH | create journald conf.d directory
+- name: PRELIM | PATCH | Create journald conf.d directory
   when:
     - ubtu22cis_rule_6_2_1_1_3 or
       ubtu22cis_rule_6_2_1_1_5 or

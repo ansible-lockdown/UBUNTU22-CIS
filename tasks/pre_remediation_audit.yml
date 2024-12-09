@@ -44,8 +44,8 @@
   ansible.builtin.unarchive:
     src: "{{ audit_conf_source }}"
     dest: "{{ audit_conf_dest }}/{{ benchmark }}-Audit"
-    remote_src: "{{ (audit_conf_source is contains ('http'))| ternary(true, false) }}"
-    extra_opts: "{{ (audit_conf_source is contains ('github')) | ternary('--strip-components=1', []) }}"
+    remote_src: "{{ (audit_conf_source is contains('http')) | ternary(true, false) }}"
+    extra_opts: "{{ (audit_conf_source is contains('github')) | ternary('--strip-components=1', []) }}"
 
 - name: Pre Audit Setup | Check Goss is available
   when: run_audit

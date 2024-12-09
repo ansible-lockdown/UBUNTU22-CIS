@@ -17,7 +17,7 @@ rules:
   comments:
     ignore-shebangs: true
     min-spaces-from-content: 1 # prettier compatibility
-  comments-indentation: enable
+  comments-indentation: false
   empty-lines:
     max: 1
   indentation:

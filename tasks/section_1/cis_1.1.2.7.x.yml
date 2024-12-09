@@ -1,12 +1,12 @@
 ---
 
-- name: "1.1.2.7.1 | AUDIT | Ensure separate partition exists for /var/log/audit"
+- name: "1/.1 | PATCH | Ensure /var/log/audit is a separate partition"
   when:
     - ubtu22cis_rule_1_1_2_7_1
     - required_mount not in mount_names
   tags:
-    - level2-server
-    - level2-workstation
+    - level1-server
+    - level1-workstation
     - audit
     - mounts
     - rule_1.1.2.7.1
@@ -15,45 +15,81 @@
     warn_control_id: '1.1.2.7.1'
     required_mount: '/var/log/audit'
   block:
-    - name: "1.1.2.7.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Warn if partition is absent"
-      ansible.builtin.debug:
-        msg: "Warning!! {{ required_mount }} doesn't exist. Please investigate this manual task"
+    - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | check for mount"
+      ansible.builtin.command: findmnt -kn "{{ required_mount }}"
+      changed_when: false
+      failed_when: discovered_var_log_audit_mount.rc not in [ 0, 1 ]
+      register: discovered_var_log_audit_mount
 
-    - name: "1.1.2.7.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Present"
+    - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | Absent"
+      when: discovered_var_log_audit_mount is undefined
+      ansible.builtin.debug:
+        msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
+
+    - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | Present"
+      when: discovered_var_log_audit_mount is undefined
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
-# skips if mount is absent
-- name: |
-    "1.1.2.7.2 | PATCH | Ensure nodev option set on /var/log/audit partition"
-    "1.1.2.7.3 | PATCH | Ensure nosuid option set on /var/log/audit partition"
-    "1.1.2.7.4 | PATCH | Ensure noexec option set on /var/log/audit partition"
+- name: "1.1.2.7.2 | PATCH | Ensure nodev option set on /var/log/audit partition"
   when:
-    - "'/var/log/audit' in mount_names"
-    - item.mount == "/var/log/audit"
-    - ubtu22cis_rule_1_1_2_7_2 or
-      ubtu22cis_rule_1_1_2_7_3 or
-      ubtu22cis_rule_1_1_2_7_4
+    - mount_point_fs_and_options[mount_point] is defined
+    - ubtu22cis_rule_1_1_2_7_2
   tags:
     - level1-server
     - level1-workstation
     - patch
     - mounts
     - rule_1.1.2.7.2
-    - rule_1.1.2.7.3
-    - rule_1.1.2.7.4
-    - NIST800-53R5_CM-7
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
-  notify:
-    - Remount var_log_audit
-    - Set_reboot_required
-  ansible.posix.mount:
-    name: /var/log/audit
-    src: "{{ item.device }}"
-    fstype: "{{ item.fstype }}"
-    state: present
-    opts: "{{ item.options }}{% if ('nodev' not in item.options and ubtu22cis_rule_1_1_2_7_2) %},nodev{% endif %}{% if ('nosuid' not in item.options and ubtu22cis_rule_1_1_2_7_3) %},nosuid{% endif %}{% if ('noexec' not in item.options and ubtu22cis_rule_1_1_2_7_4) %},noexec{% endif %}"
-  loop: "{{ ansible_facts.mounts }}"
-  loop_control:
-    label: "{{ item.device }}"
+  vars:
+    mount_point: "/var/log/audit"
+    required_option: nodev
+  notify: &mount_option_notify
+    - "Remount {{ mount_point }}"
+  ansible.builtin.set_fact: &mount_option_set_fact
+    mount_point_fs_and_options: |
+      {{ mount_point_fs_and_options | combine({mount_point: {'options': (mount_point_fs_and_options[mount_point]['options'] + [required_option])}}, recursive=True) }}
+  changed_when: &mount_option_changed_when
+    - required_option not in mount_point_fs_and_options[mount_point]['original_options']
+
+- name: "1.1.2.7.3 | PATCH | Ensure nosuid option set on /var/log/audit partition"
+  when:
+    - mount_point_fs_and_options[mount_point] is defined
+    - ubtu22cis_rule_1_1_2_7_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - mounts
+    - rule_1.1.2.7.3
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  vars:
+    mount_point: "/var/log/audit"
+    required_option: nosuid
+  notify: *mount_option_notify
+  ansible.builtin.set_fact:
+    <<: *mount_option_set_fact
+  changed_when: *mount_option_changed_when
+
+- name: "1.1.2.7.4 | PATCH | Ensure noexec option set on /var/log/audit partition"
+  when:
+    - mount_point_fs_and_options[mount_point] is defined
+    - ubtu22cis_rule_1_1_2_7_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - mounts
+    - rule_1.1.2.7.4
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
+  vars:
+    mount_point: "/var/log/audit"
+    required_option: noexec
+  notify: *mount_option_notify
+  ansible.builtin.set_fact:
+    <<: *mount_option_set_fact
+  changed_when: *mount_option_changed_when

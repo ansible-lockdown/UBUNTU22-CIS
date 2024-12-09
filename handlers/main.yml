@@ -1,87 +1,152 @@
 ---
 
-- name: Writing the tmp file | tmp_systemd
-  when:
-    - "'/tmp' in mount_names"
-    - item.mount == "/tmp"
-    - tmp_mnt_type == 'tmp_systemd'
-  ansible.builtin.template:
-    src: etc/systemd/system/tmp.mount.j2
-    dest: /etc/systemd/system/tmp.mount
-    owner: root
-    group: root
-    mode: 'go-wx'
-  with_items:
-    - "{{ ansible_facts.mounts }}"
-  loop_control:
-    label: "{{ item.device }}"
-  listen: Writing and remounting tmp
-
-- name: Writing the tmp file | fstab
-  when:
-    - "'/tmp' in mount_names"
-    - tmp_mnt_type == 'fstab'
-    - item.mount == "/tmp"
+- name: "Adding options for /tmp"
+  when: not ubtu22cis_tmp_svc
+  vars:
+    mount_point: '/tmp'
   ansible.posix.mount:
-    path: /tmp
-    src: "{{ item.device }}"
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ item.fstype }}"
-    opts: defaults,{{ tmp_partition_mount_options | unique | join(',') }}
-  with_items:
-    - "{{ ansible_facts.mounts }}"
-  loop_control:
-    label: "{{ item.device }}"
-  listen: Writing and remounting tmp
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /tmp"
+
+- name: "Remounting /tmp"
+  vars:
+    mount_point: '/tmp'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /tmp"
+
+- name: "Remounting /tmp systemd"
+  vars:
+    mount_point: '/tmp'
+  ansible.builtin.systemd:
+    name: tmp.mount
+    state: restarted
+    daemon_reload: true
+  listen: "Remount /tmp"
+
+- name: "Adding options for /dev/shm"
+  vars:
+    mount_point: '/dev/shm'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /dev/shm"
+
+- name: "Remounting /dev/shm"
+  vars:
+    mount_point: '/dev/shm'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /dev/shm"
+
+- name: "Adding options for /home"
+  vars:
+    mount_point: '/home'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /home"
+
+- name: "Remounting /home"
+  vars:
+    mount_point: '/home'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /home"
+
+- name: "Adding options for /var"
+  vars:
+    mount_point: '/var'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var"
+
+- name: "Remounting /var"
+  vars:
+    mount_point: '/var'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var"
+
+- name: "Adding options for /var/tmp"
+  vars:
+    mount_point: '/var/tmp'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var/tmp"
+
+- name: "Remounting /var/tmp"
+  vars:
+    mount_point: '/var/tmp'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var/tmp"
+
+- name: "Adding options for /var/log"
+  vars:
+    mount_point: '/var/log'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var/log"
+
+- name: "Remounting /var/log"
+  vars:
+    mount_point: '/var/log'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var/log"
+
+- name: "Adding options for /var/log/audit"
+  vars:
+    mount_point: '/var/log/audit'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var/log/audit"
+
+- name: "Remounting /var/log/audit"
+  vars:
+    mount_point: '/var/log/audit'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var/log/audit"
 
 - name: Update_Initramfs
   ansible.builtin.command: update-initramfs -u
   changed_when: true
   notify: Set_reboot_required
-
-- name: Remount tmp
-  ansible.posix.mount:
-    path: /tmp
-    state: remounted
-  when:
-    - "'/tmp' in mount_names"
-  listen: Writing and remounting tmp
-
-- name: Remount dev_shm
-  ansible.posix.mount:
-    path: /dev/shm
-    state: remounted
-
-- name: Remount var
-  ansible.posix.mount:
-    path: /var
-    state: remounted
-
-- name: Remount var_tmp
-  ansible.posix.mount:
-    path: /var/tmp
-    state: remounted
-
-- name: Remount var_log
-  ansible.posix.mount:
-    path: /var/log
-    state: remounted
-
-- name: Remount var_log_audit
-  ansible.posix.mount:
-    path: /var/log/audit
-    state: remounted
-
-- name: Remount home
-  ansible.posix.mount:
-    path: /home
-    state: remounted
-
-- name: Remount dev_shm
-  ansible.posix.mount:
-    path: /dev/shm
-    src: /dev/shm
-    state: remounted
 
 - name: Grub update
   ansible.builtin.command: update-grub
