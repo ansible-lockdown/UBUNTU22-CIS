@@ -613,6 +613,9 @@ ubtu22cis_purge_apt: false
 ## Section 1 Control Variables
 ##
 
+## Ability to enabe debug on mounts to assist in troubleshooting
+ubtu22cis_debug_mount_data: false
+
 ## Control 1.1.2
 # If set to `true`, rule will be implemented using the `tmp.mount` systemd-service,
 # otherwise fstab configuration will be used.

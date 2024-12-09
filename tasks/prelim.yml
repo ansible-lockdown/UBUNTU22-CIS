@@ -48,6 +48,11 @@
           {%- endfor -%}
           {{ mount_point_fs_and_options }}
 
+    - name: "PRELIM | AUDIT | Debug of mount variables to assist in troubleshooting"
+      when: ubtu22cis_debug_mount_data
+      ansible.builtin.debug:
+        msg: "{{ mount_point_fs_and_options }}"
+
 - name: Include audit specific variables
   when:
     - run_audit or audit_only
