@@ -986,7 +986,7 @@ ubtu22cis_passwd_quality_enforce_file: etc/security/pwquality.conf.d/50-pwqualit
 ubtu22cis_passwd_quality_enforce_value: 1
 
 # 5.3.3.2.8 - password quality enforce for root included with 5.3.3.2.7
-# enforce_for_root: This ensures that the password policies are adhered to even if it’s the root user configuring the passwords.
+# enforce_for_root: This ensures that the password policies are adhered to even if its the root user configuring the passwords.
 ubtu22cis_passwd_quality_enforce_root_file: etc/security/pwquality.conf.d/50-pwroot.conf  # pragma: allowlist secret
 ubtu22cis_passwd_quality_enforce_root_value: enforce_for_root  # pragma: allowlist secret
 
