@@ -1,13 +1,11 @@
 ---
-
 extends: default
-locale: en_US.UTF-8
 ignore: |
-  tests/
-  molecule/
-  .github/
-  .gitlab-ci.yml
-  *molecule.yml
+    tests/
+    molecule/
+    .github/
+    .gitlab-ci.yml
+    *molecule.yml
 rules:
   braces:
     max-spaces-inside: 1
@@ -17,7 +15,7 @@ rules:
     level: error
   comments:
     ignore-shebangs: true
-    min-spaces-from-content: 1  # prettier compatibility
+    min-spaces-from-content: 1 # prettier compatibility
   comments-indentation: enable
   empty-lines:
     max: 1
