@@ -36,22 +36,22 @@
       ansible.builtin.shell: |
         mount | awk '{print $1, $3, $5, $6}'
       changed_when: false
-      register: mount_output
+      register: prelim_mount_output
 
     - name: PRELIM | AUDIT | Section 1.1 | Retrieve mount options - build fact
       ansible.builtin.set_fact:
-        mount_point_fs_and_options: >-
-          {%- set mount_point_fs_and_options = {} -%}
-          {%- for line in mount_output.stdout_lines -%}
+        prelim_mount_point_fs_and_options: >-
+          {%- set prelim_mount_point_fs_and_options = {} -%}
+          {%- for line in prelim_mount_output.stdout_lines -%}
           {%- set fields = line.split() -%}
-          {%- set _ = mount_point_fs_and_options.update({fields[1]: {'src': fields[0], 'fs_type': fields[2], 'original_options': fields[3][1:-1].split(','), 'options': fields[3][1:-1].split(',')}}) -%}
+          {%- set _ = prelim_mount_point_fs_and_options.update({fields[1]: {'src': fields[0], 'fs_type': fields[2], 'original_options': fields[3][1:-1].split(','), 'options': fields[3][1:-1].split(',')}}) -%}
           {%- endfor -%}
-          {{ mount_point_fs_and_options }}
+          {{ prelim_mount_point_fs_and_options }}
 
     - name: "PRELIM | AUDIT | Debug of mount variables to assist in troubleshooting"
       when: ubtu22cis_debug_mount_data
       ansible.builtin.debug:
-        msg: "{{ mount_point_fs_and_options }}"
+        msg: "{{ prelim_mount_point_fs_and_options }}"
 
 - name: Include audit specific variables
   when:

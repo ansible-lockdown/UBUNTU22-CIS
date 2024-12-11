@@ -32,7 +32,7 @@
 
 - name: "1.1.2.3.2 | PATCH | Ensure nodev option set on /home partition"
   when:
-    - mount_point_fs_and_options[mount_point] is defined
+    - prelim_mount_point_fs_and_options[mount_point] is defined
     - ubtu22cis_rule_1_1_2_3_2
   tags:
     - level1-server
@@ -48,14 +48,14 @@
   notify: &mount_option_notify
     - "Remount {{ mount_point }}"
   ansible.builtin.set_fact: &mount_option_set_fact
-    mount_point_fs_and_options: |
-      {{ mount_point_fs_and_options | combine({mount_point: {'options': (mount_point_fs_and_options[mount_point]['options'] + [required_option])}}, recursive=True) }}
+    prelim_mount_point_fs_and_options: |
+      {{ prelim_mount_point_fs_and_options | combine({mount_point: {'options': (prelim_mount_point_fs_and_options[mount_point]['options'] + [required_option])}}, recursive=True) }}
   changed_when: &mount_option_changed_when
-    - required_option not in mount_point_fs_and_options[mount_point]['original_options']
+    - required_option not in prelim_mount_point_fs_and_options[mount_point]['original_options']
 
 - name: "1.1.2.3.3 | PATCH | Ensure nosuid option set on /home partition"
   when:
-    - mount_point_fs_and_options[mount_point] is defined
+    - prelim_mount_point_fs_and_options[mount_point] is defined
     - ubtu22cis_rule_1_1_2_3_3
   tags:
     - level1-server

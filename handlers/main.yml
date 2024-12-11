@@ -6,10 +6,10 @@
     mount_point: '/tmp'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp"
@@ -34,10 +34,10 @@
     mount_point: '/dev/shm'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /dev/shm"
 
 - name: "Remounting /dev/shm"
@@ -53,10 +53,10 @@
     mount_point: '/home'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /home"
 
 - name: "Remounting /home"
@@ -72,10 +72,10 @@
     mount_point: '/var'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /var"
 
 - name: "Remounting /var"
@@ -91,10 +91,10 @@
     mount_point: '/var/tmp'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /var/tmp"
 
 - name: "Remounting /var/tmp"
@@ -110,10 +110,10 @@
     mount_point: '/var/log'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /var/log"
 
 - name: "Remounting /var/log"
@@ -129,10 +129,10 @@
     mount_point: '/var/log/audit'
   ansible.posix.mount:
     path: "{{ mount_point }}"
-    src: "{{ mount_point_fs_and_options[mount_point]['src'] }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
     state: present
-    fstype: "{{ mount_point_fs_and_options[mount_point]['fs_type'] }}"
-    opts: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
   listen: "Remount /var/log/audit"
 
 - name: "Remounting /var/log/audit"
