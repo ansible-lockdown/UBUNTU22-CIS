@@ -1,6 +1,6 @@
 ---
 
-- name: Audit_Only | Create local Directories for hosts
+- name: Audit_only | Create local Directories for hosts
   when: fetch_audit_files
   delegate_to: localhost
   become: false
