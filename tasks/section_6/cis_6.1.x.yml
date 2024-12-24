@@ -22,7 +22,7 @@
         update_cache: true
       register: discovered_aide_pkg_added
 
-    - name: "6.1.1 | PATCH | Ensure AIDE is installed | Recapture packages"
+    - name: "6.1.1 | AUDIT | Ensure AIDE is installed | Recapture packages"
       when: discovered_aide_pkg_added.skipped is not defined
       ansible.builtin.package_facts:
         manager: auto

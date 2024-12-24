@@ -46,13 +46,13 @@
   vars:
     mount_point: "/var/log/audit"
     required_option: nodev
-  notify: &mount_option_notify
-    - "Remount {{ mount_point }}"
   ansible.builtin.set_fact: &mount_option_set_fact
     prelim_mount_point_fs_and_options: |
       {{ prelim_mount_point_fs_and_options | combine({mount_point: {'options': (prelim_mount_point_fs_and_options[mount_point]['options'] + [required_option])}}, recursive=True) }}
   changed_when: &mount_option_changed_when
     - required_option not in prelim_mount_point_fs_and_options[mount_point]['original_options']
+  notify: &mount_option_notify
+    - "Remount {{ mount_point }}"
 
 - name: "1.1.2.7.3 | PATCH | Ensure nosuid option set on /var/log/audit partition"
   when:
@@ -69,10 +69,10 @@
   vars:
     mount_point: "/var/log/audit"
     required_option: nosuid
-  notify: *mount_option_notify
   ansible.builtin.set_fact:
     <<: *mount_option_set_fact
   changed_when: *mount_option_changed_when
+  notify: *mount_option_notify
 
 - name: "1.1.2.7.4 | PATCH | Ensure noexec option set on /var/log/audit partition"
   when:
@@ -89,7 +89,7 @@
   vars:
     mount_point: "/var/log/audit"
     required_option: noexec
-  notify: *mount_option_notify
   ansible.builtin.set_fact:
     <<: *mount_option_set_fact
   changed_when: *mount_option_changed_when
+  notify: *mount_option_notify

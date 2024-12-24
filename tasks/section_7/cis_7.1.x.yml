@@ -31,8 +31,8 @@
     owner: root
     group: root
     mode: 'u-x,go-wx'
-  failed_when: discovered_file_exists.state not in '[ file, absent ]'
-  register: discovered_file_exists
+  failed_when: discovered_password_hyphen_file_exists.state not in '[ file, absent ]'
+  register: discovered_password_hyphen_file_exists
 
 - name: "7.1.3 | PATCH | Ensure permissions on /etc/group are configured"
   when: ubtu22cis_rule_7_1_3
@@ -65,8 +65,8 @@
     owner: root
     group: root
     mode: 'u-x,go-wx'
-  failed_when: discovered_file_exists.state not in '[ file, absent ]'
-  register: discovered_file_exists
+  failed_when: discovered_group_hyphen_file_exists.state not in '[ file, absent ]'
+  register: discovered_group_hyphen_file_exists
 
 - name: "7.1.5 | PATCH | Ensure permissions on /etc/shadow are configured"
   when: ubtu22cis_rule_7_1_5
@@ -99,8 +99,8 @@
     owner: root
     group: root
     mode: 'u-x,g-wx,o-rwx'
-  failed_when: discovered_file_exists.state not in '[ file, absent ]'
-  register: discovered_file_exists
+  failed_when: discovered_shadows_hyphen_file_exists.state not in '[ file, absent ]'
+  register: discovered_shadows_hyphen_file_exists
 
 - name: "7.1.7 | PATCH | Ensure permissions on /etc/gshadow are configured"
   when: ubtu22cis_rule_7_1_7
@@ -133,8 +133,8 @@
     owner: root
     group: root
     mode: 'u-x,g-wx,o-rwx'
-  failed_when: discovered_file_exists.state not in '[ file, absent ]'
-  register: discovered_file_exists
+  failed_when: discovered_gshadow_hyphen_file_exists.state not in '[ file, absent ]'
+  register: discovered_gshadow_hyphen_file_exists
 
 - name: "7.1.9 | PATCH | Ensure permissions on /etc/shells are configured"
   when: ubtu22cis_rule_7_1_9
@@ -167,8 +167,8 @@
     owner: root
     group: root
     mode: 'u-x,go-rwx'
-  failed_when: discovered_file_exists.state not in '[ file, absent ]'
-  register: discovered_file_exists
+  failed_when: discovered_opasswd_file_exists.state not in '[ file, absent ]'
+  register: discovered_opasswd_file_exists
   loop:
     - /etc/security/opasswd
     - /etc/security/opasswd.old
