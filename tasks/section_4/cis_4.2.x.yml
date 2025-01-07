@@ -1,0 +1,247 @@
+---
+
+# ---------------
+# ---------------
+# NFTables is unsupported with this role. However I have the actions commented out as a guide
+# ---------------
+# ---------------
+- name: "4.2.1 | AUDIT | Ensure nftables is installed"
+  when:
+    - ubtu22cis_rule_4_2_1
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.1
+    - nftables
+    - NIST800-53R5_CA-9
+  vars:
+    warn_control_id: '4.2.1'
+  block:
+    - name: "4.2.1 | AUDIT | Ensure nftables is installed | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+
+    - name: "4.2.1 | AUDIT | Ensure nftables is installed | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.2 | AUDIT | Ensure ufw is uninstalled or disabled with nftables"
+  when:
+    - ubtu22cis_rule_4_2_2
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.2
+    - nftables
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.2'
+  block:
+    - name: "4.2.2 | AUDIT | Ensure ufw is uninstalled or disabled with nftables | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+        # ansible.builtin.package:
+        #     name: ufw
+        #     state: absent
+
+    - name: "4.2.2 | AUDIT | Ensure ufw is uninstalled or disabled with nftables | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.3 | AUDIT | Ensure iptables are flushed with nftables"
+  when:
+    - ubtu22cis_rule_4_2_3
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.3
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.3'
+  block:
+    - name: "4.2.3 | AUDIT | Ensure iptables are flushed with nftables | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+        # ansible.builtin.iptables:
+        #     flush: yes
+
+    - name: "4.2.3 | AUDIT | Ensure iptables are flushed with nftables | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.4 | AUDIT | Ensure a nftables table exists"
+  when:
+    - ubtu22cis_rule_4_2_4
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.2.4
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.4'
+  block:
+    - name: "4.2.4 | AUDIT | Ensure a nftables table exists"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables | Message out warning"
+        # ansible.builtin.shell: "nft create table {{ ubtu22cis_nftables_table_name }}"
+        # changed_when: discovered_new_nftables_table.rc == 0
+        # failed_when: false
+        # check_mode: false
+        # register: discovered_new_nftables_table
+
+    - name: "4.2.4 | AUDIT | Ensure a nftables table exists | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.5 | AUDIT | Ensure nftables base chains exist"
+  when:
+    - ubtu22cis_rule_4_2_5
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.5
+    - nftables
+    - NIST800-53R5_NA
+  vars:
+    warn_control_id: '4.2.5'
+  block:
+    - name: "4.2.5 | AUDIT | Ensure nftables base chains exist"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables | Message out warning"
+
+    - name: "4.2.5 | AUDIT | Ensure nftables base chains exist | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.6 | AUDIT | Ensure nftables loopback traffic is configured"
+  when:
+    - ubtu22cis_rule_4_2_6
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.6
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.6'
+  block:
+    - name: "4.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+
+    - name: "4.2.6 | AUDIT | Ensure nftables loopback traffic is configured | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.7 | AUDIT | Ensure nftables outbound and established connections are configured"
+  when:
+    - ubtu22cis_rule_4_2_7
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.7
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.7'
+  block:
+    - name: "4.2.7 | AUDIT | Ensure nftables outbound and established connections are configured | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+
+    - name: "4.2.7 | AUDIT | Ensure nftables outbound and established connections are configured | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.8 | AUDIT | Ensure nftables default deny firewall policy"
+  when:
+    - ubtu22cis_rule_4_2_8
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.8
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.8'
+  block:
+    - name: "4.2.8 | AUDIT | Ensure nftables default deny firewall policy | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+
+    - name: "4.2.8 | AUDIT | Ensure nftables default deny firewall policy | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.9 | AUDIT | Ensure nftables service is enabled"
+  when:
+    - ubtu22cis_rule_4_2_9
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.9
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.9'
+  block:
+    - name: "4.2.9 | AUDIT | Ensure nftables service is enabled | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+        # ansible.builtin.service:
+        #     name: nftables
+        #     state: started
+        #     enabled: yes
+
+    - name: "4.2.9 | AUDIT | Ensure nftables service is enabled | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.2.10 | AUDIT | Ensure nftables rules are permanent"
+  when:
+    - ubtu22cis_rule_4_2_10
+    - ubtu22cis_firewall_package == "nftables"
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.2.10
+    - nftables
+    - NIST800-53R5_CA-9
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.2.10'
+  block:
+    - name: "4.2.10 | AUDIT | Ensure nftables rules are permanent | Message out warning"
+      ansible.builtin.debug:
+        msg: "Warning!! NFTables is not supported in this role. Please use UFW, iptables, or manually manage nftables"
+
+    - name: "4.2.10 | AUDIT | Ensure nftables rules are permanent | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml

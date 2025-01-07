@@ -1,0 +1,8 @@
+Name: Pwquality password strength checking
+Default: yes
+Priority: 1024
+Conflicts: cracklib
+Password-Type: Primary
+Password:
+        requisite                       pam_pwquality.so retry=3 {#  # pragma: allowlist secret #}
+Password-Initial: requisite

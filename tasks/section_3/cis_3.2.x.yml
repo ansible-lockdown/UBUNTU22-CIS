@@ -1,65 +1,131 @@
 ---
 
-- name: "3.2.1 | PATCH | Ensure packet redirect sending is disabled"
-  ansible.posix.sysctl:
-      name: "{{ item }}"
-      value: '0'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  with_items:
-      - net.ipv4.conf.all.send_redirects
-      - net.ipv4.conf.default.send_redirects
-  notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_2_1
-      - not ubtu22cis_is_router
+- name: "3.2.1 | PATCH | Ensure dccp kernel module is not available"
+  when: ubtu22cis_rule_3_2_1
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.2.1
-      - packet_redirect
-      - sysctl
-
-- name: "3.2.2 | PATCH | Ensure IP forwarding is disabled"
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_3.2.1
+    - dccp
+    - NIST800-53R5_SI-4
+    - NIST800-53R5_CM-7
   block:
-      - name: "3.2.2 | PATCH | Ensure IP forwarding is disabled | IPv4 settings"
-        ansible.posix.sysctl:
-            name: net.ipv4.ip_forward
-            value: '0'
-            sysctl_set: true
-            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-            state: present
-            reload: true
-            ignoreerrors: true
-        notify:
-            - Flush ipv4 route table
+    - name: "3.2.1 | PATCH | Ensure dccp kernel module is not available | modprobe"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/dccp.conf
+        regexp: '^(#)?install dccp(\\s|$)'
+        line: "{{ item }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+      loop:
+        - install dccp /bin/true
+        - blacklist dccp
 
-      - name: "3.2.2 | PATCH | Ensure IP forwarding is disabled | IPv6 settings"
-        ansible.posix.sysctl:
-            name: net.ipv6.conf.all.forwarding
-            value: '0'
-            sysctl_set: true
-            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-            state: present
-            reload: true
-            ignoreerrors: true
-        when: ubtu22cis_ipv6_disable == 'sysctl'
-        notify:
-            - Flush ipv6 route table
+    - name: "3.2.1 | PATCH | Ensure dccp kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist cramfs(\\s|$)"
+        line: "blacklist cramfs"
+        create: true
+        mode: 'go-wx'
 
-  when:
-      - ubtu22cis_rule_3_2_2
-      - not ubtu22cis_is_router
+- name: "3.2.2 | PATCH | Ensure tipc kernel module is not available"
+  when: ubtu22cis_rule_3_2_2
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.2.2
-      - ip_forwarding
-      - sysctl
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_3.2.2
+    - tipc
+    - NIST800-53R5_SI-4
+    - NIST800-53R5_CM-7
+  block:
+    - name: "3.2.2 | PATCH | Ensure tipc kernel module is not available | modprobe"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/tipc.conf
+        regexp: '^(#)?install tipc(\\s|$)'
+        line: "{{ item }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+      loop:
+        - install tipc /bin/true
+        - blacklist tipc
+
+    - name: "3.2.2 | PATCH | Ensure tipc kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist tipc(\\s|$)"
+        line: "blacklist tipc"
+        create: true
+        mode: 'go-wx'
+
+- name: "3.2.3 | PATCH | Ensure rds kernel module is not available"
+  when: ubtu22cis_rule_3_2_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_3.2.3
+    - rds
+    - NIST800-53R5_SI-4
+    - NIST800-53R5_CM-7
+  block:
+    - name: "3.2.3 | PATCH | Ensure rds kernel module is not available | modprobe"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/rds.conf
+        regexp: '^(#)?install rds(\\s|$)'
+        line: "{{ item }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+      loop:
+        - install rds /bin/true
+        - blacklist rds
+
+    - name: "3.2.3 | PATCH | Ensure rds kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist rds(\\s|$)"
+        line: "blacklist rds"
+        create: true
+        mode: 'go-wx'
+
+- name: "3.2.4 | PATCH | Ensure sctp kernel module is not available"
+  when: ubtu22cis_rule_3_2_4
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_3.2.4
+    - sctp
+    - NIST800-53R5_SI-4
+    - NIST800-53R5_CM-7
+  block:
+    - name: "3.2.4 | PATCH | Ensure sctp kernel module is not available | modprobe"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/sctp.conf
+        regexp: '^(#)?install sctp(\\s|$)'
+        line: "{{ item }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+      loop:
+        - install sctp /bin/true
+        - blacklist sctp
+
+    - name: "3.2.4 | PATCH | Ensure sctp kernel module is not available | blacklist"
+      ansible.builtin.lineinfile:
+        path: /etc/modprobe.d/blacklist.conf
+        regexp: "^(#)?blacklist sctp(\\s|$)"
+        line: "blacklist sctp"
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'

@@ -1,0 +1,115 @@
+---
+
+- name: "5.3.3.1.1 | PATCH | Ensure password failed attempts lockout is configured"
+  when:
+    - ubtu22cis_rule_5_3_3_1_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.3.1.1
+    - pam
+    - NIST800-53R5_NA
+  block:
+    - name: "5.3.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | configure faillock.conf"
+      ansible.builtin.lineinfile:
+        path: /etc/security/faillock.conf
+        regexp: '^deny'
+        line: "deny = {{ ubtu22cis_faillock_deny }}"
+        insertafter: '^# end of pam-auth-update config'
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+
+    - name: "5.3.3.1.1 | AUDIT | Ensure password failed attempts lockout is configured | discover pam config with deny"
+      ansible.builtin.shell: grep -Pl -- '\bpam_faillock\.so\h+([^#\n\r]+\h+)?deny\b' /usr/share/pam-configs/*
+      changed_when: false
+      failed_when: discovered_faillock_deny_files.rc not in [ 0, 1 ]
+      register: discovered_faillock_deny_files
+
+    - name: "5.3.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | if exists remove deny from faillock line in pam-auth conf files"
+      when: discovered_faillock_deny_files.stdout | length > 0
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '(*.pam_faillock.so\s*)deny\s*=\s*\d+\b(.*)'
+        replace: \1\2
+      with_fileglob:
+        - '/usr/share/pam-configs/*'
+        - '/etc/pam.d/*'
+
+- name: "5.3.3.1.2 | PATCH | Ensure password unlock time is configured"
+  when:
+    - ubtu22cis_rule_5_3_3_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.3.1.2
+    - pam
+    - NIST800-53R5_NA
+  block:
+    - name: "5.3.3.1.2 | PATCH | Ensure password unlock time is configured | configure faillock.conf"
+      ansible.builtin.lineinfile:
+        path: /etc/security/faillock.conf
+        regexp: '^unlock_time'
+        line: "unlock_time = {{ ubtu22cis_faillock_unlock_time }}"
+        insertafter: '^# end of pam-auth-update config'
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+
+    - name: "5.3.3.1.2 | AUDIT | Ensure password unlock time is configured | discover pam config with unlock_time"
+      ansible.builtin.shell: grep -Pl -- '\bpam_faillock\.so\h+([^#\n\r]+\h+)?unlock_time\b' /usr/share/pam-configs/*
+      register: discovered_faillock_unlock_files
+      changed_when: false
+      failed_when: discovered_faillock_unlock_files.rc not in [ 0, 1 ]
+
+    - name: "5.3.3.1.2 | PATCH | Ensure password unlock time is configured | if exists remove unlock_time from faillock line in pam-auth conf files"
+      when: discovered_faillock_unlock_files.stdout | length > 0
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '(*.pam_faillock.so\s*)unlock_time\s*=\s*\b(.*)'
+        replace: \1\2
+      with_fileglob:
+        - '/usr/share/pam-configs/*'
+        - '/etc/pam.d/*'
+
+- name: "5.3.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account"
+  when:
+    - ubtu22cis_rule_5_3_3_1_3
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_5.3.3.1.3
+    - pam
+    - NIST800-53R5_NA
+  block:
+    - name: "5.3.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | configure faillock.conf"
+      ansible.builtin.lineinfile:
+        path: /etc/security/faillock.conf
+        regexp: '^{{ ubtu22cis_pamroot_lock_option }}'
+        line: "{{ ubtu22cis_pamroot_lock_string }}"
+        insertafter: '^# end of pam-auth-update config'
+        create: true
+        owner: root
+        group: root
+        mode: 'go-wx'
+
+    - name: "5.3.3.1.3 | AUDIT | Ensure password failed attempts lockout includes root account | discover pam config with unlock_time"
+      ansible.builtin.shell: grep -Pl -- '\bpam_faillock\.so\h+([^#\n\r]+\h+)?(even_deny_root\b|root_unlock_time\s*=\s*\d+\b)' /usr/share/pam-configs/*
+      changed_when: false
+      failed_when: discovered_faillock_rootlock_files.rc not in [ 0, 1 ]
+      register: discovered_faillock_rootlock_files
+
+    - name: "5.3.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | if exists remove unlock_time from faillock line in pam-auth conf files"
+      when: discovered_faillock_rootlock_files.stdout | length > 0
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: '(*.pam_faillock.so\s*)(even_deny_root\b|root_unlock_time\s*=\s*\d+\b)(.*)'
+        replace: \1\3
+      with_fileglob:
+        - '/usr/share/pam-configs/*'
+        - '/etc/pam.d/*'

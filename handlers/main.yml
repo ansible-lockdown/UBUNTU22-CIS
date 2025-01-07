@@ -1,177 +1,270 @@
 ---
 
-- name: Writing the tmp file | tmp_systemd
-  ansible.builtin.template:
-      src: etc/systemd/system/tmp.mount.j2
-      dest: /etc/systemd/system/tmp.mount
-      owner: root
-      group: root
-      mode: '0644'
-  with_items:
-      - "{{ ansible_facts.mounts }}"
-  loop_control:
-      label: "{{ item.device }}"
-  when:
-      - "'/tmp' in mount_names"
-      - item.mount == "/tmp"
-      - tmp_mnt_type == 'tmp_systemd'
-  listen: Writing and remounting tmp
-
-- name: Writing the tmp file | fstab
+- name: "Adding options for /tmp"
+  when: not ubtu22cis_tmp_svc
+  vars:
+    mount_point: '/tmp'
   ansible.posix.mount:
-      path: /tmp
-      src: "{{ item.device }}"
-      state: present
-      fstype: "{{ item.fstype }}"
-      opts: defaults,{{ tmp_partition_mount_options | unique | join(',') }}
-  with_items:
-      - "{{ ansible_facts.mounts }}"
-  loop_control:
-      label: "{{ item.device }}"
-  when:
-      - "'/tmp' in mount_names"
-      - tmp_mnt_type == 'fstab'
-      - item.mount == "/tmp"
-  listen: Writing and remounting tmp
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /tmp"
+
+- name: "Remounting /tmp"
+  vars:
+    mount_point: '/tmp'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /tmp"
+
+- name: "Remounting /tmp systemd"
+  vars:
+    mount_point: '/tmp'
+  ansible.builtin.systemd:
+    name: tmp.mount
+    state: restarted
+    daemon_reload: true
+  listen: "Remount /tmp"
+
+- name: "Adding options for /dev/shm"
+  vars:
+    mount_point: '/dev/shm'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /dev/shm"
+
+- name: "Remounting /dev/shm"
+  vars:
+    mount_point: '/dev/shm'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /dev/shm"
+
+- name: "Adding options for /home"
+  vars:
+    mount_point: '/home'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /home"
+
+- name: "Remounting /home"
+  vars:
+    mount_point: '/home'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /home"
+
+- name: "Adding options for /var"
+  vars:
+    mount_point: '/var'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var"
+
+- name: "Remounting /var"
+  vars:
+    mount_point: '/var'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var"
+
+- name: "Adding options for /var/tmp"
+  vars:
+    mount_point: '/var/tmp'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var/tmp"
+
+- name: "Remounting /var/tmp"
+  vars:
+    mount_point: '/var/tmp'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var/tmp"
+
+- name: "Adding options for /var/log"
+  vars:
+    mount_point: '/var/log'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var/log"
+
+- name: "Remounting /var/log"
+  vars:
+    mount_point: '/var/log'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var/log"
+
+- name: "Adding options for /var/log/audit"
+  vars:
+    mount_point: '/var/log/audit'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    src: "{{ prelim_mount_point_fs_and_options[mount_point]['src'] }}"
+    state: present
+    fstype: "{{ prelim_mount_point_fs_and_options[mount_point]['fs_type'] }}"
+    opts: "{{ prelim_mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+  listen: "Remount /var/log/audit"
+
+- name: "Remounting /var/log/audit"
+  vars:
+    mount_point: '/var/log/audit'
+  ansible.posix.mount:
+    path: "{{ mount_point }}"
+    state: remounted
+  listen: "Remount /var/log/audit"
 
 - name: Update_Initramfs
-  ansible.builtin.shell: update-initramfs -u
-  notify: set_reboot_required
-
-- name: Remount tmp
-  ansible.posix.mount:
-      path: /tmp
-      state: remounted
-  when:
-      - "'/tmp' in mount_names"
-  listen: Writing and remounting tmp
-
-- name: Remount var
-  ansible.posix.mount:
-      path: /var
-      state: remounted
-
-- name: Remount var_tmp
-  ansible.posix.mount:
-      path: /var/tmp
-      state: remounted
-
-- name: Remount var_log
-  ansible.posix.mount:
-      path: /var/log
-      state: remounted
-
-- name: Remount var_log_audit
-  ansible.posix.mount:
-      path: /var/log/audit
-      state: remounted
-
-- name: Remount home
-  ansible.posix.mount:
-      path: /home
-      state: remounted
-
-- name: Remount dev_shm
-  ansible.posix.mount:
-      path: /dev/shm
-      src: /dev/shm
-      state: remounted
+  ansible.builtin.command: update-initramfs -u
+  changed_when: true
+  notify: Set_reboot_required
 
 - name: Grub update
-  ansible.builtin.shell: update-grub
+  ansible.builtin.command: update-grub
+  changed_when: true
   failed_when: false
-  notify: set_reboot_required
+  notify: Set_reboot_required
 
 - name: Restart timeservice
   ansible.builtin.systemd:
-      name: "{{ ubtu22cis_time_sync_tool }}"
-      state: restarted
+    name: "{{ ubtu22cis_time_sync_tool }}"
+    state: restarted
 
 - name: Reload systemctl
   ansible.builtin.systemd:
-      daemon_reload: true
+    daemon_reload: true
 
 - name: Update dconf
-  ansible.builtin.shell: dconf update
+  ansible.builtin.command: dconf update
+  changed_when: true
   failed_when: false
 
 - name: Restart postfix
   ansible.builtin.service:
-      name: postfix
-      state: restarted
+    name: postfix
+    state: restarted
 
 - name: Restart syslog service
   ansible.builtin.systemd:
-      name: "{{ ubtu22cis_syslog_service }}"
-      state: restarted
+    name: "{{ ubtu22cis_syslog_service }}"
+    state: restarted
 
 - name: Restart journald
   ansible.builtin.systemd:
-      name: systemd-journald
-      state: restarted
+    name: systemd-journald
+    state: restarted
 
 - name: Restart exim4
   ansible.builtin.systemd:
-      name: exim4
-      state: restarted
+    name: exim4
+    state: restarted
 
 - name: Flush ipv4 route table
-  ansible.posix.sysctl:
-      name: net.ipv4.route.flush
-      value: '1'
-      sysctl_set: true
   when: ansible_facts.virtualization_type != "docker"
+  ansible.posix.sysctl:
+    name: net.ipv4.route.flush
+    value: '1'
+    sysctl_set: true
 
 - name: Flush ipv6 route table
-  ansible.posix.sysctl:
-      name: net.ipv6.route.flush
-      value: '1'
-      sysctl_set: true
   when:
-      - ansible_facts.virtualization_type != "docker"
-      - ubtu22cis_ipv6_required
+    - ansible_facts.virtualization_type != "docker"
+    - ubtu22cis_ipv6_required
+  ansible.posix.sysctl:
+    name: net.ipv6.route.flush
+    value: '1'
+    sysctl_set: true
 
 - name: Reload ufw
   community.general.ufw:
-      state: reloaded
+    state: reloaded
 
 - name: Iptables persistent
-  ansible.builtin.shell: bash -c "iptables-save > /etc/iptables/rules.v4"
-  changed_when: ubtu22cis_iptables_save.rc == 0
-  failed_when: ubtu22cis_iptables_save.rc > 0
-  register: ubtu22cis_iptables_save
+  ansible.builtin.command: bash -c "iptables-save > /etc/iptables/rules.v4"
+  changed_when: discovered_ip4tables_save.rc == 0
+  failed_when: discovered_ip4tables_save.rc > 0
+  register: discovered_ip4tables_save
 
 - name: Ip6tables persistent
-  ansible.builtin.shell: bash -c "ip6tables-save > /etc/iptables/rules.v6"
-  changed_when: ubtu22cis_ip6tables_save.rc == 0
-  failed_when: ubtu22cis_ip6tables_save.rc > 0
-  register: ubtu22cis_ip6tables_save
+  ansible.builtin.command: bash -c "ip6tables-save > /etc/iptables/rules.v6"
+  changed_when: discovered_ip6tables_save.rc == 0
+  failed_when: discovered_ip6tables_save.rc > 0
+  register: discovered_ip6tables_save
+
+- name: Pam_auth_update_pwunix
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22cis_pam_pwunix_file }}
+  changed_when: true
+
+- name: Pam_auth_update_pwfaillock
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22cis_pam_faillock_file }}
+  changed_when: true
+
+- name: Pam_auth_update_pwfaillock_notify
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22cis_pam_faillock_notify_file }}
+  changed_when: true
+
+- name: Pam_auth_update_pwquality
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22cis_pam_pwquality_file }}
+  changed_when: true
+
+- name: Pam_auth_update_pwhistory
+  ansible.builtin.command: pam-auth-update --enable {{ ubtu22cis_pam_pwhistory_file }}
+  changed_when: true
 
 - name: Auditd rules reload
-  ansible.builtin.shell: augenrules --load
   when:
-      - not auditd_immutable_check or '"No change" not in ubtu22cis_rule_4_1_3_21_augen_check.stdout'
+    - not prelim_auditd_immutable_check or
+      '"No change" not in ubtu22cis_rule_4_1_3_21_augen_check.stdout'
+  ansible.builtin.command: augenrules --load
+  changed_when: true
 
 - name: Audit_immutable_fact
-  ansible.builtin.debug:
-      msg: "Reboot required for auditd to apply new rules as immutable set"
-  notify: set_reboot_required
   when:
-      - audit_rules_updated.changed
-      - auditd_immutable_check is defined
+    - discovered_audit_rules_updated.changed
+    - auditd_immutable_check is defined
+  ansible.builtin.debug:
+    msg: "Reboot required for auditd to apply new rules as immutable set"
+  notify: Set_reboot_required
 
 - name: Restart auditd
-  ansible.builtin.shell: service auditd restart
-  when:
-      - audit_rules_updated is defined
-  tags:
-      - skip_ansible_lint
+  when: discovered_audit_rules_updated is defined
+  ansible.builtin.command: service auditd restart  # noqa command-instead-of-module
+  changed_when: true
 
 - name: Restart sshd
   ansible.builtin.systemd:
-      name: sshd
-      state: restarted
+    name: sshd
+    state: restarted
 
-- name: set_reboot_required
+- name: Set_reboot_required
   ansible.builtin.set_fact:
-      change_requires_reboot: true
+    change_requires_reboot: true

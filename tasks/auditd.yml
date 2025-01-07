@@ -1,27 +1,29 @@
 ---
 
-- name: "POST | AUDITD | Apply auditd template for section 4.1.3.x"
-  ansible.builtin.template:
-      src: audit/99_auditd.rules.j2
-      dest: /etc/audit/rules.d/99_auditd.rules
-      owner: root
-      group: root
-      mode: '0640'
-  register: audit_rules_updated
-  notify:
-      - Auditd rules reload
-      - Audit_immutable_fact
-      - Restart auditd
-      - set_reboot_required
+- name: POST | Apply auditd template for section 4.1.3.x
   when: update_audit_template
+  ansible.builtin.template:
+    src: audit/99_auditd.rules.j2
+    dest: /etc/audit/rules.d/99_auditd.rules
+    owner: root
+    group: root
+    mode: '0640'
+  register: discovered_audit_rules_updated
+  notify:
+    - Auditd rules reload
+    - Audit_immutable_fact
+    - Restart auditd
+    - Set_reboot_required
 
 - name: POST | Set up auditd user logging exceptions
+  when: ubtu22cis_allow_auditd_uid_user_exclusions
   ansible.builtin.template:
-      src: audit/98_auditd_exception.rules.j2
-      dest: /etc/audit/rules.d/98_auditd_exceptions.rules
-      owner: root
-      group: root
-      mode: '0600'
+    src: audit/98_auditd_exception.rules.j2
+    dest: /etc/audit/rules.d/98_auditd_exceptions.rules
+    owner: root
+    group: root
+    mode: '0600'
   notify: Restart auditd
-  when:
-      - ubtu22cis_allow_auditd_uid_user_exclusions
+
+- name: POST | Flush handlers
+  ansible.builtin.meta: flush_handlers

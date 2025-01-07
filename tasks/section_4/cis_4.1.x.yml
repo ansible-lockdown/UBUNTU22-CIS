@@ -1,0 +1,181 @@
+---
+
+- name: "4.1.1 | PATCH | Ensure ufw is installed"
+  when:
+    - ubtu22cis_rule_4_1_1
+    - "'ufw' not in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.1
+    - apt
+    - ufw
+    - NIST800-53R5_SC-7
+  ansible.builtin.package:
+    name: ufw
+    state: present
+
+- name: "4.1.2 | PATCH | Ensure iptables-persistent is not installed with ufw"
+  when:
+    - ubtu22cis_rule_4_1_2
+    - "'iptables-persistent' in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.2
+    - ufw
+    - NIST800-53R5_SC-7
+  ansible.builtin.package:
+    name: iptables-persistent
+    state: absent
+
+# Adding the allow OpenSSH rule while enabling ufw to allow ansible to run after enabling
+- name: "4.1.3 | PATCH | Ensure ufw service is enabled"
+  when:
+    - ubtu22cis_rule_4_1_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.3
+    - ufw
+    - NIST800-53R5_SC-7
+  block:
+    - name: "4.1.3 | PATCH | Ensure ufw service is enabled | ssh port enabled"
+      community.general.ufw:
+        rule: allow
+        name: OpenSSH
+        state: enabled
+
+    - name: "4.1.3 | PATCH | Ensure ufw service is enabled | service"
+      ansible.builtin.systemd:
+        name: ufw
+        enabled: true
+        state: started
+
+- name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured"
+  when:
+    - ubtu22cis_rule_4_1_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.4
+    - ufw
+    - NIST800-53R5_SC-7
+  block:
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set allow in ufw rules"
+      community.general.ufw:
+        rule: allow
+        direction: in
+        interface: lo
+      notify: Reload ufw
+
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set allow out ufw rules"
+      community.general.ufw:
+        rule: allow
+        direction: out
+        interface: lo
+      notify: Reload ufw
+
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set deny ufw rules IPv4"
+      community.general.ufw:
+        rule: deny
+        direction: in
+        from_ip: 127.0.0.0/8
+      notify: Reload ufw
+
+    - name: "4.1.4 | PATCH | Ensure ufw loopback traffic is configured | Set deny ufw rules IPv6"
+      when: ubtu22cis_ipv6_required
+      community.general.ufw:
+        rule: deny
+        direction: in
+        from_ip: '::1'
+      notify: Reload ufw
+
+- name: "4.1.5 | PATCH | Ensure ufw outbound connections are configured"
+  when: ubtu22cis_rule_4_1_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.5
+    - ufw
+    - NIST800-53R5_SC-7
+  block:
+    - name: "4.1.5 | PATCH | Ensure ufw outbound connections are configured | Custom ports"
+      when: ubtu22cis_ufw_allow_out_ports != "all"
+      community.general.ufw:
+        rule: allow
+        direction: out
+        to_port: '{{ item }}'
+      with_items:
+        - "{{ ubtu22cis_ufw_allow_out_ports }}"
+      notify: Reload ufw
+
+    - name: "4.1.5 | PATCH | Ensure ufw outbound connections are configured | Allow all"
+      when: "'all' in ubtu22cis_ufw_allow_out_ports"
+      community.general.ufw:
+        rule: allow
+        direction: out
+      notify: Reload ufw
+
+- name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports"
+  when: ubtu22cis_rule_4_1_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - audit
+    - rule_4.1.6
+    - ufw
+    - NIST800-53R5_SC-7
+  vars:
+    warn_control_id: '4.1.6'
+  block:
+    - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Get list of open ports"
+      ansible.builtin.command: ss -4tuln
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_list_open_listen_ports
+
+    - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Get list of firewall rules"
+      ansible.builtin.command: ufw status
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_firewall_rules
+
+    - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Message out settings"
+      ansible.builtin.debug:
+        msg:
+          - "Warning!! Below are the listening ports and firewall rules"
+          - "Please create firewall rule for any open ports if not already done"
+          - "*****---Open Listen Ports---*****"
+          - "{{ discovered_list_open_listen_ports.stdout_lines }}"
+          - "*****---Firewall Rules---*****"
+          - "{{ discovered_firewall_rules.stdout_lines }}"
+
+    - name: "4.1.6 | AUDIT | Ensure ufw firewall rules exist for all open ports | Set warning count"
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+- name: "4.1.7 | PATCH | Ensure ufw default deny firewall policy"
+  when: ubtu22cis_rule_4_1_7
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_4.1.7
+    - ufw
+    - NIST800-53R5_SC-7
+  community.general.ufw:
+    default: deny
+    direction: "{{ item }}"
+  loop:
+    - incoming
+    - outgoing
+    - routed
+  notify: Reload ufw

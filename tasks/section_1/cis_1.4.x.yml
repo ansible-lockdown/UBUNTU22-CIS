@@ -1,73 +1,55 @@
 ---
 
 - name: "1.4.1 | PATCH | Ensure bootloader password is set"
+  when:
+    - ubtu22cis_set_boot_pass
+    - ubtu22cis_rule_1_4_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.4.1
+    - grub
+    - NIST800-53R5_AC-3
   block:
-      - name: "1.4.1 | PATCH | Ensure bootloader password is set"
-        ansible.builtin.template:
-            src: etc/grub.d/00_user.j2
-            dest: "{{ ubtu22cis_grub_user_file }}"
-            owner: root
-            group: root
-            mode: '0755'
-        notify: Grub update
+    - name: "1.4.1 | PATCH | Ensure bootloader password is set"
+      ansible.builtin.template:
+        src: etc/grub.d/00_user.j2
+        dest: "{{ ubtu22cis_grub_user_file }}"
+        owner: root
+        group: root
+        mode: 'go-w'
+      notify: Grub update
 
-      - name: "1.4.1 | PATCH | Ensure bootloader password is set | allow unrestricted boot"
-        ansible.builtin.lineinfile:
-            path: "/etc/grub.d/10_linux"
-            regexp: '(^CLASS="--class gnu-linux --class gnu --class os).*"$'
-            line: '\g<1> --unrestricted"'
-            backrefs: true
-        notify: Grub update
-        when: not ubtu22cis_ask_passwd_to_boot
-  when:
-      - ubtu22cis_set_boot_pass
-      - ubtu22cis_rule_1_4_1
+    - name: "1.4.1 | PATCH | Ensure bootloader password is set | allow unrestricted boot"
+      when: not ubtu22cis_ask_passwd_to_boot
+      ansible.builtin.lineinfile:
+        path: "/etc/grub.d/10_linux"
+        regexp: '(^CLASS="--class gnu-linux --class gnu --class os).*"$'
+        line: '\g<1> --unrestricted"'
+        backrefs: true
+      notify: Grub update
+
+- name: "1.4.2 | PATCH | Ensure access to bootloader config is configured"
+  when: ubtu22cis_rule_1_4_2
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.4.1
-      - grub
-
-- name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured"
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.4.2
+    - grub
+    - NIST800-53R5_AC-3
   block:
-      - name: "1.4.2 | AUDIT | Ensure permissions on bootloader config are configured | Check for Grub file"
-        ansible.builtin.stat:
-            path: "{{ ubtu22cis_grub_file }}"
-        check_mode: false
-        register: ubtu22cis_1_4_2_grub_cfg_status
+    - name: "1.4.2 | AUDIT | Ensure access to bootloader config is configured | Check for Grub file"
+      ansible.builtin.stat:
+        path: "{{ ubtu22cis_grub_file }}"
+      check_mode: false
+      register: discovered_grub_cfg_status
 
-      - name: "1.4.2 | PATCH | Ensure permissions on bootloader config are configured | Set permissions"
-        ansible.builtin.file:
-            path: "{{ ubtu22cis_grub_file }}"
-            owner: root
-            group: root
-            mode: '0400'
-        when:
-            - ubtu22cis_1_4_2_grub_cfg_status.stat.exists
-  when:
-      - ubtu22cis_rule_1_4_2
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.4.2
-      - grub
-
-- name: "1.4.3 | PATCH | Ensure authentication required for single user mode"
-  ansible.builtin.user:
-      name: "{{ ubtu22cis_grub_user }}"
-      password: "{{ ubtu22cis_grub_user_passwd }}"
-  when:
-      - ubtu22cis_rule_1_4_3
-      - ubtu22cis_set_grub_user_pass
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.4.3
-      - passwd
-      - grub
+    - name: "1.4.2 | PATCH | Ensure access to bootloader config is configured | Set permissions"
+      when: discovered_grub_cfg_status.stat.exists
+      ansible.builtin.file:
+        path: "{{ ubtu22cis_grub_file }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'

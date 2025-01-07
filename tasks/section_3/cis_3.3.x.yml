@@ -1,245 +1,339 @@
 ---
 
-- name: "3.3.1 | PATCH | Ensure source routed packets are not accepted"
+- name: "3.3.1 | PATCH | Ensure IP forwarding is disabled"
+  when:
+    - ubtu22cis_rule_3_3_1
+    - not ubtu22cis_is_router
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.1
+    - ip_forwarding
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
-      - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | IPv4 settings"
-        ansible.posix.sysctl:
-            name: "{{ item }}"
-            value: '0'
-            sysctl_set: true
-            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-            state: present
-            reload: true
-            ignoreerrors: true
-        with_items:
-            - net.ipv4.conf.all.accept_source_route
-            - net.ipv4.conf.default.accept_source_route
-        notify: Flush ipv4 route table
+    - name: "3.3.1 | PATCH | Ensure IP forwarding is disabled | IPv4 settings"
+      ansible.posix.sysctl:
+        name: net.ipv4.ip_forward
+        value: '0'
+        sysctl_set: true
+        sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+        state: present
+        reload: true
+        ignoreerrors: true
+      notify: Flush ipv4 route table
 
-      - name: "3.3.1 | PATCH | Ensure source routed packets are not accepted | IPv6 settings"
-        ansible.posix.sysctl:
-            name: "{{ item }}"
-            value: '0'
-            sysctl_set: true
-            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-            state: present
-            reload: true
-            ignoreerrors: true
-        when: ubtu22cis_ipv6_disable == 'sysctl'
-        with_items:
-            - net.ipv6.conf.all.accept_source_route
-            - net.ipv6.conf.default.accept_source_route
-        notify: Flush ipv6 route table
+    - name: "3.3.1 | PATCH | Ensure IP forwarding is disabled | IPv6 settings"
+      when: ubtu22cis_ipv6_disable == 'sysctl'
+      ansible.posix.sysctl:
+        name: net.ipv6.conf.all.forwarding
+        value: '0'
+        sysctl_set: true
+        sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+        state: present
+        reload: true
+        ignoreerrors: true
+      notify: Flush ipv6 route table
+
+- name: "3.3.2 | PATCH | Ensure packet redirect sending is disabled"
   when:
-      - ubtu22cis_rule_3_3_1
-      - not ubtu22cis_is_router
+    - ubtu22cis_rule_3_3_2
+    - not ubtu22cis_is_router
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.1
-      - routed_packets
-      - sysctl
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.2
+    - packet_redirect
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: '0'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  loop:
+    - net.ipv4.conf.all.send_redirects
+    - net.ipv4.conf.default.send_redirects
+  notify: Flush ipv4 route table
 
-- name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted"
+- name: "3.3.3 | PATCH | Ensure bogus ICMP responses are ignored"
+  when: ubtu22cis_rule_3_3_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.3
+    - icmp
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  ansible.posix.sysctl:
+    name: net.ipv4.icmp_ignore_bogus_error_responses
+    value: '1'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  notify: Flush ipv4 route table
+
+- name: "3.3.4 | PATCH | Ensure broadcast ICMP requests are ignored"
+  when: ubtu22cis_rule_3_3_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.4
+    - icmp
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  ansible.posix.sysctl:
+    name: net.ipv4.icmp_echo_ignore_broadcasts
+    value: '1'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  notify: Flush ipv4 route table
+
+- name: "3.3.5 | PATCH | Ensure ICMP redirects are not accepted"
+  when: ubtu22cis_rule_3_3_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.5
+    - icmp
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
-      - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | IPv4 settings"
-        ansible.posix.sysctl:
-            name: "{{ item }}"
-            value: '0'
-            sysctl_set: true
-            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-            state: present
-            reload: true
-            ignoreerrors: true
-        with_items:
-            - net.ipv4.conf.all.accept_redirects
-            - net.ipv4.conf.default.accept_redirects
-        notify: Flush ipv4 route table
+    - name: "3.3.5 | PATCH | Ensure ICMP redirects are not accepted | IPv4 settings"
+      ansible.posix.sysctl:
+        name: "{{ item }}"
+        value: '0'
+        sysctl_set: true
+        sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+        state: present
+        reload: true
+        ignoreerrors: true
+      loop:
+        - net.ipv4.conf.all.accept_redirects
+        - net.ipv4.conf.default.accept_redirects
+      notify: Flush ipv4 route table
 
-      - name: "3.3.2 | PATCH | Ensure ICMP redirects are not accepted | IPv6 settings"
-        ansible.posix.sysctl:
-            name: "{{ item }}"
-            value: '0'
-            sysctl_set: true
-            sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-            state: present
-            reload: true
-            ignoreerrors: true
-        when: ubtu22cis_ipv6_disable == 'sysctl'
-        with_items:
-            - net.ipv6.conf.all.accept_redirects
-            - net.ipv6.conf.default.accept_redirects
-        notify: Flush ipv6 route table
-  when:
-      - ubtu22cis_rule_3_3_2
+    - name: "3.3.5 | PATCH | Ensure ICMP redirects are not accepted | IPv6 settings"
+      ansible.posix.sysctl:
+        name: "{{ item }}"
+        value: '0'
+        sysctl_set: true
+        sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+        state: present
+        reload: true
+        ignoreerrors: true
+      when: ubtu22cis_ipv6_disable == 'sysctl'
+      loop:
+        - net.ipv6.conf.all.accept_redirects
+        - net.ipv6.conf.default.accept_redirects
+      notify: Flush ipv6 route table
+
+- name: "3.3.6 | PATCH | Ensure secure ICMP redirects are not accepted"
+  when: ubtu22cis_rule_3_3_6
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.2
-      - icmp
-      - sysctl
-
-- name: "3.3.3 | PATCH | Ensure secure ICMP redirects are not accepted"
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.6
+    - icmp
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.posix.sysctl:
-      name: "{{ item }}"
-      value: '0'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  with_items:
-      - net.ipv4.conf.all.secure_redirects
-      - net.ipv4.conf.default.secure_redirects
+    name: "{{ item }}"
+    value: '0'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  loop:
+    - net.ipv4.conf.all.secure_redirects
+    - net.ipv4.conf.default.secure_redirects
   notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_3_3
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.3
-      - icmp
-      - sysctl
-
-- name: "3.3.4 | PATCH | Ensure suspicious packets are logged"
-  ansible.posix.sysctl:
-      name: "{{ item }}"
-      value: '1'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  with_items:
-      - net.ipv4.conf.all.log_martians
-      - net.ipv4.conf.default.log_martians
-  notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_3_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.4
-      - suspicious_packets
-      - sysctl
-
-- name: "3.3.5 | PATCH | Ensure broadcast ICMP requests are ignored"
-  ansible.posix.sysctl:
-      name: net.ipv4.icmp_echo_ignore_broadcasts
-      value: '1'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_3_5
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.5
-      - icmp
-      - sysctl
-
-- name: "3.3.6 | PATCH | Ensure bogus ICMP responses are ignored"
-  ansible.posix.sysctl:
-      name: net.ipv4.icmp_ignore_bogus_error_responses
-      value: '1'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_3_6
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.6
-      - icmp
-      - sysctl
 
 - name: "3.3.7 | PATCH | Ensure Reverse Path Filtering is enabled"
-  ansible.posix.sysctl:
-      name: "{{ item }}"
-      value: '1'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  with_items:
-      - net.ipv4.conf.all.rp_filter
-      - net.ipv4.conf.default.rp_filter
-  notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_3_7
+  when: ubtu22cis_rule_3_3_7
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.7
-      - reverse_path_filtering
-      - sysctl
-
-- name: "3.3.8 | PATCH | Ensure TCP SYN Cookies is enabled"
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.7
+    - reverse_path_filtering
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   ansible.posix.sysctl:
-      name: net.ipv4.tcp_syncookies
-      value: '1'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
+    name: "{{ item }}"
+    value: '1'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  loop:
+    - net.ipv4.conf.all.rp_filter
+    - net.ipv4.conf.default.rp_filter
   notify: Flush ipv4 route table
-  when:
-      - ubtu22cis_rule_3_3_8
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.8
-      - tcp_syn_cookies
-      - sysctl
 
-- name: "3.3.9 | PATCH | Ensure IPv6 router advertisements are not accepted"
+- name: "3.3.8 | PATCH | Ensure source routed packets are not accepted"
+  when:
+    - ubtu22cis_rule_3_3_8
+    - not ubtu22cis_is_router
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.8
+    - routed_packets
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "3.3.8 | PATCH | Ensure source routed packets are not accepted | IPv4 settings"
+      ansible.posix.sysctl:
+        name: "{{ item }}"
+        value: '0'
+        sysctl_set: true
+        sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+        state: present
+        reload: true
+        ignoreerrors: true
+      loop:
+        - net.ipv4.conf.all.accept_source_route
+        - net.ipv4.conf.default.accept_source_route
+      notify: Flush ipv4 route table
+
+    - name: "3.3.8 | PATCH | Ensure source routed packets are not accepted | IPv6 settings"
+      ansible.posix.sysctl:
+        name: "{{ item }}"
+        value: '0'
+        sysctl_set: true
+        sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+        state: present
+        reload: true
+        ignoreerrors: true
+      when: ubtu22cis_ipv6_disable == 'sysctl'
+      loop:
+        - net.ipv6.conf.all.accept_source_route
+        - net.ipv6.conf.default.accept_source_route
+      notify: Flush ipv6 route table
+
+- name: "3.3.9 | PATCH | Ensure suspicious packets are logged"
+  when: ubtu22cis_rule_3_3_9
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.9
+    - suspicious_packets
+    - sysctl
+    - NIST800-53R5_AU-3
   ansible.posix.sysctl:
-      name: "{{ item }}"
-      value: '0'
-      sysctl_set: true
-      sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
-      state: present
-      reload: true
-      ignoreerrors: true
-  with_items:
-      - net.ipv6.conf.all.accept_ra
-      - net.ipv6.conf.default.accept_ra
+    name: "{{ item }}"
+    value: '1'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  loop:
+    - net.ipv4.conf.all.log_martians
+    - net.ipv4.conf.default.log_martians
+  notify: Flush ipv4 route table
+
+- name: "3.3.10 | PATCH | Ensure tcp syn cookies is enabled"
+  when: ubtu22cis_rule_3_3_10
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.10
+    - tcp_syn_cookies
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  ansible.posix.sysctl:
+    name: net.ipv4.tcp_syncookies
+    value: '1'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  notify: Flush ipv4 route table
+
+- name: "3.3.11 | PATCH | Ensure IPv6 router advertisements are not accepted"
+  when:
+    - ubtu22cis_rule_3_3_11
+    - ubtu22cis_ipv6_required
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_3.3.11
+    - ipv6
+    - router_advertisements
+    - sysctl
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  ansible.posix.sysctl:
+    name: "{{ item }}"
+    value: '0'
+    sysctl_set: true
+    sysctl_file: "{{ ubtu22cis_sysctl_network_conf }}"
+    state: present
+    reload: true
+    ignoreerrors: true
+  loop:
+    - net.ipv6.conf.all.accept_ra
+    - net.ipv6.conf.default.accept_ra
   notify: Flush ipv6 route table
-  when:
-      - ubtu22cis_rule_3_3_9
-      - ubtu22cis_ipv6_required
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_3.3.9
-      - ipv6
-      - router_advertisements
-      - sysctl

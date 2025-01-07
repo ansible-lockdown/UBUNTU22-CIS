@@ -1,0 +1,105 @@
+---
+
+- name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok"
+  when:
+    - ubtu22cis_rule_5_3_3_4_1
+    - ubtu22cis_disruption_high
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.3.4.1
+    - pam
+    - NIST800-53R5_NA
+  block:
+    - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | capture state"
+      ansible.builtin.shell: grep -E "pam_unix.so.*nullok" /etc/pam.d/common-* /usr/share/pam-configs/* | cut -d ':' -f1 | uniq
+      changed_when: false
+      failed_when: discovered_pam_nullok.rc not in [ 0, 1 ]
+      register: discovered_pam_nullok
+
+    - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | Ensure nullok removed"
+      when: discovered_pam_nullok.stdout | length > 0
+      ansible.builtin.replace:
+        path: "{{ item }}"
+        regexp: nullok
+        replace: ''
+      loop: "{{ discovered_pam_nullok.stdout_lines }}"
+      notify: Pam_auth_update_pwunix
+
+- name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember"
+  when:
+    - ubtu22cis_rule_5_3_3_4_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.3.4.2
+    - NIST800-53R5_NA
+  block:
+    - name: "5.3.3.4.2 | AUDIT | Ensure pam_unix does not include remember | capture state"
+      ansible.builtin.shell: grep -PH -- '^\h*^\h*[^#\n\r]+\h+pam_unix\.so\b' /etc/pam.d/common-{password,auth,account,session,session-noninteractive} | grep -Pv -- '\bremember=\d\b'
+      changed_when: false
+      failed_when: discovered_pam_remember.rc not in [ 0, 1 ]
+      register: discovered_pam_remember
+
+    - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember | Ensure remember removed"
+      when: discovered_pam_remember.stdout | length > 0
+      ansible.builtin.replace:
+        path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
+        regexp: remember=\d+
+        replace: ''
+      notify: Pam_auth_update_pwunix
+
+- name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm"
+  when:
+    - ubtu22cis_rule_5_3_3_4_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.3.4.3
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.3.3.4.3 | AUDIT | Ensure pam_unix includes a strong password hashing algorithm | capture state"
+      ansible.builtin.shell: grep -PH -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?("{{ ubtu22cis_passwd_hash_algo }}")\b' /etc/pam.d/common-password
+      changed_when: false
+      failed_when: discovered_pam_pwhash.rc not in [ 0, 1 ]
+      register: discovered_pam_pwhash
+
+    - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | Ensure hash algorithm set"
+      when: discovered_pam_remember.stdout | length > 0
+      ansible.builtin.replace:
+        path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
+        regexp: "(md5|bigcrypt|sha256|blowfish|gost_yescrypt|sha512|yescrypt)"
+        replace: '{{ ubtu22cis_passwd_hash_algo }}'
+      notify: Pam_auth_update_pwunix
+
+- name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok"
+  when:
+    - ubtu22cis_rule_5_3_3_4_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.3.4.4
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | capture state"
+      ansible.builtin.shell: grep -PH -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/common-password
+      changed_when: false
+      failed_when: discovered_pam_authtok.rc not in [ 0, 1 ]
+      register: discovered_pam_authtok
+
+    - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"
+      when:
+        - discovered_pam_authtok is defined
+        - discovered_pam_authtok | length > 0
+      ansible.builtin.lineinfile:
+        path: "/etc/pam.d/common-password"
+        regexp: ^(\s*password\s+[success=end.*]\s+pam_unix\.so)(.*)\s+use_authtok\s*=\s*\S+(.*$)
+        line: \1\2\3 use_authtok
+        backrefs: true
