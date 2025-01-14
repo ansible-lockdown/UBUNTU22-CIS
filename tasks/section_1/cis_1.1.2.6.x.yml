@@ -1,6 +1,6 @@
 ---
 
-- name: "1/.1 | PATCH | Ensure /var/log is a separate partition"
+- name: "1.1.2.6.1 | PATCH | Ensure /var/log is a separate partition"
   when:
     - ubtu22cis_rule_1_1_2_6_1
     - required_mount not in mount_names
