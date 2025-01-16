@@ -1,30 +1,49 @@
-
 ## Ansible controlled file
 # Added as part of ansible-lockdown CIS baseline
 # provided by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown
 ## YOUR CHANGED WILL BE LOST!
 
 # This template will set all of the auditd configurations via a handler in the role in one task instead of individually
-{{ syscalls}}
 {% if ubtu22cis_rule_6_3_3_1 %}
 -w /etc/sudoers -p wa -k scope
 -w /etc/sudoers.d/ -p wa -k scope
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_2 %}
--a always,exit -F arch=b64 -C euid!=uid -F auid!=unset -S execve -k user_emulation
--a always,exit -F arch=b32 -C euid!=uid -F auid!=unset -S execve -k user_emulation
+{% set syscalls = ["execve"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -C euid!=uid -F auid!=unset -S {{ arch_syscalls|join(',') }} -k user_emulation
+-a always,exit -F arch=b32 -C euid!=uid -F auid!=unset -S {{ arch_syscalls|join(',') }} -k user_emulation
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_3 %}
 -w {{ ubtu22cis_sudo_logfile }} -p wa -k sudo_log_file
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_4 %}
--a always,exit -F arch=b64 -S adjtimex,settimeofday,clock_settime -k time-change
--a always,exit -F arch=b32 -S adjtimex,settimeofday,clock_settime -k time-change
+{% set syscalls = ["adjtimex","settimeofday","clock_settime"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -k time-change
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -k time-change
 -w /etc/localtime -p wa -k time-change
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_5 %}
--a always,exit -F arch=b64 -S sethostname,setdomainname -k system-locale
--a always,exit -F arch=b32 -S sethostname,setdomainname -k system-locale
+{% set syscalls = ["sethostname","setdomainname"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }}  -k system-locale
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }}  -k system-locale
 -w /etc/issue -p wa -k system-locale
 -w /etc/issue.net -p wa -k system-locale
 -w /etc/hosts -p wa -k system-locale
@@ -40,10 +59,17 @@
 {% endif %}
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_7 %}
--a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=unset -k access
--a always,exit -F arch=b64 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=unset -k access
--a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EACCES -F auid>=1000 -F auid!=unset -k access
--a always,exit -F arch=b32 -S creat,open,openat,truncate,ftruncate -F exit=-EPERM -F auid>=1000 -F auid!=unset -k access
+{% set syscalls = ["creat","open","openat","truncate","ftruncate"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F exit=-EACCES -F auid>=1000 -F auid!=unset -k access
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F exit=-EPERM -F auid>=1000 -F auid!=unset -k access
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F exit=-EACCES -F auid>=1000 -F auid!=unset -k access
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F exit=-EPERM -F auid>=1000 -F auid!=unset -k access
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_8 %}
 -w /etc/group -p wa -k identity
@@ -56,16 +82,65 @@
 -w /etc/pam.d -p wa -k identity
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_9 %}
--a always,exit -F arch=b64 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S chown,fchown,lchown,fchownat -F auid>=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b64 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b32 -S chmod,fchmod,fchmodat -F auid>=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b32 -S chown,fchown,lchown,fchownat -F auid>=1000 -F auid!=unset -k perm_mod
--a always,exit -F arch=b32 -S setxattr,lsetxattr,fsetxattr,removexattr,lremovexattr,fremovexattr -F auid>=1000 -F auid!=unset -k perm_mod
+{% set syscalls = ["chmod","fchmod","fchmodat"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k perm_mod
+{% set syscalls = ["chown","fchown","lchown","fchownat"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k perm_mod
+{% set syscalls = ["etxattr","lsetxattr","fsetxattr","removexattr","lremovexattr","fremovexattr"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k perm_mod
+{% set syscalls = ["chmod","fchmod","fchmodat"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k perm_mod
+{% set syscalls = ["chown","fchown","lchown","fchownat"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k perm_mod
+{% set syscalls = ["setxattr","lsetxattr","fsetxattr","removexattr","lremovexattr","fremovexattr"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k perm_mod
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_10 %}
--a always,exit -F arch=b64 -S mount -F auid>=1000 -F auid!=unset -k mounts
--a always,exit -F arch=b32 -S mount -F auid>=1000 -F auid!=unset -k mounts
+{% set syscalls = ["mount"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k mounts
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k mounts
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_11 %}
 -w /var/run/utmp -p wa -k session
@@ -77,8 +152,15 @@
 -w /var/run/faillock -p wa -k logins
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_13 %}
--a always,exit -F arch=b64 -S unlink,unlinkat,rename,renameat -F auid>=1000 -F auid!=unset -k delete
--a always,exit -F arch=b32 -S unlink,unlinkat,rename,renameat -F auid>=1000 -F auid!=unset -k delete
+{% set syscalls = ["unlink","unlinkat","rename","renameat"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k delete
+-a always,exit -F arch=b32 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=unset -k delete
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_14 %}
 -w /etc/apparmor/ -p wa -k MAC-policy
@@ -98,7 +180,14 @@
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_19 %}
 -a always,exit -F path=/usr/bin/kmod -F perm=x -F auid>=1000 -F auid!=-1 -k kernel_modules
--a always,exit -F arch=b64 -S init_module,finit_module,delete_module -F auid>=1000 -F auid!=-1 -k kernel_modules
+{% set syscalls = ["init_module","finit_module","delete_module"] %}
+{% set arch_syscalls = [] %}
+{% for syscall in syscalls  %}
+{% if syscall in supported_syscalls %}
+{{ arch_syscalls.append( syscall) }}
+{% endif %}
+{% endfor %}
+-a always,exit -F arch=b64 -S {{ arch_syscalls|join(',') }} -F auid>=1000 -F auid!=-1 -k kernel_modules
 {% endif %}
 {% if ubtu22cis_rule_6_3_3_20 %}
 -e 2
