@@ -1,5 +1,4 @@
 ---
-
 - name: POST | Apply auditd template for section 4.1.3.x
   when: update_audit_template
   ansible.builtin.template:
@@ -7,7 +6,9 @@
     dest: /etc/audit/rules.d/99_auditd.rules
     owner: root
     group: root
-    mode: '0640'
+    mode: "0640"
+  vars:
+    syscalls: "{{ lookup('file', 'audit/syscalls/table/syscall-' + ansible_architecture) }}"
   register: discovered_audit_rules_updated
   notify:
     - Auditd rules reload
@@ -22,7 +23,7 @@
     dest: /etc/audit/rules.d/98_auditd_exceptions.rules
     owner: root
     group: root
-    mode: '0600'
+    mode: "0600"
   notify: Restart auditd
 
 - name: POST | Flush handlers

@@ -5,7 +5,7 @@
 ## YOUR CHANGED WILL BE LOST!
 
 # This template will set all of the auditd configurations via a handler in the role in one task instead of individually
-
+{{ syscalls}}
 {% if ubtu22cis_rule_6_3_3_1 %}
 -w /etc/sudoers -p wa -k scope
 -w /etc/sudoers.d/ -p wa -k scope
