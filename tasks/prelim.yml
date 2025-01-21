@@ -47,6 +47,11 @@
       ansible.builtin.debug:
         msg: "{{ prelim_mount_point_fs_and_options }}"
 
+- name: PRELIM | PATCH | Run apt update
+  tags: always
+  ansible.builtin.package:
+    update_cache: true
+
 - name: Include audit specific variables
   when:
     - run_audit or audit_only
@@ -64,14 +69,6 @@
   tags: run_audit
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
-
-- name: PRELIM | PATCH | Run apt update
-  when:
-    - ubtu22cis_rule_1_2_1_1 or
-      ubtu22cis_rule_1_2_2_1
-  tags: always
-  ansible.builtin.package:
-    update_cache: true
 
 - name: PRELIM | AUDIT | Discover Gnome Desktop Environment
   tags: always
