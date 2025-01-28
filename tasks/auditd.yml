@@ -2,9 +2,11 @@
 # Since auditd rules are dependent on syscalls and syscall tables are architecture specific,
 # we need to update the auditd rules depending on the architecture of the system.
 # This task passed the syscalls table to the auditd template and updates the auditd rules
-- name: Set supported_syscalls variable
-  shell: ausyscall --dump |  awk  '{print $2}'
-  register: syscalls
+- name: "POST | AUDITD | Set supported_syscalls variable"
+  ansible.builtin.shell: ausyscall --dump |  awk  '{print $2}'
+  changed_when: false
+  failed_when: discovered_auditd_syscalls.rc not in [ 0, 1 ]
+  register: discovered_auditd_syscalls
 
 - name: POST | Apply auditd template for section 4.1.3.x
   when: update_audit_template
@@ -15,7 +17,7 @@
     group: root
     mode: "0640"
   vars:
-    supported_syscalls: "{{ syscalls.stdout_lines }}"
+    supported_syscalls: "{{ discovered_auditd_syscalls.stdout_lines }}"
   register: discovered_audit_rules_updated
   notify:
     - Auditd rules reload
