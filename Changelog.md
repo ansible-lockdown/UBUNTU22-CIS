@@ -1,5 +1,21 @@
 # Ubuntu22CIS
 
+## Based on CIS v2.0.0
+
+### Do not migrate
+
+CIS have rewritten with a full release including but not limited to
+
+- reordering
+- new sections and controls in differing sections
+
+This is a rewrite off approx 75% of controls
+
+- New variables
+- improved audit related checks
+- greater options on some controls
+- linting improvements and updated to latest
+
 ## Based on CIS V1.0.0
 
 ### 1.1.1

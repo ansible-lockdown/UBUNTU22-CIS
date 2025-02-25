@@ -1,32 +1,13 @@
 ---
 
-- name: "SECTION | 3.1 | Disable unused network protocols and devices"
+- name: "SECTION | 3.1 | Configure Network Devices"
   ansible.builtin.import_tasks:
-      file: cis_3.1.x.yml
+    file: cis_3.1.x.yml
 
-- name: "SECTION | 3.2 | Network Parameters Host Only"
+- name: "SECTION | 3.2 | Configure Network Kernel Modules"
   ansible.builtin.import_tasks:
-      file: cis_3.2.x.yml
+    file: cis_3.2.x.yml
 
-- name: "SECTION | 3.3 | Network Parameters Host and Router"
+- name: "SECTION | 3.3 | Configure Network Kernel Parameters"
   ansible.builtin.import_tasks:
-      file: cis_3.3.x.yml
-
-- name: "SECTION | 3.4 | Uncommon Network Protocols"
-  ansible.builtin.import_tasks:
-      file: cis_3.4.x.yml
-
-- name: "SECTION | 3.5.1 | UFW Firewall Configuration"
-  ansible.builtin.import_tasks:
-      file: cis_3.5.1.x.yml
-  when: ubtu22cis_firewall_package == "ufw"
-
-- name: "SECTION | 3.5.2 | nftables Firewall Configuration"
-  ansible.builtin.import_tasks:
-      file: cis_3.5.2.x.yml
-  when: ubtu22cis_firewall_package == "nftables"
-
-- name: "SECTION | 3.5.3 | iptables Firewall Configuration"
-  ansible.builtin.import_tasks:
-      file: cis_3.5.3.x.yml
-  when: ubtu22cis_firewall_package == "iptables"
+    file: cis_3.3.x.yml

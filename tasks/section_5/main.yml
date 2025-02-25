@@ -1,24 +1,55 @@
 ---
 
-- name: "SECTION | 5.1 | Configure time-based job schedulers"
+- name: "SECTION | 5.1 | Configure SSH Server"
   ansible.builtin.import_tasks:
-      file: cis_5.1.x.yml
+    file: cis_5.1.x.yml
 
-- name: "SECTION | 5.2 | Configure sudo"
-  ansible.builtin.import_tasks:
-      file: cis_5.2.x.yml
+- name: "SECTION | 5.2 | Configure privilege escalation"
   when: not system_is_container
-
-- name: "SECTION | 5.3 | Configure SSH Server"
   ansible.builtin.import_tasks:
-      file: cis_5.3.x.yml
+    file: cis_5.2.x.yml
+
+- name: "SECTION | 5.3.1.x | Configure PAM software packages"
   when: not system_is_container
-
-- name: "SECTION | 5.4.x | User PAM"
   ansible.builtin.import_tasks:
-      file: cis_5.4.x.yml
+    file: cis_5.3.1.x.yml
+
+- name: "SECTION | 5.3.2.x | Configure pam-auth-update"
   when: not system_is_container
-
-- name: "SECTION | 5.5.x | User Accounts and Environment"
   ansible.builtin.import_tasks:
-      file: cis_5.5.x.yml
+    file: cis_5.3.2.x.yml
+
+- name: "SECTION | 5.3.3.1.x | Configure pam_faillock module"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.3.3.1.x.yml
+
+- name: "SECTION | 5.3.3.2.x | Configure pam_pwquality module"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.3.3.2.x.yml
+
+- name: "SECTION | 5.3.3.3.x | Configure pam_pwhistory module"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.3.3.3.x.yml
+
+- name: "SECTION | 5.3.3.4.x | Configure pam_unix module"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.3.3.4.x.yml
+
+- name: "SECTION | 5.4.1.x | Configure shadow password suite parameters"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.4.1.x.yml
+
+- name: "SECTION | 5.4.2.x | Configure root and system accounts and environment"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.4.2.x.yml
+
+- name: "SECTION | 5.4.3.x | Configure user default environment"
+  when: not system_is_container
+  ansible.builtin.import_tasks:
+    file: cis_5.4.3.x.yml

@@ -11,7 +11,7 @@ What=tmpfs
 Where=/tmp
 Type=tmpfs
 
-Options: {{ tmp_partition_mount_options | unique | join(',') }}
+Options: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
 
 [Install]
 WantedBy=local-fs.target

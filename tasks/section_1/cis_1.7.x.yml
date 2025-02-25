@@ -1,120 +1,343 @@
 ---
+- name: "1.7.1 | PATCH | Ensure GDM is removed"
+  when:
+    - ubtu22cis_rule_1_7_1
+    - not ubtu22cis_desktop_required
+    - ubtu22cis_disruption_high
+    - "'gdm3' in ansible_facts.packages"
+  tags:
+    - level2-server
+    - patch
+    - rule_1.7.1
+    - gnome
+    - NIST800-53R5_CM-11
+  ansible.builtin.package:
+    name: gdm3
+    state: absent
 
-- name: "1.7.1 | PATCH | Ensure message of the day is configured properly"
+- name: "1.7.2 | PATCH | Ensure GDM login banner is configured"
+  when:
+    - ubtu22cis_rule_1_7_2
+    - ubtu22cis_desktop_required
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.7.2
+    - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
-      - name: "1.7.1 | PATCH | Ensure message of the day is configured properly | motd"
-        ansible.builtin.template:
-            src: etc/motd.j2
-            dest: /etc/motd
+    - name: "1.7.2 | PATCH | Ensure GDM login banner is configured | make directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
 
-      - name: "1.7.1 | PATCH | Ensure message of the day is configured properly | disable dynamic_motd"
-        ansible.builtin.lineinfile:
-            path: /etc/pam.d/sshd
-            regexp: "{{ item.regexp }}"
-            line: "{{ item.line }}"
-            backrefs: true
-        loop:
-            - { regexp: '(session\s+optional\s+pam_motd.so\s+motd=/run/motd.dynamic)', line: '# \1' }
-            - { regexp: '(session\s+optional\s+pam_motd.so noupdate)', line: '# \1' }
-            - { regexp: '# Pam_motd.so disabled for CIS benchmark', line: '# Pam_motd.so disabled for CIS benchmark' }
-        when: ubtu22cis_disable_dynamic_motd
+    - name: "1.7.2 | PATCH | Ensure GDM login banner is configured | banner settings"
+      ansible.builtin.lineinfile:  # noqa: args[module]
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/00-login-screen"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        insertafter: "{{ item.insertafter }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      loop:
+        - { regexp: "\\[org\\/gnome\\/login-screen\\]", line: "[org/gnome/login-screen]", insertafter: EOF }
+        - { regexp: "banner-message-enable", line: "banner-message-enable=true", insertafter: "\\[org\\/gnome\\/login-screen\\]" }
+        - { regexp: "banner-message-text", line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: "banner-message-enable" }
+      notify: Update dconf
+
+- name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled"
   when:
-      - ubtu22cis_rule_1_7_1
+    - ubtu22cis_rule_1_7_3
+    - ubtu22cis_desktop_required
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.7.1
-      - motd
-
-- name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly"
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.7.3
+    - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
   block:
-      - name: "1.7.2 | PATCH | Ensure local login warning banner is configured properly | issue"
-        ansible.builtin.template:
-            src: etc/issue.j2
-            dest: /etc/issue
+    - name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled | make directories"
+      ansible.builtin.file:
+        path: "{{ item }}"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      loop:
+        - /etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d
+        - /etc/dconf/profile
 
-      - name: "1.7.2 | PATCH | Ensure local login warning banner is kept on package upgrade | issue"
-        community.general.dpkg_divert:
-            path: /etc/issue
+    - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | disable-user-list setting login-screen"
+      ansible.builtin.lineinfile:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/00-login-screen"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        insertafter: "{{ item.insertafter }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      loop:
+        - { regexp: "\\[org\\/gnome\\/login-screen\\]", line: "[org/gnome/login-screen]", insertafter: EOF }
+        - { regexp: "disable-user-list", line: "disable-user-list=true", insertafter: "\\[org\\/gnome\\/login-screen\\]" }
+      notify: Update dconf
+
+    - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | disable-user-list setting profile"
+      ansible.builtin.lineinfile:
+        path: "/etc/dconf/profile/{{ prelim_dconf_system_db.stdout }}"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        insertafter: "{{ item.insertafter }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      loop:
+        - { regexp: "^user-db:user", line: "user-db:user", insertafter: EOF }
+        - { regexp: "^system-db:{{ prelim_dconf_system_db.stdout }}", line: "system-db:{{ prelim_dconf_system_db.stdout }}", insertafter: "user-db:user" }
+        - regexp: "^file-db:/usr/share/gdm/greeter-dconf-defaults"
+          line: "file-db:/usr/share/gdm/greeter-dconf-defaults"
+          insertafter: "system-db:{{ prelim_dconf_system_db.stdout }}"
+      notify: Update dconf
+
+- name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle"
   when:
-      - ubtu22cis_rule_1_7_2
+    - ubtu22cis_rule_1_7_4
+    - ubtu22cis_desktop_required
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.7.2
-      - banner
-
-- name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly"
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.7.4
+    - gnome
+    - NIST800-53R5_NA
   block:
-      - name: "1.7.3 | PATCH | Ensure remote login warning banner is configured properly | issue.net"
-        ansible.builtin.template:
-            src: etc/issue.net.j2
-            dest: /etc/issue.net
+    - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | session profile"
+      ansible.builtin.lineinfile:
+        path: "/etc/dconf/profile/{{ prelim_dconf_system_db.stdout }}"
+        regexp: "{{ item.regexp }}"
+        line: "{{ item.line }}"
+        insertafter: "{{ item.after | default(omit) }}"
+        create: true
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      loop:
+        - { regexp: "user-db:user", line: "user-db:user" }
+        - { regexp: "system-db:{{ prelim_dconf_system_db.stdout }}", line: "system-db:{{ prelim_dconf_system_db.stdout }}", after: "^user-db.*" }
 
-      - name: "1.7.3 | PATCH | Ensure remote login warning banner is kept on package upgrade | issue.net"
-        community.general.dpkg_divert:
-            path: /etc/issue.net
-  when:
-      - ubtu22cis_rule_1_7_3
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.7.3
-      - banner
+    - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | make directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      notify: Update dconf
 
-- name: "1.7.4 | PATCH | Ensure permissions on /etc/motd are configured"
-  ansible.builtin.file:
-      path: /etc/motd
-      owner: root
-      group: root
-      mode: '0644'
-  when:
-      - ubtu22cis_rule_1_7_4
-  tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.7.4
-      - permissions
-      - motd
+    - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | session script"
+      ansible.builtin.template:
+        src: etc/dconf/db/00-screensaver.j2
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/00-screensaver"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      notify: Update dconf
 
-- name: "1.7.5 | PATCH | Ensure permissions on /etc/issue are configured"
-  ansible.builtin.file:
-      path: /etc/issue
-      owner: root
-      group: root
-      mode: '0644'
+- name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden"
   when:
-      - ubtu22cis_rule_1_7_5
+    - ubtu22cis_rule_1_7_5
+    - ubtu22cis_desktop_required
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.7.5
-      - permissions
-      - banner
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.7.5
+    - gnome
+    - NIST800-53R5_CM-11
+  block:
+    - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lock directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/locks"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      notify: Update dconf
 
-- name: "1.7.6 | PATCH | Ensure permissions on /etc/issue.net are configured"
-  ansible.builtin.file:
-      path: /etc/issue.net
-      owner: root
-      group: root
-      mode: '0644'
+    - name: "1.7.5 | PATCH | Ensure GDM screen locks cannot be overridden | make lockfile"
+      ansible.builtin.template:
+        src: etc/dconf/db/00-screensaver_lock.j2
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/locks/00-screensaver"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      notify: Update dconf
+
+- name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled"
   when:
-      - ubtu22cis_rule_1_7_6
+    - ubtu22cis_rule_1_7_6
+    - ubtu22cis_desktop_required
   tags:
-      - level1-server
-      - level1-workstation
-      - automated
-      - patch
-      - rule_1.7.6
-      - permissions
-      - banner
+    - level1-server
+    - level2-workstation
+    - patch
+    - rule_1.7.6
+    - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled | make directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      notify: Update dconf
+
+    - name: "1.7.6 | PATCH | Ensure GDM automatic mounting of removable media is disabled | session script"
+      ansible.builtin.template:
+        src: etc/dconf/db/00-media-automount.j2
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/00-media-automount"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      notify: Update dconf
+
+- name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden"
+  when:
+    - ubtu22cis_rule_1_7_7
+    - ubtu22cis_desktop_required
+  tags:
+    - level1-server
+    - level2-workstation
+    - patch
+    - rule_1.7.7
+    - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lock directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/locks"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      notify: Update dconf
+
+    - name: "1.7.7 | PATCH | Ensure GDM disabling automatic mounting of removable media is not overridden | make lockfile"
+      ansible.builtin.template:
+        src: etc/dconf/db/00-automount_lock.j2
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/locks/00-automount_lock"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      notify: Update dconf
+
+- name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled"
+  when:
+    - ubtu22cis_rule_1_7_8
+    - ubtu22cis_desktop_required
+  tags:
+    - level1-server
+    - level2-workstation
+    - patch
+    - rule_1.7.8
+    - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled | make directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      notify: Update dconf
+
+    - name: "1.7.8 | PATCH | Ensure GDM autorun-never is enabled | session script"
+      ansible.builtin.template:
+        src: etc/dconf/db/00-media-autorun.j2
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/00-media-autorun"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      notify: Update dconf
+
+- name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden"
+  when:
+    - ubtu22cis_rule_1_7_9
+    - ubtu22cis_desktop_required
+  tags:
+    - level1-server
+    - level2-workstation
+    - patch
+    - rule_1.7.9
+    - gnome
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden | make lock directory"
+      ansible.builtin.file:
+        path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/locks"
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+      notify: Update dconf
+
+    - name: "1.7.9 | PATCH | Ensure GDM autorun-never is not overridden | make lockfile"
+      ansible.builtin.template:
+        src: etc/dconf/db/00-autorun_lock.j2
+        dest: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/locks/00-autorun_lock"
+        owner: root
+        group: root
+        mode: 'u-x,go-wx'
+      notify: Update dconf
+
+- name: "1.7.10 | PATCH | Ensure XDCMP is not enabled"
+  when:
+    - ubtu22cis_rule_1_7_10
+    - ubtu22cis_desktop_required
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.7.10
+    - gnome
+    - xdcmp
+    - NIST800-53R5_SI-4
+  ansible.builtin.lineinfile:
+    path: /etc/gdm3/custom.conf
+    regexp: "^Enable.*=.*true"
+    state: absent

@@ -1,0 +1,92 @@
+---
+
+- name: "5.3.2.1 | PATCH | Ensure pam_unix module is enabled"
+  when:
+    - ubtu22cis_rule_5_3_2_1
+    - ubtu22cis_disruption_high
+    - ubtu22cis_pam_auth_unix
+    - ubtu22cis_pam_create_pamunix_file
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.2.1
+    - Pam_auth_update
+    - pam_unix
+    - NIST800-53R5_IA-5
+  ansible.builtin.template:
+    src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}.j2"
+    dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
+    owner: root
+    group: root
+    mode: 'go-rwx'
+  notify: Pam_auth_update_pwunix
+
+- name: "5.3.2.2 | PATCH | Ensure pam_faillock module is enabled"
+  when:
+    - ubtu22cis_rule_5_3_2_2
+    - ubtu22cis_disruption_high
+    - ubtu22cis_pam_auth_faillock
+    - ubtu22cis_pam_create_faillock_files
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.2.2
+    - Pam_auth_update
+    - pam_faillock
+    - NIST800-53R5_NA
+  ansible.builtin.template:
+    src: "{{ ubtu22cis_pam_confd_dir }}{{ item }}.j2"
+    dest: "/{{ ubtu22cis_pam_confd_dir }}{{ item }}"
+    owner: root
+    group: root
+    mode: 'go-rwx'
+  loop:
+    - "{{ ubtu22cis_pam_faillock_file }}"
+    - "{{ ubtu22cis_pam_faillock_notify_file }}"
+  notify:
+    - Pam_auth_update_pwfaillock
+    - Pam_auth_update_pwfaillock_notify
+
+- name: "5.3.2.3 | PATCH | Ensure pam_pwquality module is enabled"
+  when:
+    - ubtu22cis_rule_5_3_2_3
+    - ubtu22cis_disruption_high
+    - ubtu22cis_pam_create_pwquality_files
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.2.3
+    - Pam_auth_update
+    - pam_quality
+    - NIST800-53R5_NA
+  ansible.builtin.template:
+    src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwquality_file }}.j2"
+    dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwquality_file }}"
+    owner: root
+    group: root
+    mode: 'go-rwx'
+  notify: Pam_auth_update_pwquality
+
+- name: "5.3.2.4 | PATCH | Ensure pam_pwhistory module is enabled"
+  when:
+    - ubtu22cis_rule_5_3_2_4
+    - ubtu22cis_disruption_high
+    - ubtu22cis_pam_create_pwhistory_files
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.3.2.4
+    - Pam_auth_update
+    - pam_history
+    - NIST800-53R5_NA
+  ansible.builtin.template:
+    src: "{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}.j2"
+    dest: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwhistory_file }}"
+    owner: root
+    group: root
+    mode: 'go-rwx'
+  notify: Pam_auth_update_pwhistory

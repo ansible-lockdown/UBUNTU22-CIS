@@ -1,0 +1,63 @@
+---
+
+- name: "2.3.2.1 | PATCH | Ensure systemd-timesyncd configured with authorized timeserver"
+  when: ubtu22cis_rule_2_3_2_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_2.3.2.1
+    - timesyncd
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-8
+  block:
+    - name: "2.3.2.1 | PATCH | Ensure systemd-timesyncd configured with authorized timeserver | create conf.d dir"
+      ansible.builtin.file:
+        path: /etc/systemd/timesyncd.conf.d
+        owner: root
+        group: root
+        mode: 'go-w'
+        state: directory
+
+    - name: "2.3.2.1 | PATCH | Ensure systemd-timesyncd configured with authorized timeserver | sources"
+      ansible.builtin.template:
+        src: "{{ item }}.j2"
+        dest: "/{{ item }}"
+        mode: 'go-wx'
+        owner: root
+        group: root
+      loop:
+        - "etc/systemd/timesyncd.conf.d/50-timesyncd.conf"
+      notify: Restart timeservice
+
+- name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running"
+  when: ubtu22cis_rule_2_3_2_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - rule_2.3.2.2
+    - timesyncd
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-8
+  block:
+    - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running | enable if timesyncd"
+      ansible.builtin.systemd:
+        name: systemd-timesyncd
+        state: started
+        enabled: true
+
+    - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running | disable other time sources | chrony"
+      when: "'chrony' in ansible_facts.packages"
+      ansible.builtin.systemd:
+        name: chrony
+        state: stopped
+        enabled: false
+        masked: true
+
+    - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running | disable other time sources | ntp"
+      when: "'ntp' in ansible_facts.packages"
+      ansible.builtin.systemd:
+        name: ntp
+        state: stopped
+        enabled: false
+        masked: true

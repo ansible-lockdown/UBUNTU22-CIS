@@ -1,0 +1,170 @@
+---
+
+- name: "1.3.1.1 | PATCH | Ensure AppArmor is installed"
+  when:
+    - ubtu22cis_rule_1_3_1_1
+    - "'apparmor' not in ansible_facts.packages or
+      'apparmor-utils' not in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.3.1.1
+    - apparmor
+    - NIST800-53R5_SI-2
+  ansible.builtin.package:
+    name: ['apparmor', 'apparmor-utils']
+    state: present
+
+- name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
+  when: ubtu22cis_rule_1_3_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.3.1.2
+    - apparmor
+    - NIST800-53R5_AC-3
+  block:
+    - name: "1.3.1.2 | AUDIT | Ensure AppArmor is enabled in the bootloader configuration | Get current settings"
+      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_cmdline_settings
+
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
+      when: discovered_cmdline_settings.stdout is not search('apparmor=')
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: ^(GRUB_CMDLINE_LINUX=")(|apparmor=\d\s)(.*\w+")
+        line: \1apparmor=1 \3
+        backrefs: true
+      notify: Grub update
+
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set security settings if none exist"
+      when: discovered_cmdline_settings.stdout is not search('security=')
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: ^(GRUB_CMDLINE_LINUX=")(|security=\w+\s)(.*\w+")
+        line: \1security=apparmor \3
+        backrefs: true
+      notify: Grub update
+
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
+      when:
+        - "'apparmor' not in discovered_cmdline_settings.stdout"
+        - "'security' not in discovered_cmdline_settings.stdout"
+      ansible.builtin.lineinfile:
+        path: /etc/default/grub
+        regexp: '^GRUB_CMDLINE_LINUX='
+        line: 'GRUB_CMDLINE_LINUX="apparmor=1 security=apparmor {{ discovered_cmdline_settings.stdout }}"'
+        insertafter: '^GRUB_'
+      notify: Grub update
+
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Replace apparmor settings when exists"
+      when:
+        - "'apparmor' in discovered_cmdline_settings.stdout or
+          'security' in discovered_cmdline_settings.stdout"
+      ansible.builtin.replace:
+        path: /etc/default/grub
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      with_items:
+        - { regexp: 'apparmor=\w+', replace: 'apparmor=1' }
+        - { regexp: 'security=\w+', replace: 'security=apparmor' }
+      notify: Grub update
+
+# Controls 1.3.1.4 and 1.3.1.3 target the same setting and thus should not be run together.
+# Because control 1.3.1.4 is stricter than 1.3.1.3, we need to change the order --
+# control 1.3.1.4 then registers the fact that is has run and thus keeps 1.3.1.3 from running.
+
+- name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing"
+  when:
+    - ubtu22cis_rule_1_3_1_4
+    - not ubtu22cis_apparmor_disable
+  tags:
+    - level2-server
+    - level2-workstation
+    - scored
+    - patch
+    - rule_1.3.1.4
+    - apparmor
+    - NIST800-53R5_AC-3
+  block:
+    - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | Make sure that 1.3.1.3 is not run"
+      ansible.builtin.set_fact:
+        control_1_3_1_4_was_run: true
+        ubtu22cis_apparmor_enforce_only: true
+      changed_when: false
+
+    - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | Get pre apply enforce count"
+      ansible.builtin.shell: apparmor_status |  grep "profiles are in enforce mode" | tr -d -c 0-9
+      changed_when: false
+      failed_when: false
+      register: discovered_apparmor_pre_count
+
+    - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | Apply enforcing to /etc/apparmor.d profiles"
+      ansible.builtin.shell: aa-enforce /etc/apparmor.d/*
+      changed_when: false
+      failed_when: false
+
+    - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | Get post apply enforce count"
+      ansible.builtin.shell: apparmor_status |  grep "profiles are in enforce mode" | tr -d -c 0-9
+      changed_when: false
+      failed_when: false
+      register: discovered_apparmor_post_count
+
+    - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | This flags for idempotency"
+      when: discovered_apparmor_pre_count.stdout != discovered_apparmor_post_count.stdout
+      ansible.builtin.debug:
+        msg: Changed! The profiles in /etc/apparmor.d were set to enforcing
+      changed_when: true
+
+- name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode"
+  when:
+    - ubtu22cis_rule_1_3_1_3
+    - not ubtu22cis_apparmor_disable
+    - not control_1_3_1_4_was_run
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.3.1.3
+    - apparmor
+    - NIST800-53R5_AC-3
+  block:
+    - name: "1.3.1.3 | AUDIT | Ensure all AppArmor Profiles are in enforce or complain | Set ubtu22cis_apparmor_enforce_only true for GOSS"
+      when: ubtu22cis_apparmor_mode == "enforce"
+      ansible.builtin.set_fact:
+        ubtu22cis_apparmor_enforce_only: true
+      changed_when: false
+
+    - name: "1.3.1.3 | AUDIT | Ensure all AppArmor Profiles are in enforce or complain | Set ubtu22cis_apparmor_enforce_only false for GOSS"
+      when: ubtu22cis_apparmor_mode == "complain"
+      ansible.builtin.set_fact:
+        ubtu22cis_apparmor_enforce_only: false
+      changed_when: false
+
+    - name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode | Get pre apply enforce count"
+      ansible.builtin.shell: apparmor_status |  grep "profiles are in {{ ubtu22cis_apparmor_mode }} mode" | tr -d -c 0-9
+      changed_when: false
+      failed_when: false
+      register: discovered_apparmor_pre_count
+
+    - name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode | Apply complaining/enforcing to /etc/apparmor.d profiles"
+      ansible.builtin.shell: aa-{{ ubtu22cis_apparmor_mode }} /etc/apparmor.d/*
+      changed_when: false
+      failed_when: false
+
+    - name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode | Get post apply enforce count"
+      ansible.builtin.shell: apparmor_status |  grep "profiles are in {{ ubtu22cis_apparmor_mode }} mode" | tr -d -c 0-9
+      changed_when: false
+      failed_when: false
+      register: discovered_apparmor_post_count
+
+    - name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are in enforce or complain mode | This flags for idempotency"
+      when: discovered_apparmor_pre_count.stdout != discovered_apparmor_post_count.stdout
+      ansible.builtin.debug:
+        msg: Changed! The profiles in /etc/apparmor.d were set to {{ ubtu22cis_apparmor_mode }} mode
+      changed_when: true

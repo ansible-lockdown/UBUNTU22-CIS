@@ -1,0 +1,48 @@
+---
+
+- name: "5.3.1.1 | PATCH | Ensure latest version of pam is installed"
+  when:
+    - ubtu22cis_rule_5_3_1_1
+    - ansible_facts.packages['libpam-runtime'][0]['version'] is version('1.5.2-6', '<=') or
+      "'libpam-runtime' not in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.1.1
+    - NIST800-53R5_NA
+  ansible.builtin.package:
+    name: libpam-runtime
+    state: latest
+
+- name: "5.3.1.2 | PATCH | Ensure libpam-modules is installed"
+  when:
+    - ubtu22cis_rule_5_3_1_2
+    - ansible_facts.packages['libpam-modules'][0]['version'] is version('1.5.2-6', '<=') or
+      "'libpam-modules' not in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.1.2
+    - NIST800-53R5_NA
+  ansible.builtin.package:
+    name: libpam-modules
+    state: latest
+
+- name: "5.3.1.3 | PATCH | Ensure libpam-pwquality is installed"
+  when:
+    - ubtu22cis_rule_5_3_1_3
+    - "'libpam-pwquality' not in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - pam
+    - rule_5.3.1.3
+    - NIST800-53R5_NA
+  ansible.builtin.package:
+    name: libpam-pwquality
+    state: latest

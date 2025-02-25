@@ -1,0 +1,14 @@
+---
+
+- name: "1.2.2.1 | PATCH | Ensure updates, patches, and additional security software are installed"
+  when: ubtu22cis_rule_1_2_2_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_1.2.2.1
+    - patch
+    - NIST800-53R5_SI-2
+  ansible.builtin.package:
+    name: "*"
+    state: latest

@@ -1,12 +1,9 @@
 ## metadata for Audit benchmark
+benchmark_version: {{ benchmark_version }}
 
-benchmark_version: '1.1.0'
 
-
-# Some audit tests may need to scan every filesystem or have an impact on a system
-# these may need be scheduled to minimise impact also ability to set a timeout if taking too long
+#  timeout for each command to run where set - default = 10seconds/10000ms
 timeout_ms: {{ audit_cmd_timeout }}
-
 
 ubtu22cis_section1: {{ ubtu22cis_section1 }}
 ubtu22cis_section2: {{ ubtu22cis_section2 }}
@@ -14,139 +11,194 @@ ubtu22cis_section3: {{ ubtu22cis_section3 }}
 ubtu22cis_section4: {{ ubtu22cis_section4 }}
 ubtu22cis_section5: {{ ubtu22cis_section5 }}
 ubtu22cis_section6: {{ ubtu22cis_section6 }}
+ubtu22cis_section7: {{ ubtu22cis_section7 }}
 
 ubtu22cis_level_1: {{ ubtu22cis_level_1 }}
 ubtu22cis_level_2: {{ ubtu22cis_level_2 }}
 
 
 #  to enable rules that may have IO impact on a system e.g. full filesystem scans or CPU heavy
-run_heavy_tests: true
+run_heavy_tests: {{ audit_run_heavy_tests }}
 
 #  True is BIOS based system else set to false
 ubtu22_legacy_boot: true
 
-ubtu22_set_boot_pass: true
+##
+## Rule-specific switches
+##
+## Use the switches below to disable specific rules independently of the chosen profile
+##
 
 ## Section 1 Fixes
 # Section 1 is Initial setup (FileSystem Configuration, Configure Software Updates, Filesystem Integrity Checking, Secure Boot Settings,
 # Additional Process Hardening, Mandatory Access Control, Command Line Warning Banners, and GNOME Display Manager)
+
+# 1.1 Filesystems
+# 1.1.1 Configure Filesystem Kernel Modules
 ubtu22cis_rule_1_1_1_1: {{ ubtu22cis_rule_1_1_1_1 }}
 ubtu22cis_rule_1_1_1_2: {{ ubtu22cis_rule_1_1_1_2 }}
 ubtu22cis_rule_1_1_1_3: {{ ubtu22cis_rule_1_1_1_3 }}
-ubtu22cis_rule_1_1_2_1: {{ ubtu22cis_rule_1_1_2_1 }}
-ubtu22cis_rule_1_1_2_2: {{ ubtu22cis_rule_1_1_2_2 }}
-ubtu22cis_rule_1_1_2_3: {{ ubtu22cis_rule_1_1_2_3 }}
-ubtu22cis_rule_1_1_2_4: {{ ubtu22cis_rule_1_1_2_4 }}
-ubtu22cis_rule_1_1_3_1: {{ ubtu22cis_rule_1_1_3_1 }}
-ubtu22cis_rule_1_1_3_2: {{ ubtu22cis_rule_1_1_3_2 }}
-ubtu22cis_rule_1_1_3_3: {{ ubtu22cis_rule_1_1_3_3 }}
-ubtu22cis_rule_1_1_4_1: {{ ubtu22cis_rule_1_1_4_1 }}
-ubtu22cis_rule_1_1_4_2: {{ ubtu22cis_rule_1_1_4_2 }}
-ubtu22cis_rule_1_1_4_3: {{ ubtu22cis_rule_1_1_4_3 }}
-ubtu22cis_rule_1_1_4_4: {{ ubtu22cis_rule_1_1_4_4 }}
-ubtu22cis_rule_1_1_5_1: {{ ubtu22cis_rule_1_1_5_1 }}
-ubtu22cis_rule_1_1_5_2: {{ ubtu22cis_rule_1_1_5_2 }}
-ubtu22cis_rule_1_1_5_3: {{ ubtu22cis_rule_1_1_5_3 }}
-ubtu22cis_rule_1_1_5_4: {{ ubtu22cis_rule_1_1_5_4 }}
-ubtu22cis_rule_1_1_6_1: {{ ubtu22cis_rule_1_1_6_1 }}
-ubtu22cis_rule_1_1_6_2: {{ ubtu22cis_rule_1_1_6_2 }}
-ubtu22cis_rule_1_1_6_3: {{ ubtu22cis_rule_1_1_6_3 }}
-ubtu22cis_rule_1_1_6_4: {{ ubtu22cis_rule_1_1_6_4 }}
-ubtu22cis_rule_1_1_7_1: {{ ubtu22cis_rule_1_1_7_1 }}
-ubtu22cis_rule_1_1_7_2: {{ ubtu22cis_rule_1_1_7_2 }}
-ubtu22cis_rule_1_1_7_3: {{ ubtu22cis_rule_1_1_7_3 }}
-ubtu22cis_rule_1_1_8_1: {{ ubtu22cis_rule_1_1_8_1 }}
-ubtu22cis_rule_1_1_8_2: {{ ubtu22cis_rule_1_1_8_2 }}
-ubtu22cis_rule_1_1_8_3: {{ ubtu22cis_rule_1_1_8_3 }}
-ubtu22cis_rule_1_1_9: {{ ubtu22cis_rule_1_1_9 }}
-ubtu22cis_rule_1_1_10: {{ ubtu22cis_rule_1_1_10 }}
-ubtu22cis_rule_1_2_1: {{ ubtu22cis_rule_1_2_1 }}
-ubtu22cis_rule_1_2_2: {{ ubtu22cis_rule_1_2_2 }}
-ubtu22cis_rule_1_3_1: {{ ubtu22cis_rule_1_3_1 }}
-ubtu22cis_rule_1_3_2: {{ ubtu22cis_rule_1_3_2 }}
+ubtu22cis_rule_1_1_1_4: {{ ubtu22cis_rule_1_1_1_4 }}
+ubtu22cis_rule_1_1_1_5: {{ ubtu22cis_rule_1_1_1_5 }}
+ubtu22cis_rule_1_1_1_6: {{ ubtu22cis_rule_1_1_1_6 }}
+ubtu22cis_rule_1_1_1_7: {{ ubtu22cis_rule_1_1_1_7 }}
+ubtu22cis_rule_1_1_1_8: {{ ubtu22cis_rule_1_1_1_8 }}
+
+# 1.1.2 Configure Filesystem Partitions
+# /tmp
+ubtu22cis_rule_1_1_2_1_1: {{ ubtu22cis_rule_1_1_2_1_1 }}
+ubtu22cis_rule_1_1_2_1_2: {{ ubtu22cis_rule_1_1_2_1_2 }}
+ubtu22cis_rule_1_1_2_1_3: {{ ubtu22cis_rule_1_1_2_1_3 }}
+ubtu22cis_rule_1_1_2_1_4: {{ ubtu22cis_rule_1_1_2_1_4 }}
+
+# /dev/shm
+ubtu22cis_rule_1_1_2_2_1: {{ ubtu22cis_rule_1_1_2_2_1 }}
+ubtu22cis_rule_1_1_2_2_2: {{ ubtu22cis_rule_1_1_2_2_2 }}
+ubtu22cis_rule_1_1_2_2_3: {{ ubtu22cis_rule_1_1_2_2_3 }}
+ubtu22cis_rule_1_1_2_2_4: {{ ubtu22cis_rule_1_1_2_2_4 }}
+
+# /home
+ubtu22cis_rule_1_1_2_3_1: {{ ubtu22cis_rule_1_1_2_3_1 }}
+ubtu22cis_rule_1_1_2_3_2: {{ ubtu22cis_rule_1_1_2_3_2 }}
+ubtu22cis_rule_1_1_2_3_3: {{ ubtu22cis_rule_1_1_2_3_3 }}
+
+# /var
+ubtu22cis_rule_1_1_2_4_1: {{ ubtu22cis_rule_1_1_2_4_1 }}
+ubtu22cis_rule_1_1_2_4_2: {{ ubtu22cis_rule_1_1_2_4_2 }}
+ubtu22cis_rule_1_1_2_4_3: {{ ubtu22cis_rule_1_1_2_4_3 }}
+
+# /var/tmp
+ubtu22cis_rule_1_1_2_5_1: {{ ubtu22cis_rule_1_1_2_5_1 }}
+ubtu22cis_rule_1_1_2_5_2: {{ ubtu22cis_rule_1_1_2_5_2 }}
+ubtu22cis_rule_1_1_2_5_3: {{ ubtu22cis_rule_1_1_2_5_3 }}
+ubtu22cis_rule_1_1_2_5_4: {{ ubtu22cis_rule_1_1_2_5_4 }}
+
+# /var/log
+ubtu22cis_rule_1_1_2_6_1: {{ ubtu22cis_rule_1_1_2_6_1 }}
+ubtu22cis_rule_1_1_2_6_2: {{ ubtu22cis_rule_1_1_2_6_2 }}
+ubtu22cis_rule_1_1_2_6_3: {{ ubtu22cis_rule_1_1_2_6_3 }}
+ubtu22cis_rule_1_1_2_6_4: {{ ubtu22cis_rule_1_1_2_6_4 }}
+
+# /var/log/audit
+ubtu22cis_rule_1_1_2_7_1: {{ ubtu22cis_rule_1_1_2_7_1 }}
+ubtu22cis_rule_1_1_2_7_2: {{ ubtu22cis_rule_1_1_2_7_2 }}
+ubtu22cis_rule_1_1_2_7_3: {{ ubtu22cis_rule_1_1_2_7_3 }}
+ubtu22cis_rule_1_1_2_7_4: {{ ubtu22cis_rule_1_1_2_7_4 }}
+
+# 1.2 Package mgmt
+# 1.2.1 Configure Package repositories
+ubtu22cis_rule_1_2_1_1: {{ ubtu22cis_rule_1_2_1_1 }}
+ubtu22cis_rule_1_2_1_2: {{ ubtu22cis_rule_1_2_1_2 }}
+# 1.2.2 Configure Package updates
+ubtu22cis_rule_1_2_2_1: {{ ubtu22cis_rule_1_2_2_1 }}
+
+# 1.3 Mandatory Access Control
+## 1.3.1 Configure AppArmor
+ubtu22cis_rule_1_3_1_1: {{ ubtu22cis_rule_1_3_1_1 }}
+ubtu22cis_rule_1_3_1_2: {{ ubtu22cis_rule_1_3_1_2 }}
+ubtu22cis_rule_1_3_1_3: {{ ubtu22cis_rule_1_3_1_3 }}
+ubtu22cis_rule_1_3_1_4: {{ ubtu22cis_rule_1_3_1_4 }}
+
+# 1.4 Configure Bootloader
 ubtu22cis_rule_1_4_1: {{ ubtu22cis_rule_1_4_1 }}
 ubtu22cis_rule_1_4_2: {{ ubtu22cis_rule_1_4_2 }}
-ubtu22cis_rule_1_4_3: {{ ubtu22cis_rule_1_4_3 }}
+
+# 1.5 Configure additional Process Hardening
 ubtu22cis_rule_1_5_1: {{ ubtu22cis_rule_1_5_1 }}
 ubtu22cis_rule_1_5_2: {{ ubtu22cis_rule_1_5_2 }}
 ubtu22cis_rule_1_5_3: {{ ubtu22cis_rule_1_5_3 }}
 ubtu22cis_rule_1_5_4: {{ ubtu22cis_rule_1_5_4 }}
-ubtu22cis_rule_1_6_1_1: {{ ubtu22cis_rule_1_6_1_1 }}
-ubtu22cis_rule_1_6_1_2: {{ ubtu22cis_rule_1_6_1_2 }}
-ubtu22cis_rule_1_6_1_3: {{ ubtu22cis_rule_1_6_1_3 }}
-ubtu22cis_rule_1_6_1_4: {{ ubtu22cis_rule_1_6_1_4 }}
+ubtu22cis_rule_1_5_5: {{ ubtu22cis_rule_1_5_5 }}
+
+# 1.6 Configure Command Line Warning Banners
+ubtu22cis_rule_1_6_1: {{ ubtu22cis_rule_1_6_1 }}
+ubtu22cis_rule_1_6_2: {{ ubtu22cis_rule_1_6_2 }}
+ubtu22cis_rule_1_6_3: {{ ubtu22cis_rule_1_6_3 }}
+ubtu22cis_rule_1_6_4: {{ ubtu22cis_rule_1_6_4 }}
+ubtu22cis_rule_1_6_5: {{ ubtu22cis_rule_1_6_5 }}
+ubtu22cis_rule_1_6_6: {{ ubtu22cis_rule_1_6_6 }}
+
+# 1.7 Configure GNOME Display Manager
 ubtu22cis_rule_1_7_1: {{ ubtu22cis_rule_1_7_1 }}
 ubtu22cis_rule_1_7_2: {{ ubtu22cis_rule_1_7_2 }}
 ubtu22cis_rule_1_7_3: {{ ubtu22cis_rule_1_7_3 }}
 ubtu22cis_rule_1_7_4: {{ ubtu22cis_rule_1_7_4 }}
 ubtu22cis_rule_1_7_5: {{ ubtu22cis_rule_1_7_5 }}
 ubtu22cis_rule_1_7_6: {{ ubtu22cis_rule_1_7_6 }}
-ubtu22cis_rule_1_8_1: {{ ubtu22cis_rule_1_8_1 }}
-ubtu22cis_rule_1_8_2: {{ ubtu22cis_rule_1_8_2 }}
-ubtu22cis_rule_1_8_3: {{ ubtu22cis_rule_1_8_3 }}
-ubtu22cis_rule_1_8_4: {{ ubtu22cis_rule_1_8_4 }}
-ubtu22cis_rule_1_8_5: {{ ubtu22cis_rule_1_8_5 }}
-ubtu22cis_rule_1_8_6: {{ ubtu22cis_rule_1_8_6 }}
-ubtu22cis_rule_1_8_7: {{ ubtu22cis_rule_1_8_7 }}
-ubtu22cis_rule_1_8_8: {{ ubtu22cis_rule_1_8_8 }}
-ubtu22cis_rule_1_8_9: {{ ubtu22cis_rule_1_8_9 }}
-ubtu22cis_rule_1_8_10: {{ ubtu22cis_rule_1_8_10 }}
-ubtu22cis_rule_1_9: {{ ubtu22cis_rule_1_9 }}
+ubtu22cis_rule_1_7_7: {{ ubtu22cis_rule_1_7_7 }}
+ubtu22cis_rule_1_7_8: {{ ubtu22cis_rule_1_7_8 }}
+ubtu22cis_rule_1_7_9: {{ ubtu22cis_rule_1_7_9 }}
+ubtu22cis_rule_1_7_10: {{ ubtu22cis_rule_1_7_10 }}
 
-# Section 2 Fixes
+## Section 2 Fixes
 # Section 2 is Services (Special Purpose Services, and service clients)
-ubtu22cis_rule_2_1_1_1: {{ ubtu22cis_rule_2_1_1_1 }}
-ubtu22cis_rule_2_1_1_2: {{ ubtu22cis_rule_2_1_1_2 }}
-ubtu22cis_rule_2_1_1_3: {{ ubtu22cis_rule_2_1_1_3 }}
-ubtu22cis_rule_2_1_1_4: {{ ubtu22cis_rule_2_1_1_4 }}
-# Chrony
-ubtu22cis_rule_2_1_2_1: {{ ubtu22cis_rule_2_1_2_1 }}
-ubtu22cis_rule_2_1_2_2: {{ ubtu22cis_rule_2_1_2_2 }}
-ubtu22cis_rule_2_1_2_3: {{ ubtu22cis_rule_2_1_2_3 }}
-# systemd-timesyncd
-ubtu22cis_rule_2_1_3_1: {{ ubtu22cis_rule_2_1_3_1 }}
-ubtu22cis_rule_2_1_3_2: {{ ubtu22cis_rule_2_1_3_2 }}
-# ntp
-ubtu22cis_rule_2_1_4_1: {{ ubtu22cis_rule_2_1_4_1 }}
-ubtu22cis_rule_2_1_4_2: {{ ubtu22cis_rule_2_1_4_2 }}
-ubtu22cis_rule_2_1_4_3: {{ ubtu22cis_rule_2_1_4_3 }}
-ubtu22cis_rule_2_1_4_4: {{ ubtu22cis_rule_2_1_4_4 }}
-# Services
+
+# 2.1 Configure Server Services
+ubtu22cis_rule_2_1_1: {{ ubtu22cis_rule_2_1_1 }}
+ubtu22cis_rule_2_1_2: {{ ubtu22cis_rule_2_1_2 }}
+ubtu22cis_rule_2_1_3: {{ ubtu22cis_rule_2_1_3 }}
+ubtu22cis_rule_2_1_4: {{ ubtu22cis_rule_2_1_4 }}
+ubtu22cis_rule_2_1_5: {{ ubtu22cis_rule_2_1_5 }}
+ubtu22cis_rule_2_1_6: {{ ubtu22cis_rule_2_1_6 }}
+ubtu22cis_rule_2_1_7: {{ ubtu22cis_rule_2_1_7 }}
+ubtu22cis_rule_2_1_8: {{ ubtu22cis_rule_2_1_8 }}
+ubtu22cis_rule_2_1_9: {{ ubtu22cis_rule_2_1_9 }}
+ubtu22cis_rule_2_1_10: {{ ubtu22cis_rule_2_1_10 }}
+ubtu22cis_rule_2_1_11: {{ ubtu22cis_rule_2_1_11 }}
+ubtu22cis_rule_2_1_12: {{ ubtu22cis_rule_2_1_12 }}
+ubtu22cis_rule_2_1_13: {{ ubtu22cis_rule_2_1_13 }}
+ubtu22cis_rule_2_1_14: {{ ubtu22cis_rule_2_1_14 }}
+ubtu22cis_rule_2_1_15: {{ ubtu22cis_rule_2_1_15 }}
+ubtu22cis_rule_2_1_16: {{ ubtu22cis_rule_2_1_16 }}
+ubtu22cis_rule_2_1_17: {{ ubtu22cis_rule_2_1_17 }}
+ubtu22cis_rule_2_1_18: {{ ubtu22cis_rule_2_1_18 }}
+ubtu22cis_rule_2_1_19: {{ ubtu22cis_rule_2_1_19 }}
+ubtu22cis_rule_2_1_20: {{ ubtu22cis_rule_2_1_20 }}
+ubtu22cis_rule_2_1_21: {{ ubtu22cis_rule_2_1_21 }}
+ubtu22cis_rule_2_1_22: {{ ubtu22cis_rule_2_1_22 }}
+
+# 2.2 Configure client services
 ubtu22cis_rule_2_2_1: {{ ubtu22cis_rule_2_2_1 }}
 ubtu22cis_rule_2_2_2: {{ ubtu22cis_rule_2_2_2 }}
 ubtu22cis_rule_2_2_3: {{ ubtu22cis_rule_2_2_3 }}
 ubtu22cis_rule_2_2_4: {{ ubtu22cis_rule_2_2_4 }}
 ubtu22cis_rule_2_2_5: {{ ubtu22cis_rule_2_2_5 }}
 ubtu22cis_rule_2_2_6: {{ ubtu22cis_rule_2_2_6 }}
-ubtu22cis_rule_2_2_7: {{ ubtu22cis_rule_2_2_7 }}
-ubtu22cis_rule_2_2_8: {{ ubtu22cis_rule_2_2_8 }}
-ubtu22cis_rule_2_2_9: {{ ubtu22cis_rule_2_2_9 }}
-ubtu22cis_rule_2_2_10: {{ ubtu22cis_rule_2_2_10 }}
-ubtu22cis_rule_2_2_11: {{ ubtu22cis_rule_2_2_11 }}
-ubtu22cis_rule_2_2_12: {{ ubtu22cis_rule_2_2_12 }}
-ubtu22cis_rule_2_2_13: {{ ubtu22cis_rule_2_2_13 }}
-ubtu22cis_rule_2_2_14: {{ ubtu22cis_rule_2_2_14 }}
-ubtu22cis_rule_2_2_15: {{ ubtu22cis_rule_2_2_15 }}
-ubtu22cis_rule_2_2_16: {{ ubtu22cis_rule_2_2_16 }}
-ubtu22cis_rule_2_2_17: {{ ubtu22cis_rule_2_2_17 }}
-# Service Client
-ubtu22cis_rule_2_3_1: {{ ubtu22cis_rule_2_3_1 }}
-ubtu22cis_rule_2_3_2: {{ ubtu22cis_rule_2_3_2 }}
-ubtu22cis_rule_2_3_3: {{ ubtu22cis_rule_2_3_3 }}
-ubtu22cis_rule_2_3_4: {{ ubtu22cis_rule_2_3_4 }}
-ubtu22cis_rule_2_3_5: {{ ubtu22cis_rule_2_3_5 }}
-ubtu22cis_rule_2_3_6: {{ ubtu22cis_rule_2_3_6 }}
-# Non-essential services
-ubtu22cis_rule_2_4: {{ ubtu22cis_rule_2_4 }}
 
-# Section 3 Network Configuration
-# Disable Unused Network
+# Ensure time synchronization is in use
+ubtu22cis_rule_2_3_1_1: {{ ubtu22cis_rule_2_3_1_1 }}
+# Configure systemd-timesyncd
+ubtu22cis_rule_2_3_2_1: {{ ubtu22cis_rule_2_3_2_1 }}
+ubtu22cis_rule_2_3_2_2: {{ ubtu22cis_rule_2_3_2_2 }}
+# Configure Chrony
+ubtu22cis_rule_2_3_3_1: {{ ubtu22cis_rule_2_3_3_1 }}
+ubtu22cis_rule_2_3_3_2: {{ ubtu22cis_rule_2_3_3_2 }}
+ubtu22cis_rule_2_3_3_3: {{ ubtu22cis_rule_2_3_3_3 }}
+
+# 2.4 Job Schedulers
+# 2.4.1 Configure Cron
+ubtu22cis_rule_2_4_1_1: {{ ubtu22cis_rule_2_4_1_1 }}
+ubtu22cis_rule_2_4_1_2: {{ ubtu22cis_rule_2_4_1_2 }}
+ubtu22cis_rule_2_4_1_3: {{ ubtu22cis_rule_2_4_1_3 }}
+ubtu22cis_rule_2_4_1_4: {{ ubtu22cis_rule_2_4_1_4 }}
+ubtu22cis_rule_2_4_1_5: {{ ubtu22cis_rule_2_4_1_5 }}
+ubtu22cis_rule_2_4_1_6: {{ ubtu22cis_rule_2_4_1_6 }}
+ubtu22cis_rule_2_4_1_7: {{ ubtu22cis_rule_2_4_1_7 }}
+ubtu22cis_rule_2_4_1_8: {{ ubtu22cis_rule_2_4_1_8 }}
+# Configure At
+ubtu22cis_rule_2_4_2_1: {{ ubtu22cis_rule_2_4_2_1 }}
+
+## Section 3 Network Configuration
+# 3.1 Configure Network Devices
 ubtu22cis_rule_3_1_1: {{ ubtu22cis_rule_3_1_1 }}
 ubtu22cis_rule_3_1_2: {{ ubtu22cis_rule_3_1_2 }}
-# Network Parameters (Host Only)
+ubtu22cis_rule_3_1_3: {{ ubtu22cis_rule_3_1_3 }}
+# 3.2 Configure Network Kernel Modules (Host Only)
 ubtu22cis_rule_3_2_1: {{ ubtu22cis_rule_3_2_1 }}
 ubtu22cis_rule_3_2_2: {{ ubtu22cis_rule_3_2_2 }}
-# Network Parameters (Host and Router)
+ubtu22cis_rule_3_2_3: {{ ubtu22cis_rule_3_2_3 }}
+ubtu22cis_rule_3_2_4: {{ ubtu22cis_rule_3_2_4 }}
+# 3.3 Configure Network Kernel Parameters (Host and Router)
 ubtu22cis_rule_3_3_1: {{ ubtu22cis_rule_3_3_1 }}
 ubtu22cis_rule_3_3_2: {{ ubtu22cis_rule_3_3_2 }}
 ubtu22cis_rule_3_3_3: {{ ubtu22cis_rule_3_3_3 }}
@@ -156,115 +208,47 @@ ubtu22cis_rule_3_3_6: {{ ubtu22cis_rule_3_3_6 }}
 ubtu22cis_rule_3_3_7: {{ ubtu22cis_rule_3_3_7 }}
 ubtu22cis_rule_3_3_8: {{ ubtu22cis_rule_3_3_8 }}
 ubtu22cis_rule_3_3_9: {{ ubtu22cis_rule_3_3_9 }}
-# Uncommon Network Protocols
-ubtu22cis_rule_3_4_1: {{ ubtu22cis_rule_3_4_1 }}
-ubtu22cis_rule_3_4_2: {{ ubtu22cis_rule_3_4_2 }}
-ubtu22cis_rule_3_4_3: {{ ubtu22cis_rule_3_4_3 }}
-ubtu22cis_rule_3_4_4: {{ ubtu22cis_rule_3_4_4 }}
-# Firewall Configuration
-# UFW
-ubtu22cis_rule_3_5_1_1: {{ ubtu22cis_rule_3_5_1_1 }}
-ubtu22cis_rule_3_5_1_2: {{ ubtu22cis_rule_3_5_1_2 }}
-ubtu22cis_rule_3_5_1_3: {{ ubtu22cis_rule_3_5_1_3 }}
-ubtu22cis_rule_3_5_1_4: {{ ubtu22cis_rule_3_5_1_4 }}
-ubtu22cis_rule_3_5_1_5: {{ ubtu22cis_rule_3_5_1_5 }}
-ubtu22cis_rule_3_5_1_6: {{ ubtu22cis_rule_3_5_1_6 }}
-ubtu22cis_rule_3_5_1_7: {{ ubtu22cis_rule_3_5_1_7 }}
-# nftables
-ubtu22cis_rule_3_5_2_1: {{ ubtu22cis_rule_3_5_2_1 }}
-ubtu22cis_rule_3_5_2_2: {{ ubtu22cis_rule_3_5_2_2 }}
-ubtu22cis_rule_3_5_2_3: {{ ubtu22cis_rule_3_5_2_3 }}
-ubtu22cis_rule_3_5_2_4: {{ ubtu22cis_rule_3_5_2_4 }}
-ubtu22cis_rule_3_5_2_5: {{ ubtu22cis_rule_3_5_2_5 }}
-ubtu22cis_rule_3_5_2_6: {{ ubtu22cis_rule_3_5_2_6 }}
-ubtu22cis_rule_3_5_2_7: {{ ubtu22cis_rule_3_5_2_7 }}
-ubtu22cis_rule_3_5_2_8: {{ ubtu22cis_rule_3_5_2_8 }}
-ubtu22cis_rule_3_5_2_9: {{ ubtu22cis_rule_3_5_2_9 }}
-ubtu22cis_rule_3_5_2_10: {{ ubtu22cis_rule_3_5_2_10 }}
-# iptables
-ubtu22cis_rule_3_5_3_1_1: {{ ubtu22cis_rule_3_5_3_1_1 }}
-ubtu22cis_rule_3_5_3_1_2: {{ ubtu22cis_rule_3_5_3_1_2 }}
-ubtu22cis_rule_3_5_3_1_3: {{ ubtu22cis_rule_3_5_3_1_3 }}
-ubtu22cis_rule_3_5_3_2_1: {{ ubtu22cis_rule_3_5_3_2_1 }}
-ubtu22cis_rule_3_5_3_2_2: {{ ubtu22cis_rule_3_5_3_2_2 }}
-ubtu22cis_rule_3_5_3_2_3: {{ ubtu22cis_rule_3_5_3_2_3 }}
-ubtu22cis_rule_3_5_3_2_4: {{ ubtu22cis_rule_3_5_3_2_4 }}
-ubtu22cis_rule_3_5_3_3_1: {{ ubtu22cis_rule_3_5_3_3_1 }}
-ubtu22cis_rule_3_5_3_3_2: {{ ubtu22cis_rule_3_5_3_3_2 }}
-ubtu22cis_rule_3_5_3_3_3: {{ ubtu22cis_rule_3_5_3_3_3 }}
-ubtu22cis_rule_3_5_3_3_4: {{ ubtu22cis_rule_3_5_3_3_4 }}
+ubtu22cis_rule_3_3_10: {{ ubtu22cis_rule_3_3_10 }}
+ubtu22cis_rule_3_3_11: {{ ubtu22cis_rule_3_3_11 }}
 
-# Section 4 Fixes
-# Section 4 is Logging and Auditing (Configure System Accounting (auditd), Configure Data Retention, and Configure Logging)
-ubtu22cis_rule_4_1_1_1: {{ ubtu22cis_rule_4_1_1_1 }}
-ubtu22cis_rule_4_1_1_2: {{ ubtu22cis_rule_4_1_1_2 }}
-ubtu22cis_rule_4_1_1_3: {{ ubtu22cis_rule_4_1_1_3 }}
-ubtu22cis_rule_4_1_1_4: {{ ubtu22cis_rule_4_1_1_4 }}
-ubtu22cis_rule_4_1_2_1: {{ ubtu22cis_rule_4_1_2_1 }}
-ubtu22cis_rule_4_1_2_2: {{ ubtu22cis_rule_4_1_2_2 }}
-ubtu22cis_rule_4_1_2_3: {{ ubtu22cis_rule_4_1_2_3 }}
-# Auditd rules
-ubtu22cis_rule_4_1_3_1: {{ ubtu22cis_rule_4_1_3_1 }}
-ubtu22cis_rule_4_1_3_2: {{ ubtu22cis_rule_4_1_3_2 }}
-ubtu22cis_rule_4_1_3_3: {{ ubtu22cis_rule_4_1_3_3 }}
-ubtu22cis_rule_4_1_3_4: {{ ubtu22cis_rule_4_1_3_4 }}
-ubtu22cis_rule_4_1_3_5: {{ ubtu22cis_rule_4_1_3_5 }}
-ubtu22cis_rule_4_1_3_6: {{ ubtu22cis_rule_4_1_3_6 }}
-ubtu22cis_rule_4_1_3_7: {{ ubtu22cis_rule_4_1_3_7 }}
-ubtu22cis_rule_4_1_3_8: {{ ubtu22cis_rule_4_1_3_8 }}
-ubtu22cis_rule_4_1_3_9: {{ ubtu22cis_rule_4_1_3_9 }}
-ubtu22cis_rule_4_1_3_10: {{ ubtu22cis_rule_4_1_3_10 }}
-ubtu22cis_rule_4_1_3_11: {{ ubtu22cis_rule_4_1_3_11 }}
-ubtu22cis_rule_4_1_3_12: {{ ubtu22cis_rule_4_1_3_12 }}
-ubtu22cis_rule_4_1_3_13: {{ ubtu22cis_rule_4_1_3_13 }}
-ubtu22cis_rule_4_1_3_14: {{ ubtu22cis_rule_4_1_3_14 }}
-ubtu22cis_rule_4_1_3_15: {{ ubtu22cis_rule_4_1_3_15 }}
-ubtu22cis_rule_4_1_3_16: {{ ubtu22cis_rule_4_1_3_16 }}
-ubtu22cis_rule_4_1_3_17: {{ ubtu22cis_rule_4_1_3_17 }}
-ubtu22cis_rule_4_1_3_18: {{ ubtu22cis_rule_4_1_3_18 }}
-ubtu22cis_rule_4_1_3_19: {{ ubtu22cis_rule_4_1_3_19 }}
-ubtu22cis_rule_4_1_3_20: {{ ubtu22cis_rule_4_1_3_20 }}
-ubtu22cis_rule_4_1_3_21: {{ ubtu22cis_rule_4_1_3_21 }}
-# Auditd file access
-ubtu22cis_rule_4_1_4_1: {{ ubtu22cis_rule_4_1_4_1 }}
-ubtu22cis_rule_4_1_4_2: {{ ubtu22cis_rule_4_1_4_2 }}
-ubtu22cis_rule_4_1_4_3: {{ ubtu22cis_rule_4_1_4_3 }}
-ubtu22cis_rule_4_1_4_4: {{ ubtu22cis_rule_4_1_4_4 }}
-ubtu22cis_rule_4_1_4_5: {{ ubtu22cis_rule_4_1_4_5 }}
-ubtu22cis_rule_4_1_4_6: {{ ubtu22cis_rule_4_1_4_6 }}
-ubtu22cis_rule_4_1_4_7: {{ ubtu22cis_rule_4_1_4_7 }}
-ubtu22cis_rule_4_1_4_8: {{ ubtu22cis_rule_4_1_4_8 }}
-ubtu22cis_rule_4_1_4_9: {{ ubtu22cis_rule_4_1_4_9 }}
-ubtu22cis_rule_4_1_4_10: {{ ubtu22cis_rule_4_1_4_10 }}
-ubtu22cis_rule_4_1_4_11: {{ ubtu22cis_rule_4_1_4_11 }}
-# Configure Logging
-## journald
-ubtu22cis_rule_4_2_1_1_1: {{ ubtu22cis_rule_4_2_1_1_1 }}
-ubtu22cis_rule_4_2_1_1_2: {{ ubtu22cis_rule_4_2_1_1_2 }}
-ubtu22cis_rule_4_2_1_1_3: {{ ubtu22cis_rule_4_2_1_1_1 }}
-ubtu22cis_rule_4_2_1_1_4: {{ ubtu22cis_rule_4_2_1_1_1 }}
-ubtu22cis_rule_4_2_1_1: {{ ubtu22cis_rule_4_2_1_1 }}
-ubtu22cis_rule_4_2_1_2: {{ ubtu22cis_rule_4_2_1_2 }}
-ubtu22cis_rule_4_2_1_3: {{ ubtu22cis_rule_4_2_1_3 }}
-ubtu22cis_rule_4_2_1_4: {{ ubtu22cis_rule_4_2_1_4  }}
-ubtu22cis_rule_4_2_1_5: {{ ubtu22cis_rule_4_2_1_5 }}
-ubtu22cis_rule_4_2_1_6: {{ ubtu22cis_rule_4_2_1_6  }}
-ubtu22cis_rule_4_2_1_7: {{ ubtu22cis_rule_4_2_1_7  }}
-# rsyslog
-ubtu22cis_rule_4_2_2_1: {{ ubtu22cis_rule_4_2_2_1 }}
-ubtu22cis_rule_4_2_2_2: {{ ubtu22cis_rule_4_2_2_2 }}
-ubtu22cis_rule_4_2_2_3: {{ ubtu22cis_rule_4_2_2_3 }}
-ubtu22cis_rule_4_2_2_4: {{ ubtu22cis_rule_4_2_2_4 }}
-ubtu22cis_rule_4_2_2_5: {{ ubtu22cis_rule_4_2_2_5 }}
-ubtu22cis_rule_4_2_2_6: {{ ubtu22cis_rule_4_2_2_6 }}
-ubtu22cis_rule_4_2_2_7: {{ ubtu22cis_rule_4_2_2_7 }}
+## Section 4 Host Based Firewall
+# 4.1 Configure UncomplicatedFirewall
+ubtu22cis_rule_4_1_1: {{ ubtu22cis_rule_4_1_1 }}
+ubtu22cis_rule_4_1_2: {{ ubtu22cis_rule_4_1_2 }}
+ubtu22cis_rule_4_1_3: {{ ubtu22cis_rule_4_1_3 }}
+ubtu22cis_rule_4_1_4: {{ ubtu22cis_rule_4_1_4 }}
+ubtu22cis_rule_4_1_5: {{ ubtu22cis_rule_4_1_5 }}
+ubtu22cis_rule_4_1_6: {{ ubtu22cis_rule_4_1_6 }}
+ubtu22cis_rule_4_1_7: {{ ubtu22cis_rule_4_1_7 }}
+# 4.2 Configure nftables
+ubtu22cis_rule_4_2_1: {{ ubtu22cis_rule_4_2_1 }}
+ubtu22cis_rule_4_2_2: {{ ubtu22cis_rule_4_2_2 }}
 ubtu22cis_rule_4_2_3: {{ ubtu22cis_rule_4_2_3 }}
-ubtu22cis_rule_4_3: {{ ubtu22cis_rule_4_3}}
-ubtu22cis_rule_4_4: {{ ubtu22cis_rule_4_4 }}
+ubtu22cis_rule_4_2_4: {{ ubtu22cis_rule_4_2_4 }}
+ubtu22cis_rule_4_2_5: {{ ubtu22cis_rule_4_2_5 }}
+ubtu22cis_rule_4_2_6: {{ ubtu22cis_rule_4_2_6 }}
+ubtu22cis_rule_4_2_7: {{ ubtu22cis_rule_4_2_7 }}
+ubtu22cis_rule_4_2_8: {{ ubtu22cis_rule_4_2_8 }}
+ubtu22cis_rule_4_2_9: {{ ubtu22cis_rule_4_2_9 }}
+ubtu22cis_rule_4_2_10: {{ ubtu22cis_rule_4_2_10 }}
+# Configure iptables software
+ubtu22cis_rule_4_3_1_1: {{ ubtu22cis_rule_4_3_1_1 }}
+ubtu22cis_rule_4_3_1_2: {{ ubtu22cis_rule_4_3_1_2 }}
+ubtu22cis_rule_4_3_1_3: {{ ubtu22cis_rule_4_3_1_3 }}
 
-# Section 5 Fixes
-# Section 5 is Access, Authentication, and Authorization (Configure time-based job schedulers, Configure sudo, Configure SSH Server, Configure PAM
-# and User Accounts and Environment)
+# Configure IPv4 iptables
+ubtu22cis_rule_4_3_2_1: {{ ubtu22cis_rule_4_3_2_1 }}
+ubtu22cis_rule_4_3_2_2: {{ ubtu22cis_rule_4_3_2_2 }}
+ubtu22cis_rule_4_3_2_3: {{ ubtu22cis_rule_4_3_2_3 }}
+ubtu22cis_rule_4_3_2_4: {{ ubtu22cis_rule_4_3_2_4 }}
+# Configure IPv5 iptables
+ubtu22cis_rule_4_3_3_1: {{ ubtu22cis_rule_4_3_3_1 }}
+ubtu22cis_rule_4_3_3_2: {{ ubtu22cis_rule_4_3_3_2 }}
+ubtu22cis_rule_4_3_3_3: {{ ubtu22cis_rule_4_3_3_3 }}
+ubtu22cis_rule_4_3_3_4: {{ ubtu22cis_rule_4_3_3_4 }}
+
+## Section 5 Access Control
+# 5.1 Configure SSH Server
 ubtu22cis_rule_5_1_1: {{ ubtu22cis_rule_5_1_1 }}
 ubtu22cis_rule_5_1_2: {{ ubtu22cis_rule_5_1_2 }}
 ubtu22cis_rule_5_1_3: {{ ubtu22cis_rule_5_1_3 }}
@@ -274,7 +258,20 @@ ubtu22cis_rule_5_1_6: {{ ubtu22cis_rule_5_1_6 }}
 ubtu22cis_rule_5_1_7: {{ ubtu22cis_rule_5_1_7 }}
 ubtu22cis_rule_5_1_8: {{ ubtu22cis_rule_5_1_8 }}
 ubtu22cis_rule_5_1_9: {{ ubtu22cis_rule_5_1_9 }}
-
+ubtu22cis_rule_5_1_10: {{ ubtu22cis_rule_5_1_10 }}
+ubtu22cis_rule_5_1_11: {{ ubtu22cis_rule_5_1_11 }}
+ubtu22cis_rule_5_1_12: {{ ubtu22cis_rule_5_1_12 }}
+ubtu22cis_rule_5_1_13: {{ ubtu22cis_rule_5_1_13 }}
+ubtu22cis_rule_5_1_14: {{ ubtu22cis_rule_5_1_14 }}
+ubtu22cis_rule_5_1_15: {{ ubtu22cis_rule_5_1_15 }}
+ubtu22cis_rule_5_1_16: {{ ubtu22cis_rule_5_1_16 }}
+ubtu22cis_rule_5_1_17: {{ ubtu22cis_rule_5_1_17 }}
+ubtu22cis_rule_5_1_18: {{ ubtu22cis_rule_5_1_18 }}
+ubtu22cis_rule_5_1_19: {{ ubtu22cis_rule_5_1_19 }}
+ubtu22cis_rule_5_1_20: {{ ubtu22cis_rule_5_1_20 }}
+ubtu22cis_rule_5_1_21: {{ ubtu22cis_rule_5_1_21 }}
+ubtu22cis_rule_5_1_22: {{ ubtu22cis_rule_5_1_22 }}
+# 5.2 Configure privilege escalation
 ubtu22cis_rule_5_2_1: {{ ubtu22cis_rule_5_2_1 }}
 ubtu22cis_rule_5_2_2: {{ ubtu22cis_rule_5_2_2 }}
 ubtu22cis_rule_5_2_3: {{ ubtu22cis_rule_5_2_3 }}
@@ -282,240 +279,378 @@ ubtu22cis_rule_5_2_4: {{ ubtu22cis_rule_5_2_4 }}
 ubtu22cis_rule_5_2_5: {{ ubtu22cis_rule_5_2_5 }}
 ubtu22cis_rule_5_2_6: {{ ubtu22cis_rule_5_2_6 }}
 ubtu22cis_rule_5_2_7: {{ ubtu22cis_rule_5_2_7 }}
-ubtu22cis_rule_5_2_8: {{ ubtu22cis_rule_5_2_8 }}
-ubtu22cis_rule_5_2_9: {{ ubtu22cis_rule_5_2_9 }}
-ubtu22cis_rule_5_2_10: {{ ubtu22cis_rule_5_2_10 }}
-ubtu22cis_rule_5_2_11: {{ ubtu22cis_rule_5_2_11 }}
-ubtu22cis_rule_5_2_12: {{ ubtu22cis_rule_5_2_12 }}
-ubtu22cis_rule_5_2_13: {{ ubtu22cis_rule_5_2_13 }}
-ubtu22cis_rule_5_2_14: {{ ubtu22cis_rule_5_2_14 }}
-ubtu22cis_rule_5_2_15: {{ ubtu22cis_rule_5_2_15 }}
-ubtu22cis_rule_5_2_16: {{ ubtu22cis_rule_5_2_16 }}
-ubtu22cis_rule_5_2_17: {{ ubtu22cis_rule_5_2_17 }}
-ubtu22cis_rule_5_2_18: {{ ubtu22cis_rule_5_2_18 }}
-ubtu22cis_rule_5_2_19: {{ ubtu22cis_rule_5_2_19 }}
-ubtu22cis_rule_5_2_20: {{ ubtu22cis_rule_5_2_20 }}
-ubtu22cis_rule_5_2_21: {{ ubtu22cis_rule_5_2_21 }}
-ubtu22cis_rule_5_2_22: {{ ubtu22cis_rule_5_2_22 }}
-ubtu22cis_rule_5_3_1: {{ ubtu22cis_rule_5_3_1 }}
-ubtu22cis_rule_5_3_2: {{ ubtu22cis_rule_5_3_2 }}
-ubtu22cis_rule_5_3_3: {{ ubtu22cis_rule_5_3_3 }}
-ubtu22cis_rule_5_3_4: {{ ubtu22cis_rule_5_3_4 }}
-ubtu22cis_rule_5_3_5: {{ ubtu22cis_rule_5_3_5 }}
-ubtu22cis_rule_5_3_6: {{ ubtu22cis_rule_5_3_6 }}
-ubtu22cis_rule_5_3_7: {{ ubtu22cis_rule_5_3_7 }}
-ubtu22cis_rule_5_4_1: {{ ubtu22cis_rule_5_4_1 }}
-ubtu22cis_rule_5_4_2: {{ ubtu22cis_rule_5_4_2 }}
-ubtu22cis_rule_5_4_3: {{ ubtu22cis_rule_5_4_3 }}
-ubtu22cis_rule_5_4_4: {{ ubtu22cis_rule_5_4_4 }}
-ubtu22cis_rule_5_4_5: {{ ubtu22cis_rule_5_4_5 }}
-ubtu22cis_rule_5_5_1_1: {{ ubtu22cis_rule_5_5_1_1 }}
-ubtu22cis_rule_5_5_1_2: {{ ubtu22cis_rule_5_5_1_2 }}
-ubtu22cis_rule_5_5_1_3: {{ ubtu22cis_rule_5_5_1_3 }}
-ubtu22cis_rule_5_5_1_4: {{ ubtu22cis_rule_5_5_1_4 }}
-ubtu22cis_rule_5_5_1_5: {{ ubtu22cis_rule_5_5_1_5 }}
-ubtu22cis_rule_5_5_2: {{ ubtu22cis_rule_5_5_2 }}
-ubtu22cis_rule_5_5_3: {{ ubtu22cis_rule_5_5_3 }}
-ubtu22cis_rule_5_5_4: {{ ubtu22cis_rule_5_5_4 }}
-ubtu22cis_rule_5_5_5: {{ ubtu22cis_rule_5_5_5 }}
-ubtu22cis_rule_5_6: {{ ubtu22cis_rule_5_6 }}
-ubtu22cis_rule_5_7: {{ ubtu22cis_rule_5_7 }}
+# 5.3.1 Configure PAM software packages
+ubtu22cis_rule_5_3_1_1: {{ ubtu22cis_rule_5_3_1_1 }}
+ubtu22cis_rule_5_3_1_2: {{ ubtu22cis_rule_5_3_1_2 }}
+ubtu22cis_rule_5_3_1_3: {{ ubtu22cis_rule_5_3_1_3 }}
+# 5.3.2 Configure pam-auth-update profiles
+ubtu22cis_rule_5_3_2_1: {{ ubtu22cis_rule_5_3_2_1 }}
+ubtu22cis_rule_5_3_2_2: {{ ubtu22cis_rule_5_3_2_2 }}
+ubtu22cis_rule_5_3_2_3: {{ ubtu22cis_rule_5_3_2_3 }}
+ubtu22cis_rule_5_3_2_4: {{ ubtu22cis_rule_5_3_2_4 }}
+# 5.3.3.1 Configure pam_faillock module
+ubtu22cis_rule_5_3_3_1_1: {{ ubtu22cis_rule_5_3_3_1_1 }}
+ubtu22cis_rule_5_3_3_1_2: {{ ubtu22cis_rule_5_3_3_1_2 }}
+ubtu22cis_rule_5_3_3_1_3: {{ ubtu22cis_rule_5_3_3_1_3 }}
+# 5.3.3.2 Configure pam_quality module
+ubtu22cis_rule_5_3_3_2_1: {{ ubtu22cis_rule_5_3_3_2_1 }}
+ubtu22cis_rule_5_3_3_2_2: {{ ubtu22cis_rule_5_3_3_2_2 }}
+ubtu22cis_rule_5_3_3_2_3: {{ ubtu22cis_rule_5_3_3_2_3 }}
+ubtu22cis_rule_5_3_3_2_4: {{ ubtu22cis_rule_5_3_3_2_4 }}
+ubtu22cis_rule_5_3_3_2_5: {{ ubtu22cis_rule_5_3_3_2_5 }}
+ubtu22cis_rule_5_3_3_2_6: {{ ubtu22cis_rule_5_3_3_2_6 }}
+ubtu22cis_rule_5_3_3_2_7: {{ ubtu22cis_rule_5_3_3_2_7 }}
+ubtu22cis_rule_5_3_3_2_8: {{ ubtu22cis_rule_5_3_3_2_8 }}
+# 5.3.3.3 Configure pam_history module
+# This are added as part of 5.3.2.4 using jinja2 template
+ubtu22cis_rule_5_3_3_3_1: {{ ubtu22cis_rule_5_3_3_3_1 }}
+ubtu22cis_rule_5_3_3_3_2: {{ ubtu22cis_rule_5_3_3_3_2 }}
+ubtu22cis_rule_5_3_3_3_3: {{ ubtu22cis_rule_5_3_3_3_3 }}
+# 5.3.3.4 Configure pam_unix module
+ubtu22cis_rule_5_3_3_4_1: {{ ubtu22cis_rule_5_3_3_4_1 }}
+ubtu22cis_rule_5_3_3_4_2: {{ ubtu22cis_rule_5_3_3_4_2 }}
+ubtu22cis_rule_5_3_3_4_3: {{ ubtu22cis_rule_5_3_3_4_3 }}
+ubtu22cis_rule_5_3_3_4_4: {{ ubtu22cis_rule_5_3_3_4_4 }}
+# 5.4 User Accounts and Environment
+# 5.4.1 Configure shadow password suite parameters
+ubtu22cis_rule_5_4_1_1: {{ ubtu22cis_rule_5_4_1_1 }}
+ubtu22cis_rule_5_4_1_2: {{ ubtu22cis_rule_5_4_1_2 }}
+ubtu22cis_rule_5_4_1_3: {{ ubtu22cis_rule_5_4_1_3 }}
+ubtu22cis_rule_5_4_1_4: {{ ubtu22cis_rule_5_4_1_4 }}
+ubtu22cis_rule_5_4_1_5: {{ ubtu22cis_rule_5_4_1_5 }}
+ubtu22cis_rule_5_4_1_6: {{ ubtu22cis_rule_5_4_1_6 }}
+# 5.4.2 Configure root and system accounts and environment
+ubtu22cis_rule_5_4_2_1: {{ ubtu22cis_rule_5_4_2_1 }}
+ubtu22cis_rule_5_4_2_2: {{ ubtu22cis_rule_5_4_2_2 }}
+ubtu22cis_rule_5_4_2_3: {{ ubtu22cis_rule_5_4_2_3 }}
+ubtu22cis_rule_5_4_2_4: {{ ubtu22cis_rule_5_4_2_4 }}
+ubtu22cis_rule_5_4_2_5: {{ ubtu22cis_rule_5_4_2_5 }}
+ubtu22cis_rule_5_4_2_6: {{ ubtu22cis_rule_5_4_2_6 }}
+ubtu22cis_rule_5_4_2_7: {{ ubtu22cis_rule_5_4_2_7 }}
+ubtu22cis_rule_5_4_2_8: {{ ubtu22cis_rule_5_4_2_8 }}
+# 5.4.2 Configure user default environment
+ubtu22cis_rule_5_4_3_1: {{ ubtu22cis_rule_5_4_3_1 }}
+ubtu22cis_rule_5_4_3_2: {{ ubtu22cis_rule_5_4_3_2 }}
+ubtu22cis_rule_5_4_3_3: {{ ubtu22cis_rule_5_4_3_3 }}
 
-# Section 6 Fixes
-# Section is Systme Maintenance (System File Permissions and User and Group Settings)
+## Section 6
+# 6.1 Configure Filesystem Integrity Checking
 ubtu22cis_rule_6_1_1: {{ ubtu22cis_rule_6_1_1 }}
 ubtu22cis_rule_6_1_2: {{ ubtu22cis_rule_6_1_2 }}
 ubtu22cis_rule_6_1_3: {{ ubtu22cis_rule_6_1_3 }}
-ubtu22cis_rule_6_1_4: {{ ubtu22cis_rule_6_1_4 }}
-ubtu22cis_rule_6_1_5: {{ ubtu22cis_rule_6_1_5 }}
-ubtu22cis_rule_6_1_6: {{ ubtu22cis_rule_6_1_6 }}
-ubtu22cis_rule_6_1_7: {{ ubtu22cis_rule_6_1_7 }}
-ubtu22cis_rule_6_1_8: {{ ubtu22cis_rule_6_1_8 }}
-ubtu22cis_rule_6_1_9: {{ ubtu22cis_rule_6_1_9 }}
-ubtu22cis_rule_6_1_10: {{ ubtu22cis_rule_6_1_10 }}
-ubtu22cis_rule_6_1_11: {{ ubtu22cis_rule_6_1_11 }}
-ubtu22cis_rule_6_1_12: {{ ubtu22cis_rule_6_1_12 }}
-ubtu22cis_rule_6_1_13: {{ ubtu22cis_rule_6_1_13 }}
-ubtu22cis_rule_6_2_1: {{ ubtu22cis_rule_6_2_1 }}
-ubtu22cis_rule_6_2_2: {{ ubtu22cis_rule_6_2_2 }}
-ubtu22cis_rule_6_2_3: {{ ubtu22cis_rule_6_2_3 }}
-ubtu22cis_rule_6_2_4: {{ ubtu22cis_rule_6_2_4 }}
-ubtu22cis_rule_6_2_5: {{ ubtu22cis_rule_6_2_5 }}
-ubtu22cis_rule_6_2_6: {{ ubtu22cis_rule_6_2_6 }}
-ubtu22cis_rule_6_2_7: {{ ubtu22cis_rule_6_2_7 }}
-ubtu22cis_rule_6_2_8: {{ ubtu22cis_rule_6_2_8 }}
-ubtu22cis_rule_6_2_9: {{ ubtu22cis_rule_6_2_9 }}
-ubtu22cis_rule_6_2_10: {{ ubtu22cis_rule_6_2_10 }}
-ubtu22cis_rule_6_2_11: {{ ubtu22cis_rule_6_2_11 }}
-ubtu22cis_rule_6_2_12: {{ ubtu22cis_rule_6_2_12 }}
-ubtu22cis_rule_6_2_13: {{ ubtu22cis_rule_6_2_13 }}
-ubtu22cis_rule_6_2_14: {{ ubtu22cis_rule_6_2_14 }}
-ubtu22cis_rule_6_2_15: {{ ubtu22cis_rule_6_2_15 }}
-ubtu22cis_rule_6_2_16: {{ ubtu22cis_rule_6_2_16 }}
-ubtu22cis_rule_6_2_17: {{ ubtu22cis_rule_6_2_17 }}
+# 6.2.1.1 Configure systemd-journald service
+ubtu22cis_rule_6_2_1_1_1: {{ ubtu22cis_rule_6_2_1_1_1 }}
+ubtu22cis_rule_6_2_1_1_2: {{ ubtu22cis_rule_6_2_1_1_2 }}
+ubtu22cis_rule_6_2_1_1_3: {{ ubtu22cis_rule_6_2_1_1_3 }}
+ubtu22cis_rule_6_2_1_1_4: {{ ubtu22cis_rule_6_2_1_1_4 }}
+ubtu22cis_rule_6_2_1_1_5: {{ ubtu22cis_rule_6_2_1_1_5 }}
+ubtu22cis_rule_6_2_1_1_6: {{ ubtu22cis_rule_6_2_1_1_6 }}
+# 6.2.1.2 Configure systemd-journald service
+ubtu22cis_rule_6_2_1_2_1: {{ ubtu22cis_rule_6_2_1_2_1 }}
+ubtu22cis_rule_6_2_1_2_2: {{ ubtu22cis_rule_6_2_1_2_2 }}
+ubtu22cis_rule_6_2_1_2_3: {{ ubtu22cis_rule_6_2_1_2_3 }}
+ubtu22cis_rule_6_2_1_2_4: {{ ubtu22cis_rule_6_2_1_2_4 }}
+# 6.2.2 Configure Logfiles
+ubtu22cis_rule_6_2_2_1: {{ ubtu22cis_rule_6_2_2_1 }}
+# 6.3.1 Configure auditd Service
+ubtu22cis_rule_6_3_1_1: {{ ubtu22cis_rule_6_3_1_1 }}
+ubtu22cis_rule_6_3_1_2: {{ ubtu22cis_rule_6_3_1_2 }}
+ubtu22cis_rule_6_3_1_3: {{ ubtu22cis_rule_6_3_1_3 }}
+ubtu22cis_rule_6_3_1_4: {{ ubtu22cis_rule_6_3_1_4 }}
+# 6.3.2 Configure data retention
+ubtu22cis_rule_6_3_2_1: {{ ubtu22cis_rule_6_3_2_1 }}
+ubtu22cis_rule_6_3_2_2: {{ ubtu22cis_rule_6_3_2_2 }}
+ubtu22cis_rule_6_3_2_3: {{ ubtu22cis_rule_6_3_2_3 }}
+ubtu22cis_rule_6_3_2_4: {{ ubtu22cis_rule_6_3_2_4 }}
+# 6.3.3 Configure auditd rules
+ubtu22cis_rule_6_3_3_1: {{ ubtu22cis_rule_6_3_3_1 }}
+ubtu22cis_rule_6_3_3_2: {{ ubtu22cis_rule_6_3_3_2 }}
+ubtu22cis_rule_6_3_3_3: {{ ubtu22cis_rule_6_3_3_3 }}
+ubtu22cis_rule_6_3_3_4: {{ ubtu22cis_rule_6_3_3_4 }}
+ubtu22cis_rule_6_3_3_5: {{ ubtu22cis_rule_6_3_3_5 }}
+ubtu22cis_rule_6_3_3_6: {{ ubtu22cis_rule_6_3_3_6 }}
+ubtu22cis_rule_6_3_3_7: {{ ubtu22cis_rule_6_3_3_7 }}
+ubtu22cis_rule_6_3_3_8: {{ ubtu22cis_rule_6_3_3_8 }}
+ubtu22cis_rule_6_3_3_9: {{ ubtu22cis_rule_6_3_3_9 }}
+ubtu22cis_rule_6_3_3_10: {{ ubtu22cis_rule_6_3_3_10 }}
+ubtu22cis_rule_6_3_3_11: {{ ubtu22cis_rule_6_3_3_11 }}
+ubtu22cis_rule_6_3_3_12: {{ ubtu22cis_rule_6_3_3_12 }}
+ubtu22cis_rule_6_3_3_13: {{ ubtu22cis_rule_6_3_3_13 }}
+ubtu22cis_rule_6_3_3_14: {{ ubtu22cis_rule_6_3_3_14 }}
+ubtu22cis_rule_6_3_3_15: {{ ubtu22cis_rule_6_3_3_15 }}
+ubtu22cis_rule_6_3_3_16: {{ ubtu22cis_rule_6_3_3_16 }}
+ubtu22cis_rule_6_3_3_17: {{ ubtu22cis_rule_6_3_3_17 }}
+ubtu22cis_rule_6_3_3_18: {{ ubtu22cis_rule_6_3_3_18 }}
+ubtu22cis_rule_6_3_3_19: {{ ubtu22cis_rule_6_3_3_19 }}
+ubtu22cis_rule_6_3_3_20: {{ ubtu22cis_rule_6_3_3_20 }}
+ubtu22cis_rule_6_3_3_21: {{ ubtu22cis_rule_6_3_3_21 }}
+# 6.3.4 Configure audit file access
+ubtu22cis_rule_6_3_4_1: {{ ubtu22cis_rule_6_3_4_1 }}
+ubtu22cis_rule_6_3_4_2: {{ ubtu22cis_rule_6_3_4_2 }}
+ubtu22cis_rule_6_3_4_3: {{ ubtu22cis_rule_6_3_4_3 }}
+ubtu22cis_rule_6_3_4_4: {{ ubtu22cis_rule_6_3_4_4 }}
+ubtu22cis_rule_6_3_4_5: {{ ubtu22cis_rule_6_3_4_5 }}
+ubtu22cis_rule_6_3_4_6: {{ ubtu22cis_rule_6_3_4_6 }}
+ubtu22cis_rule_6_3_4_7: {{ ubtu22cis_rule_6_3_4_7 }}
+ubtu22cis_rule_6_3_4_8: {{ ubtu22cis_rule_6_3_4_8 }}
+ubtu22cis_rule_6_3_4_9: {{ ubtu22cis_rule_6_3_4_9 }}
+ubtu22cis_rule_6_3_4_10: {{ ubtu22cis_rule_6_3_4_10 }}
 
-# AIDE
-ubtu22cis_config_aide: {{ ubtu22cis_config_aide }}
+## Section 7
+# 7.1 System File Permissions
+ubtu22cis_rule_7_1_1: {{ ubtu22cis_rule_7_1_1 }}
+ubtu22cis_rule_7_1_2: {{ ubtu22cis_rule_7_1_2 }}
+ubtu22cis_rule_7_1_3: {{ ubtu22cis_rule_7_1_3 }}
+ubtu22cis_rule_7_1_4: {{ ubtu22cis_rule_7_1_4 }}
+ubtu22cis_rule_7_1_5: {{ ubtu22cis_rule_7_1_5 }}
+ubtu22cis_rule_7_1_6: {{ ubtu22cis_rule_7_1_6 }}
+ubtu22cis_rule_7_1_7: {{ ubtu22cis_rule_7_1_7 }}
+ubtu22cis_rule_7_1_8: {{ ubtu22cis_rule_7_1_8 }}
+ubtu22cis_rule_7_1_9: {{ ubtu22cis_rule_7_1_9 }}
+ubtu22cis_rule_7_1_10: {{ ubtu22cis_rule_7_1_10 }}
+ubtu22cis_rule_7_1_11: {{ ubtu22cis_rule_7_1_11 }}
+ubtu22cis_rule_7_1_12: {{ ubtu22cis_rule_7_1_12 }}
+ubtu22cis_rule_7_1_13: {{ ubtu22cis_rule_7_1_13 }}
+# 7.2 Local User and Group Settings
+ubtu22cis_rule_7_2_1: {{ ubtu22cis_rule_7_2_1 }}
+ubtu22cis_rule_7_2_2: {{ ubtu22cis_rule_7_2_2 }}
+ubtu22cis_rule_7_2_3: {{ ubtu22cis_rule_7_2_3 }}
+ubtu22cis_rule_7_2_4: {{ ubtu22cis_rule_7_2_4 }}
+ubtu22cis_rule_7_2_5: {{ ubtu22cis_rule_7_2_5 }}
+ubtu22cis_rule_7_2_6: {{ ubtu22cis_rule_7_2_6 }}
+ubtu22cis_rule_7_2_7: {{ ubtu22cis_rule_7_2_7 }}
+ubtu22cis_rule_7_2_8: {{ ubtu22cis_rule_7_2_8 }}
+ubtu22cis_rule_7_2_9: {{ ubtu22cis_rule_7_2_9 }}
+ubtu22cis_rule_7_2_10: {{ ubtu22cis_rule_7_2_10 }}
 
-# aide setup via - cron, timer
-ubtu22cis_aide_scan: cron
 
-# AIDE cron settings
-ubtu22_aide_cron:
-  cron_user: {{ ubtu22cis_aide_cron.cron_user }}
-  cron_file: {{ ubtu22cis_aide_cron.cron_file }}
-  aide_job: {{ ubtu22cis_aide_cron.aide_job }}
-  aide_minute: {{ ubtu22cis_aide_cron.aide_minute }}
-  aide_hour: {{ ubtu22cis_aide_cron.aide_hour }}
-  aide_day: '{{ ubtu22cis_aide_cron.aide_day }}'
-  aide_month: '{{ ubtu22cis_aide_cron.aide_month }}'
-  aide_weekday: '{{ ubtu22cis_aide_cron.aide_weekday }}'
+## System functionality configuration variables
+##
+## There are certain functionalities of a system
+## that may require either to skip certain CIS rules
+## or install certain packages.
+## Set the respective variable to `true` in order to
+## enable a certain functionality on the system
 
-# 1.1
-ubtu22cis_allow_autofs: {{ ubtu22cis_allow_autofs }}
+# This variable governs whether specific CIS rules
+# concerned with acceptance and routing of packages
+# are skipped.
+ubtu22cis_is_router: {{ ubtu22cis_is_router }}
 
-# 1.4
-ubtu22cis_grub_user_file: {{ ubtu22cis_grub_user_file }}
-ubtu22cis_grub_username: {{ ubtu22cis_grub_user }}
-ubtu22cis_grub_hash: {{ ubtu22cis_bootloader_password_hash }}
-# 1.5.1 Bootloader password
-ubtu22cis_bootloader_password: {{ ubtu22cis_bootloader_password_hash }}
+## IPv4 requirement toggle
+# This variable governs whether ipv4 is enabled or disabled.
+ubtu22cis_ipv4_required: {{ ubtu22cis_ipv4_required }}
 
-# 1.6 - Only have apparmor enforcing
+## IPv6 requirement toggle
+# This variable governs whether ipv6 is enabled or disabled.
+ubtu22cis_ipv6_required: {{ ubtu22cis_ipv6_required }}
+
+## Desktop requirement toggle
+# This variable governs, whether CIS rules regarding GDM
+# and X-Windows are carried out.
+ubtu22cis_desktop_required: {{ ubtu22cis_desktop_required }}
+
+## Section 1
+
+# If system uses squahshfs e.gf. snap package manager set true
+ubtu22cis_squashfs_required:{% if prelim_snap_pkg_mgr.rc == 0 %} true {% else %} false{% endif %}
+
+## Controls 1.3.1.3 and 1.3.1.4 Ensure all AppArmor Profiles are in enforce (1.3.1.3/4) or complain (1.3.1.3) mode
+
+# This variable disables the implementation of rules 1.3.1.3 and 1.3.1.4
+# regarding enforcing profiles or putting them in complain mode
 ubtu22cis_apparmor_disable: {{ ubtu22cis_apparmor_disable }}
-ubtu22cis_apparmor_mode: {{ ubtu22cis_apparmor_mode }}
-ubtu22cis_apparmor_enforce_only: {{ubtu22cis_apparmor_enforce_only}}
 
-# Warning Banner Content (issue, issue.net, motd)
-ubtu22_warning_banner: |
-  {{ ubtu22cis_warning_banner|indent(2, false)  }}
-# End Banner
+## Controls 1.4.x - Boot password
+#
+# THIS VARIABLE SHOULD BE CHANGED AND INCORPORATED INTO VAULT
+# THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
+# HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
+ubtu22cis_grub_user: {{ ubtu22cis_grub_user }}
+ubtu22cis_bootloader_password_hash: {{ grub_user_pass }}  # pragma: allowlist secret
 
-# If configured to stop dynamic loading of files in /etc/update-motd.d
-# optional in remediation
+## Controls 1.5.x
+
+## Controls 1.6.x  - Warning banners
+# The controls 1.6.x set various warning banners and protect the respective files
+# by tightening the access rights.
+
+# This variable specifies the warning banner displayed to the user
+# after local login, remote login, and as motd (message of the day)
+# Noe that the banner text must not contain the below items in order to be
+# compliant with CIS: \m, \r, \s, \v or references to the OS platform
+ubtu22cis_warning_banner: |
+        Authorized uses only. All activity may be monitored and reported.
+
+# This variable governs, whether dynamic motd is disabled (as required by control 1.7.1)
 ubtu22cis_disable_dynamic_motd: {{ ubtu22cis_disable_dynamic_motd }}
 
+## Controls 1.7.x - Settings for GDM
+# This variable specifies the GNOME configuration database file to which configurations are written.
+# (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en)
+# The default database is `local`.
+ubtu22cis_dconf_db_name: local
 
+##
 # Section 2
-# Time sync - can be timesync or chr0ny or ntp
-ubtu22cis_time_service: {{ ubtu22cis_time_sync_tool }}
+##
 
-# Control 2.1.2.1 2.1.3.1
-# Time settings used for all versions
+##
+## Service configuration variables.
+##
+## Set the respective variable to true to keep the service.
+## otherwise the service is stopped and disabled
+##
+# Service configuration
+# Options are
+# true to leave installed if exists not changes take place
+# false - this removes the package
+# mask - if a dependancy for product so cannot be removed
+# Server Services
+ubtu22cis_autofs_services: {{ ubtu22cis_autofs_services }}
+ubtu22cis_autofs_mask: {{ ubtu22cis_autofs_mask }}
+ubtu22cis_avahi_server: {{ ubtu22cis_avahi_server }}
+ubtu22cis_avahi_mask: {{ ubtu22cis_avahi_mask }}
+ubtu22cis_dhcp_server: {{ ubtu22cis_dhcp_server }}
+ubtu22cis_dhcp_mask: {{ ubtu22cis_dhcp_mask }}
+ubtu22cis_dns_server: {{ ubtu22cis_dns_server }}
+ubtu22cis_dns_mask: {{ ubtu22cis_dns_mask }}
+ubtu22cis_dnsmasq_server: {{ ubtu22cis_dnsmasq_server }}
+ubtu22cis_dnsmasq_mask: {{ ubtu22cis_dnsmasq_mask }}
+ubtu22cis_ftp_server: {{ ubtu22cis_ftp_server }}
+ubtu22cis_ftp_mask: {{ ubtu22cis_ftp_mask }}
+ubtu22cis_ldap_server: {{ ubtu22cis_ldap_server }}
+ubtu22cis_ldap_mask: {{ ubtu22cis_ldap_mask }}
+ubtu22cis_message_server: {{ ubtu22cis_message_server }}  # This is for messaging dovecot and dovecot-pop3
+ubtu22cis_message_mask: {{ ubtu22cis_message_mask }}
+ubtu22cis_nfs_server: {{ ubtu22cis_nfs_server }}
+ubtu22cis_nfs_mask: {{ ubtu22cis_nfs_mask }}
+ubtu22cis_nis_server: {{ ubtu22cis_nis_server }}  # set to mask if nis client required
+ubtu22cis_nis_mask: {{ ubtu22cis_nis_mask }}
+ubtu22cis_print_server: {{ ubtu22cis_print_server }}  # replaces cups
+ubtu22cis_print_mask: {{ ubtu22cis_print_mask }}
+ubtu22cis_rpc_server: {{ ubtu22cis_rpc_server }}
+ubtu22cis_rpc_mask: {{ ubtu22cis_rpc_mask }}
+ubtu22cis_rsync_server: {{ ubtu22cis_rsync_server }}
+ubtu22cis_rsync_mask: {{ ubtu22cis_rsync_mask }}
+ubtu22cis_samba_server: {{ ubtu22cis_samba_server }}
+ubtu22cis_samba_mask: {{ ubtu22cis_samba_mask }}
+ubtu22cis_snmp_server: {{ ubtu22cis_snmp_server }}
+ubtu22cis_snmp_mask: {{ ubtu22cis_snmp_mask }}
+ubtu22cis_telnet_server: {{ ubtu22cis_telnet_server }}
+ubtu22cis_telnet_mask: {{ ubtu22cis_telnet_mask }}
+ubtu22cis_tftp_server: {{ ubtu22cis_tftp_server }}
+ubtu22cis_tftp_mask: {{ ubtu22cis_tftp_mask }}
+ubtu22cis_squid_server: {{ ubtu22cis_squid_server }}
+ubtu22cis_squid_mask: {{ ubtu22cis_squid_mask }}
+ubtu22cis_apache2_server: {{ ubtu22cis_apache2_server }}
+ubtu22cis_apache2_mask: {{ ubtu22cis_apache2_mask }}
+ubtu22cis_nginx_server: {{ ubtu22cis_nginx_server }}
+ubtu22cis_nginx_mask: {{ ubtu22cis_nginx_mask }}
+ubtu22cis_xinetd_server: {{ ubtu22cis_xinetd_server }}
+ubtu22cis_xinetd_mask: {{ ubtu22cis_xinetd_mask }}
+ubtu22cis_xwindow_server: {{ ubtu22cis_xwindow_server }}  # will remove mask not an option
+ubtu22cis_is_mail_server: {{ ubtu22cis_is_mail_server }}
+
+# Client Services
+ubtu22cis_nis_client_required: {{ ubtu22cis_nis_client_required }}  # Same package as NIS server
+ubtu22cis_rsh_client: {{ ubtu22cis_rsh_client }}
+ubtu22cis_talk_client: {{ ubtu22cis_talk_client }}
+ubtu22cis_telnet_required: {{ ubtu22cis_telnet_required }}
+ubtu22cis_ldap_clients_required: {{ ubtu22cis_ldap_clients_required }}
+ubtu22cis_ftp_client: {{ ubtu22cis_ftp_client }}
+
+## Control 2.3.1.1
+# This variable choses the tool used for time synchronization
+# The two options are `chrony`and `systemd-timesyncd`.
+ubtu22cis_time_sync_tool: {{ ubtu22cis_time_sync_tool }}
+
+## Controls 2.3.x - Configure time pools & servers for chrony and timesyncd
+# The following variable represents a list of of time server pools used
+# for configuring chrony and timesyncd.
+# Each list item contains two settings, `name` (the domain name of the pool) and synchronization `options`.
+# The default setting for the `options` is `iburst maxsources 4` -- please refer to the documentation
+# of the time synchronization mechanism you are using.
 ubtu22cis_time_pool:
 {% for pool in ubtu22cis_time_pool %}
 - name: {{ pool.name }}
   options: {{ pool.options }}
 {% endfor %}
 
+# The following variable represents a list of of time servers used
+# for configuring chrony and timesyncd
+# Each list item contains two settings, `name` (the domain name of the server) and synchronization `options`.
+# The default setting for the `options` is `iburst` -- please refer to the documentation
+# of the time synchronization mechanism you are using.
 ubtu22cis_time_servers:
-{% for server in ubtu22cis_time_servers %}
-- name: {{ server.name }}
-  options: {{ server.options }}
+{% for servers in ubtu22cis_time_servers %}
+- name: {{ servers.name }}
+  options: {{ servers.options }}
 {% endfor %}
 
-# Whether or not to run tasks related to auditing/patching the desktop environment
-ubtu22cis_gui: {{ ubtu22cis_desktop_required }}
-
-# Service configuration booleans set true to keep service
-ubtu22cis_avahi_server: {{ ubtu22cis_avahi_server }}
-ubtu22cis_cups_server: {{ ubtu22cis_cups_server }}
-ubtu22cis_nfs_server: {{ ubtu22cis_nfs_server }}
-ubtu22cis_dhcp_server: {{ ubtu22cis_dhcp_server }}
-ubtu22cis_ldap_server: {{ ubtu22cis_ldap_server }}
-ubtu22cis_dns_server: {{ ubtu22cis_dns_server }}
-ubtu22cis_vsftpd_server: {{ ubtu22cis_vsftpd_server }}
-ubtu22cis_httpd_server: {{ ubtu22cis_httpd_server }}
-ubtu22cis_is_mail_server: {{ ubtu22cis_is_mail_server }}
-ubtu22cis_dovecot_server: {{ ubtu22cis_dovecot_server }}
-ubtu22cis_samba_server: {{ ubtu22cis_smb_server }}
-ubtu22cis_squid_server: {{ ubtu22cis_squid_server }}
-ubtu22cis_snmp_server: {{ ubtu22cis_snmp_server }}
-
-#  Mail Server config
-{% if ubtu22_cis_mail_transfer_agent is defined %}
-ubtu22cis_mailserver: {{ ubtu22_cis_mail_transfer_agent }}
-{% else %}
-ubtu22cis_mailserver: Not_defined
-{% endif %}
-ubtu22_exim_conf:
-  - dc_eximconfig_configtype='local'
-  - dc_local_interfaces='127.0.0.1 ; ::1'
-  - dc_readhost=''
-  - dc_relay_domains=''
-  - dc_minimaldns='false'
-  - dc_relay_nets=''
-  - dc_smarthost=''
-  - dc_use_split_config='false'
-  - dc_hide_mailname=''
-  - dc_mailname_in_oh='true'
-  - dc_localdelivery='mail_spool'
-
-ubtu22cis_rsyncd_server: {{ ubtu22cis_rsync_server }}
-ubtu22cis_nis_server: {{ ubtu22cis_nis_server }}
-
-ubtu22cis_xwindows_required: false
-
-# 2.2 client services
-ubtu22cis_rsh_required: {{ ubtu22cis_rsh_required }}
-ubtu22cis_talk_required: {{ ubtu22cis_talk_required }}
-ubtu22cis_telnet_required: {{ ubtu22cis_telnet_required }}
-ubtu22cis_ldap_clients_required: {{ ubtu22cis_ldap_clients_required }}
-ubtu22cis_rpc_required: {{ ubtu22cis_rpc_required }}
-
 # Section 3
-# IPv6 required
-ubtu22cis_ipv6_required: {{ ubtu22cis_ipv6_required }}
-# How to disable ipv6 either via grub or sysctl settings options: grub or sysctl
+## Control 3.1.1 - Ensure system is checked to determine if IPv6 is enabled
+# This variable governs the mechanism of how the disabling of IPV6 is carried out.
+# Its possible values are `grub` and `sysctl`.
 ubtu22cis_ipv6_disable: {{ ubtu22cis_ipv6_disable }}
 
+## Control 3.1.3 - Ensure bluetooth Services are not in use
+# This control managed how the bluetooth service is managaed
+# Options are
+# true to leave installed if exists not changes take place
+# false - this removes the package
+# mask - if a dependancy for product so cannot be removed
+ubtu22cis_bluetooth_service: {{ ubtu22cis_bluetooth_service }}
+ubtu22cis_bluetooth_mask: {{ ubtu22cis_bluetooth_mask }}
 
-# System network parameters (host only OR host and router)
-ubtu22cis_is_router: {{ ubtu22cis_is_router }}
+## Control 3.3.x - Networking configuration
+# This variable contains the path to the file in which, sysctl saves its configurations.
+# Its default value is `/etc/sysctl.conf`.
+ubtu22cis_sysctl_network_conf: {{ ubtu22cis_sysctl_network_conf }}
 
-ubtu22cis_firewall: {{ ubtu22cis_firewall_package }}
-
-ubtu22_default_firewall_zone: public
-ubtu22_firewall_interface:
-  - ['ens224']
-  - ['ens192']
-ubtu22_firewall_services:
-  - ssh
-  - dhcpv6-client
-
+#
 ### Section 4
+#
+## Controls 4.1.x, 4.2.x, and 4.3.x - Firewall configuration
+# This variable represents the toggle for which firewall package is used.
+# The options that have an effect on the system are `ufw` and `iptables`.
+# The option `nftables` is also possible, but will only result in a message,
+# that `nftables` has been chosen; all settings have to be carried out manually.
+# Any other value, e.g. `none` will skip all firewall-related controls.
+ubtu22cis_firewall_package: {{ ubtu22cis_firewall_package }}
+
 ## auditd settings
 ubtu22cis_auditd:
-  space_left_action: email
-  action_mail_acct: root
-  admin_space_left_action: {{ ubtu22cis_auditd.admin_space_left_action }}
-  max_log_file_action: {{ ubtu22cis_auditd.max_log_file_action }}
+  space_left_action: {{ ubtu22cis_auditd_space_left_action }}
+  admin_space_left_action: {{ ubtu22cis_auditd_admin_space_left_action }}
+  max_log_file_action: {{ ubtu22cis_auditd_max_log_file_action }}
   auditd_backlog_limit: {{ ubtu22cis_audit_back_log_limit }}
 
 ## syslog
 ubtu22cis_is_syslog_server: {{ ubtu22cis_system_is_log_server }}
-ubtu22cis_syslog_service: "{{ ubtu22cis_syslog_service }}"
-ubtu22cis_remote_log_server: "{{ ubtu22cis_remote_log_server }}"
 
 ### Section 5
-ubtu22cis_sshd_limited: false
+
 # Note the following to understand precedence and layout
 ubtu22cis_sshd_access:
-  - AllowUser
-  - AllowGroup
-  - DenyUser
-  - DenyGroup
+  - AllowUser {{ ubtu22cis_sshd_allow_users }}
+  - AllowGroup {{ ubtu22cis_sshd_allow_groups }}
+  - DenyUser {{ ubtu22cis_sshd_deny_users }}
+  - DenyGroup {{ ubtu22cis_sshd_deny_groups }}
 
 ubtu22cis_ssh_strong_ciphers:
-{% for cipher in ubtu22cis_sshd.ciphers %}
-  - {{ cipher }}
-{% endfor %}
+  - aes256-gcm@openssh.com
+  - aes128-gcm@openssh.com
+  - aes256-ctr
+  - aes192-ctr
+  - aes128-ctr
 ubtu22cis_ssh_weak_ciphers:
   - 3des-cbc
   - aes128-cbc
   - aes192-cbc
   - aes256-cbc
   - arcfour
+  - chacha20-poly1305@openssh.com
   - arcfour128
   - arcfour256
   - blowfish-cbc
@@ -523,14 +658,13 @@ ubtu22cis_ssh_weak_ciphers:
   - rijndael-cbc@lysator.liu.se
 
 ubtu22cis_ssh_strong_macs:
-{% for mac in ubtu22cis_sshd.macs %}
-  - {{ mac }}
-{% endfor %}
+  - HMAC-SHA1
+  - hmac-sha2-256
+  - hmac-sha2-512
 ubtu22cis_ssh_weak_macs:
   - hmac-md5
   - hmac-md5-96
   - hmac-ripemd160
-  - hmac-sha1
   - hmac-sha1-96
   - umac-64@openssh.com
   - umac-128@openssh.com
@@ -541,16 +675,20 @@ ubtu22cis_ssh_weak_macs:
   - hmac-sha1-96-etm@openssh.com
   - umac-64-etm@openssh.com
   - umac-128-etm@openssh.com
+  - hmac-sha2-512-etm@openssh.com
+  - hmac-sha2-256-etm@openssh.com
 
 ubtu22cis_ssh_strong_kex:
-{% for kex in ubtu22cis_sshd.kex_algorithms %}
-  - {{ kex }}
-{% endfor %}
+  - ecdh-sha2-nistp256
+  - ecdh-sha2-nistp521
+  - diffie-hellman-group-exchange-sha256
+  - diffie-hellman-group14-sha256
+  - diffie-hellman-group16-sha512
+  - diffie-hellman-group18-sha512
 ubtu22cis_ssh_weak_kex:
   - diffie-hellman-group1-sha1
   - diffie-hellman-group14-sha1
   - diffie-hellman-group-exchange-sha1
-
 
 ubtu22cis_ssh_aliveinterval: 300
 ubtu22cis_ssh_countmax: 3
@@ -561,22 +699,25 @@ ubtu22cis_pam_password:
 
 ubtu22cis_pam_passwd_retry: "3"
 
-# choose one of below
-ubtu22cis_pwhistory_so: "14"
-ubtu22cis_unix_so: false
-ubtu22cis_passwd_remember: {{ ubtu22cis_pamd_pwhistory_remember }}
-
 # logins.def password settings
 ubtu22cis_pass:
-  max_days: {{ ubtu22cis_pass.max_days }}
-  min_days: {{ ubtu22cis_pass.min_days }}
-  warn_age: {{ ubtu22cis_pass.warn_age }}
+  max_days: {{ ubtu22cis_pass_max_days }}
+  min_days: {{ ubtu22cis_pass_min_days }}
+  warn_age: {{ ubtu22cis_pass_warn_age }}
 
 # set sugroup if differs from wheel
-ubtu22cis_sugroup: {{ ubtu22cis_sugroup }}
+ubtu22cis_sugroup: nosugroup
 
-# sugroup users list
-ubtu22_sugroup_users: "root"
 
 # var log location variable
 ubtu22_varlog_location: {{ ubtu22cis_sudo_logfile }}
+
+# Section 6
+
+# 6.1.2
+
+# AIDE
+ubtu22cis_config_aide: {{ ubtu22cis_config_aide }}
+
+# aide setup via - cron, timer
+ubtu22cis_aide_scan: {{ ubtu22cis_aide_scan }}

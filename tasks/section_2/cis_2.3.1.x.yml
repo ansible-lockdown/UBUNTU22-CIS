@@ -1,0 +1,39 @@
+---
+
+- name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use"
+  when: ubtu22cis_rule_2_3_1_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_2.3.1.1
+    - chrony
+    - ntp
+    - systemd-timesyncd
+    - NIST800-53R5_AU-3
+    - NIST800-53R5_AU-12
+  block:
+    - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | Pkg installed"
+      ansible.builtin.package:
+        name: "{{ ubtu22cis_time_sync_tool }}"
+        state: present
+
+    - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | other pkgs removed"
+      when: item != ubtu22cis_time_sync_tool
+      ansible.builtin.package:
+        name: "{{ item }}"
+        state: absent
+      loop:
+        - chrony
+        - ntp
+
+    - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | mask service"
+      when:
+        - ubtu22cis_time_sync_tool != "systemd-timesyncd"
+        - "'systemd-timesyncd' in ansible_facts.packages"
+      ansible.builtin.service:
+        name: systemd-timesyncd
+        state: stopped
+        enabled: false
+        masked: true
+        daemon_reload: true

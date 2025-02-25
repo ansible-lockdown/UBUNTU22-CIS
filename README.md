@@ -2,7 +2,7 @@
 
 ## Configure a Ubuntu 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on CIS Ubuntu Linux 22.04 LTS Benchmark v1.0.0 [Release](https://learn.cisecurity.org/l/799323/2022-09-15/3l9d2k)
+### Based on CIS Ubuntu Linux 22.04 LTS Benchmark v2.0.0 [Release](https://downloads.cisecurity.org/#/)
 
 ![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
 ![Stars](https://img.shields.io/github/stars/ansible-lockdown/ubuntu22-cis?label=Repo%20Stars&style=social)

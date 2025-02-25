@@ -1,0 +1,154 @@
+---
+
+- name: |
+      "6.3.4.1 | PATCH | Ensure audit log files mode is configured"
+      "6.3.4.2 | PATCH | Ensure audit log files owner is configured"
+      "6.3.4.3 | PATCH | Ensure audit log files group owner is configured"
+  when:
+    - ubtu22cis_rule_6_3_4_1 or
+      ubtu22cis_rule_6_3_4_2 or
+      ubtu22cis_rule_6_3_4_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.1
+    - rule_6.3.4.2
+    - rule_6.3.4.3
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ prelim_auditd_logfile.stdout }}"
+    owner: root
+    group: root
+    mode: 'u-x,g-wx,o-rwx'
+
+- name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured"
+  when: ubtu22cis_rule_6_3_4_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.4
+    - NIST800-53R5_AU-3
+  block:
+    - name: "6.3.4.4 | AUDIT | Ensure the audit log file directory mode is configured | get current permissions"
+      ansible.builtin.stat:
+        path: "{{ prelim_auditd_logfile.stdout | dirname }}"
+      register: discovered_auditlog_dir
+
+    - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured | set permissions"
+      ansible.builtin.file:
+        path: "{{ discovered_auditlog_dir.stat.path }}"
+        state: directory
+        mode: 'g-w,o-rwx'
+
+- name: "6.3.4.5 | PATCH | Ensure audit configuration files mode is configured"
+  when: ubtu22cis_rule_6_3_4_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.5
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    mode: 'u-x,g-wx,o-rwx'
+  loop: "{{ prelim_auditd_conf_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: "6.3.4.6 | PATCH | Ensure audit configuration files owner is configured"
+  when: ubtu22cis_rule_6_3_4_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.6
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    owner: root
+  loop: "{{ prelim_auditd_conf_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: "6.3.4.7 | PATCH | Ensure audit configuration files group owner is configured"
+  when: ubtu22cis_rule_6_3_4_7
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.7
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ item.path }}"
+    group: root
+  loop: "{{ prelim_auditd_conf_files.files }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: "6.3.4.8 | PATCH | Ensure audit tools mode is configured"
+  when: ubtu22cis_rule_6_3_4_8
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.8
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ item }}"
+    mode: 'g-w,o-rwx'
+  loop:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules
+
+- name: "6.3.4.9 | PATCH | Ensure audit tools owner is configured"
+  when: ubtu22cis_rule_6_3_4_9
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.9
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ item }}"
+    owner: root
+    group: root
+  loop:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules
+
+- name: "6.3.4.10 | PATCH | Ensure audit tools group owner is configured"
+  when: ubtu22cis_rule_6_3_4_10
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.10
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ item }}"
+    group: root
+  loop:
+    - /sbin/auditctl
+    - /sbin/aureport
+    - /sbin/ausearch
+    - /sbin/autrace
+    - /sbin/auditd
+    - /sbin/augenrules

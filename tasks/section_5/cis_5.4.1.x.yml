@@ -1,0 +1,211 @@
+---
+
+- name: "5.4.1.1 | PATCH | Ensure password expiration is configured"
+  when:
+    - ubtu22cis_rule_5_4_1_1
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.1
+    - user
+    - login
+    - NIST800-53R5_CM-1
+    - NIST800-53R5_CM-2
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
+    - NIST800-53R5_IA-5
+  block:
+    - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Set /etc/login.defs PASS_MAX_DAYS"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_MAX_DAYS|^#PASS_MAX_DAYS'
+        line: 'PASS_MAX_DAYS {{ ubtu22cis_pass_max_days }}'
+        insertafter: '# Password aging controls'
+
+    - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Get existing users PASS_MAX_DAYS"
+      ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($5>{{ ubtu22cis_pass_max_days }} || $5<{{ ubtu22cis_pass_min_days }} || $5 == -1)){print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_max_days
+
+    - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Set existing users PASS_MAX_DAYS"
+      when:
+        - ubtu22cis_disruption_high
+        - (item != 'root') or (not ubtu22cis_uses_root)
+      ansible.builtin.command: chage --maxdays {{ ubtu22cis_pass_max_days }} {{ item }}
+      failed_when: false
+      changed_when: discovered_max_days.stdout | length > 0
+      loop: "{{ discovered_max_days.stdout_lines }}"
+
+- name: "5.4.1.2 | PATCH | Ensure minimum password age is configured"
+  when:
+    - ubtu22cis_rule_5_4_1_2
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - rule_5.4.1.2
+    - user
+    - login
+    - NIST800-53R5_NA
+  block:
+    - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured | Set /etc/login.defs PASS_MIN_DAYS"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_MIN_DAYS|^#PASS_MIN_DAYS'
+        line: 'PASS_MIN_DAYS {{ ubtu22cis_pass_min_days }}'
+
+    - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured | Get existing users PASS_MIN_DAYS"
+      ansible.builtin.command: "awk -F: '(/^[^:]+:[^!*]/ && ($4<{{ ubtu22cis_pass_min_days }})) {print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_passwd_min_days
+
+    - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured | Set existing users PASS_MIN_DAYS"
+      when:
+        - ubtu22cis_disruption_high
+        - (item != 'root') or (not ubtu22cis_uses_root)
+      ansible.builtin.command: chage --mindays {{ ubtu22cis_pass_min_days }} {{ item }}
+      failed_when: false
+      changed_when: discovered_passwd_min_days.stdout |length > 0
+      loop: "{{ discovered_passwd_min_days.stdout_lines }}"
+
+- name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured"
+  when:
+    - ubtu22cis_rule_5_4_1_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.3
+    - user
+    - login
+    - NIST800-53R5_NA
+  block:
+    - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured | Set /etc/login.defs PASS_WARN_AGE"
+      ansible.builtin.lineinfile:
+        path: /etc/login.defs
+        regexp: '^PASS_WARN_AGE|^#PASS_WARN_AGE'
+        line: 'PASS_WARN_AGE {{ ubtu22cis_pass_warn_age }}'
+
+    - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured | Get existing users PASS_WARN_AGE"
+      ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && $6<{{ ubtu22cis_pass_warn_age }}){print $1}' /etc/shadow"
+      changed_when: false
+      failed_when: false
+      register: discovered_passwd_warn_days
+
+    - name: "5.4.1.3 | PATCH | Ensure password expiration warning days is configured | Set existing users PASS_WARN_AGE"
+      when:
+        - ubtu22cis_disruption_high
+        - (item != 'root') or (not ubtu22cis_uses_root)
+      ansible.builtin.command: chage --maxdays {{ ubtu22cis_pass_warn_age }} {{ item }}
+      failed_when: false
+      changed_when: discovered_passwd_warn_days.stdout | length > 0
+      loop: "{{ discovered_passwd_warn_days.stdout_lines }}"
+
+- name: "5.4.1.4 | PATCH | Ensure strong password hashing algorithm is configured"
+  when:
+    - ubtu22cis_rule_5_4_1_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.4
+    - pam
+    - NIST800-53R5_IA-5
+  ansible.builtin.lineinfile:
+    path: /etc/login.defs
+    regexp: '^ENCRYPT_METHOD'
+    line: 'ENCRYPT_METHOD {{ ubtu22cis_passwd_hash_algo | upper }}'
+
+- name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured"
+  when:
+    - ubtu22cis_rule_5_4_1_5
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.5
+    - user
+    - login
+    - NIST800-53R5_NA
+  block:
+    - name: "5.4.1.5 | AUDIT | Ensure inactive password lock is configured | General setting"
+      ansible.builtin.shell: useradd -D | grep INACTIVE | cut -d= -f2
+      changed_when: false
+      failed_when: false
+      register: discovered_passwd_inactive_setting
+
+    - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured| Set inactive period for new users"
+      when: discovered_passwd_inactive_setting.stdout != ubtu22cis_pass_inactive | string
+      ansible.builtin.command: useradd -D -f {{ ubtu22cis_pass_inactive }}
+      failed_when: false
+      changed_when: true
+
+    - name: "5.4.1.5 | AUDIT | Ensure inactive password lock is configured | Get Individual users"
+      ansible.builtin.shell: awk -F':' '(/^[^:]+:[^!*]/ && ($7~/(\\s*|-1)/ || ( $7>1 && $7<"{{ ubtu22cis_pass_inactive }}"))) {print $1}' /etc/shadow
+      changed_when: false
+      failed_when: false
+      register: discovered_passwd_inactive_users
+
+    - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured | Set inactive period for existing users"
+      when:
+        - ubtu22cis_disruption_high
+        - discovered_passwd_inactive_users.stdout | length > 0
+        - (item != 'root') and (not ubtu22cis_uses_root)
+      ansible.builtin.command: chage --inactive {{ ubtu22cis_pass_inactive }} {{ item }}
+      failed_when: false
+      changed_when: true
+      with_items:
+        - "{{ ubtu22cis_passwd | map(attribute='id') | list | intersect(discovered_passwd_inactive_users.stdout_lines) | list }}"
+
+- name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past"
+  when:
+    - ubtu22cis_rule_5_4_1_6
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - rule_5.4.1.6
+    - user
+    - login
+    - NIST800-53R5_NA
+  vars:
+    warn_control_id: '5.4.1.6'
+  block:
+    - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Get current date in Unix Time"
+      ansible.builtin.shell: echo $(($(date --utc --date "$1" +%s)/86400))
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_current_time
+
+    - name: "5.4.1.6 | AUDIT | Ensure all users last password change date is in the past | Get list of users with last changed PW date in future"
+      ansible.builtin.shell: "cat /etc/shadow | awk -F: '{if($3>{{ discovered_current_time.stdout }})print$1}'"
+      changed_when: false
+      failed_when: false
+      check_mode: false
+      register: discovered_passwd_future_user_list
+
+    - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past | Warn about users"
+      when: discovered_passwd_future_user_list.stdout | length > 0
+      ansible.builtin.debug:
+        msg:
+          - "WARNING!! The following accounts have the last PW change date in the future"
+          - "{{ discovered_passwd_future_user_list.stdout_lines }}"
+
+    - name: "5.4.1.6 | WARN | Ensure all users last password change date is in the past | warn_count"
+      when: discovered_passwd_future_user_list.stdout | length > 0
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
+
+    - name: "5.4.1.6 | PATCH | Ensure all users last password change date is in the past | Lock accounts with future PW changed dates"
+      when:
+        - ubtu22cis_disruption_high
+        - discovered_passwd_future_user_list.stdout | length > 0
+      ansible.builtin.command: passwd --expire {{ item }}
+      failed_when: false
+      changed_when: true
+      with_items:
+        - "{{ discovered_passwd_future_user_list.stdout_lines }}"

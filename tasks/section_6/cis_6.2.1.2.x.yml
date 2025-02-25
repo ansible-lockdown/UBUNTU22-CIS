@@ -1,0 +1,80 @@
+---
+
+- name: "6.2.1.2.1 | PATCH | Ensure systemd-journal-remote is installed"
+  when:
+    - ubtu22cis_rule_6_2_1_2_1
+    - not ubtu22cis_system_is_log_server
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.1
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
+  ansible.builtin.package:
+    name: systemd-journal-remote
+    state: present
+
+- name: "6.2.1.2.2 | PATCH | Ensure systemd-journal-remote authentication is configured"
+  when:
+    - ubtu22cis_rule_6_2_1_2_2
+    - not ubtu22cis_system_is_log_server
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.2
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+  ansible.builtin.lineinfile:
+    path: /etc/systemd/journal-upload.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+  loop:
+    - { regexp: 'URL=', line: 'URL={{ ubtu22cis_remote_log_server }}'}
+    - { regexp: 'ServerKeyFile=', line: 'ServerKeyFile={{ ubtu22cis_journal_upload_serverkeyfile }}'}
+    - { regexp: 'ServerCertificateFile=', line: 'ServerCertificateFile={{ ubtu22cis_journal_servercertificatefile }}'}
+    - { regexp: 'TrustedCertificateFile=', line: 'TrustedCertificateFile={{ ubtu22cis_journal_trustedcertificatefile }}'}
+  notify: Restart journald
+
+- name: "6.2.1.2.3 | PATCH | Ensure systemd-journal-upload is enabled and active"
+  when:
+    - not ubtu22cis_system_is_log_server
+    - ubtu22cis_rule_6_2_1_2_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.3
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-12
+  ansible.builtin.systemd:
+    name: systemd-journal-upload
+    masked: false
+    enabled: true
+
+- name: "6.2.1.2.4 | PATCH | Ensure systemd-journal-remote service is not in use"
+  when:
+    - not ubtu22cis_system_is_log_server
+    - ubtu22cis_rule_6_2_1_2_4
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - journald
+    - rule_6.2.1.2.4
+    - NIST800-53R5_AU-2
+    - NIST800-53R5_AU-7
+    - NIST800-53R5_AU-12
+  ansible.builtin.systemd:
+    name: "{{ item }}"
+    state: stopped
+    enabled: false
+    masked: true
+  loop:
+    - systemd-journal-remote.socket
+    - systemd-journal-remote.service
