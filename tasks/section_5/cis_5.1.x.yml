@@ -89,7 +89,7 @@
         path: /etc/ssh/sshd_config
         regexp: '^AllowUsers|^#AllowUsers'
         line: 'AllowUsers {{ ubtu22cis_sshd_allow_users }}'
-        validate: 'sshd -t -f %s'
+        validate: 'sshd -T -f %s'
       notify: Restart sshd
 
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add allowed groups"
@@ -98,7 +98,7 @@
         path: /etc/ssh/sshd_config
         regexp: '^AllowGroups|^#AllowGroups'
         line: 'AllowGroups {{ ubtu22cis_sshd_allow_groups }}'
-        validate: 'sshd -t -f %s'
+        validate: 'sshd -T -f %s'
       notify: Restart sshd
 
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add deny users"
@@ -107,7 +107,7 @@
         path: /etc/ssh/sshd_config
         regexp: '^DenyUsers|^#DenyUsers'
         line: 'DenyUsers {{ ubtu22cis_sshd_deny_users }} '
-        validate: 'sshd -t -f %s'
+        validate: 'sshd -T -f %s'
       notify: Restart sshd
 
     - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add deny groups"
@@ -116,7 +116,7 @@
         path: /etc/ssh/sshd_config
         regexp: '^DenyGroups|^#DenyGroups'
         line: 'DenyGroups {{ ubtu22cis_sshd_deny_groups }}'
-        validate: 'sshd -t -f %s'
+        validate: 'sshd -T -f %s'
       notify: Restart sshd
 
 - name: "5.1.5| PATCH | Ensure sshd Banner is configured"
@@ -137,7 +137,7 @@
     regexp: '^Banner|^#Banner'
     line: Banner /etc/issue.net
     insertafter: '^# no default banner path'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.6 | PATCH | Ensure sshd Ciphers are configured"
@@ -154,7 +154,7 @@
     regexp: '^Ciphers|^#Ciphers'
     line: "Ciphers {{ ubtu22cis_sshd_ciphers | default(ubtu22cis_sshd_default_ciphers) | join(',') }}"
     insertafter: '^# Ciphers and keying'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured"
@@ -174,7 +174,7 @@
     path: /etc/ssh/sshd_config
     regexp: "{{ item.regexp }}"
     line: "{{ item.line }}"
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   with_items:
     - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd_client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
     - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd_client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
@@ -193,7 +193,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^DisableForwarding|^#DisableForwarding'
     line: 'DisableForwarding yes'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.9 | PATCH | Ensure sshd GSSAPIAuthentication is disabled"
@@ -213,7 +213,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^(?i)GSSAPIAuthentication|^(?i)#GSSAPIAuthentication'
     line: 'GSSAPIAuthentication no'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.10 | PATCH | Ensure sshd HostbasedAuthentication is disabled"
@@ -233,7 +233,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^HostbasedAuthentication|^#HostbasedAuthentication'
     line: 'HostbasedAuthentication no'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.11 | PATCH | Ensure sshd IgnoreRhosts is enabled"
@@ -253,7 +253,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^IgnoreRhosts|^#IgnoreRhosts'
     line: 'IgnoreRhosts yes'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.12 | PATCH | Ensure sshd Kexalgorithms is configured"
@@ -270,7 +270,7 @@
     regexp: '^KexAlgorithms|^#KexAlgorithms'
     line: "KexAlgorithms {{ ubtu22cis_sshd_kex_algorithms | default(ubtu22cis_sshd_default_kex_algorithms) | join(',') }}"
     insertafter: '^# Ciphers and keying'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.13 | PATCH | Ensure sshd LoginGraceTime is configured"
@@ -287,7 +287,7 @@
     regexp: '^LoginGraceTime|^#LoginGraceTime'
     line: 'LoginGraceTime {{ ubtu22cis_sshd_login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
     insertafter: '^# Authentication'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.14 | PATCH | Ensure sshd LogLevel is configured"
@@ -306,7 +306,7 @@
     regexp: '^LogLevel|^#LogLevel'
     line: 'LogLevel {{ ubtu22cis_sshd_log_level | default(ubtu22cis_sshd_default_log_level) }}'
     insertafter: '^# Logging'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.15 | PATCH | Ensure sshd MACs are configured"
@@ -327,7 +327,7 @@
     regexp: '^MACs|^#MACs'
     line: "MACs {{ ubtu22cis_sshd_macs | default(ubtu22cis_sshd_default_macs) | join(',') }}"
     insertafter: '^# Ciphers and keying'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.16 | PATCH | Ensure sshd MaxAuthTries is configured"
@@ -344,7 +344,7 @@
     regexp: '^MaxAuthTries|^#MaxAuthTries'
     line: 'MaxAuthTries {{ ubtu22cis_sshd_max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
     insertafter: '^# Authentication'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.17 | PATCH | Ensure sshd MaxSessions is configured"
@@ -365,7 +365,7 @@
     regexp: '^MaxSessions|^#MaxSessions'
     line: 'MaxSessions {{ ubtu22cis_sshd_max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
     insertafter: '^# Authentication'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.18 | PATCH | Ensure sshd MaxStartups is configured"
@@ -385,7 +385,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^MaxStartups|^#MaxStartups'
     line: 'MaxStartups 10:30:60'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.19 | PATCH | Ensure sshd PermitEmptyPasswords is disabled"
@@ -406,7 +406,7 @@
     regexp: '^PermitEmptyPasswords|^#PermitEmptyPasswords'
     line: 'PermitEmptyPasswords no'
     insertafter: '# To disable tunneled clear text passwords'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.20 | PATCH | Ensure sshd PermitRootLogin is disabled"
@@ -422,7 +422,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^PermitRootLogin|^#PermitRootLogin'
     line: 'PermitRootLogin no'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.21 | PATCH | Ensure sshd PermitUserEnvironment is disabled"
@@ -442,7 +442,7 @@
     path: /etc/ssh/sshd_config
     regexp: '^PermitUserEnvironment|^#PermitUserEnvironment'
     line: 'PermitUserEnvironment no'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd
 
 - name: "5.1.22 | PATCH | Ensure sshd UsePAM is enabled"
@@ -464,5 +464,5 @@
     regexp: '^UsePAM|^#UsePAM'
     line: 'UsePAM yes'
     insertafter: '^# and ChallengeResponseAuthentication'
-    validate: 'sshd -t -f %s'
+    validate: 'sshd -T -f %s'
   notify: Restart sshd

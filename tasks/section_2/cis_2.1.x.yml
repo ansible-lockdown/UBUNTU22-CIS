@@ -308,7 +308,6 @@
     - nis
     - rule_2.1.10
     - NIST800-53R5_CM-7
-  notify: Systemd_daemon_reload
   block:
     - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Remove package"
       when:
