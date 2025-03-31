@@ -11,12 +11,17 @@ repos:
   hooks:
   # Safety
   - id: detect-aws-credentials
+    name: Detect AWS Credentials
   - id: detect-private-key
+    name: Detect Private Keys
 
   # git checks
   - id: check-merge-conflict
+    name: Check for merge conflicts
   - id: check-added-large-files
+    name: Check for Large files
   - id: check-case-conflict
+    name: Check case conflict
 
   # General checks
   - id: trailing-whitespace
@@ -27,6 +32,7 @@ repos:
     types: [text]
     args: [--markdown-linebreak-ext=md]
   - id: end-of-file-fixer
+    name: Ensure line at end of file
 
 # Scan for passwords
 - repo: https://github.com/Yelp/detect-secrets
@@ -35,12 +41,12 @@ repos:
   - id: detect-secrets
 
 - repo: https://github.com/gitleaks/gitleaks
-  rev: v8.21.2
+  rev: v8.24.2
   hooks:
   - id: gitleaks
 
 - repo: https://github.com/ansible-community/ansible-lint
-  rev: v24.10.0
+  rev: v25.1.3
   hooks:
   - id: ansible-lint
     name: Ansible-lint
@@ -59,6 +65,7 @@ repos:
     # - ansible-core>=2.10.1
 
 - repo: https://github.com/adrienverge/yamllint.git
-  rev: v1.35.1  # or higher tag
+  rev: v1.37.0  # or higher tag
   hooks:
   - id: yamllint
+    name: Check YAML Lint
