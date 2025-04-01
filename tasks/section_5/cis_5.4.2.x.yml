@@ -162,7 +162,7 @@
           register: discovered_root_path_perms
           loop: "{{ discovered_root_paths_split.stdout_lines }}"
 
-        - name: "5.4.2.5 | AUDIT | Ensure root PATH Integrity | Set permissions"
+        - name: "5.4.2.5 | PATCH | Ensure root PATH Integrity | Set permissions"
           when:
             - item.stat.exists
             - item.stat.isdir

@@ -10,7 +10,7 @@
     - auditd
     - NIST800-53R5_NA
   ansible.builtin.lineinfile:
-    dest: /etc/audit/auditd.conf
+    path: /etc/audit/auditd.conf
     regexp: "^max_log_file( |=)"
     line: "max_log_file = {{ ubtu22cis_max_log_file_size }}"
     state: present
