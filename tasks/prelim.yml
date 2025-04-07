@@ -47,6 +47,12 @@
       ansible.builtin.debug:
         msg: "{{ prelim_mount_point_fs_and_options }}"
 
+- name: "PRELIM | PATCH | Run apt update"
+  tags: always
+  ansible.builtin.package:
+    update_cache: true
+  changed_when: not ubtu22cis_ignore_apt_update_changed_when
+
 - name: Include audit specific variables
   when:
     - run_audit or audit_only

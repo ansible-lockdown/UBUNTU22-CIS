@@ -20,6 +20,11 @@ skip_reboot: true
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
 benchmark_version: v2.0.0
+
+# Create managed not custom local_facts files
+create_benchmark_facts: true
+ansible_facts_path: /etc/ansible/facts.d
+
 # Used for audit
 ubtu22cis_level_1: true
 ubtu22cis_level_2: true
@@ -100,6 +105,20 @@ audit_conf_dest: "/opt"
 
 # Where the audit logs are stored
 audit_log_dir: '/opt'
+
+## Ability to collect and take audit files moving to a centralised location
+# This enables the collection of the files from the host
+fetch_audit_output: false
+
+# Method of getting,uploading the summary files
+## Ensure access and permissions are avaiable for these to occur.
+## options are
+# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
+# copy - copies file to a location available to the managed node
+audit_output_collection_method: fetch
+
+# Location to put the audit files
+audit_output_destination: /opt/audit_summaries/
 
 ### Goss Settings ##
 ####### END ########
@@ -608,6 +627,10 @@ ubtu22cis_desktop_required: false
 # This will allow the purging of any packages that are marked to be removed
 # This will also purge any packages not removed via this playbook
 ubtu22cis_purge_apt: false
+
+## Ignore change_when for apt update task
+# Modifies behavior of 'changed_when' for 'apt update' task  in prelim that always changes
+ubtu22cis_ignore_apt_update_changed_when: false
 
 ##
 ## Section 1 Control Variables
