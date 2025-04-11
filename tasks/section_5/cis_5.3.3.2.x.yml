@@ -12,16 +12,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.1 | PATCH | Ensure password number of changed characters is configured | Remove difok from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_difok_file
+      when: "ubtu22cis_passwd_difok_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'difok\s*=\s*\d+\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.1 | PATCH | Ensure password number of changed characters is configured | Ensure difok file exists"
       ansible.builtin.template:
@@ -32,8 +31,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.2 | PATCH | Ensure minimum password length is configured"
-  when:
-    - ubtu22cis_rule_5_3_3_2_2
+  when: ubtu22cis_rule_5_3_3_2_2
   tags:
     - level1-server
     - level1-workstation
@@ -43,16 +41,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.2 | PATCH | Ensure minimum password length is configured | Remove minlen from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_minlen_file
+      when: "ubtu22cis_passwd_minlen_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'minlen\s*=\s*\d+\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.2 | PATCH | Ensure minimum password length is configured | Ensure minlen file exists"
       ansible.builtin.template:
@@ -63,8 +60,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.3 | PATCH | Ensure password complexity is configured"
-  when:
-    - ubtu22cis_rule_5_3_3_2_3
+  when: ubtu22cis_rule_5_3_3_2_3
   tags:
     - level1-server
     - level1-workstation
@@ -74,16 +70,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.3 | PATCH | Ensure password complexity is configured | Remove pwd complex settings from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_complex_file
+      when: "ubtu22cis_passwd_complex_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: '(minclass|[dulo]credit)\s*=\s*(-\d|\d+)\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.3 | PATCH | Ensure password complexity is configured | Ensure complexity file exists"
       ansible.builtin.template:
@@ -94,8 +89,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.4 | PATCH | Ensure password same consecutive characters is configured"
-  when:
-    - ubtu22cis_rule_5_3_3_2_4
+  when: ubtu22cis_rule_5_3_3_2_4
   tags:
     - level1-server
     - level1-workstation
@@ -105,16 +99,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.4 | PATCH | Ensure password same consecutive characters is configured | Remove maxrepeat settings from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_maxrepeat_file
+      when: "ubtu22cis_passwd_maxrepeat_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'maxrepeat\s*=\s*\d+\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.4 | PATCH | Ensure password same consecutive characters is configured | Ensure maxrepeat file exists"
       ansible.builtin.template:
@@ -125,8 +118,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured"
-  when:
-    - ubtu22cis_rule_5_3_3_2_5
+  when: ubtu22cis_rule_5_3_3_2_5
   tags:
     - level1-server
     - level1-workstation
@@ -136,16 +128,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | Remove maxsequence settings from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_maxsequence_file
+      when: "ubtu22cis_passwd_maxsequence_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'maxsequence\s*=\s*\d+\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | Ensure maxsequence file exists"
       ansible.builtin.template:
@@ -156,8 +147,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.6 | PATCH | Ensure password dictionary check is enabled"
-  when:
-    - ubtu22cis_rule_5_3_3_2_6
+  when: ubtu22cis_rule_5_3_3_2_6
   tags:
     - level1-server
     - level1-workstation
@@ -167,16 +157,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.6 | PATCH | Ensure password dictionary check is enabled | Remove dictcheck settings from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_dictcheck_file
+      when: "ubtu22cis_passwd_dictcheck_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'dictcheck\s*=\s*\d+\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.6 | PATCH | Ensure password dictionary check is enabled | Ensure dictcheck file exists"
       ansible.builtin.template:
@@ -187,8 +176,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.7 | PATCH | Ensure password quality checking is enforced"
-  when:
-    - ubtu22cis_rule_5_3_3_2_7
+  when: ubtu22cis_rule_5_3_3_2_7
   tags:
     - level1-server
     - level1-workstation
@@ -198,16 +186,15 @@
     - NIST800-53R5_IA-5
   block:
     - name: "5.3.3.2.7 | PATCH | Ensure password quality checking is enforced | Remove quality enforcement settings from conf files except expected file"
-      when:
-        - item != ubtu22cis_passwd_quality_enforce_file
+      when: "ubtu22cis_passwd_quality_enforce_file not in item.path"
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: 'enforcing\s*=\s*\d+\b'
         replace: ''
-      with_fileglob:
-        - '/etc/security/pwquality.conf'
-        - '/etc/security/pwquality.conf.d/*.conf'
-        - '/etc/pam.d/common-password'
+      with_items:
+        - "{{ prelim_pam_pwquality_confs.files }}"
+        - { path: '/etc/security/pwquality.conf'}
+        - { path: '/etc/pam.d/common-password' }
 
     - name: "5.3.3.2.7 | PATCH | Ensure password quality checking is enforced | Ensure quality enforcement file exists"
       ansible.builtin.template:
@@ -218,8 +205,7 @@
         mode: 'go-rwx'
 
 - name: "5.3.3.2.8 | PATCH | Ensure password quality is enforced for the root user"
-  when:
-    - ubtu22cis_rule_5_3_3_2_8
+  when: ubtu22cis_rule_5_3_3_2_8
   tags:
     - level1-server
     - level1-workstation

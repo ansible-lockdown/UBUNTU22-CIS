@@ -147,6 +147,14 @@
   check_mode: false
   register: prelim_sudoers_files
 
+- name: "PRELIM | AUDIT | Capture pam configs related files"
+  tags: always
+  ansible.builtin.find:
+    paths:
+      - '/usr/share/pam-configs/'
+      - '/etc/pam.d/'
+  register: prelim_pam_conf_files
+
 - name: PRELIM | PATCH | Ensure conf.d directory exists required for 5.3.3.2.x
   when:
     - ubtu22cis_rule_5_3_3_2_1 or
@@ -157,11 +165,26 @@
       ubtu22cis_rule_5_3_3_2_6
   tags: always
   ansible.builtin.file:
-    path: '/etc/security/pwquality.conf.d'
-    state: directory
+    path: "{{ item.path }}"
+    state: "{{ item.state }}"
     owner: root
     group: root
     mode: 'g-w,o-rwx'
+    modification_time: preserve
+    access_time: preserve
+  register: prelim_pwquality_dummy
+  changed_when: prelim_pwquality_dummy.diff == "absent"
+  loop:
+    - { path: '/etc/security/pwquality.conf.d', state: 'directory' }
+    - { path: '/etc/security/pwquality.conf.d/cis_dummy.conf', state: 'touch' }
+
+- name: "PRELIM | AUDIT | Capture pam security related files"
+  tags: always
+  ansible.builtin.find:
+    paths:
+      - /etc/security/pwquality.conf.d/
+    patterns: '*.conf'
+  register: prelim_pam_pwquality_confs
 
 - name: PRELIM | AUDIT | Discover Interactive UID MIN and MIN from logins.def
   when: not discover_int_uid

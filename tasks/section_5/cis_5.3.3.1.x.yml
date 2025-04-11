@@ -31,12 +31,10 @@
     - name: "5.3.3.1.1 | PATCH | Ensure password failed attempts lockout is configured | if exists remove deny from faillock line in pam-auth conf files"
       when: discovered_faillock_deny_files.stdout | length > 0
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: '(*.pam_faillock.so\s*)deny\s*=\s*\d+\b(.*)'
         replace: \1\2
-      with_fileglob:
-        - '/usr/share/pam-configs/*'
-        - '/etc/pam.d/*'
+      loop: "{{ prelim_pam_conf_files.files }}"
 
 - name: "5.3.3.1.2 | PATCH | Ensure password unlock time is configured"
   when:
@@ -69,12 +67,10 @@
     - name: "5.3.3.1.2 | PATCH | Ensure password unlock time is configured | if exists remove unlock_time from faillock line in pam-auth conf files"
       when: discovered_faillock_unlock_files.stdout | length > 0
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: '(*.pam_faillock.so\s*)unlock_time\s*=\s*\b(.*)'
         replace: \1\2
-      with_fileglob:
-        - '/usr/share/pam-configs/*'
-        - '/etc/pam.d/*'
+      loop: "{{ prelim_pam_conf_files.files }}"
 
 - name: "5.3.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account"
   when:
@@ -107,9 +103,7 @@
     - name: "5.3.3.1.3 | PATCH | Ensure password failed attempts lockout includes root account | if exists remove unlock_time from faillock line in pam-auth conf files"
       when: discovered_faillock_rootlock_files.stdout | length > 0
       ansible.builtin.replace:
-        path: "{{ item }}"
+        path: "{{ item.path }}"
         regexp: '(*.pam_faillock.so\s*)(even_deny_root\b|root_unlock_time\s*=\s*\d+\b)(.*)'
         replace: \1\3
-      with_fileglob:
-        - '/usr/share/pam-configs/*'
-        - '/etc/pam.d/*'
+      loop: "{{ prelim_pam_conf_files.files }}"

@@ -31,11 +31,14 @@
       loop: "{{ discovered_system_logfiles.stdout_lines }}"
 
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
+      when:
+        - discovered_system_logfiles.stdout_lines is defined
+        - item == "/var/log/btmp"
+        - item == "/var/log/utmp"
+        - item == "/var/log/wtmp"
+        - item == "/var/log/lastlog"
+        - "'sssd' in item or 'SSSD' in item"
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-wx'
-      with_fileglob:
-        - "/var/log/*tmp"
-        - "/var/log/lastlog*"
-        - "/var/log/sssd*"
-        - "/var/log/SSSD*"
+      loop: "{{ discovered_system_logfiles.stdout_lines }}"
