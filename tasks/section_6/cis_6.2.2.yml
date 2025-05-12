@@ -9,36 +9,30 @@
     - patch
     - logfiles
     - rule_6.2.2.1
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
   block:
     - name: "6.2.2.1 | AUDIT | Ensure access to all logfiles has been configured | find files"
       ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
       changed_when: false
       failed_when: false
-      register: discovered_system_logfiles
+      register: discovered_logfiles
 
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
       when:
-        - discovered_system_logfiles.stdout_lines is defined
         - item != "/var/log/btmp"
         - item != "/var/log/utmp"
         - item != "/var/log/wtmp"
         - item != "/var/log/lastlog"
       ansible.builtin.file:
         path: "{{ item }}"
-        mode: 'u-x,g-wx,o-rwx'
-      loop: "{{ discovered_system_logfiles.stdout_lines }}"
+        mode: u-x,g-wx,o-rwx
+      loop: "{{ discovered_logfiles.stdout_lines }}"
 
     - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
-      when:
-        - discovered_system_logfiles.stdout_lines is defined
-        - item == "/var/log/btmp"
-        - item == "/var/log/utmp"
-        - item == "/var/log/wtmp"
-        - item == "/var/log/lastlog"
-        - "'sssd' in item or 'SSSD' in item"
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-wx'
-      loop: "{{ discovered_system_logfiles.stdout_lines }}"
+      with_fileglob:
+        - "/var/log/*tmp"
+        - "/var/log/lastlog*"
+        - "/var/log/sssd*"
+        - "/var/log/SSSD*"
