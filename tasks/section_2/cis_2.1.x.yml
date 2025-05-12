@@ -4,11 +4,14 @@
   when:
     - ubtu22cis_rule_2_1_1
     - "'autofs' in ansible_facts.packages"
+    - not system_is_ec2
   tags:
     - level1-server
     - level2-workstation
     - patch
     - rule_2.1.1
+    - NIST800-53R5_SI-3
+    - NIST800-53R5_MP-7
   block:
     - name: "2.1.1 | PATCH | Ensure autofs services are not in use | Remove Package"
       when:
@@ -23,22 +26,22 @@
       when:
         - not ubtu22cis_autofs_services
         - ubtu22cis_autofs_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: autofs
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_2
+  when: ubtu22cis_rule_2_1_2
   tags:
     - level1-server
     - level2-workstation
     - patch
     - avahi
     - rule_2.1.2
+    - NIST800-53R5_SI-4
   block:
     - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use | Remove package"
       when:
@@ -56,7 +59,6 @@
       when:
         - not ubtu22cis_avahi_server
         - ubtu22cis_avahi_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
@@ -65,16 +67,17 @@
       loop:
         - avahi-daemon.socket
         - avahi-daemon.service
+      notify: Systemd_daemon_reload
 
 - name: "2.1.3 | PATCH | Ensure dhcp server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_3
+  when: ubtu22cis_rule_2_1_3
   tags:
     - level1-server
     - level1-workstation
     - patch
     - dhcp
     - rule_2.1.3
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.3 | PATCH | Ensure dhcp server services are not in use | Remove package"
       when:
@@ -90,7 +93,6 @@
       when:
         - not ubtu22cis_dhcp_server
         - ubtu22cis_dhcp_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
@@ -99,16 +101,17 @@
       loop:
         - isc-dhcp-server.service
         - isc-dhcp-server6.service
+      notify: Systemd_daemon_reload
 
 - name: "2.1.4 | PATCH | Ensure dns server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_4
+  when: ubtu22cis_rule_2_1_4
   tags:
     - level1-server
     - level1-workstation
     - patch
     - dns
     - rule_2.1.4
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.4 | PATCH | Ensure dns server services are not in use | Remove package"
       when:
@@ -124,24 +127,24 @@
       when:
         - not ubtu22cis_dns_server
         - ubtu22cis_dns_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: named.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
-- name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_5
+- name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use"
+  when: ubtu22cis_rule_2_1_5
   tags:
     - level1-server
     - level1-workstation
     - patch
     - dns
     - rule_2.1.5
+    - NIST800-53R5_CM-7
   block:
-    - name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use | Remove package"
+    - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use | Remove package"
       when:
         - "'dnsmasq' in ansible_facts.packages"
         - not ubtu22cis_dnsmasq_server
@@ -151,20 +154,19 @@
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
 
-    - name: "2.1.5 | PATCH | Ensure dnsmasq server services are not in use | Mask service"
+    - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use | Mask service"
       when:
         - not ubtu22cis_dnsmasq_server
         - ubtu22cis_dnsmasq_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: dnsmasq.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.6 | PATCH | Ensure ftp server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_6
+  when: ubtu22cis_rule_2_1_6
   tags:
     - level1-server
     - level1-workstation
@@ -172,6 +174,7 @@
     - patch
     - ftp
     - rule_2.1.6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.6 | PATCH | Ensure ftp server services are not in use | Remove package"
       when:
@@ -187,22 +190,22 @@
       when:
         - not ubtu22cis_ftp_server
         - ubtu22cis_ftp_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: vsftpd.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.7 | PATCH | Ensure ldap server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_7
+  when: ubtu22cis_rule_2_1_7
   tags:
     - level1-server
     - level1-workstation
     - patch
     - ldap
     - rule_2.1.7
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.7 | PATCH | Ensure ldap server services are not in use | Remove package"
       when:
@@ -218,16 +221,15 @@
       when:
         - not ubtu22cis_ldap_server
         - ubtu22cis_ldap_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: slapd.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.8 | PATCH | Ensure message access server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_8
+  when: ubtu22cis_rule_2_1_8
   tags:
     - level1-server
     - level1-workstation
@@ -236,6 +238,7 @@
     - imap
     - pop3
     - rule_2.1.8
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.8 | PATCH | Ensure message access server services are not in use | Remove package"
       when:
@@ -253,7 +256,6 @@
       when:
         - not ubtu22cis_message_server
         - ubtu22cis_message_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
@@ -262,10 +264,10 @@
       loop:
         - "dovecot.socket"
         - "dovecot.service"
+      notify: Systemd_daemon_reload
 
 - name: "2.1.9 | PATCH | Ensure network file system services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_9
+  when: ubtu22cis_rule_2_1_9
   tags:
     - level1-server
     - level1-workstation
@@ -273,6 +275,8 @@
     - nfs
     - services
     - rule_2.1.9
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.9 | PATCH | Ensure network file system services are not in use | Remove package"
       when:
@@ -288,22 +292,22 @@
       when:
         - not ubtu22cis_nfs_server
         - ubtu22cis_nfs_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: nfs-server.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.10 | PATCH | Ensure nis server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_10
+  when: ubtu22cis_rule_2_1_10
   tags:
     - level1-server
     - level1-workstation
     - patch
     - nis
     - rule_2.1.10
+    - NIST800-53R5_CM-7
   notify: Systemd_daemon_reload
   block:
     - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Remove package"
@@ -325,15 +329,16 @@
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.11 | PATCH | Ensure print server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_11
+  when: ubtu22cis_rule_2_1_11
   tags:
     - level1-server
     - patch
     - cups
     - rule_2.1.11
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.11 | PATCH | Ensure print server services are not in use | Remove package"
       when:
@@ -349,7 +354,6 @@
       when:
         - not ubtu22cis_print_server
         - ubtu22cis_print_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
@@ -358,16 +362,18 @@
       loop:
         - "cups.socket"
         - "cups.service"
+      notify: Systemd_daemon_reload
 
 - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_12
+  when: ubtu22cis_rule_2_1_12
   tags:
     - level1-server
     - level1-workstation
     - patch
     - rpc
     - rule_2.1.12
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use | Remove package"
       when:
@@ -383,7 +389,6 @@
       when:
         - not ubtu22cis_rpc_server
         - ubtu22cis_rpc_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
@@ -392,16 +397,17 @@
       loop:
         - rpcbind.service
         - rpcbind.socket
+      notify: Systemd_daemon_reload
 
 - name: "2.1.13 | PATCH | Ensure rsync services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_13
+  when: ubtu22cis_rule_2_1_13
   tags:
     - level1-server
     - level1-workstation
     - patch
     - rsync
     - rule_2.1.13
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.13 | PATCH | Ensure rsync services are not in use | Remove package"
       when:
@@ -417,12 +423,12 @@
       when:
         - not ubtu22cis_rsync_server
         - ubtu22cis_rsync_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: rsyncd.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.14 | PATCH | Ensure samba file server services are not in use"
   when:
@@ -433,6 +439,8 @@
     - patch
     - samba
     - rule_2.1.14
+    - NIST800-53R5_CM-6
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.14 | PATCH | Ensure samba file server services are not in use | Remove package"
       when:
@@ -448,12 +456,12 @@
       when:
         - not ubtu22cis_samba_server
         - ubtu22cis_samba_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: smbd.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.15 | PATCH | Ensure snmp services are not in use"
   when:
@@ -465,6 +473,7 @@
     - patch
     - samba
     - rule_2.1.15
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.15 | PATCH | Ensure snmp services are not in use | Remove package"
       when:
@@ -480,22 +489,22 @@
       when:
         - not ubtu22cis_snmp_server
         - ubtu22cis_snmp_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: snmpd.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.16 | PATCH | Ensure tftp server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_16
+  when: ubtu22cis_rule_2_1_16
   tags:
     - level1-server
     - level1-workstation
     - patch
     - tftp
     - rule_2.1.16
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.16 | PATCH | Ensure tftp server services are not in use | Remove package"
       when:
@@ -511,22 +520,22 @@
       when:
         - not ubtu22cis_tftp_server
         - ubtu22cis_tftp_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: tftpd-hpa.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.17 | PATCH | Ensure web proxy server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_17
+  when: ubtu22cis_rule_2_1_17
   tags:
     - level1-server
     - level1-workstation
     - patch
     - squid
     - rule_2.1.17
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.17 | PATCH | Ensure web proxy server services are not in use | Remove package"
       when:
@@ -542,16 +551,15 @@
       when:
         - not ubtu22cis_squid_server
         - ubtu22cis_squid_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: squid.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.18 | PATCH | Ensure web server services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_18
+  when: ubtu22cis_rule_2_1_18
   tags:
     - level1-server
     - level1-workstation
@@ -560,6 +568,7 @@
     - nginx
     - webserver
     - rule_2.1.18
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Remove httpd server"
       when:
@@ -586,37 +595,37 @@
         - not ubtu22cis_apache2_server
         - ubtu22cis_apache2_mask
         - "'apache2' in ansible_facts.packages"
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
-        name:
+        name: "{{ item }}"
         enabled: false
         state: stopped
         masked: true
       loop:
         - apache2.service
         - apache2.socket
+      notify: Systemd_daemon_reload
 
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Mask nginx service"
       when:
         - not ubtu22cis_nginx_server
         - ubtu22cis_nginx_mask
         - "'nginx' in ansible_facts.packages"
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: ngnix.service
         enabled: false
         state: stopped
         masked: true
+      notify: Systemd_daemon_reload
 
 - name: "2.1.19 | PATCH | Ensure xinetd services are not in use"
-  when:
-    - ubtu22cis_rule_2_1_19
+  when: ubtu22cis_rule_2_1_19
   tags:
     - level1-server
     - level1-workstation
     - patch
     - xinetd
     - rule_2.1.19
+    - NIST800-53R5_CM-7
   block:
     - name: "2.1.19 | PATCH | Ensure xinetd services are not in use | Remove package"
       when:
@@ -625,19 +634,19 @@
         - not ubtu22cis_xinetd_mask
       ansible.builtin.package:
         name: xinetd
-        state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
+        state: absent
 
     - name: "2.1.19 | PATCH | Ensure xinetd services are not in use | Mask service"
       when:
         - not ubtu22cis_xinetd_server
         - ubtu22cis_xinetd_mask
-      notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: xinetd.service
         enabled: false
-        state: stopped
         masked: true
+        state: stopped
+      notify: Systemd_daemon_reload
 
 - name: "2.1.20 | PATCH | Ensure X window server services are not in use"
   when:
@@ -649,12 +658,13 @@
     - patch
     - xwindow
     - rule_2.1.20
+    - NIST800-53R5_CM-11
   ansible.builtin.package:
     name: xorg-x11-server-common
     state: absent
     purge: "{{ ubtu22cis_purge_apt }}"
 
-- name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode"
+- name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode"
   when:
     - not ubtu22cis_is_mail_server
     - ubtu22cis_rule_2_1_21
@@ -664,38 +674,39 @@
     - patch
     - postfix
     - rule_2.1.21
+    - NIST800-53R5_CM-7
   vars:
-    warn_control_id: '2.2.21'
+    warn_control_id: "2.1.21"
   block:
-    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if exim4 installed"
+    - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if exim4 installed"
       when: "'exim4' in ansible_facts.packages"
-      notify: Restart exim4
-      ansible.builtin.lineinfile:
+      ansible.builtin.lineinfile:  # noqa: args[module]
         path: /etc/exim4/update-exim4.conf.conf
         regexp: "{{ item.regexp }}"
         line: "{{ item.line }}"
-        with_items:
-          - { regexp: '^dc_eximconfig_configtype', line: "dc_eximconfig_configtype='local'" }
-          - { regexp: '^dc_local_interfaces', line: "dc_local_interfaces='127.0.0.1 ; ::1'" }
-          - { regexp: '^dc_readhost', line: "dc_readhost=''" }
-          - { regexp: '^dc_relay_domains', line: "dc_relay_domains=''" }
-          - { regexp: '^dc_minimaldns', line: "dc_minimaldns='false'" }
-          - { regexp: '^dc_relay_nets', line: "dc_relay_nets=''" }
-          - { regexp: '^dc_smarthost', line: "dc_smarthost=''" }
-          - { regexp: '^dc_use_split_config', line: "dc_use_split_config='false'" }
-          - { regexp: '^dc_hide_mailname', line: "dc_hide_mailname=''" }
-          - { regexp: '^dc_mailname_in_oh', line: "dc_mailname_in_oh='true'" }
-          - { regexp: '^dc_localdelivery', line: "dc_localdelivery='mail_spool'" }
+        loop:
+          - { regexp: "^dc_eximconfig_configtype", line: "dc_eximconfig_configtype='local'" }
+          - { regexp: "^dc_local_interfaces", line: "dc_local_interfaces='127.0.0.1 ; ::1'" }
+          - { regexp: "^dc_readhost", line: "dc_readhost=''" }
+          - { regexp: "^dc_relay_domains", line: "dc_relay_domains=''" }
+          - { regexp: "^dc_minimaldns", line: "dc_minimaldns='false'" }
+          - { regexp: "^dc_relay_nets", line: "dc_relay_nets=''" }
+          - { regexp: "^dc_smarthost", line: "dc_smarthost=''" }
+          - { regexp: "^dc_use_split_config", line: "dc_use_split_config='false'" }
+          - { regexp: "^dc_hide_mailname", line: "dc_hide_mailname=''" }
+          - { regexp: "^dc_mailname_in_oh", line: "dc_mailname_in_oh='true'" }
+          - { regexp: "^dc_localdelivery", line: "dc_localdelivery='mail_spool'" }
+      notify: Restart exim4
 
-    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if postfix is installed"
+    - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if postfix is installed"
       when: "'postfix' in ansible_facts.packages"
       notify: Restart postfix
       ansible.builtin.lineinfile:
         path: /etc/postfix/main.cf
-        regexp: '^(#)?inet_interfaces'
-        line: 'inet_interfaces = loopback-only'
+        regexp: ^(?#)inet_interfaces
+        line: "inet_interfaces = loopback-only"
 
-    - name: "2.1.21 | WARN | Ensure mail transfer agents are configured for local-only mode | Message out other main agents"
+    - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | Message out other main agents"
       when:
         - "'exim4' not in ansible_facts.packages"
         - "'postfix' not in ansible_facts.packages"
@@ -704,7 +715,7 @@
           - "Warning!! You are not using either exim4 or postfix, please ensure mail services set for local only mode"
           - "Please review your vendors documentation to configure local-only mode"
 
-    - name: "2.1.21 | WARN | Ensure mail transfer agents are configured for local-only mode | warn_count"
+    - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | warn_count"
       when:
         - "'exim4' not in ansible_facts.packages"
         - "'postfix' not in ansible_facts.packages"
@@ -712,30 +723,30 @@
         file: warning_facts.yml
 
 - name: "2.1.22 | AUDIT | Ensure only approved services are listening on a network interface"
-  when:
-    - ubtu22cis_rule_2_1_22
+  when: ubtu22cis_rule_2_1_22
   tags:
     - level1-server
     - level1-workstation
     - audit
     - services
     - rule_2.1.22
+    - NIST800-53R5_CM-7
   vars:
-    warn_control_id: '2.1.22'
+    warn_control_id: "2.1.22"
   block:
     - name: "2.1.22 | AUDIT | Ensure only approved services are listening on a network interface | Get list of services"
-      ansible.builtin.shell: systemctl list-units --type=service
+      ansible.builtin.command: systemctl list-units --type=service # noqa command-instead-of-module
       changed_when: false
-      failed_when: ubtu22cis_2_1_22_services.rc not in [ 0, 1 ]
+      failed_when: discovered_list_of_services.rc not in [ 0, 1 ]
       check_mode: false
-      register: ubtu22cis_2_1_22_services
+      register: discovered_list_of_services
 
     - name: "2.1.22 | AUDIT | Ensure only approved services are listening on a network interface | Display list of services"
       ansible.builtin.debug:
         msg:
           - "Warning!! Below are the list of services, both active and inactive"
           - "Please review to make sure all are essential"
-          - "{{ ubtu22cis_2_1_22_services.stdout_lines }}"
+          - "{{ discovered_list_of_services.stdout_lines }}"
 
     - name: "2.1.22 | AUDIT | Ensure only approved services are listening on a network interface | Warn Count"
       ansible.builtin.import_tasks:

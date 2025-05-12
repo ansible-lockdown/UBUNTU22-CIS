@@ -14,7 +14,7 @@ This is a rewrite off approx 75% of controls
 - New variables
 - improved audit related checks
 - greater options on some controls
-- linting improvements
+- linting improvements and updated to latest
 
 ## Based on CIS V1.0.0
 

@@ -11,6 +11,7 @@
     - patch
     - pam
     - rule_5.3.1.1
+    - NIST800-53R5_NA
   ansible.builtin.package:
     name: libpam-runtime
     state: latest
@@ -26,6 +27,7 @@
     - patch
     - pam
     - rule_5.3.1.2
+    - NIST800-53R5_NA
   ansible.builtin.package:
     name: libpam-modules
     state: latest
@@ -40,6 +42,7 @@
     - patch
     - pam
     - rule_5.3.1.3
+    - NIST800-53R5_NA
   ansible.builtin.package:
     name: libpam-pwquality
     state: latest

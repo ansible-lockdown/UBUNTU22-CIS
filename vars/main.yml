@@ -3,6 +3,11 @@
 min_ansible_version: 2.12.1
 # Set default value for reboot value
 change_requires_reboot: false
+
+# Apparmor default settings
+control_1_3_1_4_was_run: false
+ubtu22cis_apparmor_enforce_only: false
+
 # The role discovers dynamically (in tasks/main.yml) whether it
 # is executed on a container image and sets the variable
 # system_is_container the true. Otherwise, the default value
