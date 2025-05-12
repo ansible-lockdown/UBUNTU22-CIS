@@ -81,7 +81,7 @@ audit_capture_files_dir: /some/location to copy to on control node
 
 # How to retrieve audit binary
 # Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already dowmloaded
+# you will need to access to either github or the file already downloaded
 get_audit_binary_method: download
 
 ## if get_audit_binary_method - copy the following needs to be updated for your environment
@@ -111,7 +111,7 @@ audit_log_dir: '/opt'
 fetch_audit_output: false
 
 # Method of getting,uploading the summary files
-## Ensure access and permissions are avaiable for these to occur.
+## Ensure access and permissions are available for these to occur.
 ## options are
 # fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
 # copy - copies file to a location available to the managed node
@@ -754,11 +754,11 @@ ubtu22cis_ipv6_disable: grub
 ubtu22cis_install_network_manager: true
 
 ## Control 3.1.3 - Ensure bluetooth Services are not in use
-# This control managed how the bluetooth service is managaed
+# This control managed how the bluetooth service is managed
 # Options are
 # true to leave installed if exists not changes take place
 # false - this removes the package
-# mask - if a dependancy for product so cannot be removed
+# mask - if a dependency for product so cannot be removed
 ubtu22cis_bluetooth_service: false
 ubtu22cis_bluetooth_mask: false
 
