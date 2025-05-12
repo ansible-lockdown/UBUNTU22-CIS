@@ -34,8 +34,8 @@
   block:
     - name: Post Audit | Capture audit data if documentation format
       ansible.builtin.shell: tail -2 "{{ pre_audit_outfile }}"  | tac | tr '\n' ' '
-      changed_when: false
       register: post_audit_summary
+      changed_when: false
 
     - name: Post Audit | Set Fact for audit summary
       ansible.builtin.set_fact:
