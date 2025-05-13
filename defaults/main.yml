@@ -539,7 +539,7 @@ ubtu22cis_rule_7_2_10: true
 # Options are
 # true to leave installed if exists not changes take place
 # false - this removes the package
-# mask - if a dependancy for product so cannot be removed
+# mask - if a dependency for product so cannot be removed
 # Server Services
 ubtu22cis_autofs_services: false
 ubtu22cis_autofs_mask: true

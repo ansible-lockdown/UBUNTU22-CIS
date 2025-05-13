@@ -188,7 +188,7 @@ legacy workflow files removed
 
 lint file updates
 readme updates to badges and layout
-added secrets-baseline in preperation for pre-commit
+added secrets-baseline in preparation for pre-commit
 readme tidy up
 
 ## v1.0.2
@@ -266,7 +266,7 @@ PRs incorporated
 
 - Ansible 2.10.1 minimum
 - fqcns added
-- audit alignment to use corresponding benchamrk version
+- audit alignment to use corresponding benchmark version
 - many lint improvements
 - All required changes for CIS 1.0.0 (very different from original base of ubuntu2004)
 
