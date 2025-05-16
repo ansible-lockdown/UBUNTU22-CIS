@@ -72,9 +72,7 @@
     file: pre_remediation_audit.yml
 
 - name: PRELIM | PATCH | Run apt update
-  when:
-    - ubtu22cis_rule_1_2_1_1 or
-      ubtu22cis_rule_1_2_2_1
+  when: ubtu22cis_rule_1_2_1_1 or ubtu22cis_rule_1_2_2_1
   tags: always
   ansible.builtin.package:
     update_cache: true
@@ -137,9 +135,7 @@
     state: present
 
 - name: PRELIM | PATCH | Find all sudoers files.
-  when:
-    - ubtu22cis_rule_5_2_4 or
-      ubtu22cis_rule_5_2_5
+  when: ubtu22cis_rule_5_2_4 or ubtu22cis_rule_5_2_5
   tags: always
   ansible.builtin.shell: "find /etc/sudoers /etc/sudoers.d/ -type f ! -name '*~' ! -name '*.*'"
   changed_when: false
@@ -261,8 +257,7 @@
 - name: PRELIM | PATCH | Ensure auditd is installed
   when:
     - ubtu22cis_rule_6_3_1_1
-    - "'auditd' not in ansible_facts.packages or
-       'auditd-plugins' not in ansible_facts.packages"
+    - "'auditd' not in ansible_facts.packages or 'auditd-plugins' not in ansible_facts.packages"
   tags:
     - level2-server
     - level2-workstation

@@ -2,6 +2,9 @@
 
 ## Based on CIS v2.0.0
 
+May 2025 QA Fixes
+- Typo fixes
+
 ### Do not migrate
 
 CIS have rewritten with a full release including but not limited to
