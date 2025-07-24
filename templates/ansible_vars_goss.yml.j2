@@ -467,7 +467,7 @@ ubtu22cis_apparmor_disable: {{ ubtu22cis_apparmor_disable }}
 # THIS VALUE IS WHAT THE ROOT PW WILL BECOME!!!!!!!!
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
 ubtu22cis_grub_user: {{ ubtu22cis_grub_user }}
-ubtu22cis_bootloader_password_hash: {{ grub_user_pass }}  # pragma: allowlist secret
+ubtu22cis_bootloader_password_hash: {{ ubtu22cis_bootloader_password_hash }}  # pragma: allowlist secret
 
 ## Controls 1.5.x
 
