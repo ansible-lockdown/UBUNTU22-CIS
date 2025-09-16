@@ -159,7 +159,7 @@
     name: "{{ ubtu22cis_time_sync_tool }}"
     state: restarted
 
-- name: Reload systemctl
+- name: Systemd_daemon_reload
   ansible.builtin.systemd:
     daemon_reload: true
 
