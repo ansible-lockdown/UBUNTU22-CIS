@@ -12,3 +12,4 @@
   ansible.builtin.package:
     name: "*"
     state: latest
+    lock_timeout: 180

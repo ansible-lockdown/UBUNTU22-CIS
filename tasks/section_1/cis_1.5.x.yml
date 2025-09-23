@@ -74,7 +74,7 @@
         owner: root
         group: root
         mode: 'go-wx'
-      notify: Reload systemctl
+      notify: Systemd_daemon_reload
 
     - name: "1.5.3 | PATCH | Ensure core dumps are restricted | coredump.conf"
       ansible.builtin.lineinfile:

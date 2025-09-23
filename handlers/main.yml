@@ -13,6 +13,7 @@
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp"
+  when: not ubtu22cis_tmp_svc
   vars:
     mount_point: '/tmp'
   ansible.posix.mount:
@@ -21,6 +22,7 @@
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp systemd"
+  when: ubtu22cis_tmp_svc
   vars:
     mount_point: '/tmp'
   ansible.builtin.systemd:
@@ -159,7 +161,7 @@
     name: "{{ ubtu22cis_time_sync_tool }}"
     state: restarted
 
-- name: Reload systemctl
+- name: Systemd_daemon_reload
   ansible.builtin.systemd:
     daemon_reload: true
 

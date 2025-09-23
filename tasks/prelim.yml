@@ -47,10 +47,12 @@
       ansible.builtin.debug:
         msg: "{{ prelim_mount_point_fs_and_options }}"
 
-- name: "PRELIM | PATCH | Run apt update"
+- name: PRELIM | PATCH | Run apt update
+  when: ubtu22cis_rule_1_2_1_1 or ubtu22cis_rule_1_2_2_1
   tags: always
   ansible.builtin.package:
     update_cache: true
+    lock_timeout: 180
   changed_when: not ubtu22cis_ignore_apt_update_changed_when
 
 - name: Include audit specific variables
@@ -71,12 +73,6 @@
   ansible.builtin.import_tasks:
     file: pre_remediation_audit.yml
 
-- name: PRELIM | PATCH | Run apt update
-  when: ubtu22cis_rule_1_2_1_1 or ubtu22cis_rule_1_2_2_1
-  tags: always
-  ansible.builtin.package:
-    update_cache: true
-
 - name: PRELIM | AUDIT | Discover Gnome Desktop Environment
   tags: always
   ansible.builtin.stat:
@@ -96,6 +92,7 @@
   ansible.builtin.package:
     name: cron
     state: present
+    lock_timeout: 180
 
 - name: PRELIM | AUDIT | Wireless adapter pre-requisites
   when:
@@ -117,6 +114,7 @@
       ansible.builtin.package:
         name: network-manager
         state: present
+        lock_timeout: 180
 
 - name: PRELIM | PATCH | Ensure ufw is installed
   when:
@@ -133,6 +131,7 @@
   ansible.builtin.package:
     name: ufw
     state: present
+    lock_timeout: 180
 
 - name: PRELIM | PATCH | Find all sudoers files.
   when: ubtu22cis_rule_5_2_4 or ubtu22cis_rule_5_2_5
@@ -267,6 +266,7 @@
   ansible.builtin.package:
     name: ['auditd', 'audispd-plugins']
     state: present
+    lock_timeout: 180
 
 - name: PRELIM | AUDIT | Audit conf and rules files | list files
   tags:
@@ -316,6 +316,7 @@
   ansible.builtin.package:
     name: acl
     state: present
+    lock_timeout: 180
 
 ## Optional
 

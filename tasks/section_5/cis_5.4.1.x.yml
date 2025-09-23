@@ -1,8 +1,7 @@
 ---
 
 - name: "5.4.1.1 | PATCH | Ensure password expiration is configured"
-  when:
-    - ubtu22cis_rule_5_4_1_1
+  when: ubtu22cis_rule_5_4_1_1
   tags:
     - level1-server
     - level1-workstation
@@ -15,6 +14,10 @@
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - user
+    - login
+  vars:
+    warn_control_id: '5.4.1.1'
   block:
     - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Set /etc/login.defs PASS_MAX_DAYS"
       ansible.builtin.lineinfile:
@@ -23,21 +26,34 @@
         line: 'PASS_MAX_DAYS {{ ubtu22cis_pass_max_days }}'
         insertafter: '# Password aging controls'
 
-    - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Get existing users PASS_MAX_DAYS"
+    - name: "5.4.1.1 | AUDIT | Ensure password expiration is configured | Get existing users PASS_MAX_DAYS"
       ansible.builtin.shell: "awk -F: '(/^[^:]+:[^!*]/ && ($5>{{ ubtu22cis_pass_max_days }} || $5<{{ ubtu22cis_pass_min_days }} || $5 == -1)){print $1}' /etc/shadow"
       changed_when: false
       failed_when: false
-      register: discovered_max_days
+      register: discovered_passwd_max_days
+
+    - name: "5.4.1.1 | AUDIT | Ensure password expiration is configured | Add warning if ansible user found as break connection"
+      when:
+        - ubtu22cis_disruption_high
+        - ansible_user in discovered_passwd_max_days.stdout
+      ansible.builtin.debug:
+        msg: "Warning!! Your ansible user found to be not compliant with maxdays - Manual intervention required"
+
+    - name: 5.4.1.1 | AUDIT | Ensure password expiration is configured | Warn count"
+      when:
+        - ubtu22cis_disruption_high
+        - ansible_user in discovered_passwd_max_days.stdout
+      ansible.builtin.import_tasks:
+        file: warning_facts.yml
 
     - name: "5.4.1.1 | PATCH | Ensure password expiration is configured | Set existing users PASS_MAX_DAYS"
       when:
         - ubtu22cis_disruption_high
-        - (item != 'root') or (not ubtu22cis_uses_root)
-      ansible.builtin.command: chage --maxdays {{ ubtu22cis_pass_max_days }} {{ item }}
+        - item != (ansible_user)
+      ansible.builtin.command: "chage --maxdays {{ ubtu22cis_pass_max_days }} {{ item }}"
       failed_when: false
-      changed_when: discovered_max_days.stdout | length > 0
-      loop: "{{ discovered_max_days.stdout_lines }}"
-
+      changed_when: discovered_passwd_max_days.stdout | length > 0
+      loop: "{{ discovered_passwd_max_days.stdout_lines }}"
 - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured"
   when:
     - ubtu22cis_rule_5_4_1_2
