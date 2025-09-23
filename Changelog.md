@@ -1,6 +1,16 @@
 # Ubuntu22CIS
 
+
 ## Based on CIS v2.0.0
+
+Sept 2025 - updates
+- 5.4.2.5 improved thanks to @numericillustration
+- tmp handler logic improved thanks to @huntermccallum
+- audit now had the ability to adjust concurrent processes
+- pre-commit updates
+- grub handler update perms thanks to @dderemiah
+- fixed handler typos for systemd thanks to @dderemiah
+- updated auditd template logic - thanks to @matt-j-griffin
 
 May 2025 QA Fixes
 - Typo fixes
