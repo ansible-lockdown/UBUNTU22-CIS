@@ -18,7 +18,7 @@
         dest: "{{ ubtu22cis_grub_user_file }}"
         owner: root
         group: root
-        mode: 'go-w'
+        mode: 'go-w,u+x'
       notify: Grub update
 
     - name: "1.4.1 | PATCH | Ensure bootloader password is set | allow unrestricted boot"
