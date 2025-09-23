@@ -13,7 +13,7 @@
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp"
-  when: not ubtu22cis_tmp_svc.
+  when: not ubtu22cis_tmp_svc
   vars:
     mount_point: '/tmp'
   ansible.posix.mount:
