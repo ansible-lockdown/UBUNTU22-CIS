@@ -70,6 +70,9 @@ run_audit: false
 # Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
 audit_run_heavy_tests: true
 
+# Ability to limit the number of concurrent processes used by goss (default 50)
+audit_max_concurrent: 50
+
 ## Only run Audit do not remediate
 audit_only: false
 ### As part of audit_only ###
