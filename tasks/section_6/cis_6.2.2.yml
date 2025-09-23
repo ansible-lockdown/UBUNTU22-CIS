@@ -9,6 +9,8 @@
     - patch
     - logfiles
     - rule_6.2.2.1
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   block:
     - name: "6.2.2.1 | AUDIT | Ensure access to all logfiles has been configured | find files"
       ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
