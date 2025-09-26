@@ -34,6 +34,9 @@
         - uses: actions/first-interaction@main
           with:
             repo_token: ${{ secrets.GITHUB_TOKEN }}
+            issue_message: |-
+                Congrats on opening your first issue and thank you for taking the time to help improve Ansible-Lockdown!
+                Please join in the conversation happening on the [Discord Server](https://www.lockdownenterprise.com/discord) as well.
             pr_message: |-
                 Congrats on opening your first pull request and thank you for taking the time to help improve Ansible-Lockdown!
                 Please join in the conversation happening on the [Discord Server](https://www.lockdownenterprise.com/discord) as well.
