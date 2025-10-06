@@ -3,6 +3,9 @@
 
 ## Based on CIS v2.0.0
 
+Oct25
+Readme and workflows updated
+
 Sept 2025 - updates
 - 5.4.2.5 improved thanks to @numericillustration
 - tmp handler logic improved thanks to @huntermccallum
