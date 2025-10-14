@@ -2,7 +2,7 @@
 
 # File to skip controls if container
 # Based on standard image no changes
-# it expected all pkgs required for the container are alreday installed
+# it expected all pkgs required for the container are already installed
 
 ## controls
 

@@ -4,6 +4,18 @@
 
 ### Do not migrate
 
+# Sept 25 updates
+
+- 5.4.2.5 improved thanks to @numericillustration
+- tmp handler logic improved thanks to @huntermccallum
+- audit now had the ability to adjust concurrent processes
+- pre-commit updates
+- grub handler update perms thanks to @dderemiah
+- fixed handler typos for systemd thanks to @dderemiah
+- updated auditd template logic - thanks to @matt-j-griffin
+
+# 2.0.0 release
+
 CIS have rewritten with a full release including but not limited to
 
 - reordering
