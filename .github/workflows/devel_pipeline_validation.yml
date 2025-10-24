@@ -17,18 +17,16 @@
     # Allow manual running of workflow
     workflow_dispatch:
 
-  # Allow permissions for AWS auth
-  permissions:
-    id-token: write
-    contents: read
-    pull-requests: read
-
   # A workflow run is made up of one or more jobs
   # that can run sequentially or in parallel
   jobs:
     # This will create messages for first time contributers and direct them to the Discord server
     welcome:
       runs-on: ubuntu-latest
+
+      permissions:
+        issues: write
+        pull-requests: write
 
       steps:
         - uses: actions/first-interaction@main
@@ -45,6 +43,13 @@
     playbook-test:
       # The type of runner that the job will run on
       runs-on: self-hosted
+
+      # Allow permissions for AWS auth
+      permissions:
+        id-token: write
+        contents: read
+        pull-requests: read
+
       env:
         ENABLE_DEBUG: ${{ vars.ENABLE_DEBUG }}
         # Imported as a variable by terraform
