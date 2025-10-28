@@ -1135,7 +1135,6 @@ ubtu22cis_aide_cron_month: '*'
 # can be concatenated with commas.
 ubtu22cis_aide_cron_weekday: '*'
 
-
 # This variable represents the actual command or script that the systemd timer
 # will execute for running AIDE in update mode.
 ubtu22cis_aide_systemd_exec: '/usr/bin/aide --config /etc/aide/aide.conf --update'
@@ -1166,7 +1165,6 @@ ubtu22cis_aide_systemd_month: '*'
 # can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
 # can be concatenated with commas.
 ubtu22cis_aide_systemd_weekday: '*'
-
 
 ## Controls 6.2.1.x journald
 
