@@ -3,7 +3,7 @@ Description=Aide Check
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/aide.wrapper --config /etc/aide/aide.conf --update
+ExecStart={{ ubtu22cis_aide_systemd_exec }}
 
 [Install]
 WantedBy=multi-user.target

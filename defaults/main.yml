@@ -1135,6 +1135,37 @@ ubtu22cis_aide_cron_month: '*'
 # can be concatenated with commas.
 ubtu22cis_aide_cron_weekday: '*'
 
+# This variable represents the actual command or script that the systemd timer
+# will execute for running AIDE in update mode.
+ubtu22cis_aide_systemd_exec: '/usr/bin/aide --config /etc/aide/aide.conf --update'
+
+# These variables define the schedule for the systemd timer job
+# This variable governs the minute of the time of day when the AIDE systemd timer is run.
+# It must be in the range `0-59`.
+ubtu22cis_aide_systemd_minute: 0
+
+# This variable governs the hour of the time of day when the AIDE systemd timer is run.
+# It must be in the range `0-23`.
+ubtu22cis_aide_systemd_hour: 5
+
+# This variable governs the day of the month when the AIDE systemd timer is run.
+# `*` signifies that the job is run on all days; furthermore, specific days
+# can be given in the range `1-31`; several days can be concatenated with a comma.
+# The specified day(s) must be in the range `1-31`.
+ubtu22cis_aide_systemd_day: '*'
+
+# This variable governs months when the AIDE systemd timer is run.
+# `*` signifies that the job is run in every month; furthermore, specific months
+# can be given in the range `1-12`; several months can be concatenated with commas.
+# The specified month(s) must be in the range `1-12`.
+ubtu22cis_aide_systemd_month: '*'
+
+# This variable governs the weekdays when the AIDE systemd timer is run.
+# `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
+# can be given in the range `0-7` (both `0` and `7` represent Sunday); several weekdays
+# can be concatenated with commas.
+ubtu22cis_aide_systemd_weekday: '*'
+
 ## Controls 6.2.1.x journald
 
 # This variable specifies the address of the remote log host where logs are being sent.
