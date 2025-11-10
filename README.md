@@ -2,7 +2,7 @@
 
 ## Configure a UBUNTU 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [CIS UBUNTU 22 Benchmark v2.0.0](https://www.cisecurity.org/cis-benchmarks/)
+### Based on [CIS RedHat Enterprise UBUNTU 22 Benchmark v3.0.0](https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 
@@ -19,7 +19,6 @@
 
 ## Lint & Pre-Commit Tools 🔧
 
-[![Pre-Commit.ci](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/UBUNTU22-CIS/pre-commit-ci.json)](https://results.pre-commit.ci/latest/github/ansible-lockdown/UBUNTU22-CIS/devel)
 ![YamlLint](https://img.shields.io/badge/yamllint-Present-brightgreen?style=flat&logo=yaml&logoColor=white)
 ![Ansible-Lint](https://img.shields.io/badge/ansible--lint-Present-brightgreen?style=flat&logo=ansible&logoColor=white)
 
@@ -49,7 +48,6 @@
 ![Private Benchmark Version](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/benchmark-version.json)
 
 [![Private Remediate Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/remediate.json)](https://github.com/ansible-lockdown/Private-UBUNTU22-CIS/actions/workflows/main_pipeline_validation.yml)
-[![Private GPO Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/gpo.json)](https://github.com/ansible-lockdown/Private-UBUNTU22-CIS/actions/workflows/main_pipeline_validation_gpo.yml)
 
 ![Private Pull Requests](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/prs.json)
 ![Private Closed Issues](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/issues-closed.json)
@@ -58,9 +56,9 @@
 
 ## Looking for support? 🤝
 
-[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UBUNTU22_CIS)
+[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UBUNTU22-CIS)
 
-[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UBUNTU22_CIS)
+[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UBUNTU22-CIS)
 
 ### Community 💬
 
@@ -95,7 +93,7 @@ Further details can be seen in the [Changelog](./ChangeLog.md)
 
 ## Matching a security Level for CIS
 
-It is possible to only run level 1 or level 2 controls for CIS.
+It is possible to to only run level 1 or level 2 controls for CIS.
 This is managed using tags:
 
 - level1-server
@@ -121,7 +119,7 @@ The control found in defaults main also need to reflect this as this control the
 
 **Technical Dependencies:**
 
-UBUNTU 22 - Other versions are not supported.
+UBUNTU 22.04
 
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
@@ -152,10 +150,9 @@ Note: More tests are run during audit as we check config and running state.
 
 ok: [default] => {
     "msg": [
-        "msg": [
-        "The pre remediation audit results are: Count: 763, Failed: 234, Skipped: 4, Duration: 9.741s",
-        "The post remediation audit results are: Count: 763, Failed: 19, Skipped: 4, Duration: 12.725s",
-        "Full breakdown can be found in /opt",
+        "The pre remediation results are: ['Total Duration: 5.454s', 'Count: 338, Failed: 47, Skipped: 5'].",
+        "The post remediation results are: ['Total Duration: 5.007s', 'Count: 338, Failed: 46, Skipped: 5'].",
+        "Full breakdown can be found in /var/tmp",
         ""
     ]
 }
@@ -232,6 +229,8 @@ uses:
 - self-hosted runners using OpenTofu
 
 ## Known Issues
+
+Almalinux BaseOS, EPEL and many cloud providers repositories, do not allow gpgcheck(rule_1.2.1.2) or repo_gpgcheck (rule_1.2.1.3) this will cause issues during the playbook unless or a workaround is found.
 
 
 ## Local Testing 💻

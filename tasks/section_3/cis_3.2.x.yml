@@ -10,6 +10,7 @@
     - dccp
     - NIST800-53R5_SI-4
     - NIST800-53R5_CM-7
+    - CCI-000381
   block:
     - name: "3.2.1 | PATCH | Ensure dccp kernel module is not available | modprobe"
       ansible.builtin.lineinfile:
@@ -40,8 +41,8 @@
     - patch
     - rule_3.2.2
     - tipc
-    - NIST800-53R5_SI-4
     - NIST800-53R5_CM-7
+    - CCI-000381
   block:
     - name: "3.2.2 | PATCH | Ensure tipc kernel module is not available | modprobe"
       ansible.builtin.lineinfile:
@@ -72,8 +73,8 @@
     - patch
     - rule_3.2.3
     - rds
-    - NIST800-53R5_SI-4
     - NIST800-53R5_CM-7
+    - CCI-000381
   block:
     - name: "3.2.3 | PATCH | Ensure rds kernel module is not available | modprobe"
       ansible.builtin.lineinfile:
@@ -104,8 +105,8 @@
     - patch
     - rule_3.2.4
     - sctp
-    - NIST800-53R5_SI-4
     - NIST800-53R5_CM-7
+    - CCI-000381
   block:
     - name: "3.2.4 | PATCH | Ensure sctp kernel module is not available | modprobe"
       ansible.builtin.lineinfile:

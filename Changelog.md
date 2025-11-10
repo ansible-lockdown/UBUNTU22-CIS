@@ -1,5 +1,17 @@
 # Ubuntu22CIS
 
+## Based on CIS v3.0.0 - Oct 25
+
+Numbering changed
+CCI added where required
+overlay kernel module added
+/tmp updated
+cis levels changed for partitions
+xwayland for gdm disabled
+ipv4 and ipv6 sysctl separated
+ssh config file options
+
+UFW Only firewall documented now rewritten - check ports allowed etc
 
 ## Based on CIS v2.0.0
 

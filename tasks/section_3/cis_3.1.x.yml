@@ -65,31 +65,22 @@
   vars:
     warn_control_id: '3.1.2'
   block:
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Check for network-manager tool"
-      when: "'network-manager' in ansible_facts.packages"
-      ansible.builtin.command: nmcli radio wifi
-      changed_when: false
-      failed_when: false
-      check_mode: false
-      register: discovered_wifi_status
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | find wireless files"
+      ansible.builtin.find:
+        path: /lib/modules/{{ ansible_kernel }}//kernel/drivers/net/wireless
+        patterns: "*.ko"
+      register: discovered_loaded_wireless_modules
 
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Disable wireless if network-manager installed"
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | add to blacklist"
       when:
-        - "'network-manager' in ansible_facts.packages"
-        - "'enabled' in discovered_wifi_status.stdout"
-      ansible.builtin.command: nmcli radio all off
-      changed_when: discovered_nmcli_radio_off.rc == 0
-      register: discovered_nmcli_radio_off
-
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Warn about wireless if network-manager not installed"
-      when: "'network-manager' not in ansible_facts.packages"
-      ansible.builtin.debug:
-        msg: "Warning!! You need to disable wireless interfaces manually since network-manager is not installed"
-
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | Set warning count"
-      when: "'network-manager' not in ansible_facts.packages"
-      ansible.builtin.import_tasks:
-        file: warning_facts.yml
+        - discovered_loaded_wireless_modules.stdout is defined
+        - discovered_loaded_wireless_modules.stdout | length > 0
+      ansible.builtin.template:
+        src: etc/modprobe.d/blacklist-wireless.conf.j2
+        dest: /etc/modprobe.d/blacklist-wireless.conf
+        owner: root
+        group: root
+        mode: 'go-rwx'
 
 - name: "3.1.3 | PATCH | Ensure bluetooth services are not in use"
   when: ubtu22cis_rule_3_1_3
@@ -113,7 +104,7 @@
       when:
         - not ubtu22cis_bluetooth_service
         - ubtu22cis_bluetooth_mask
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
       ansible.builtin.systemd:
         name: bluetooth.service
         enabled: false

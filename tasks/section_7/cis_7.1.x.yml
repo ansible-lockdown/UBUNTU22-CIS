@@ -250,7 +250,7 @@
       ansible.builtin.file:
         path: "{{ item }}"
         owner: "{{ ubtu22cis_unowned_owner }}"
-        group: "{{ ubtu22cis_unowned_group }}"
+        group: "{{ ubtu22cis_ungrouped_group }}"
       with_items:
         - "{{ discovered_unowned_files_flatten }}"
 

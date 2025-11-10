@@ -11,12 +11,12 @@
     - patch
     - rule_1.3.1.1
     - apparmor
-    - NIST800-53R5_SI-2
+    - NIST800-53R5_AC-3
   ansible.builtin.package:
     name: ['apparmor', 'apparmor-utils']
     state: present
 
-- name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration"
+- name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled"
   when: ubtu22cis_rule_1_3_1_2
   tags:
     - level1-server
@@ -26,14 +26,14 @@
     - apparmor
     - NIST800-53R5_AC-3
   block:
-    - name: "1.3.1.2 | AUDIT | Ensure AppArmor is enabled in the bootloader configuration | Get current settings"
+    - name: "1.3.1.2 | AUDIT | Ensure AppArmor is enabled | Get current settings"
       ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
       changed_when: false
       failed_when: false
       check_mode: false
       register: discovered_cmdline_settings
 
-    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled | Set apparmor settings if none exist"
       when: discovered_cmdline_settings.stdout is not search('apparmor=')
       ansible.builtin.lineinfile:
         path: /etc/default/grub
@@ -42,7 +42,7 @@
         backrefs: true
       notify: Grub update
 
-    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set security settings if none exist"
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled | Set security settings if none exist"
       when: discovered_cmdline_settings.stdout is not search('security=')
       ansible.builtin.lineinfile:
         path: /etc/default/grub
@@ -51,7 +51,7 @@
         backrefs: true
       notify: Grub update
 
-    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Set apparmor settings if none exist"
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled | Set apparmor settings if none exist"
       when:
         - "'apparmor' not in discovered_cmdline_settings.stdout"
         - "'security' not in discovered_cmdline_settings.stdout"
@@ -62,7 +62,7 @@
         insertafter: '^GRUB_'
       notify: Grub update
 
-    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled in the bootloader configuration | Replace apparmor settings when exists"
+    - name: "1.3.1.2 | PATCH | Ensure AppArmor is enabled | Replace apparmor settings when exists"
       when:
         - "'apparmor' in discovered_cmdline_settings.stdout or
           'security' in discovered_cmdline_settings.stdout"

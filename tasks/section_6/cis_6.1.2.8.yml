@@ -1,0 +1,32 @@
+---
+
+- name: "6.1.2.8 | PATCH | Ensure logrotate is configured"
+  when:
+    - ubtu22cis_rule_6_1_2_8
+    - "'logrotate' in ansible_facts.packages"
+  tags:
+    - level1-server
+    - level1-workstation
+    - manual
+    - patch
+    - logrotate
+    - rule_6.1.2.8
+    - NIST800-53R5_AU-8
+  block:
+    - name: "6.1.2.8 | AUDIT | Ensure logrotate is configured | Get logrotate settings"
+      ansible.builtin.find:
+        paths: /etc/logrotate.d/
+      register: discovered_log_rotate_conf
+
+    - name: "6.1.2.8 | PATCH | Ensure logrotate is configured | conf files"
+      ansible.builtin.replace:
+        path: "{{ item.path }}"
+        regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
+        replace: "\\1{{ ubtu22cis_logrotate }}"
+      loop: "{{ discovered_log_rotate_conf.files }}"
+
+    - name: "6.1.2.8 | PATCH | Ensure logrotate is configured | logrotate.conf"
+      ansible.builtin.replace:
+        path: /etc/logrotate.conf
+        regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
+        replace: "\\1{{ ubtu22cis_logrotate }}"

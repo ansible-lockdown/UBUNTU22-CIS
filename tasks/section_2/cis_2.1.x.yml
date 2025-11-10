@@ -28,10 +28,8 @@
         - ubtu22cis_autofs_mask
       ansible.builtin.systemd:
         name: autofs
-        enabled: false
-        state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use"
   when: ubtu22cis_rule_2_1_2
@@ -47,7 +45,6 @@
       when:
         - not ubtu22cis_avahi_server
         - not ubtu22cis_avahi_mask
-        - "'avahi' in ansible_facts.packages or 'avahi-autopd' in ansible_facts.packages"
       ansible.builtin.package:
         name:
           - avahi-autoipd
@@ -67,7 +64,7 @@
       loop:
         - avahi-daemon.socket
         - avahi-daemon.service
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.3 | PATCH | Ensure dhcp server services are not in use"
   when: ubtu22cis_rule_2_1_3
@@ -83,7 +80,6 @@
       when:
         - not ubtu22cis_dhcp_server
         - not ubtu22cis_dhcp_mask
-        - "'dhcp-server' in ansible_facts.packages"
       ansible.builtin.package:
         name: isc-dhcp-server
         state: absent
@@ -101,7 +97,7 @@
       loop:
         - isc-dhcp-server.service
         - isc-dhcp-server6.service
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.4 | PATCH | Ensure dns server services are not in use"
   when: ubtu22cis_rule_2_1_4
@@ -115,7 +111,6 @@
   block:
     - name: "2.1.4 | PATCH | Ensure dns server services are not in use | Remove package"
       when:
-        - "'bind9' in ansible_facts.packages"
         - not ubtu22cis_dns_server
         - not ubtu22cis_dns_mask
       ansible.builtin.package:
@@ -132,7 +127,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use"
   when: ubtu22cis_rule_2_1_5
@@ -146,7 +141,6 @@
   block:
     - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use | Remove package"
       when:
-        - "'dnsmasq' in ansible_facts.packages"
         - not ubtu22cis_dnsmasq_server
         - not ubtu22cis_dnsmasq_mask
       ansible.builtin.package:
@@ -163,7 +157,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.6 | PATCH | Ensure ftp server services are not in use"
   when: ubtu22cis_rule_2_1_6
@@ -178,7 +172,6 @@
   block:
     - name: "2.1.6 | PATCH | Ensure ftp server services are not in use | Remove package"
       when:
-        - "'vsftp' in ansible_facts.packages"
         - not ubtu22cis_ftp_server
         - not ubtu22cis_ftp_mask
       ansible.builtin.package:
@@ -195,7 +188,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.7 | PATCH | Ensure ldap server services are not in use"
   when: ubtu22cis_rule_2_1_7
@@ -209,7 +202,6 @@
   block:
     - name: "2.1.7 | PATCH | Ensure ldap server services are not in use | Remove package"
       when:
-        - "'slapd' in ansible_facts.packages"
         - not ubtu22cis_ldap_server
         - not ubtu22cis_ldap_mask
       ansible.builtin.package:
@@ -226,7 +218,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.8 | PATCH | Ensure message access server services are not in use"
   when: ubtu22cis_rule_2_1_8
@@ -242,7 +234,6 @@
   block:
     - name: "2.1.8 | PATCH | Ensure message access server services are not in use | Remove package"
       when:
-        - "'dovecot-pop3d' in ansible_facts.packages or 'dovecot-imapd' in ansible_facts.packages"
         - not ubtu22cis_message_server
         - not ubtu22cis_message_mask
       ansible.builtin.package:
@@ -264,7 +255,7 @@
       loop:
         - "dovecot.socket"
         - "dovecot.service"
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.9 | PATCH | Ensure network file system services are not in use"
   when: ubtu22cis_rule_2_1_9
@@ -280,7 +271,6 @@
   block:
     - name: "2.1.9 | PATCH | Ensure network file system services are not in use | Remove package"
       when:
-        - "'nfs-kernel-server' in ansible_facts.packages"
         - not ubtu22cis_nfs_server
         - not ubtu22cis_nfs_mask
       ansible.builtin.package:
@@ -297,7 +287,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.10 | PATCH | Ensure nis server services are not in use"
   when: ubtu22cis_rule_2_1_10
@@ -308,11 +298,10 @@
     - nis
     - rule_2.1.10
     - NIST800-53R5_CM-7
-  notify: Systemd_daemon_reload
+  notify: Systemd daemon reload
   block:
     - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Remove package"
       when:
-        - "'ypserv' in ansible_facts.packages"
         - not ubtu22cis_nis_server
         - not ubtu22cis_nis_mask
       ansible.builtin.package:
@@ -329,7 +318,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.11 | PATCH | Ensure print server services are not in use"
   when: ubtu22cis_rule_2_1_11
@@ -342,7 +331,6 @@
   block:
     - name: "2.1.11 | PATCH | Ensure print server services are not in use | Remove package"
       when:
-        - "'cups' in ansible_facts.packages"
         - not ubtu22cis_print_server
         - not ubtu22cis_print_mask
       ansible.builtin.package:
@@ -362,7 +350,7 @@
       loop:
         - "cups.socket"
         - "cups.service"
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use"
   when: ubtu22cis_rule_2_1_12
@@ -377,7 +365,6 @@
   block:
     - name: "2.1.12 | PATCH | Ensure rpcbind services are not in use | Remove package"
       when:
-        - "'rpcbind' in ansible_facts.packages"
         - not ubtu22cis_rpc_server
         - not ubtu22cis_rpc_mask
       ansible.builtin.package:
@@ -397,7 +384,7 @@
       loop:
         - rpcbind.service
         - rpcbind.socket
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.13 | PATCH | Ensure rsync services are not in use"
   when: ubtu22cis_rule_2_1_13
@@ -411,7 +398,6 @@
   block:
     - name: "2.1.13 | PATCH | Ensure rsync services are not in use | Remove package"
       when:
-        - "'rsync' in ansible_facts.packages"
         - not ubtu22cis_rsync_server
         - not ubtu22cis_rsync_mask
       ansible.builtin.package:
@@ -428,7 +414,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.14 | PATCH | Ensure samba file server services are not in use"
   when:
@@ -444,7 +430,6 @@
   block:
     - name: "2.1.14 | PATCH | Ensure samba file server services are not in use | Remove package"
       when:
-        - "'samba' in ansible_facts.packages"
         - not ubtu22cis_samba_server
         - not ubtu22cis_samba_mask
       ansible.builtin.package:
@@ -461,7 +446,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.15 | PATCH | Ensure snmp services are not in use"
   when:
@@ -477,7 +462,6 @@
   block:
     - name: "2.1.15 | PATCH | Ensure snmp services are not in use | Remove package"
       when:
-        - "'snmpd' in ansible_facts.packages"
         - not ubtu22cis_snmp_server
         - not ubtu22cis_snmp_mask
       ansible.builtin.package:
@@ -494,7 +478,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.16 | PATCH | Ensure tftp server services are not in use"
   when: ubtu22cis_rule_2_1_16
@@ -508,7 +492,6 @@
   block:
     - name: "2.1.16 | PATCH | Ensure tftp server services are not in use | Remove package"
       when:
-        - "'tftpd-hpa' in ansible_facts.packages"
         - not ubtu22cis_tftp_server
         - not ubtu22cis_tftp_mask
       ansible.builtin.package:
@@ -525,7 +508,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.17 | PATCH | Ensure web proxy server services are not in use"
   when: ubtu22cis_rule_2_1_17
@@ -539,7 +522,6 @@
   block:
     - name: "2.1.17 | PATCH | Ensure web proxy server services are not in use | Remove package"
       when:
-        - "'squid' in ansible_facts.packages"
         - not ubtu22cis_squid_server
         - not ubtu22cis_squid_mask
       ansible.builtin.package:
@@ -556,7 +538,7 @@
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.18 | PATCH | Ensure web server services are not in use"
   when: ubtu22cis_rule_2_1_18
@@ -574,7 +556,6 @@
       when:
         - not ubtu22cis_apache2_server
         - not ubtu22cis_apache2_mask
-        - "'apache2' in ansible_facts.packages"
       ansible.builtin.package:
         name: apache2
         state: absent
@@ -584,7 +565,6 @@
       when:
         - not ubtu22cis_nginx_server
         - not ubtu22cis_nginx_mask
-        - "'nginx' in ansible_facts.packages"
       ansible.builtin.package:
         name: nginx
         state: absent
@@ -594,7 +574,6 @@
       when:
         - not ubtu22cis_apache2_server
         - ubtu22cis_apache2_mask
-        - "'apache2' in ansible_facts.packages"
       ansible.builtin.systemd:
         name: "{{ item }}"
         enabled: false
@@ -603,19 +582,18 @@
       loop:
         - apache2.service
         - apache2.socket
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
     - name: "2.1.18 | PATCH | Ensure web server services are not in use | Mask nginx service"
       when:
         - not ubtu22cis_nginx_server
         - ubtu22cis_nginx_mask
-        - "'nginx' in ansible_facts.packages"
       ansible.builtin.systemd:
         name: ngnix.service
         enabled: false
         state: stopped
         masked: true
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.19 | PATCH | Ensure xinetd services are not in use"
   when: ubtu22cis_rule_2_1_19
@@ -629,7 +607,6 @@
   block:
     - name: "2.1.19 | PATCH | Ensure xinetd services are not in use | Remove package"
       when:
-        - "'xinetd' in ansible_facts.packages"
         - not ubtu22cis_xinetd_server
         - not ubtu22cis_xinetd_mask
       ansible.builtin.package:
@@ -646,12 +623,11 @@
         enabled: false
         masked: true
         state: stopped
-      notify: Systemd_daemon_reload
+      notify: Systemd daemon reload
 
 - name: "2.1.20 | PATCH | Ensure X window server services are not in use"
   when:
     - not ubtu22cis_xwindow_server
-    - "'xorg-x11-server-common' in ansible_facts.packages"
     - ubtu22cis_rule_2_1_20
   tags:
     - level2-server

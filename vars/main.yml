@@ -8,6 +8,10 @@ change_requires_reboot: false
 control_1_3_1_4_was_run: false
 ubtu22cis_apparmor_enforce_only: false
 
+## Defaults
+
+ubtu22cis_sysctl_update: false
+
 # The role discovers dynamically (in tasks/main.yml) whether it
 # is executed on a container image and sets the variable
 # system_is_container the true. Otherwise, the default value

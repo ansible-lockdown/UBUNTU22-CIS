@@ -1,7 +1,7 @@
-## Ansible controlled file
-# Added as part of ansible-lockdown CIS baseline
-# provided by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown
+## This file is managed by Ansible, YOUR CHANGES WILL BE LOST!
 
-# Disable IPv6
+# IPv6 disable
+{% if ubtu22cis_rule_3_1_1 and not ubtu22cis_ipv6_required %}
 net.ipv6.conf.all.disable_ipv6 = 1
 net.ipv6.conf.default.disable_ipv6 = 1
+{% endif %}

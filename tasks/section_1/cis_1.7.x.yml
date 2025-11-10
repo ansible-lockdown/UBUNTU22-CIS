@@ -341,3 +341,23 @@
     path: /etc/gdm3/custom.conf
     regexp: "^Enable.*=.*true"
     state: absent
+
+- name: "1.7.11 | PATCH | Ensure Xwayland is configured"
+  when:
+    - ubtu22cis_rule_1_7_11
+    - ubtu22cis_desktop_required
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - gui
+    - rule_1.7.11
+  ansible.builtin.lineinfile:
+    path: /etc/gdm/custom.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line | default(omit) }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
+  loop:
+    - { regexp: 'Enable=true', state: 'absent' }
+    - { regexp: 'WaylandEnable\s*=\s*', line: 'WaylandEnable\s*=\s*false', insertafter: '[daemon]' }

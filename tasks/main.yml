@@ -42,7 +42,7 @@
   tags: always
   block:
     - name: Ensure root password is set
-      ansible.builtin.shell: passwd -S root | grep -E "root P"
+      ansible.builtin.shell: LC_ALL=C passwd -S root | grep -E "(Password set, SHA512 crypt|root P |root L |Password locked)"
       changed_when: false
       failed_when: false
       register: prelim_root_passwd_set
@@ -184,33 +184,18 @@
   ansible.builtin.import_tasks:
     file: auditd.yml
 
-- name: Flush handlers
-  ansible.builtin.meta: flush_handlers
-
-- name: Reboot system
+- name: Run post remediation tasks
   tags: always
-  block:
-    - name: Reboot system if not skipped
-      when:
-        - not skip_reboot
-        - change_requires_reboot
-      ansible.builtin.reboot:
+  ansible.builtin.import_tasks:
+    file: post.yml
 
-    - name: Warning a reboot required but skip option set
-      when:
-        - skip_reboot
-        - change_requires_reboot
-      ansible.builtin.debug:
-        msg: "Warning!! changes have been made that require a reboot to be implemented but skip reboot was set - Can affect compliance check results"
-      changed_when: true
-
-- name: Run post remediation audit
+- name: Run post_remediation audit
   when: run_audit
-  tags: run_audit
+  tags: always
   ansible.builtin.import_tasks:
     file: post_remediation_audit.yml
 
-- name: Add ansible file showing Benchmark and levels applied if audit details not present
+- name: Add ansible file showing Benchmark and levels applied
   when:
     - create_benchmark_facts
     - (post_audit_summary is defined) or
@@ -219,7 +204,7 @@
     - always
     - benchmark
   block:
-    - name: Create ansible facts directory if audit facts not present
+    - name: Create ansible facts directory
       ansible.builtin.file:
         path: "{{ ansible_facts_path }}"
         state: directory
@@ -227,13 +212,13 @@
         group: root
         mode: 'u=rwx,go=rx'
 
-    - name: Create ansible facts file and levels applied if audit facts not present
+    - name: Create ansible facts file
       ansible.builtin.template:
         src: etc/ansible/compliance_facts.j2
         dest: "{{ ansible_facts_path }}/compliance_facts.fact"
         owner: root
         group: root
-        mode: 'u-x,go=r'
+        mode: 'u-x,go-wx'
 
 - name: Fetch audit files
   when:
@@ -245,12 +230,11 @@
 
 - name: Show Audit Summary
   when: run_audit
-  tags: run_audit
+  tags: always
   ansible.builtin.debug:
     msg: "{{ audit_results.split('\n') }}"
 
-- name: If Warnings found Output count and control IDs affected
-  when: warn_count != 0
+- name: Output Warning count and control IDs affected
   tags: always
   ansible.builtin.debug:
-    msg: "You have {{ warn_count }} Warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"
+    msg: "You have {{ warn_count }} warning(s) that require investigating that are related to the following benchmark ID(s) {{ warn_control_list }}"

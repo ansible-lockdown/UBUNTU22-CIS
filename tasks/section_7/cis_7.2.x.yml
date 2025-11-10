@@ -1,4 +1,5 @@
 ---
+
 - name: "7.2.1 | AUDIT | Ensure accounts in /etc/passwd use shadowed passwords"
   when: ubtu22cis_rule_7_2_1
   tags:
@@ -39,6 +40,7 @@
     - user
     - permissions
     - NIST800-53R5_IA-5
+    - NIST800-53R5_CM-6
   block:
     - name: "7.2.2 | AUDIT | Ensure /etc/shadow password fields are not empty | Find users with no password"
       ansible.builtin.shell: awk -F":" '($2 == "" ) { print $1 }' /etc/shadow

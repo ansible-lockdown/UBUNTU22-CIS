@@ -1,0 +1,8 @@
+## Ansible controlled file
+# Added as part of ansible-lockdown CIS baseline
+# provided by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown
+
+{% for module in discovered_loaded_wireless_modules.stdout_lines %}
+# Discovered loaded wireless modules
+install {{ module }} /bin/true
+{% endfor %}

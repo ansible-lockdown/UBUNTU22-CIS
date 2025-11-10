@@ -94,27 +94,15 @@
     state: present
     lock_timeout: 180
 
-- name: PRELIM | AUDIT | Wireless adapter pre-requisites
+- name: PRELIM | AUDIT | Discover is wireless adapter on system
   when:
     - ubtu22cis_rule_3_1_2
     - not system_is_container
   tags: always
-  block:
-    - name: PRELIM | AUDIT | Discover is wirelss adapter on system
-      ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
-      changed_when: false
-      failed_when: prelim_wireless_adapters_exist.rc not in [ 0, 1 ]
-      register: prelim_wireless_adapters_exist
-
-    - name: PRELIM | PATCH | Install Network-Manager | if wireless adapter present
-      when:
-        - ubtu22cis_install_network_manager
-        - prelim_wireless_adapters_exist.rc == 0
-        - "'network-manager' not in ansible_facts.packages"
-      ansible.builtin.package:
-        name: network-manager
-        state: present
-        lock_timeout: 180
+  ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
+  changed_when: false
+  failed_when: prelim_wireless_adapters_exist.rc not in [ 0, 1 ]
+  register: prelim_wireless_adapters_exist
 
 - name: PRELIM | PATCH | Ensure ufw is installed
   when:
@@ -132,6 +120,12 @@
     name: ufw
     state: present
     lock_timeout: 180
+
+- name: "PRELIM | AUDIT | Find sshd config files"
+  ansible.builtin.find:
+    path: /etc/ssh/sshd_config.d
+    patterns: '*.conf'
+  register: prelim_sshd_configs
 
 - name: PRELIM | PATCH | Find all sudoers files.
   when: ubtu22cis_rule_5_2_4 or ubtu22cis_rule_5_2_5
@@ -242,9 +236,9 @@
 
 - name: PRELIM | PATCH | Create journald conf.d directory
   when:
-    - ubtu22cis_rule_6_2_1_1_3 or
-      ubtu22cis_rule_6_2_1_1_5 or
-      ubtu22cis_rule_6_2_1_1_6
+    - ubtu22cis_rule_6_1_1_1_3 or
+      ubtu22cis_rule_6_1_1_1_5 or
+      ubtu22cis_rule_6_1_1_1_6
   tags: always
   ansible.builtin.file:
     path: /etc/systemd/journald.conf.d
@@ -255,7 +249,7 @@
 
 - name: PRELIM | PATCH | Ensure auditd is installed
   when:
-    - ubtu22cis_rule_6_3_1_1
+    - ubtu22cis_rule_6_2_1_1
     - "'auditd' not in ansible_facts.packages or 'auditd-plugins' not in ansible_facts.packages"
   tags:
     - level2-server
@@ -290,19 +284,19 @@
 
 - name: PRELIM | AUDIT | 6.3.4.x | Capture information about auditd logfile path | discover file
   when:
-    - ubtu22cis_rule_6_3_4_1 or
-      ubtu22cis_rule_6_3_4_2 or
-      ubtu22cis_rule_6_3_4_3 or
-      ubtu22cis_rule_6_3_4_4
+    - ubtu22cis_rule_6_2_4_1 or
+      ubtu22cis_rule_6_2_4_2 or
+      ubtu22cis_rule_6_2_4_3 or
+      ubtu22cis_rule_6_2_4_4
   tags:
     - level2-server
     - level2-workstation
     - patch
     - auditd
-    - rule_6.3.4.1
-    - rule_6.3.4.2
-    - rule_6.3.4.3
-    - rule_6.3.4.4
+    - rule_6.2.4.1
+    - rule_6.2.4.2
+    - rule_6.2.4.3
+    - rule_6.2.4.4
   ansible.builtin.shell: "grep ^log_file /etc/audit/auditd.conf | awk '{ print $NF }'"
   changed_when: false
   failed_when: prelim_auditd_logfile.rc not in [0, 1]
@@ -319,6 +313,34 @@
     lock_timeout: 180
 
 ## Optional
+
+# Added to ensure ssh drop in file exists if not default /etc/ssh/sshd_config
+- name: "PRELIM | PATCH | SSH Config file is not exist"
+  when:
+    - ubtu22cis_sshd_config_file != '/etc/ssh/sshd_config'
+    - "'openssh-server' in ansible_facts.packages"
+  tags: always
+  block:
+    - name: "PRELIM | AUDIT | Check SSH Config drop in is supported for distribution version"
+      ansible.builtin.assert:
+        that: ansible_distribution_version is version_compare('8.6', '>=')
+        fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} does not support SSH Config drop in"
+
+    - name: "PRELIM | PATCH | SSH Config drop in directory is not exist"
+      ansible.builtin.file:
+        path: "{{ ubtu22_sshd_config_file | dirname }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+        state: directory
+
+    - name: "PRELIM | PATCH | SSH Config file is not exist"
+      ansible.builtin.file:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+        state: touch
 
 - name: "Optional | PATCH | UFW firewall force to use /etc/sysctl.conf settings"
   when:
