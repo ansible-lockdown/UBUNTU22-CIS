@@ -81,8 +81,7 @@
         msg: "This role will not set the {{ ubtu22cis_grub_user }} user password is not set or ubtu22cis_grub_user_passwd variable has not been set correctly"
 
     - name: Check ubtu22cis_grub_user password variable has been changed | if password blank or incorrect type and not being set
-      when:
-        - not ubtu22cis_set_grub_user_pass
+      when: not ubtu22cis_set_grub_user_pass
       ansible.builtin.assert:
         that: ( prelim_password_set_grub_user.stdout | length > 10 ) and '$y$' in prelim_password_set_grub_user.stdout
         fail_msg: "Grub User {{ ubtu22cis_grub_user }} has no password set or incorrect encryption"
