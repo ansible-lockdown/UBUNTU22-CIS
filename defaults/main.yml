@@ -821,11 +821,16 @@ ubtu22cis_ufw_use_sysctl: true
 # If you want to allow outbound traffic on all ports, set the variable to  `all`, e.g.,
 # `ubtu22cis_ufw_e_6$12$2out_ports: "all"`.
 ubtu22cis_ufw_allow_out_ports:
-  - 22 # ssh
-  - 53 # dns
-  - 80 # http - allow apt updates
-  - 123 # ntp
-  - 443 # https - allow apt updates
+  - port: 53
+    proto: tcp
+  - port: 53
+    proto: udp
+  - port: 80
+    proto: tcp
+  - port: 123
+    proto: udp
+  - port: 443
+    proto: tcp
 
 ## Controls 4.2.x - nftables
 # Nftables is not supported in this role. Some tasks have parts of them commented out, this is one example

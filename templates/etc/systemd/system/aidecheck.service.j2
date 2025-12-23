@@ -1,9 +1,18 @@
 [Unit]
-Description=Aide Check
+Description=daily AIDE check
+Documentation=file:/usr/share/doc/aide/README.Debian.gz
 
 [Service]
 Type=simple
-ExecStart=/usr/bin/aide.wrapper --config /etc/aide/aide.conf --update
+User=_aide
+Group=_aide
+AmbientCapabilities=CAP_DAC_READ_SEARCH CAP_AUDIT_WRITE
+# we need those to see the "real" system
+PrivateDevices=no
+# We cannot use any of systemd's sandboxing features here since
+# that would mask away a couple of /run subdirectories including
+# /run/credentials
+ExecStart=/usr/bin/aide --check --config /etc/aide/aide.conf
 
 [Install]
 WantedBy=multi-user.target

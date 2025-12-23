@@ -162,7 +162,7 @@
     modification_time: preserve
     access_time: preserve
   register: prelim_pwquality_dummy
-  changed_when: prelim_pwquality_dummy.diff == "absent"
+  changed_when: prelim_pwquality_dummy.changed
   loop:
     - { path: '/etc/security/pwquality.conf.d', state: 'directory' }
     - { path: '/etc/security/pwquality.conf.d/cis_dummy.conf', state: 'touch' }
