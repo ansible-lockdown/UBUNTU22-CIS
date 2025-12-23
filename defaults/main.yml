@@ -823,6 +823,8 @@ ubtu22cis_ufw_use_sysctl: true
 ubtu22cis_ufw_allow_out_ports:
   - port: 53
     proto: tcp
+  - port: 53
+    proto: udp
   - port: 80
     proto: tcp
   - port: 123
