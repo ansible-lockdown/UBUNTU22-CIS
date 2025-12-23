@@ -110,9 +110,11 @@
       community.general.ufw:
         rule: allow
         direction: out
-        to_port: '{{ item }}'
-      with_items:
-        - "{{ ubtu22cis_ufw_allow_out_ports }}"
+        proto: "{{ item.proto }}"
+        to_port: '{{ item.port }}'
+      loop: "{{ ubtu22cis_ufw_allow_out_ports }}"
+      loop_control:
+        label: "{{ item.port }}"
       notify: Reload ufw
 
     - name: "4.1.5 | PATCH | Ensure ufw outbound connections are configured | Allow all"

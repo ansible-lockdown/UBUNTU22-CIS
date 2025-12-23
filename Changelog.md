@@ -4,6 +4,13 @@
 
 ### Do not migrate
 
+# Dec 25 update
+pre-commits
+
+4.1.5 updated variables, loop and added ntp
+6.3.4.1/2/3 separated the tasks
+prelim check for pwquality changed_when logic update thanks to @FrsECM #318
+
 # Sept 25 updates
 
 - 5.4.2.5 improved thanks to @numericillustration
