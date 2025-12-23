@@ -1,27 +1,57 @@
 ---
 
-- name: |
-      "6.3.4.1 | PATCH | Ensure audit log files mode is configured"
-      "6.3.4.2 | PATCH | Ensure audit log files owner is configured"
-      "6.3.4.3 | PATCH | Ensure audit log files group owner is configured"
-  when:
-    - ubtu22cis_rule_6_3_4_1 or
-      ubtu22cis_rule_6_3_4_2 or
-      ubtu22cis_rule_6_3_4_3
+- name: "6.3.4.1 | PATCH | Ensure audit log files mode is configured"
+  when: ubtu22cis_rule_6_3_4_1
   tags:
     - level1-server
     - level1-workstation
     - patch
     - auditd
     - rule_6.3.4.1
-    - rule_6.3.4.2
-    - rule_6.3.4.3
     - NIST800-53R5_AU-3
   ansible.builtin.file:
-    path: "{{ prelim_auditd_logfile.stdout }}"
-    owner: root
-    group: root
+    path: "{{ prelim_auditd_logfile.stdout | dirname }}"
+    recurse: true
     mode: 'u-x,g-wx,o-rwx'
+
+- name: "6.3.4.2 | PATCH | Ensure audit log files owner is configured"
+  when: ubtu22cis_rule_6_3_4_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.2
+    - NIST800-53R5_AU-3
+  ansible.builtin.file:
+    path: "{{ prelim_auditd_logfile.stdout | dirname }}"
+    recurse: true
+    owner: root
+
+- name: "6.3.4.3 | PATCH | Ensure audit log files group owner is configured"
+  when: ubtu22cis_rule_6_3_4_3
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - auditd
+    - rule_6.3.4.3
+    - NIST800-53R5_AU-3
+  block:
+    - name: "6.3.4.3 | AUDIT | Ensure audit log files group owner is configured | stat logfile"
+      ansible.builtin.find:
+        path: "{{ prelim_auditd_logfile.stdout | dirname }}"
+        file_type: file
+      register: discovered_auditd_logs
+
+    - name: "6.3.4.3 | PATCH | Ensure audit log files group owner is configured"
+      when: item.gr_name not in [ 'root', 'adm' ]
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        group: root
+      loop: "{{ discovered_auditd_logs.files }}"
+      loop_control:
+        label: "{{ item.path }}"
 
 - name: "6.3.4.4 | PATCH | Ensure the audit log file directory mode is configured"
   when: ubtu22cis_rule_6_3_4_4
