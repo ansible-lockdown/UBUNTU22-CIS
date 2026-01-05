@@ -220,7 +220,7 @@
     warn_control_id: '7.1.12'
   block:
     - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Get list files or directories"
-      ansible.builtin.command: 'find {{ ubtu22cis_exclude_unowned_search_path }} {{ item.mount }} -xdev \( -nouser -o -nogroup \) -not -fstype nfs'
+      ansible.builtin.command: find {{ ubtu22cis_exclude_unowned_search_path }} {{ item.mount }} -xdev \( -nouser -o -nogroup \) -not -fstype {{ ubtu22cis_exclude_unowned_filesystem_types }}
       changed_when: false
       failed_when: false
       check_mode: false
