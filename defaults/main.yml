@@ -819,7 +819,7 @@ ubtu22cis_ufw_use_sysctl: true
 ## Control 4.1.5 - Ensure ufw outbound connections are configured
 # The value of this variable represents the ports for the firewall to allow outbound traffic from.
 # If you want to allow outbound traffic on all ports, set the variable to  `all`, e.g.,
-# `ubtu22cis_ufw_e_6$12$2out_ports: "all"`.
+# `ubtu22cis_ufw_allow_out_ports: "all"`.
 ubtu22cis_ufw_allow_out_ports:
   - port: 53
     proto: tcp
@@ -1294,11 +1294,17 @@ ubtu22cis_no_world_write_adjust: true
 ubtu22cis_dotperm_ansiblemanaged: true
 
 ## Section 7
+# 7.1.12
+# Ensure no files or directories without an owner and a group exist
+# Extend the list as required adding the the current list e.g. "-a ! -path "/somedir/*"
+# Note Ensure to document all exclusions that do not match the benchmark
+ubtu22cis_exclude_unowned_search_path: '\( ! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*" \)'
 
-# 7.1.12 Ensure no files or directories without an owner and a group exist
-ubtu22cis_exclude_unowned_search_path: (! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*")
+# This can be extended as seen fit
+# NFS added as starter to be extended with "-a -not -fstype CIFS"
+# Note Ensure to document all exclusions that do not match the benchmark
+ubtu22cis_exclude_unowned_filesystem_types: '\( -not -fstype nfs \)'
 
-# Control 7.1.12
 # The value of this variable specifies the owner that will be set for unowned files and directories.
 ubtu22cis_unowned_owner: root
 ubtu22cis_ungrouped_group: root
