@@ -4,6 +4,11 @@
 
 ### Do not migrate
 
+# Jan26
+pre-commits
+#325 nopasswd for sudoers options added
+chrony template tidied up
+
 # Dec 25 update
 pre-commits
 
