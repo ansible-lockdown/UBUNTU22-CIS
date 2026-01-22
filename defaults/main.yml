@@ -909,6 +909,12 @@ ubtu22cis_sshd_deny_groups: ""
 # CIS recommends `sudo` or, if LDAP functionality is required, `sudo-ldap`.
 ubtu22cis_sudo_package: "sudo"
 
+## control 5.2.4 sudoers NOPASSWD
+# This will leave NOPASSWD intact for these users
+ubtu22cis_sudoers_exclude_nopasswd_list:
+  - ec2-user
+  - vagrant
+
 ## Control 5.2.3
 # This variable defines the path and file name of the sudo log file.
 ubtu22cis_sudo_logfile: "/var/log/sudo.log"
