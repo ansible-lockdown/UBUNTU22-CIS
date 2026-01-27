@@ -4,6 +4,18 @@
 
 ### Do not migrate
 
+# Jan26
+pre-commits
+#325 nopasswd for sudoers options added
+chrony template tidied up
+
+# Dec 25 update
+pre-commits
+
+4.1.5 updated variables, loop and added ntp
+6.3.4.1/2/3 separated the tasks
+prelim check for pwquality changed_when logic update thanks to @FrsECM #318
+
 # Sept 25 updates
 
 - 5.4.2.5 improved thanks to @numericillustration
