@@ -1,7 +1,13 @@
 # Ubuntu22CIS
 
+# Based on CIS v3.0.0 - Feb 26
+7.1.12 enhancement
+Company naming alignment
+legacy options removed
+pre-commit update
+
 ## Based on CIS v3.0.0 - Dec 25
-pre-commit udpate
+pre-commit update
 4.1.4 ufw updated to include ntp port and improved logic
 6.2.4.1/2/3 tasks separated
 aide service script updated
