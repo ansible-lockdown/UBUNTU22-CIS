@@ -1,7 +1,4 @@
-## Ansible controlled file
-# Added as part of ansible-lockdown CIS baseline
-# provided by Mindpoint Group - A Tyto Athene Company / Ansible Lockdown
-## YOUR CHANGED WILL BE LOST!
+{{ file_managed_by_ansible }}
 
 # This template will set all of the auditd configurations via a handler in the role in one task instead of individually
 {% if ubtu22cis_rule_6_2_3_1 %}
