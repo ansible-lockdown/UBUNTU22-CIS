@@ -346,34 +346,6 @@ ubtu22cis_rule_4_1_2: true
 ubtu22cis_rule_4_1_3: true
 ubtu22cis_rule_4_1_4: true
 ubtu22cis_rule_4_1_5: true
-ubtu22cis_rule_4_1_6: true
-ubtu22cis_rule_4_1_7: true
-# 4.2 Configure nftables
-ubtu22cis_rule_4_2_1: true
-ubtu22cis_rule_4_2_2: true
-ubtu22cis_rule_4_2_3: true
-ubtu22cis_rule_4_2_4: true
-ubtu22cis_rule_4_2_5: true
-ubtu22cis_rule_4_2_6: true
-ubtu22cis_rule_4_2_7: true
-ubtu22cis_rule_4_2_8: true
-ubtu22cis_rule_4_2_9: true
-ubtu22cis_rule_4_2_10: true
-# Configure iptables software
-ubtu22cis_rule_4_3_1_1: true
-ubtu22cis_rule_4_3_1_2: true
-ubtu22cis_rule_4_3_1_3: true
-
-# Configure IPv4 iptables
-ubtu22cis_rule_4_3_2_1: true
-ubtu22cis_rule_4_3_2_2: true
-ubtu22cis_rule_4_3_2_3: true
-ubtu22cis_rule_4_3_2_4: true
-# Configure IPv5 iptables
-ubtu22cis_rule_4_3_3_1: true
-ubtu22cis_rule_4_3_3_2: true
-ubtu22cis_rule_4_3_3_3: true
-ubtu22cis_rule_4_3_3_4: true
 
 ## Section 5 Access Control
 # 5.1 Configure SSH Server
@@ -1184,8 +1156,6 @@ ubtu22cis_journald_maxfilesec: "#MaxFileSec="
 ubtu22cis_remote_log_host: "{{ ubtu22cis_remote_log_server }}"
 ubtu22cis_remote_log_port: 514
 ubtu22cis_remote_log_protocol: tcp
-ubtu22cis_remote_log_retrycount: 100
-ubtu22cis_remote_log_queuesize: 1000
 
 # 6.1.2.8 LogRotate
 # ubtu22cis_logrotate sets the daily, weekly, monthly, yearly value for the log rotation
