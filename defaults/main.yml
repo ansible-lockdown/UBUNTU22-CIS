@@ -631,6 +631,10 @@ ubtu22cis_desktop_required: false
 # This will also purge any packages not removed via this playbook
 ubtu22cis_purge_apt: false
 
+## Apt/dpkg lock timeout (seconds)
+# Wait time for apt/dpkg frontend lock to clear before failing package tasks.
+ubtu22cis_apt_lock_timeout: 180
+
 ## Ignore change_when for apt update task
 # Modifies behavior of 'changed_when' for 'apt update' task  in prelim that always changes
 ubtu22cis_ignore_apt_update_changed_when: false
