@@ -78,7 +78,7 @@
         - ubtu22cis_rule_1_4_1
       ansible.builtin.assert:
         that: prelim_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
-        msg: "This role will not set the {{ ubtu22cis_grub_user }} user password is not set or ubtu22cis_grub_user_passwd variable has not been set correctly"
+        msg: "The {{ ubtu22cis_grub_user }} user password is not set or the ubtu22cis_grub_user_passwd variable has not been set correctly"
 
     - name: Check ubtu22cis_grub_user password variable has been changed | if password blank or incorrect type and not being set
       when: not ubtu22cis_set_grub_user_pass

@@ -246,8 +246,8 @@
 
 - name: Auditd rules reload
   when:
-    - not prelim_auditd_immutable_check or
-      '"No change" not in ubtu22cis_rule_4_1_3_21_augen_check.stdout'
+    - prelim_auditd_immutable_check is defined
+    - prelim_auditd_immutable_check.stdout | default('0') == '0'
   ansible.builtin.command: augenrules --load
   changed_when: true
 

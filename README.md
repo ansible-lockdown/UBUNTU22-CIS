@@ -84,7 +84,7 @@ This role **will make changes to the system** which may have unintended conseque
 
 ## Coming From A Previous Release ⏪
 
-CIS release always contains changes, it is highly recommended to review the new references and available variables. This have changed significantly since ansible-lockdown initial release.
+CIS release always contains changes, it is highly recommended to review the new references and available variables. This has changed significantly since the ansible-lockdown initial release.
 This is now compatible with python3 if it is found to be the default interpreter. This does come with pre-requisites which it configures the system accordingly.
 
 Further details can be seen in the [Changelog](./ChangeLog.md)
@@ -93,7 +93,7 @@ Further details can be seen in the [Changelog](./ChangeLog.md)
 
 ## Matching a security Level for CIS
 
-It is possible to to only run level 1 or level 2 controls for CIS.
+It is possible to only run level 1 or level 2 controls for CIS.
 This is managed using tags:
 
 - level1-server
@@ -101,7 +101,7 @@ This is managed using tags:
 - level2-server
 - level2-workstation
 
-The control found in defaults main also need to reflect this as this control the testing that takes place if you are using the audit component.
+The controls found in defaults/main.yml also need to reflect this as they control the testing that takes place if you are using the audit component.
 
 ---
 ## Requirements ✅
