@@ -2,7 +2,7 @@
 
 ## Switching on/off specific baseline sections
 # These variables govern whether the tasks of a particular section are to be executed when running the role.
-# E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable to true.
+# E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable
 # to "true". If you do not want the tasks from that section to get executed you simply set the variable to "false".
 ubtu22cis_section1: true
 ubtu22cis_section2: true
@@ -44,7 +44,7 @@ ubtu22cis_ask_passwd_to_boot: false  # pragma: allowlist secret
 ## Usage on containerized images
 # The role discovers dynamically (in tasks/main.yml) whether it
 # is executed on a container image and sets the variable
-# system_is_container the true. Otherwise, the default value
+# system_is_container to true. Otherwise, the default value
 # 'false' is left unchanged.
 container_vars_file: is_container.yml
 
@@ -60,7 +60,7 @@ ubtu22cis_uses_root: false
 
 ###########################################
 ### Goss is required on the remote host ###
-### vars/auditd.yml for other settings  ###
+### vars/auditd.yml for other settings ###
 
 # Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
 setup_audit: false
@@ -93,7 +93,7 @@ audit_bin_copy_location: /some/accessible/path
 audit_content: git
 
 # If using either archive, copy, get_url:
-## Note will work with .tar files - zip will require extra configuration
+## Note: This will work with .tar files - zip will require extra configuration
 ### If using get_url this is expecting github url in tar.gz format e.g.
 ### https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
 audit_conf_source: "some path or url to copy from"
@@ -402,7 +402,7 @@ ubtu22cis_rule_5_3_3_2_6: true
 ubtu22cis_rule_5_3_3_2_7: true
 ubtu22cis_rule_5_3_3_2_8: true
 # 5.3.3.3 Configure pam_history module
-# This are added as part of 5.3.2.4 using jinja2 template
+# These are added as part of 5.3.2.4 using jinja2 template
 ubtu22cis_rule_5_3_3_3_1: true
 ubtu22cis_rule_5_3_3_3_2: true
 ubtu22cis_rule_5_3_3_3_3: true
@@ -456,7 +456,7 @@ ubtu22cis_rule_6_1_2_6: true
 ubtu22cis_rule_6_1_2_7: true
 # 6.1.2.8 configure logrotate
 ubtu22cis_rule_6_1_2_8: true
-# 6.1.3.1 logiles
+# 6.1.3.1 logfiles
 ubtu22cis_rule_6_1_3_1: true
 # 6.2.2 Configure auditd Service
 ubtu22cis_rule_6_2_1_1: true
@@ -541,9 +541,9 @@ ubtu22cis_rule_7_2_10: true
 ##
 # Service configuration
 # Options are
-# true to leave installed if exists not changes take place
+# true to leave installed if it exists, no changes take place
 # false - this removes the package
-# mask - if a dependency for product so cannot be removed
+# mask - if a dependency for a product so it cannot be removed
 # Server Services
 ubtu22cis_autofs_services: false
 ubtu22cis_autofs_mask: true
@@ -632,8 +632,12 @@ ubtu22cis_desktop_required: false
 # This will also purge any packages not removed via this playbook
 ubtu22cis_purge_apt: false
 
+## Apt/dpkg lock timeout (seconds)
+# Wait time for apt/dpkg frontend lock to clear before failing package tasks.
+ubtu22cis_apt_lock_timeout: 180
+
 ## Ignore change_when for apt update task
-# Modifies behavior of 'changed_when' for 'apt update' task  in prelim that always changes
+# Modifies behavior of 'changed_when' for 'apt update' task in prelim that always changes
 ubtu22cis_ignore_apt_update_changed_when: false
 
 ##
@@ -662,7 +666,7 @@ ubtu22cis_tmp_svc: false
 # regarding enforcing profiles or putting them in complain mode
 ubtu22cis_apparmor_disable: false
 
-# This variable specifies whether enforce mode or complain  mode is set in Control 1.3.1.3.
+# This variable specifies whether enforce mode or complain mode is set in Control 1.3.1.3.
 # Possible values are `enforce` and `complain`.
 # ATTENTION: if Control 1.3.1.4 is run (e.g., when running level 2 rules), it OVERRIDES control 1.3.1.3
 # and sets `enforce` mode, no matter what this variable's value is.
@@ -694,13 +698,13 @@ ubtu22cis_sysctl_kernel_conf: /etc/sysctl.d/98_cis_kernel.conf
 # 3 - no attach: no processes may use ptrace with PTRACE_ATTACH nor via PTRACE_TRACEME. Once set, this sysctl value cannot be changed.
 
 ubtu22cis_ptrace_scope: 1
-## Controls 1.6.x  - Warning banners
+## Controls 1.6.x - Warning banners
 # The controls 1.6.x set various warning banners and protect the respective files
 # by tightening the access rights.
 
 # This variable specifies the warning banner displayed to the user
 # after local login, remote login, and as motd (message of the day)
-# Noe that the banner text must not contain the below items in order to be
+# Note that the banner text must not contain the below items in order to be
 # compliant with CIS: \m, \r, \s, \v or references to the OS platform
 ubtu22cis_warning_banner: |
         Authorized users only. All activity may be monitored and reported.
@@ -723,12 +727,12 @@ ubtu22cis_screensaver_lock_delay: 5
 ##
 
 ## Control 2.3.1.1
-# This variable choses the tool used for time synchronization
-# The two options are `chrony`and `systemd-timesyncd`.
+# This variable chooses the tool used for time synchronization
+# The two options are `chrony` and `systemd-timesyncd`.
 ubtu22cis_time_sync_tool: "systemd-timesyncd"
 
 ## Controls 2.3.x - Configure time pools & servers for chrony and timesyncd
-# The following variable represents a list of of time server pools used
+# The following variable represents a list of time server pools used
 # for configuring chrony and timesyncd.
 # Each list item contains two settings, `name` (the domain name of the pool) and synchronization `options`.
 # The default setting for the `options` is `iburst maxsources 4` -- please refer to the documentation
@@ -736,7 +740,7 @@ ubtu22cis_time_sync_tool: "systemd-timesyncd"
 ubtu22cis_time_pool:
   - name: time.nist.gov
     options: iburst maxsources 4
-# The following variable represents a list of of time servers used
+# The following variable represents a list of time servers used
 # for configuring chrony and timesyncd
 # Each list item contains two settings, `name` (the domain name of the server) and synchronization `options`.
 # The default setting for the `options` is `iburst` -- please refer to the documentation
@@ -761,9 +765,9 @@ ubtu22cis_ipv6_disable: grub
 ## Control 3.1.3 - Ensure bluetooth Services are not in use
 # This control managed how the bluetooth service is managed
 # Options are
-# true to leave installed if exists not changes take place
+# true to leave installed if it exists, no changes take place
 # false - this removes the package
-# mask - if a dependency for product so cannot be removed
+# mask - if a dependency for a product so it cannot be removed
 ubtu22cis_bluetooth_service: false
 ubtu22cis_bluetooth_mask: false
 
@@ -790,7 +794,7 @@ ubtu22cis_ufw_use_sysctl: true
 
 ## Control 4.1.5 - Ensure ufw outbound connections are configured
 # The value of this variable represents the ports for the firewall to allow outbound traffic from.
-# If you want to allow outbound traffic on all ports, set the variable to  `all`, e.g.,
+# If you want to allow outbound traffic on all ports, set the variable to `all`, e.g.,
 # `ubtu22cis_ufw_allow_out_ports: "all"`.
 ubtu22cis_ufw_allow_out_ports:
   - port: 53
@@ -838,7 +842,7 @@ ubtu22cis_sshd_ciphers:
 ubtu22cis_sshd_macs:
   - hmac-sha1
   - hmac-sha2-256
-  #  - hmac-sha2-384  # hashed out seen as bad ssh2 MAC
+  #  - hmac-sha2-384  # commented out, considered a weak ssh2 MAC
   - hmac-sha2-512
 ubtu22cis_sshd_kex_algorithms:
   - ecdh-sha2-nistp256
@@ -887,7 +891,7 @@ ubtu22cis_sudo_logfile: "/var/log/sudo.log"
 ubtu22cis_sudo_timestamp_timeout: 15
 ## Control 5.2.7
 # This variable determines the group of users that are allowed to use the su command.
-# one to specify a user group that is allowed to use the "su" command.
+# Use this variable to specify a user group that is allowed to use the "su" command.
 # CIS requires that such a group be created (named according to site policy) and be kept empty.
 ubtu22cis_sugroup: nosugroup
 
@@ -930,7 +934,7 @@ ubtu22cis_pam_pwhistory_file: 'pwhistory'
 ubtu22cis_pam_create_pwhistory_files: true
 
 # 5.3.3.1.1 - faillock_deny
-# Lock system using faillock fate 3 bad tries
+# Lock system using faillock after 3 bad tries
 ubtu22cis_faillock_deny: 3
 
 # 5.3.3.1.2 - faillock unlock time
@@ -938,7 +942,7 @@ ubtu22cis_faillock_deny: 3
 ubtu22cis_faillock_unlock_time: 900
 
 # 5.3.3.1.3 - lock root
-# This gives the ability to even_deny_root and or add a root_unlock_time in the options
+# This gives the ability to set even_deny_root or add a root_unlock_time in the options
 # Option is used for the regexp to be amended and string is what to replace with.
 ubtu22cis_pamroot_lock_option: even_deny_root
 ubtu22cis_pamroot_lock_string: even_deny_root
@@ -995,7 +999,7 @@ ubtu22cis_pamd_pwhistory_remember: 24
 
 ## Controls 5.4.1.x - Password settings
 ## Control 5.4.1.1
-# This variable governs after how many days a  password expires.
+# This variable governs after how many days a password expires.
 # CIS requires a value of 365 or less.
 ubtu22cis_pass_max_days: 365
 ## Control 5.4.1.2
@@ -1058,7 +1062,7 @@ ubtu22cis_aide_db_recreate: false
 ubtu22cis_aide_db_file: /var/lib/aide/aide.db
 
 ## When Initializing aide this can take longer on some systems
-# changing the values enables user to change to thier own requirements
+# changing the values enables user to change to their own requirements
 # Maximum Time in seconds
 ubtu22cis_aide_init_async: 600
 # Polling Interval in seconds
@@ -1090,12 +1094,12 @@ ubtu22cis_aide_cron_hour: 5
 # This variable governs the day of the month when the AIDE cronjob is run.
 # `*` signifies that the job is run on all days; furthermore, specific days
 # can be given in the range `1-31`; several days can be concatenated with a comma.
-# The specified day(s) can must be in the range  `1-31`.
+# The specified day(s) must be in the range `1-31`.
 ubtu22cis_aide_cron_day: '*'
 # This variable governs months when the AIDE cronjob is run.
 # `*` signifies that the job is run in every month; furthermore, specific months
 # can be given in the range `1-12`; several months can be concatenated with commas.
-# The specified month(s) can must be in the range  `1-12`.
+# The specified month(s) must be in the range `1-12`.
 ubtu22cis_aide_cron_month: '*'
 # This variable governs the weekdays, when the AIDE cronjob is run.
 # `*` signifies that the job is run on all weekdays; furthermore, specific weekdays
@@ -1146,7 +1150,7 @@ ubtu22cis_journald_runtimemaxuse: "#RuntimeMaxUse="
 ubtu22cis_journald_runtimekeepfree: "#RuntimeKeepFree="
 # This variable specifies, the maximum time to store entries in a single journal
 # file before rotating to the next one. Set to 0 to turn off this feature.
-# The given values is interpreted as seconds, unless suffixed with the units
+# The given value is interpreted as seconds, unless suffixed with the units
 # `year`, `month`, `week`, `day`, `h` or `m` to override the default time unit of seconds.
 # ATTENTION: Uncomment the keyword below when values are set!
 ubtu22cis_journald_maxfilesec: "#MaxFileSec="
@@ -1225,7 +1229,7 @@ ubtu22cis_auditd_disk_full_action: halt
 ubtu22cis_auditd_disk_error_action: syslog
 
 # Control 6.2.2.4
-# Wait to do when space left is low.
+# Action to take when space left is low.
 ubtu22cis_auditd_space_left_action: email
 ubtu22cis_auditd_admin_space_left_action: halt
 
@@ -1238,16 +1242,16 @@ ubtu22cis_auditd_admin_space_left_action: halt
 # and checking controls 6.2.11 and 6.2.12 can either be
 # discovered automatically via logins.def or set manually
 # in this file
-# If min/maxx UIDs are to be discovered automatically,
+# If min/max UIDs are to be discovered automatically,
 # set this variable to `true`, otherwise to `false`.
 discover_int_uid: false
 # This variable sets the minimum number from which to search for UID
-# Note that the value will be dynamically overwritten if variable `dicover_int_uid` has
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
 # been set to `true`.
 min_int_uid: 1000
 
 # This variable sets the maximum number at which the search stops for UID
-# Note that the value will be dynamically overwritten if variable `dicover_int_uid` has
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
 # been set to `true`.
 max_int_uid: 65533
 
@@ -1258,7 +1262,7 @@ max_int_uid: 65533
 ubtu22cis_no_world_write_adjust: true
 
 ## Control 6.2.7
-# This variable is a toggle foe enabling/disabling the automated modification of
+# This variable is a toggle for enabling/disabling the automated modification of
 # permissions on dot files.
 # Possible values are `true` and `false`.
 ubtu22cis_dotperm_ansiblemanaged: true
@@ -1266,7 +1270,7 @@ ubtu22cis_dotperm_ansiblemanaged: true
 ## Section 7
 # 7.1.12
 # Ensure no files or directories without an owner and a group exist
-# Extend the list as required adding the the current list e.g. "-a ! -path "/somedir/*"
+# Extend the list as required adding the current list e.g. "-a ! -path "/somedir/*"
 # Note Ensure to document all exclusions that do not match the benchmark
 ubtu22cis_exclude_unowned_search_path: '\( ! -path "/run/user/*" -a ! -path "/proc/*" -a ! -path "*/containerd/*" -a ! -path "*/kubelet/pods/*" -a ! -path "*/kubelet/plugins/*" -a ! -path "/sys/fs/cgroup/memory/*" -a ! -path "/var/*/private/*" \)'
 

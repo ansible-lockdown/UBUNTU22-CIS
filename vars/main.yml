@@ -14,7 +14,7 @@ ubtu22cis_sysctl_update: false
 
 # The role discovers dynamically (in tasks/main.yml) whether it
 # is executed on a container image and sets the variable
-# system_is_container the true. Otherwise, the default value
+# system_is_container to true. Otherwise, the default value
 # 'false' is left unchanged.
 system_is_container: false
 # Used to control warning summary

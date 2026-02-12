@@ -1,18 +1,30 @@
 # Ubuntu22CIS
 
-# Based on CIS v3.0.0 - Feb 26
+# Based on CIS v3.0.0 - Feb 2026
 7.1.12 enhancement
 Company naming alignment
 legacy options removed
 pre-commit update
+apt purge lockout variable and rule updates thanks to @tmeckel
 
-## Based on CIS v3.0.0 - Dec 25
+QA Feb 2026
+- Fixed handler auditd rules reload referencing undefined variable (old v2.0.0 rule 4.1.3.21 naming)
+- Fixed aidecheck.timer.j2 template variable references to match defaults (ubtu22cis_aide_cron dict to individual vars)
+- Fixed variable name bug in prelim.yml: ubtu22_sshd_config_file corrected to ubtu22cis_sshd_config_file
+- Fixed spelling: logiles, Noe, thier, maxx, dicover, foe, fate, choses, e.gf
+- Fixed grammar: repeated words (to to, of of, the the), subject-verb disagreements (This are, This have), and typos (can must, Wait to do, and or)
+- Fixed comment phrasing: hashed out, product so cannot, one to specify, Clients Services
+- Fixed inconsistent comment in goss template (dovecot-pop3 corrected to cyrus-imap)
+- Fixed multiple consecutive spaces in comments across defaults/main.yml, templates, and prelim.yml
+- Corrected grub user password assertion message in tasks/main.yml
+
+## Based on CIS v3.0.0 - Dec 2025
 pre-commit update
 4.1.4 ufw updated to include ntp port and improved logic
 6.2.4.1/2/3 tasks separated
 aide service script updated
 
-## Based on CIS v3.0.0 - Oct 25
+## Based on CIS v3.0.0 - Oct 2025
 
 Numbering changed
 CCI added where required

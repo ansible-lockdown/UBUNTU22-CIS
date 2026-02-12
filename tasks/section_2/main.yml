@@ -4,7 +4,7 @@
   ansible.builtin.import_tasks:
     file: cis_2.1.x.yml
 
-- name: "SECTION | 2.2.x | Configure Clients Services"
+- name: "SECTION | 2.2.x | Configure Client Services"
   ansible.builtin.import_tasks:
     file: cis_2.2.x.yml
 

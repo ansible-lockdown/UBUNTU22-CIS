@@ -296,7 +296,7 @@ ubtu22cis_rule_5_3_3_2_6: {{ ubtu22cis_rule_5_3_3_2_6 }}
 ubtu22cis_rule_5_3_3_2_7: {{ ubtu22cis_rule_5_3_3_2_7 }}
 ubtu22cis_rule_5_3_3_2_8: {{ ubtu22cis_rule_5_3_3_2_8 }}
 # 5.3.3.3 Configure pam_history module
-# This are added as part of 5.3.2.4 using jinja2 template
+# These are added as part of 5.3.2.4 using jinja2 template
 ubtu22cis_rule_5_3_3_3_1: {{ ubtu22cis_rule_5_3_3_3_1 }}
 ubtu22cis_rule_5_3_3_3_2: {{ ubtu22cis_rule_5_3_3_3_2 }}
 ubtu22cis_rule_5_3_3_3_3: {{ ubtu22cis_rule_5_3_3_3_3 }}
@@ -457,7 +457,7 @@ ubtu22cis_desktop_required: {{ ubtu22cis_desktop_required }}
 
 ## Section 1
 
-# If system uses squashfs e.gf. snap package manager set true
+# If system uses squashfs e.g. snap package manager set true
 ubtu22cis_squashfs_required:{% if prelim_snap_pkg_mgr.stdout == 1 %} true{% else %} false{% endif %}
 
 ## Controls 1.3.1.3 and 1.3.1.4 Ensure all AppArmor Profiles are in enforce (1.3.1.3/4) or complain (1.3.1.3) mode
@@ -476,13 +476,13 @@ ubtu22cis_bootloader_password_hash: {{ ubtu22cis_bootloader_password_hash }}  # 
 
 ## Controls 1.5.x
 
-## Controls 1.6.x  - Warning banners
+## Controls 1.6.x - Warning banners
 # The controls 1.6.x set various warning banners and protect the respective files
 # by tightening the access rights.
 
 # This variable specifies the warning banner displayed to the user
 # after local login, remote login, and as motd (message of the day)
-# Noe that the banner text must not contain the below items in order to be
+# Note that the banner text must not contain the below items in order to be
 # compliant with CIS: \m, \r, \s, \v or references to the OS platform
 ubtu22cis_warning_banner: "{{ ubtu22cis_warning_banner }}"
 
@@ -525,7 +525,7 @@ ubtu22cis_ftp_server: {{ ubtu22cis_ftp_server }}
 ubtu22cis_ftp_mask: {{ ubtu22cis_ftp_mask }}
 ubtu22cis_ldap_server: {{ ubtu22cis_ldap_server }}
 ubtu22cis_ldap_mask: {{ ubtu22cis_ldap_mask }}
-ubtu22cis_message_server: {{ ubtu22cis_message_server }}  # This is for messaging dovecot and dovecot-pop3
+ubtu22cis_message_server: {{ ubtu22cis_message_server }}  # This is for messaging dovecot and cyrus-imap
 ubtu22cis_message_mask: {{ ubtu22cis_message_mask }}
 ubtu22cis_nfs_server: {{ ubtu22cis_nfs_server }}
 ubtu22cis_nfs_mask: {{ ubtu22cis_nfs_mask }}
@@ -565,12 +565,12 @@ ubtu22cis_ldap_clients_required: {{ ubtu22cis_ldap_clients_required }}
 ubtu22cis_ftp_client: {{ ubtu22cis_ftp_client }}
 
 ## Control 2.3.1.1
-# This variable choses the tool used for time synchronization
-# The two options are `chrony`and `systemd-timesyncd`.
+# This variable chooses the tool used for time synchronization
+# The two options are `chrony` and `systemd-timesyncd`.
 ubtu22cis_time_sync_tool: {{ ubtu22cis_time_sync_tool }}
 
 ## Controls 2.3.x - Configure time pools & servers for chrony and timesyncd
-# The following variable represents a list of of time server pools used
+# The following variable represents a list of time server pools used
 # for configuring chrony and timesyncd.
 # Each list item contains two settings, `name` (the domain name of the pool) and synchronization `options`.
 # The default setting for the `options` is `iburst maxsources 4` -- please refer to the documentation
@@ -581,7 +581,7 @@ ubtu22cis_time_pool:
   options: {{ pool.options }}
 {% endfor %}
 
-# The following variable represents a list of of time servers used
+# The following variable represents a list of time servers used
 # for configuring chrony and timesyncd
 # Each list item contains two settings, `name` (the domain name of the server) and synchronization `options`.
 # The default setting for the `options` is `iburst` -- please refer to the documentation
@@ -638,7 +638,7 @@ ubtu22cis_is_syslog_server: {{ ubtu22cis_system_is_log_server }}
 
 ### Section 5
 
-## - 5.1.4  - Ensure SSH access is limited
+## - 5.1.4 - Ensure SSH access is limited
 # This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH
 # access for users whose user name matches one of the patterns. This is done
 # by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
