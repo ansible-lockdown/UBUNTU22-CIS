@@ -5,6 +5,7 @@
 Company naming alignment
 legacy options removed
 pre-commit update
+apt purge lockout variable and rule updates thanks to @tmeckel
 
 ## Based on CIS v3.0.0 - Dec 25
 pre-commit update
