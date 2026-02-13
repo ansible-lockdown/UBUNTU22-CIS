@@ -12,7 +12,7 @@
     - pam
     - rule_5.3.1.1
     - NIST800-53R5_NA
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: libpam-runtime
     state: latest
     lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
@@ -29,7 +29,7 @@
     - pam
     - rule_5.3.1.2
     - NIST800-53R5_NA
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: libpam-modules
     state: latest
     lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
@@ -45,7 +45,7 @@
     - pam
     - rule_5.3.1.3
     - NIST800-53R5_NA
-  ansible.builtin.package:
+  ansible.builtin.apt:
     name: libpam-pwquality
     state: latest
     lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
