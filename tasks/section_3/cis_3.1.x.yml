@@ -116,6 +116,6 @@
       notify: Systemd_daemon_reload
       ansible.builtin.systemd:
         name: bluetooth.service
-        enabled: false
-        state: stopped
+        enabled: "{{ ('bluez' in ansible_facts.packages) | ternary(false, omit) }}"
+        state: "{{ ('bluez' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true

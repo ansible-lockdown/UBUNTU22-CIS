@@ -63,14 +63,14 @@
       when: "'systemd-timesyncd' in ansible_facts.packages"
       ansible.builtin.systemd:
         name: systemd-timesyncd
-        state: stopped
-        enabled: false
+        enabled: "{{ ('systemd-timesyncd' in ansible_facts.packages) | ternary(false, omit) }}"
+        state: "{{ ('systemd-timesyncd' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
 
     - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running | disable other time sources | ntpd"
       when: "'ntpd' in ansible_facts.packages"
       ansible.builtin.systemd:
         name: ntpd
-        state: stopped
-        enabled: false
+        enabled: "{{ ('ntpd' in ansible_facts.packages) | ternary(false, omit) }}"
+        state: "{{ ('ntpd' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
