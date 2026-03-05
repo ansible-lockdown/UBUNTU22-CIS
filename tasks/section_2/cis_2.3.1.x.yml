@@ -37,8 +37,8 @@
         - item != ubtu22cis_time_sync_tool
       ansible.builtin.service:
         name: "{{ item }}"
-        enabled: "{{ ( {{ item }} in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ( {{ item }} in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ( item in ansible_facts.packages) | ternary(false, omit) }}"
+        state: "{{ ( item in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
         daemon_reload: true
       loop:
