@@ -87,8 +87,15 @@
       check_mode: false
       register: discovered_pam_pwhash
 
+    - name: "5.3.3.4.3 | AUDIT | Ensure pam_unix includes a strong password hashing algorithm | Check pam_unix file exists"
+      ansible.builtin.stat:
+        path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
+      register: discovered_pam_unix_hash_file
+
     - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | Ensure hash algorithm set"
-      when: discovered_pam_remember.stdout | length > 0
+      when:
+        - discovered_pam_pwhash.stdout | length > 0
+        - discovered_pam_unix_hash_file.stat.exists
       ansible.builtin.replace:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
         regexp: "(md5|bigcrypt|sha256|blowfish|gost_yescrypt|sha512|yescrypt)"
@@ -115,7 +122,7 @@
     - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"
       when:
         - discovered_pam_authtok is defined
-        - discovered_pam_authtok | length > 0
+        - discovered_pam_authtok.stdout | length > 0
       ansible.builtin.lineinfile:
         path: "/etc/pam.d/common-password"
         regexp: ^(\s*password\s+[success=end.*]\s+pam_unix\.so)(.*)\s+use_authtok\s*=\s*\S+(.*$)
