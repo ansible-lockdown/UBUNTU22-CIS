@@ -424,7 +424,7 @@
         - not ubtu22cis_rsync_server
         - ubtu22cis_rsync_mask
       ansible.builtin.systemd:
-        name: rsyncd.service
+        name: rsync.service
         enabled: false
         state: stopped
         masked: true
