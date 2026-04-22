@@ -166,8 +166,7 @@
         state: absent
 
 - name: "1.1.1.6 | PATCH | Ensure overlay kernel module is not available"
-  when:
-    - ubtu22cis_rule_1_1_1_6
+  when: ubtu22cis_rule_1_1_1_6
   tags:
     - level1-server
     - level1-workstation
@@ -326,6 +325,7 @@
       ansible.builtin.command: /var/fs_with_cves.sh
       changed_when: false
       failed_when: discovered_fs_modules_loaded.rc not in [ 0, 99 ]
+      check_mode: false
       register: discovered_fs_modules_loaded
 
     - name: "1.1.1.10 | AUDIT | Ensure unused filesystems kernel modules are not available | Output Warning"

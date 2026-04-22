@@ -172,6 +172,8 @@
   loop:
     - /etc/security/opasswd
     - /etc/security/opasswd.old
+  loop_control:
+    label: "{{ item }}"
 
 - name: "7.1.11 | PATCH | Ensure world writable files and directories are secured"
   when: ubtu22cis_rule_7_1_11
@@ -186,9 +188,14 @@
     - NIST800-53R5_MP-2
   block:
     - name: "7.1.11 | AUDIT | Ensure world writable files and directories are secured | Get list of world-writable files"
-      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
-      failed_when: false
+      ansible.builtin.shell: |
+        set -o pipefail
+        df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type f -perm -0002
+      args:
+        executable: /bin/bash
+      failed_when: discovered_worldwriteable_files.rc not in [0, 1]
       changed_when: false
+      check_mode: false
       register: discovered_worldwriteable_files
 
     - name: "7.1.11 | PATCH | Ensure world writable files and directories are secured | Adjust world-writable files if they exist (Configurable)"
@@ -200,9 +207,15 @@
         mode: 'o-w'
         state: touch
       loop: "{{ discovered_worldwriteable_files.stdout_lines }}"
+      loop_control:
+        label: "{{ item }}"
 
     - name: "7.1.11 | PATCH | Ensure world writable files and directories are secured | sticky bit set on world-writable directories"
-      ansible.builtin.shell: df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
+      ansible.builtin.shell: |
+        set -o pipefail
+        df --local -P | awk {'if (NR!=1) print $6'} | xargs -I '{}' find '{}' -xdev -type d -perm -0002 2>/dev/null | xargs chmod a+t
+      args:
+        executable: /bin/bash
       changed_when: false
       failed_when: false
 
@@ -222,7 +235,7 @@
     - name: "7.1.12 | AUDIT | Ensure no files or directories without an owner and a group exist | Get list files or directories"
       ansible.builtin.command: find {{ ubtu22cis_exclude_unowned_search_path }} {{ item.mount }} -xdev \( -nouser -o -nogroup \) -not -fstype {{ ubtu22cis_exclude_unowned_filesystem_types }}
       changed_when: false
-      failed_when: false
+      failed_when: discovered_unowned_files.rc not in [0, 1]
       check_mode: false
       register: discovered_unowned_files
       loop: "{{ ansible_facts.mounts }}"
@@ -282,7 +295,7 @@
     - name: "7.1.13 | AUDIT | Ensure SUID and SGID files are reviewed | Find SUID and SGID"
       ansible.builtin.command: find {{ item.mount }} -xdev -type f -perm \( -02000 or -04000 \) -not -fstype nfs
       changed_when: false
-      failed_when: false
+      failed_when: discovered_suid_sgid_files.rc not in [0, 1]
       check_mode: false
       register: discovered_suid_sgid_files
       loop: "{{ ansible_facts.mounts }}"

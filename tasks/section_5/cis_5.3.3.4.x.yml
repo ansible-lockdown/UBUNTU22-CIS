@@ -13,9 +13,14 @@
     - NIST800-53R5_NA
   block:
     - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | capture state"
-      ansible.builtin.shell: grep -E "pam_unix.so.*nullok" /etc/pam.d/common-* /usr/share/pam-configs/* | cut -d ':' -f1 | uniq
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -E "pam_unix.so.*nullok" /etc/pam.d/common-* /usr/share/pam-configs/* | cut -d ':' -f1 | uniq
+      args:
+        executable: /bin/bash
       changed_when: false
       failed_when: discovered_pam_nullok.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_nullok
 
     - name: "5.3.3.4.1 | PATCH | Ensure pam_unix does not include nullok | Ensure nullok removed"
@@ -25,11 +30,12 @@
         regexp: nullok
         replace: ''
       loop: "{{ discovered_pam_nullok.stdout_lines }}"
+      loop_control:
+        label: "{{ item }}"
       notify: Pam_auth_update_pwunix
 
 - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember"
-  when:
-    - ubtu22cis_rule_5_3_3_4_2
+  when: ubtu22cis_rule_5_3_3_4_2
   tags:
     - level1-server
     - level1-workstation
@@ -39,9 +45,14 @@
     - NIST800-53R5_NA
   block:
     - name: "5.3.3.4.2 | AUDIT | Ensure pam_unix does not include remember | capture state"
-      ansible.builtin.shell: grep -PH -- '^\h*^\h*[^#\n\r]+\h+pam_unix\.so\b' /etc/pam.d/common-{password,auth,account,session,session-noninteractive} | grep -Pv -- '\bremember=\d\b'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -PH -- '^\h*^\h*[^#\n\r]+\h+pam_unix\.so\b' /etc/pam.d/common-{password,auth,account,session,session-noninteractive} | grep -Pv -- '\bremember=\d\b'
+      args:
+        executable: /bin/bash
       changed_when: false
       failed_when: discovered_pam_remember.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_remember
 
     - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember | Ensure remember removed"
@@ -53,8 +64,7 @@
       notify: Pam_auth_update_pwunix
 
 - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm"
-  when:
-    - ubtu22cis_rule_5_3_3_4_3
+  when: ubtu22cis_rule_5_3_3_4_3
   tags:
     - level1-server
     - level1-workstation
@@ -67,6 +77,7 @@
       ansible.builtin.shell: grep -PH -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?("{{ ubtu22cis_passwd_hash_algo }}")\b' /etc/pam.d/common-password
       changed_when: false
       failed_when: discovered_pam_pwhash.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_pwhash
 
     - name: "5.3.3.4.3 | PATCH | Ensure pam_unix includes a strong password hashing algorithm | Ensure hash algorithm set"
@@ -78,8 +89,7 @@
       notify: Pam_auth_update_pwunix
 
 - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok"
-  when:
-    - ubtu22cis_rule_5_3_3_4_4
+  when: ubtu22cis_rule_5_3_3_4_4
   tags:
     - level1-server
     - level1-workstation
@@ -92,6 +102,7 @@
       ansible.builtin.shell: grep -PH -- '^\h*password\h+([^#\n\r]+)\h+pam_unix\.so\h+([^#\n\r]+\h+)?use_authtok\b' /etc/pam.d/common-password
       changed_when: false
       failed_when: discovered_pam_authtok.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_pam_authtok
 
     - name: "5.3.3.4.4 | PATCH | Ensure pam_unix includes use_authtok | pam_files"

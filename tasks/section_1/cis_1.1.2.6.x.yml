@@ -20,6 +20,7 @@
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
       failed_when: discovered_var_log_mount.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_var_log_mount
 
     - name: "1.1.2.6.1 | AUDIT | Ensure separate partition exists for /var/log | Absent"

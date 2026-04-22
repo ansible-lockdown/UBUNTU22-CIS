@@ -28,6 +28,8 @@
         group: root
       loop:
         - "etc/systemd/timesyncd.conf.d/50-timesyncd.conf"
+      loop_control:
+        label: "{{ item }}"
       notify: Restart timeservice
 
 - name: "2.3.2.2 | PATCH | Ensure systemd-timesyncd is enabled and running"

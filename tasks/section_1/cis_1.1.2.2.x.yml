@@ -18,16 +18,17 @@
     - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs or a separate partition | not tmpfs"
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
-      failed_when: discovered_tmp_mount.rc not in [ 0, 1 ]
-      register: discovered_tmp_mount
+      failed_when: discovered_dev_shm_mount.rc not in [ 0, 1 ]
+      check_mode: false
+      register: discovered_dev_shm_mount
 
     - name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is tmpfs or a separate partition | Absent"
-      when: discovered_tmp_mount is undefined
+      when: discovered_dev_shm_mount is undefined
       ansible.builtin.debug:
         msg: "Warning!! {{ required_mount }} is not a separate partition"
 
     - name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is tmpfs or a separate partition | Present"
-      when: discovered_tmp_mount is undefined or 'tmpfs' not in discovered_tmp_mount.stdout
+      when: discovered_dev_shm_mount is undefined or 'tmpfs' not in discovered_dev_shm_mount.stdout
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

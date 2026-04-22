@@ -19,6 +19,7 @@
       ansible.builtin.command: findmnt -kn "{{ mount_point }}"
       changed_when: false
       failed_when: discovered_tmp_mount.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_tmp_mount
 
     - name: "1.1.2.1.1 | PATCH | Ensure /tmp is tmpfs or a separate partition | Absent"
@@ -101,7 +102,7 @@
     <<: *mount_option_set_fact
   changed_when: *mount_option_changed_when
 
-# via systemd
+# via systemd drop-in (aligned with RHEL10-CIS pattern)
 - name: |
     "1.1.2.1.1 | PATCH | Ensure /tmp is configured
     1.1.2.1.2 | PATCH | Ensure nodev option set on /tmp partition
@@ -124,10 +125,18 @@
     - CCI-001764
   vars:
     mount_point: "/tmp"
-  ansible.builtin.template:
-    src: etc/systemd/system/tmp.mount.j2
-    dest: /etc/systemd/system/tmp.mount
-    owner: root
-    group: root
-    mode: 'go-wx'
-  notify: *mount_option_notify
+  block:
+    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is configured | Create tmp.mount.d directory"
+      ansible.builtin.file:
+        path: /etc/systemd/system/tmp.mount.d
+        state: directory
+        mode: 'go-wx'
+
+    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is configured | Create 60-options.conf file"
+      ansible.builtin.template:
+        src: etc/systemd/system/tmpmount.d/60-options.conf.j2
+        dest: /etc/systemd/system/tmp.mount.d/60-options.conf
+        owner: root
+        group: root
+        mode: 'go-wx'
+      notify: *mount_option_notify

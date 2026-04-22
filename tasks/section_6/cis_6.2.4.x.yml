@@ -88,7 +88,7 @@
     mode: 'u-x,g-wx,o-rwx'
   loop: "{{ prelim_auditd_conf_files.files }}"
   loop_control:
-    label: "{{ item.path }}"
+    label: "{{ item }}"
 
 - name: "6.2.4.6 | PATCH | Ensure audit configuration files owner is configured"
   when: ubtu22cis_rule_6_2_4_6
@@ -141,6 +141,8 @@
     - /sbin/autrace
     - /sbin/auditd
     - /sbin/augenrules
+  loop_control:
+    label: "{{ item }}"
 
 - name: "6.2.4.9 | PATCH | Ensure audit tools owner is configured"
   when: ubtu22cis_rule_6_2_4_9
@@ -162,6 +164,8 @@
     - /sbin/autrace
     - /sbin/auditd
     - /sbin/augenrules
+  loop_control:
+    label: "{{ item }}"
 
 - name: "6.2.4.10 | PATCH | Ensure audit tools group owner is configured"
   when: ubtu22cis_rule_6_2_4_10
@@ -182,3 +186,5 @@
     - /sbin/autrace
     - /sbin/auditd
     - /sbin/augenrules
+  loop_control:
+    label: "{{ item }}"

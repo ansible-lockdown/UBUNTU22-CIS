@@ -21,6 +21,8 @@
       loop:
         - etc/chrony/sources.d/pool.sources
         - etc/chrony/sources.d/server.sources
+      loop_control:
+        label: "{{ item }}"
       notify: Restart timeservice
 
     - name: "2.3.3.1 | PATCH | Ensure chrony is configured with authorized timeserver | load sources"

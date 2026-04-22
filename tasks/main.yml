@@ -21,11 +21,16 @@
     - ubtu22cis_rule_5_2_4
     - ansible_env.SUDO_USER is defined
   tags: always
+  no_log: true
   block:
     - name: Capture current password state of connecting user"
-      ansible.builtin.shell: "grep -w {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -w {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'
+      args:
+        executable: /bin/bash
       changed_when: false
-      failed_when: false
+      failed_when: prelim_ansible_user_password_set.rc not in [0, 1]
       check_mode: false
       register: prelim_ansible_user_password_set
 
@@ -42,14 +47,19 @@
   tags: always
   block:
     - name: Ensure root password is set
-      ansible.builtin.shell: LC_ALL=C passwd -S root | grep -E "(Password set, SHA512 crypt|root P |root L |Password locked)"
+      ansible.builtin.shell: |
+        set -o pipefail
+        LC_ALL=C passwd -S root | awk '{print $2}'
+      args:
+        executable: /bin/bash
       changed_when: false
-      failed_when: false
+      failed_when: prelim_root_passwd_set.stdout not in ['P', 'L']
+      check_mode: false
       register: prelim_root_passwd_set
 
     - name: Ensure root password is set
       ansible.builtin.assert:
-        that: prelim_root_passwd_set.rc == 0
+        that: prelim_root_passwd_set.stdout in ['P', 'L']
         fail_msg: "You have rule 5.4.2.4 enabled this requires that you have a root password set - Please manually set a root password"
         success_msg: "You have a root password set"
 
@@ -65,10 +75,16 @@
 - name: Check ubtu22cis_grub_user password variable has been changed
   when: ubtu22cis_rule_1_4_1
   tags: always
+  no_log: true
   block:
     - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
-      ansible.builtin.shell: "grep ^{{ ubtu22cis_grub_user }} /etc/shadow | awk -F : '{print $2}'"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep ^{{ ubtu22cis_grub_user }} /etc/shadow | awk -F : '{print $2}'
+      args:
+        executable: /bin/bash
       changed_when: false
+      check_mode: false
       register: prelim_password_set_grub_user
 
     - name: Check ubtu22cis_grub_user password variable has been changed | check password is set
@@ -89,7 +105,7 @@
 
 - name: Setup rules if container
   when:
-    - ansible_connection == 'docker' or
+    - ansible_connection in ['docker', 'community.docker.docker'] or
       (ansible_facts.virtualization_type is defined and
        ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"])
   tags:
@@ -210,7 +226,7 @@
         state: directory
         owner: root
         group: root
-        mode: 'u=rwx,go=rx'
+        mode: 'go-w'
 
     - name: Create ansible facts file
       ansible.builtin.template:

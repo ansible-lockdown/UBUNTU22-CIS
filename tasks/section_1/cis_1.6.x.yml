@@ -31,6 +31,8 @@
         - { regexp: '(session\s+optional\s+pam_motd.so\s+motd=/run/motd.dynamic)', line: '# \1' }
         - { regexp: '(session\s+optional\s+pam_motd.so noupdate)', line: '# \1' }
         - { regexp: '# Pam_motd.so disabled for CIS benchmark', line: '# Pam_motd.so disabled for CIS benchmark' }
+      loop_control:
+        label: "{{ item }}"
 
 - name: "1.6.2 | PATCH | Ensure /etc/issue is configured"
   when: ubtu22cis_rule_1_6_2

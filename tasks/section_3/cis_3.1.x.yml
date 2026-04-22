@@ -22,9 +22,13 @@
       notify: Grub update
 
     - name: "3.1.1 | PATCH | Ensure IPv6 status is identified | Check grub cmdline linux"
-      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      args:
+        executable: /bin/bash
       changed_when: false
-      failed_when: false
+      failed_when: discovered_grub_cmdline_settings.rc not in [0, 1]
       check_mode: false
       register: discovered_grub_cmdline_settings
 
@@ -51,11 +55,14 @@
       notify: Flush ipv6 route table
       loop:
         - etc/sysctl.d/60-disable_ipv6.conf
+      loop_control:
+        label: "{{ item }}"
 
 - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled"
   when:
     - ubtu22cis_rule_3_1_2
-    - prelim_wireless_adapters_exist
+    - prelim_wireless_adapters_exist is not skipped
+    - prelim_wireless_adapters_exist.stdout | length > 0
   tags:
     - level1-server
     - patch
@@ -107,6 +114,6 @@
       notify: Systemd daemon reload
       ansible.builtin.systemd:
         name: bluetooth.service
-        enabled: false
-        state: stopped
+        enabled: "{{ ('bluez' in ansible_facts.packages) | ternary(false, omit) }}"
+        state: "{{ ('bluez' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true

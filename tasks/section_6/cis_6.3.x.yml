@@ -20,7 +20,7 @@
         name: ['aide', 'aide-common']
         state: present
         update_cache: true
-        lock_timeout: 180
+        lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
       register: discovered_aide_pkg_added
 
     - name: "6.3.1 | AUDIT | Ensure AIDE is installed | Recapture packages"
@@ -109,6 +109,8 @@
       loop:
         - aidecheck.service
         - aidecheck.timer
+      loop_control:
+        label: "{{ item }}"
 
 - name: "6.3.3 | PATCH | Ensure cryptographic mechanisms are used to protect the integrity of audit tools"
   when:

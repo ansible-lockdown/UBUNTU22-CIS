@@ -46,22 +46,26 @@
     - NIST800-53R5_AU-12
   block:
     - name: "6.2.1.3 | AUDIT | Ensure auditing for processes that start prior to auditd is enabled | Get GRUB_CMDLINE_LINUX"
-      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      args:
+        executable: /bin/bash
       changed_when: false
-      failed_when: false
+      failed_when: discovered_grub_cmdline_audit_settings.rc not in [0, 1]
       check_mode: false
-      register: discovered_grub_cmdline_settings
+      register: discovered_grub_cmdline_audit_settings
 
     - name: "6.2.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Add setting if doesn't exist"
-      when: "'audit=' not in discovered_grub_cmdline_settings.stdout"
+      when: "'audit=' not in discovered_grub_cmdline_audit_settings.stdout"
       ansible.builtin.lineinfile:
         path: /etc/default/grub
         regexp: '^GRUB_CMDLINE_LINUX='
-        line: 'GRUB_CMDLINE_LINUX="{{ discovered_grub_cmdline_settings.stdout }} audit=1"'
+        line: 'GRUB_CMDLINE_LINUX="{{ discovered_grub_cmdline_audit_settings.stdout }} audit=1"'
       notify: Grub update
 
     - name: "6.2.1.3 | PATCH | Ensure auditing for processes that start prior to auditd is enabled | Update setting if exists"
-      when: "'audit=' in discovered_grub_cmdline_settings.stdout"
+      when: "'audit=' in discovered_grub_cmdline_audit_settings.stdout"
       ansible.builtin.replace:
         dest: /etc/default/grub
         regexp: 'audit=([0-9]+)'
@@ -83,18 +87,22 @@
     - NIST800-53R5_AU-12
   block:
     - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Get current GRUB_CMDLINE_LINUX"
-      ansible.builtin.shell: grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
+      args:
+        executable: /bin/bash
       changed_when: false
-      failed_when: false
+      failed_when: discovered_grub_cmdline_backlog_settings.rc not in [0, 1]
       check_mode: false
-      register: discovered_grub_cmdline_settings
+      register: discovered_grub_cmdline_backlog_settings
 
     - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Add setting if doesn't exist"
-      when: "'audit_backlog_limit=' not in discovered_grub_cmdline_settings.stdout"
+      when: "'audit_backlog_limit=' not in discovered_grub_cmdline_backlog_settings.stdout"
       ansible.builtin.lineinfile:
         path: /etc/default/grub
         regexp: '^GRUB_CMDLINE_LINUX='
-        line: 'GRUB_CMDLINE_LINUX="{{ discovered_grub_cmdline_settings.stdout }} audit_backlog_limit={{ ubtu22cis_audit_back_log_limit }}"'
+        line: 'GRUB_CMDLINE_LINUX="{{ discovered_grub_cmdline_backlog_settings.stdout }} audit_backlog_limit={{ ubtu22cis_audit_back_log_limit }}"'
       notify: Grub update
 
     - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Update setting if exists"

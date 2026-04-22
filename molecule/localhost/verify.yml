@@ -1,0 +1,11 @@
+---
+
+- name: Verify
+  hosts: all
+  gather_facts: false
+  become: true
+
+  tasks:
+    - name: Verify | Check role completed successfully
+      ansible.builtin.debug:
+        msg: "UBUNTU22-CIS role applied successfully"

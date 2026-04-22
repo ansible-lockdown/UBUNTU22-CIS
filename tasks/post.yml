@@ -17,6 +17,8 @@
     - 60-netipv4_sysctl.conf
     - 60-netipv6_sysctl.conf
   notify: Reload sysctl
+  loop_control:
+    label: "{{ item }}"
 
 - name: POST | flush handlers
   ansible.builtin.meta: flush_handlers

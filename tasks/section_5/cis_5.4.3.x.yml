@@ -1,8 +1,7 @@
 ---
 
 - name: "5.4.3.1 | PATCH | Ensure nologin is not listed in /etc/shells"
-  when:
-    - ubtu22cis_rule_5_4_3_1
+  when: ubtu22cis_rule_5_4_3_1
   tags:
     - level2-server
     - level2-workstation
@@ -20,8 +19,7 @@
     replace: ""
 
 - name: "5.4.3.2 | PATCH | Ensure default user shell timeout is configured"
-  when:
-    - ubtu22cis_rule_5_4_3_2
+  when: ubtu22cis_rule_5_4_3_2
   tags:
     - level1-server
     - level1-workstation
@@ -42,10 +40,11 @@
   loop:
     - { path: "{{ ubtu22cis_shell_session_file }}", state: present }
     - { path: /etc/profile, state: "{{ (ubtu22cis_shell_session_file == '/etc/profile') | ternary('present', 'absent') }}" }
+  loop_control:
+    label: "{{ item }}"
 
 - name: "5.4.3.3 | PATCH | Ensure default user umask is configured"
-  when:
-    - ubtu22cis_rule_5_4_3_3
+  when: ubtu22cis_rule_5_4_3_3
   tags:
     - level1-server
     - level1-workstation
@@ -63,6 +62,8 @@
       loop:
         - { path: '/etc/profile', line: 'umask' }
         - { path: '/etc/login.defs', line: 'UMASK' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.4.3.3 | PATCH | Ensure default user umask is configured | add profile script to set"
       ansible.builtin.template:

@@ -12,4 +12,4 @@
   ansible.builtin.package:
     name: "*"
     state: latest
-    lock_timeout: 180
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"

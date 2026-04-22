@@ -20,6 +20,8 @@
         group: root
         mode: 'u-x,go-rwx'
       loop: "{{ prelim_sshd_configs.files }}"
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
       ansible.builtin.file:

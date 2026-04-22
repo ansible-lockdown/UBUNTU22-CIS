@@ -1,5 +1,10 @@
 ---
 
+# defaults file for UBUNTU22-CIS
+# WARNING:
+# These values may be overridden by other vars-setting options(e.g. like the below 'container_vars_file'), as explained here:
+# https://docs.ansible.com/ansible/latest/playbook_guide/playbooks_variables.html#variable-precedence-where-should-i-put-a-variable
+
 ## Switching on/off specific baseline sections
 # These variables govern whether the tasks of a particular section are to be executed when running the role.
 # E.g: If you want to execute the tasks of Section 1 you should set the "_section1" variable
@@ -16,24 +21,30 @@ ubtu22cis_section7: true
 # System will reboot if false, can give better audit results
 skip_reboot: true
 
-## Benchmark name and profiles used by auditing control role
-# The audit variable found at the base
-benchmark: UBUNTU22-CIS
-benchmark_version: v3.0.0
+# set true if running inside a container (skips kernel/mount tasks)
+system_is_container: false
 
-# Create managed not custom local_facts files
-create_benchmark_facts: true
-ansible_facts_path: /etc/ansible/facts.d
+# Place to find the container yml file for your environment - /vars/...
+container_vars_file: is_container.yml
 
 # Used for audit
 ubtu22cis_level_1: true
 ubtu22cis_level_2: true
 
-## Possibly disruptive tasks
-# This variable governs whether tasks of a potentially disruptive nature on your system
-# (e.g., removing .forward and .netrc files for interactive users) are carried out.
-# If you set this variable to "true", the role will carry such tasks; if you set it to
-# "false", these tasks will be skipped.
+# Create managed not custom local_facts files
+create_benchmark_facts: true
+ansible_facts_path: /etc/ansible/facts.d
+
+## Benchmark name used by auditing control role
+# The audit variable found at the base
+benchmark: UBUNTU22-CIS
+## metadata for Audit benchmark
+benchmark_version: v3.0.0
+
+# We've defined disruption-high to indicate items that are likely to cause
+# disruption in a normal workflow.  These items can be remediated automatically
+# but are disabled by default to avoid disruption.
+# Value of true runs disruptive tasks, value of false will skip disruptive tasks
 ubtu22cis_disruption_high: true
 
 ## Unrestricted boot
@@ -41,18 +52,31 @@ ubtu22cis_disruption_high: true
 # boot *without* querying for the bootloader password.
 ubtu22cis_ask_passwd_to_boot: false  # pragma: allowlist secret
 
-## Usage on containerized images
-# The role discovers dynamically (in tasks/main.yml) whether it
-# is executed on a container image and sets the variable
-# system_is_container to true. Otherwise, the default value
-# 'false' is left unchanged.
-container_vars_file: is_container.yml
+# skip tests that fail in CI/test environments
+ubtu22cis_skip_for_test: false
+
+# skip events for ec2 instance testing pipeline
+# set true to skip EC2-incompatible tasks (e.g., GRUB, reboot)
+system_is_ec2: false
 
 ## Root user used
 # Root by default is not used unless setup by user
 # The role will only run certain commands if set to true
 # This allows the ability to skip tasks that may cause an issue
 ubtu22cis_uses_root: false
+
+# UID settings for interactive users
+# These are discovered via logins.def if set true
+discover_int_uid: false
+# This variable sets the minimum number from which to search for UID
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
+# been set to `true`.
+min_int_uid: 1000
+
+# This variable sets the maximum number at which the search stops for UID
+# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
+# been set to `true`.
+max_int_uid: 65533
 
 ###
 ### Settings for associated Audit role using Goss
@@ -121,12 +145,6 @@ audit_output_destination: /opt/audit_summaries/
 
 ### Goss Settings ##
 ####### END ########
-
-## Running in EC2 pipeline
-# Skip events for EC2 instance testing pipeline.
-# This variable is set to true for automated tests
-# carried out for this role by the role maintainers.
-system_is_ec2: false
 
 ##
 ## Rule-specific switches
@@ -795,7 +813,7 @@ ubtu22cis_ufw_use_sysctl: true
 ## Control 4.1.5 - Ensure ufw outbound connections are configured
 # The value of this variable represents the ports for the firewall to allow outbound traffic from.
 # If you want to allow outbound traffic on all ports, set the variable to `all`, e.g.,
-# `ubtu22cis_ufw_allow_out_ports: "all"`.
+# ubtu22cis_ufw_allow_out_ports: "all"
 ubtu22cis_ufw_allow_out_ports:
   - port: 53
     proto: tcp
@@ -1199,7 +1217,7 @@ ubtu22cis_max_log_file_size: 10
 ## Control 6.2.3.2
 # This variable determines what action the audit system should take when the maximum
 # size of a log file is reached.
-# The options for setting this variable are as follows:
+# The options for setting this variable is as follows:
 # - `ignore`: the system does nothing when the size of a log file is full;
 # - `syslog`: a message is sent to the system log indicating the problem;
 # - `suspend`: the system suspends recording audit events until the log file is cleared or rotated;
@@ -1236,24 +1254,6 @@ ubtu22cis_auditd_admin_space_left_action: halt
 ##
 ## Section 7 Control Variables
 ##
-
-## Controls 6.2.11 & 6.2.12
-# The minimum and maximum UIDs to be used when enforcing
-# and checking controls 6.2.11 and 6.2.12 can either be
-# discovered automatically via logins.def or set manually
-# in this file
-# If min/max UIDs are to be discovered automatically,
-# set this variable to `true`, otherwise to `false`.
-discover_int_uid: false
-# This variable sets the minimum number from which to search for UID
-# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
-# been set to `true`.
-min_int_uid: 1000
-
-# This variable sets the maximum number at which the search stops for UID
-# Note that the value will be dynamically overwritten if variable `discover_int_uid` has
-# been set to `true`.
-max_int_uid: 65533
 
 ## Control 6.1.9
 # The following variable is a toggle for enabling/disabling the automated

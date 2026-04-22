@@ -24,6 +24,8 @@
       loop:
         - install dccp /bin/true
         - blacklist dccp
+      loop_control:
+        label: "{{ item }}"
 
     - name: "3.2.1 | PATCH | Ensure dccp kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
@@ -56,6 +58,8 @@
       loop:
         - install tipc /bin/true
         - blacklist tipc
+      loop_control:
+        label: "{{ item }}"
 
     - name: "3.2.2 | PATCH | Ensure tipc kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
@@ -88,6 +92,8 @@
       loop:
         - install rds /bin/true
         - blacklist rds
+      loop_control:
+        label: "{{ item }}"
 
     - name: "3.2.3 | PATCH | Ensure rds kernel module is not available | blacklist"
       ansible.builtin.lineinfile:
@@ -120,6 +126,8 @@
       loop:
         - install sctp /bin/true
         - blacklist sctp
+      loop_control:
+        label: "{{ item }}"
 
     - name: "3.2.4 | PATCH | Ensure sctp kernel module is not available | blacklist"
       ansible.builtin.lineinfile:

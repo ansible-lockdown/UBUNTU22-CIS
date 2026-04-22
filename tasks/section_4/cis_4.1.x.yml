@@ -63,7 +63,15 @@
     - ufw
     - NIST800-53R5_CM-7
   block:
-    - name: "4.1.4 | PATCH | Ensure ufw outgoing default is configured |Added permitted rules"
+    - name: "4.1.4 | PATCH | Ensure ufw outgoing default is configured | Allow all outbound"
+      when: ubtu22cis_ufw_allow_out_ports == "all"
+      community.general.ufw:
+        default: allow
+        direction: outgoing
+      notify: Reload ufw
+
+    - name: "4.1.4 | PATCH | Ensure ufw outgoing default is configured | Added permitted rules"
+      when: ubtu22cis_ufw_allow_out_ports != "all"
       community.general.ufw:
         rule: allow
         direction: out
@@ -75,6 +83,7 @@
       notify: Reload ufw
 
     - name: "4.1.4 | PATCH | Ensure ufw outgoing default is configured | Set outgoing default deny"
+      when: ubtu22cis_ufw_allow_out_ports != "all"
       community.general.ufw:
         default: deny
         direction: outgoing

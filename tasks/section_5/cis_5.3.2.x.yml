@@ -48,6 +48,8 @@
   notify:
     - Pam_auth_update_pwfaillock
     - Pam_auth_update_pwfaillock_notify
+  loop_control:
+    label: "{{ item }}"
 
 - name: "5.3.2.3 | PATCH | Ensure pam_pwquality module is enabled"
   when:

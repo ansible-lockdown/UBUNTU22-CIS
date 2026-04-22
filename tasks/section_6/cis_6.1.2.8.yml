@@ -24,6 +24,8 @@
         regexp: '^(\s*)(daily|weekly|monthly|yearly)$'
         replace: "\\1{{ ubtu22cis_logrotate }}"
       loop: "{{ discovered_log_rotate_conf.files }}"
+      loop_control:
+        label: "{{ item }}"
 
     - name: "6.1.2.8 | PATCH | Ensure logrotate is configured | logrotate.conf"
       ansible.builtin.replace:

@@ -271,6 +271,8 @@
       loop:
         - '/lib/sysctl.d/50-default.conf'
         - '/lib/sysctl.d/50-redhat.conf'
+      loop_control:
+        label: "{{ item }}"
 
     - name: "3.3.1.13 | PATCH | Ensure net.ipv4.conf.default.rp_filter is configured | Set Fact"
       ansible.builtin.set_fact:

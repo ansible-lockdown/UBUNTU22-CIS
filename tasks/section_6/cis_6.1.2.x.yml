@@ -88,16 +88,20 @@
     warn_control_id: '6.1.2.5'
   block:
     - name: "6.1.2.5 | AUDIT | Ensure logging is configured | Find configuration file"
-      ansible.builtin.shell: grep -r "*.emerg" /etc/* | cut -f1 -d":"
+      ansible.builtin.shell: |
+        set -o pipefail
+        grep -r "*.emerg" /etc/* | cut -f1 -d":"
+      args:
+        executable: /bin/bash
       changed_when: false
-      failed_when: false
+      failed_when: discovered_rsyslog_config_path.rc not in [0, 1]
       check_mode: false
       register: discovered_rsyslog_config_path
 
     - name: "6.1.2.5 | AUDIT | Ensure logging is configured | Gather rsyslog current config"
       ansible.builtin.command: "cat {{ discovered_rsyslog_config_path.stdout }}"
       changed_when: false
-      failed_when: false
+      failed_when: discovered_rsyslog_config.rc not in [0, 1]
       check_mode: false
       register: discovered_rsyslog_config
 
@@ -192,4 +196,6 @@
       with_items:
         - { regexp: '^\$ModLoad|^#\$ModLoad', line: '$ModLoad imtcp' }
         - { regexp: '^\$InputTCPServerRun|^#\$InputTCPServerRun', line: '$InputTCPServerRun 514' }
+      loop_control:
+        label: "{{ item }}"
       notify: Restart syslog service

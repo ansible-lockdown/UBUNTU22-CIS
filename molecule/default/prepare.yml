@@ -1,0 +1,46 @@
+---
+
+- name: Prepare
+  hosts: all
+  gather_facts: false
+
+  tasks:
+    - name: Install packages needed for CIS hardening in container
+      ansible.builtin.apt:
+        name:
+          - openssh-server
+          - libpam-pwquality
+          - libpam-modules
+          - sudo
+          - acl
+          - kmod
+          - cron
+          - chrony
+          - rsyslog
+          - aide
+          - aide-common
+          - logrotate
+          - apparmor
+          - apparmor-utils
+          - ufw
+          - nftables
+        state: present
+        update_cache: true
+
+    - name: Create /run/sshd for privilege separation
+      ansible.builtin.file:
+        path: /run/sshd
+        state: directory
+        mode: '0755'
+
+    - name: Start and enable cron
+      ansible.builtin.systemd:
+        name: cron
+        state: started
+        enabled: true
+
+    - name: Start and enable rsyslog
+      ansible.builtin.systemd:
+        name: rsyslog
+        state: started
+        enabled: true
