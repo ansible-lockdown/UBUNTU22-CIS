@@ -55,8 +55,15 @@
       check_mode: false
       register: discovered_pam_remember
 
+    - name: "5.3.3.4.2 | AUDIT | Ensure pam_unix does not include remember | Check pam_unix file exists"
+      ansible.builtin.stat:
+        path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
+      register: discovered_pam_unix_file
+
     - name: "5.3.3.4.2 | PATCH | Ensure pam_unix does not include remember | Ensure remember removed"
-      when: discovered_pam_remember.stdout | length > 0
+      when:
+        - discovered_pam_remember.stdout | length > 0
+        - discovered_pam_unix_file.stat.exists
       ansible.builtin.replace:
         path: "/{{ ubtu22cis_pam_confd_dir }}{{ ubtu22cis_pam_pwunix_file }}"
         regexp: remember=\d+
