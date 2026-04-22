@@ -42,7 +42,7 @@
 
 - **cis_4.1.x.yml:** Fixed `ubtu22cis_ufw_allow_out_ports: "all"` causing `Invalid data passed to 'loop'` error — task now handles both string `"all"` (allow all outbound) and list of port dicts (specific ports). (fixes [#328](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/328)) - Thank you @tmeckel
 - **prelim.yml, cis_1.2.2.x.yml, cis_6.3.x.yml:** Replaced 7 hardcoded `lock_timeout: 180` with configurable `ubtu22cis_apt_lock_timeout` variable — prevents apt/dpkg lock failures when unattended-upgrades is running. (fixes [#330](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/330)) - Thank you @tmeckel
-- **cis_5.3.3.4.x.yml:** Added file existence check before `replace` on `/usr/share/pam-configs/pam_unix` for rules 5.3.3.4.2 and 5.3.3.4.3 — prevents failure when pam_unix config file doesn't exist. Fixed 5.3.3.4.3 referencing wrong variable (`discovered_pam_remember` → `discovered_pam_pwhash`). Fixed 5.3.3.4.4 wrong `when` condition (`discovered_pam_authtok | length` → `discovered_pam_authtok.stdout | length`) (CI pipeline fix)
+- **cis_5.3.3.4.x.yml:** Added file existence check before `replace` on `/usr/share/pam-configs/pam_unix` for rules 5.3.3.4.2 and 5.3.3.4.3 — prevents failure when pam_unix config file doesn't exist.  5.3.3.4.3 referencing wrong variable (`discovered_pam_remember` → `discovered_pam_pwhash`). Fixed 5.3.3.4.4 wrong `when` condition (`discovered_pam_authtok | length` → `discovered_pam_authtok.stdout | length`)
 
 #### Security
 
@@ -55,7 +55,7 @@
 
 #### RHEL10-CIS Alignment
 
-- **cis_2.1.x.yml:** Applied package-aware masking pattern to 19 systemd mask tasks — uses `ternary(false, omit)` to only stop/disable services when the package is installed, preventing failures on systems where the package was never installed (aligned with RHEL10-CIS)
+- **cis_2.1.x.yml:** Applied package-aware masking pattern to 19 systemd mask tasks — uses `ternary(false, omit)` to only stop/disable services when the packageFixed is installed, preventing failures on systems where the package was never installed (aligned with RHEL10-CIS)
 - **cis_3.1.x.yml:** Applied same ternary pattern to bluetooth service masking
 - **tasks/main.yml:** Simplified root password check — replaced complex grep pattern with `awk '{print $2}'` and direct status check `stdout not in ['P', 'L']` (aligned with RHEL10-CIS)
 - **60 discovery tasks:** Added `check_mode: false` to all shell/command tasks with `register:` across 25 files — ensures discovery tasks run in `--check` mode so dependent tasks don't fail on undefined variables (aligned with RHEL10-CIS)
