@@ -15,6 +15,8 @@
     - "{{ pre_audit_outfile }}"
     - "{{ post_audit_outfile }}"
   become: false
+  loop_control:
+    label: "{{ item }}"
 
 # Added this option for continuity but could be changed by adjusting the variable audit_conf_dest
 # Allowing backup to one location
@@ -30,6 +32,8 @@
   loop:
     - "{{ pre_audit_outfile }}"
     - "{{ post_audit_outfile }}"
+  loop_control:
+    label: "{{ item }}"
 
 - name: "POST | FETCH | Fetch files and copy to controller | Warning if issues with fetch_audit_files"
   when:

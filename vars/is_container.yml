@@ -69,6 +69,54 @@ ubtu22cis_rule_4_1_4_9: false
 ubtu22cis_rule_4_1_4_10: false
 ubtu22cis_rule_4_1_4_11: false
 
+# Auditd service - requires kernel audit subsystem
+ubtu22cis_rule_6_2_1_2: false
+ubtu22cis_rule_6_2_1_3: false
+ubtu22cis_rule_6_2_1_4: false
+# Auditd configuration - augenrules --load fails without auditd
+ubtu22cis_rule_6_2_2_1: false
+ubtu22cis_rule_6_2_2_2: false
+ubtu22cis_rule_6_2_2_3: false
+ubtu22cis_rule_6_2_2_4: false
+ubtu22cis_rule_6_2_2_5: false
+ubtu22cis_rule_6_2_2_6: false
+ubtu22cis_rule_6_2_2_7: false
+ubtu22cis_rule_6_2_2_8: false
+ubtu22cis_rule_6_2_2_9: false
+ubtu22cis_rule_6_2_2_10: false
+ubtu22cis_rule_6_2_2_11: false
+ubtu22cis_rule_6_2_2_12: false
+ubtu22cis_rule_6_2_2_13: false
+ubtu22cis_rule_6_2_2_14: false
+ubtu22cis_rule_6_2_2_15: false
+ubtu22cis_rule_6_2_2_16: false
+ubtu22cis_rule_6_2_2_17: false
+ubtu22cis_rule_6_2_2_18: false
+ubtu22cis_rule_6_2_2_19: false
+ubtu22cis_rule_6_2_2_20: false
+# Auditd rules - requires running auditd
+ubtu22cis_rule_6_2_3_1: false
+ubtu22cis_rule_6_2_3_2: false
+ubtu22cis_rule_6_2_3_3: false
+ubtu22cis_rule_6_2_3_4: false
+ubtu22cis_rule_6_2_3_5: false
+ubtu22cis_rule_6_2_3_6: false
+ubtu22cis_rule_6_2_3_7: false
+ubtu22cis_rule_6_2_3_8: false
+ubtu22cis_rule_6_2_3_9: false
+ubtu22cis_rule_6_2_3_10: false
+ubtu22cis_rule_6_2_3_11: false
+ubtu22cis_rule_6_2_3_12: false
+ubtu22cis_rule_6_2_3_13: false
+ubtu22cis_rule_6_2_3_14: false
+ubtu22cis_rule_6_2_3_15: false
+ubtu22cis_rule_6_2_3_16: false
+ubtu22cis_rule_6_2_3_17: false
+ubtu22cis_rule_6_2_3_18: false
+ubtu22cis_rule_6_2_3_19: false
+ubtu22cis_rule_6_2_3_20: false
+ubtu22cis_rule_6_2_3_21: false
+
 # cron
 ubtu22cis_rule_5_1_1: false
 ubtu22cis_rule_5_1_2: false

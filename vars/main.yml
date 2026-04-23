@@ -1,18 +1,30 @@
 ---
 
-min_ansible_version: 2.12.1
+min_ansible_version: 2.16.1
 # Set default value for reboot value
 change_requires_reboot: false
+reboot_warning_changed_when: true
 
 # Apparmor default settings
 control_1_3_1_4_was_run: false
 ubtu22cis_apparmor_enforce_only: false
 
+## Defaults
+
+ubtu22cis_sysctl_update: false
+
 # The role discovers dynamically (in tasks/main.yml) whether it
 # is executed on a container image and sets the variable
-# system_is_container the true. Otherwise, the default value
+# system_is_container to true. Otherwise, the default value
 # 'false' is left unchanged.
 system_is_container: false
 # Used to control warning summary
 warn_control_list: ""
 warn_count: 0
+
+company_title: 'MindPoint Group - A Tyto Athene Company'
+
+file_managed_by_ansible: |-
+  # File managed by ansible as part of {{ benchmark }} benchmark
+  # As part of Ansible-lockdown
+  # Provided by {{ company_title }}

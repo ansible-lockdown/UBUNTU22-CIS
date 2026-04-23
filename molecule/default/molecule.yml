@@ -1,0 +1,28 @@
+---
+# Molecule configuration
+# https://molecule.readthedocs.io/en/latest/
+
+driver:
+  name: docker
+
+platforms:
+  - name: ubuntu2204
+    image: geerlingguy/docker-ubuntu2204-ansible:latest
+    pre_build_image: true
+    volumes:
+      - /sys/fs/cgroup:/sys/fs/cgroup:rw
+    privileged: true
+    command: "/lib/systemd/systemd"
+    cgroupns_mode: host
+    capabilities:
+      - SYS_ADMIN
+
+provisioner:
+  name: ansible
+  config_options:
+    defaults:
+      interpreter_python: auto_silent
+      callbacks_enabled: profile_tasks, timer
+
+verifier:
+  name: ansible

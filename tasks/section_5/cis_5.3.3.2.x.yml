@@ -1,8 +1,7 @@
 ---
 
 - name: "5.3.3.2.1 | PATCH | Ensure password number of changed characters is configured"
-  when:
-    - ubtu22cis_rule_5_3_3_2_1
+  when: ubtu22cis_rule_5_3_3_2_1
   tags:
     - level1-server
     - level1-workstation
@@ -21,6 +20,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.1 | PATCH | Ensure password number of changed characters is configured | Ensure difok file exists"
       ansible.builtin.template:
@@ -50,6 +51,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.2 | PATCH | Ensure minimum password length is configured | Ensure minlen file exists"
       ansible.builtin.template:
@@ -79,6 +82,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.3 | PATCH | Ensure password complexity is configured | Ensure complexity file exists"
       ansible.builtin.template:
@@ -108,6 +113,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.4 | PATCH | Ensure password same consecutive characters is configured | Ensure maxrepeat file exists"
       ansible.builtin.template:
@@ -137,6 +144,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.5 | PATCH | Ensure password maximum sequential characters is configured | Ensure maxsequence file exists"
       ansible.builtin.template:
@@ -166,6 +175,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.6 | PATCH | Ensure password dictionary check is enabled | Ensure dictcheck file exists"
       ansible.builtin.template:
@@ -195,6 +206,8 @@
         - "{{ prelim_pam_pwquality_confs.files }}"
         - { path: '/etc/security/pwquality.conf'}
         - { path: '/etc/pam.d/common-password' }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "5.3.3.2.7 | PATCH | Ensure password quality checking is enforced | Ensure quality enforcement file exists"
       ansible.builtin.template:

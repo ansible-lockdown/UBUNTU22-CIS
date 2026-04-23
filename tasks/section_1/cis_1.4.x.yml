@@ -52,4 +52,4 @@
         path: "{{ ubtu22cis_grub_file }}"
         owner: root
         group: root
-        mode: 'go-rwx'
+        mode: 'u-x,go-rwx'

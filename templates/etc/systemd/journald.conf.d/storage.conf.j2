@@ -1,11 +1,12 @@
-# File created for CIS benchmark
+{{ file_managed_by_ansible }}
+
 [Journal]
-{% if ubtu22cis_rule_6_2_1_1_5 %}
-# Set persistent storage CIS rule 6_2_1_1_5
+{% if ubtu22cis_rule_6_1_1_1_5 %}
+# Set persistent storage CIS rule 6_1_1_1_5
 Storage=persistent
 {% endif %}
 
-{% if ubtu22cis_rule_6_2_1_1_6 %}
-# Set compress CIS rule 6_2_1_1_6
+{% if ubtu22cis_rule_6_1_1_1_6 %}
+# Set compress CIS rule 6_1_1_1_6
 Compress=yes
 {% endif %}

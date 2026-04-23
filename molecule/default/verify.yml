@@ -1,0 +1,69 @@
+---
+
+- name: Verify
+  hosts: all
+  gather_facts: true
+
+  vars:
+    benchmark: UBUNTU22-CIS
+    benchmark_version: v3.0.0
+    audit_log_dir: /opt
+    audit_format: json
+
+  tasks:
+    - name: Verify | Find pre-audit results file
+      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      register: verify_pre_audit_file
+      changed_when: false
+      failed_when: false
+
+    - name: Verify | Find post-audit results file
+      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      register: verify_post_audit_file
+      changed_when: false
+      failed_when: false
+
+    - name: Verify | Assert pre-audit results file exists
+      ansible.builtin.assert:
+        that: verify_pre_audit_file.stdout | length > 0
+        fail_msg: "Pre-audit results file not found in {{ audit_log_dir }}"
+        success_msg: "Pre-audit results found: {{ verify_pre_audit_file.stdout }}"
+
+    - name: Verify | Assert post-audit results file exists
+      ansible.builtin.assert:
+        that: verify_post_audit_file.stdout | length > 0
+        fail_msg: "Post-audit results file not found in {{ audit_log_dir }}"
+        success_msg: "Post-audit results found: {{ verify_post_audit_file.stdout }}"
+
+    - name: Verify | Capture pre-audit summary
+      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ verify_pre_audit_file.stdout }}" | cut -d'"' -f4
+      register: verify_pre_audit_summary
+      changed_when: false
+
+    - name: Verify | Capture post-audit summary
+      ansible.builtin.shell: grep -E '"summary-line.*Count:.*Failed' "{{ verify_post_audit_file.stdout }}" | cut -d'"' -f4
+      register: verify_post_audit_summary
+      changed_when: false
+
+    - name: Verify | Extract pre-audit failed count
+      ansible.builtin.shell: echo "{{ verify_pre_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
+      register: verify_pre_failed_count
+      changed_when: false
+
+    - name: Verify | Extract post-audit failed count
+      ansible.builtin.shell: echo "{{ verify_post_audit_summary.stdout }}" | grep -oP 'Failed:\s+\K[0-9]+'
+      register: verify_post_failed_count
+      changed_when: false
+
+    - name: Verify | Display audit comparison
+      ansible.builtin.debug:
+        msg:
+          - "Pre-remediation:  {{ verify_pre_audit_summary.stdout }}"
+          - "Post-remediation: {{ verify_post_audit_summary.stdout }}"
+          - "Improvement: {{ verify_pre_failed_count.stdout | int - verify_post_failed_count.stdout | int }} fewer failures after remediation"
+
+    - name: Verify | Assert remediation improved audit score
+      ansible.builtin.assert:
+        that: verify_post_failed_count.stdout | int <= verify_pre_failed_count.stdout | int
+        fail_msg: "Post-remediation has MORE failures ({{ verify_post_failed_count.stdout }}) than pre-remediation ({{ verify_pre_failed_count.stdout }})"
+        success_msg: "Remediation improved audit score: {{ verify_pre_failed_count.stdout }} -> {{ verify_post_failed_count.stdout }} failures"

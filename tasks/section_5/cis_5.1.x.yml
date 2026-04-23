@@ -1,158 +1,178 @@
 ---
 
-- name: "5.1.1 | PATCH | Ensure permissions on /etc/ssh/sshd_config are configured"
+- name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
   when: ubtu22cis_rule_5_1_1
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
+    - sshd
+    - permissions
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
     - rule_5.1.1
-    - ssh
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
-  ansible.builtin.file:
-    path: /etc/ssh/sshd_config
-    owner: root
-    group: root
-    mode: 'go-rwx'
-
-- name: "5.1.2 | PATCH | Ensure permissions on SSH private host key files are configured"
-  when: ubtu22cis_rule_5_1_2
-  tags:
-    - level1-server
-    - level1-workstation
-    - patch
-    - rule_5.1.2
-    - ssh
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
   block:
-    - name: "5.1.2 | AUDIT | Ensure permissions on SSH private host key files are configured | Find ssh_host private keys"
-      ansible.builtin.find:
-        paths: /etc/ssh
-        patterns: 'ssh_host_*_key'
-      register: discovered_ssh_host_priv_keys
-
-    - name: "5.1.2 | PATCH | Ensure permissions on SSH private host key files are configured | Set permissions"
+    - name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
       ansible.builtin.file:
         path: "{{ item.path }}"
         owner: root
         group: root
-        mode: 'o-x,go-rwx'
-      with_items:
-        - "{{ discovered_ssh_host_priv_keys.files }}"
+        mode: 'u-x,go-rwx'
+      loop: "{{ prelim_sshd_configs.files }}"
+      loop_control:
+        label: "{{ item }}"
+
+    - name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
+      ansible.builtin.file:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        owner: root
+        group: root
+        mode: 'go-rwx'
+
+- name: "5.1.2 | PATCH | Ensure access to SSH private host key files is configured"
+  when: ubtu22cis_rule_5_1_2
+  tags:
+    - level1-server
+    - level1-workstation
+    - automated
+    - patch
+    - sshd
+    - permissions
+    - NIST800-53R5_CM-6
+    - CCI-000366
+    - rule_5.1.2
+  block:
+    - name: "5.1.2 | AUDIT | Ensure access to SSH private host key files is configured | Find the SSH private host keys"
+      ansible.builtin.find:
+        paths: /etc/ssh
+        patterns: 'ssh_host_*_key'
+        recurse: true
+        file_type: any
+      register: discovered_ssh_private_host_key
+
+    - name: "5.1.2 | PATCH | Ensure access to SSH private host key files is configured | Set permissions on SSH private host keys"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        owner: root
+        group: "{{ 'ssh_keys' if (item.gr_name == 'ssh_keys') else 'root' }}"
+        mode: "{{ 'u-x,g-wx,o-rwx' if (item.gr_name == 'ssh_keys') else 'u-x,go-rwx' }}"
+      loop: "{{ discovered_ssh_private_host_key.files }}"
       loop_control:
         label: "{{ item.path }}"
 
-- name: "5.1.3 | PATCH | Ensure permissions on SSH public host key files are configured"
+- name: "5.1.3 | PATCH | Ensure access to SSH public host key files is configured"
   when: ubtu22cis_rule_5_1_3
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.3
-    - ssh
+    - sshd
     - NIST800-53R5_AC-3
+    - NIST800-53R5_CM-6
     - NIST800-53R5_MP-2
+    - rule_5.1.3
   block:
-    - name: "5.1.3 | AUDIT | Ensure permissions on SSH public host key files are configured | Find ssh_host public keys"
+    - name: "5.1.3 | AUDIT | Ensure access to SSH public host key files is configured | Find the SSH public host keys"
       ansible.builtin.find:
         paths: /etc/ssh
         patterns: 'ssh_host_*_key.pub'
-      register: discovered_ssh_host_pub_keys
+        recurse: true
+        file_type: any
+      register: discovered_ssh_public_host_key
 
-    - name: "5.1.3 | PATCH | Ensure permissions on SSH public host key files are configured | Set permissions"
+    - name: "5.1.3 | PATCH | Ensure access to SSH public host key files is configured | Set permissions on SSH public host keys"
       ansible.builtin.file:
         path: "{{ item.path }}"
         owner: root
         group: root
         mode: 'go-wx'
-      with_items:
-        - "{{ discovered_ssh_host_pub_keys.files }}"
+      loop: "{{ discovered_ssh_public_host_key.files }}"
       loop_control:
         label: "{{ item.path }}"
 
-- name: "5.1.4 | PATCH | Ensure sshd access is configured"
-  when: ubtu22cis_rule_5_1_4
+- name: "5.1.4 | PATCH | Ensure SSH access is configured"
+  when:
+    - ubtu22cis_rule_5_1_4
+    - ubtu22cis_sshd_limited
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.4
-    - ssh
+    - sshd
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
+    - rule_5.1.4
   block:
-    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add allowed users"
-      when: "ubtu22cis_sshd_allow_users | default('') | length > 0 "
+    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
+      when: "ubtu22cis_sshd_allowusers | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^AllowUsers|^#AllowUsers'
-        line: 'AllowUsers {{ ubtu22cis_sshd_allow_users }}'
-        validate: 'sshd -t -f %s'
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: "^AllowUsers"
+        line: AllowUsers {{ ubtu22cis_sshd_allowusers }}
       notify: Restart sshd
 
-    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add allowed groups"
-      when: "ubtu22cis_sshd_allow_groups | default('') | length > 0"
+    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
+      when: "ubtu22cis_sshd_allowgroups | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^AllowGroups|^#AllowGroups'
-        line: 'AllowGroups {{ ubtu22cis_sshd_allow_groups }}'
-        validate: 'sshd -t -f %s'
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: "^AllowGroups"
+        line: AllowGroups {{ ubtu22cis_sshd_allowgroups }}
       notify: Restart sshd
 
-    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add deny users"
-      when: "ubtu22cis_sshd_deny_users | default('') | length > 0"
+    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
+      when: "ubtu22cis_sshd_denyusers | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^DenyUsers|^#DenyUsers'
-        line: 'DenyUsers {{ ubtu22cis_sshd_deny_users }} '
-        validate: 'sshd -t -f %s'
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: "^DenyUsers"
+        line: DenyUsers {{ ubtu22cis_sshd_denyusers }}
       notify: Restart sshd
 
-    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add deny groups"
-      when: "ubtu22cis_sshd_deny_groups | default('') | length > 0"
+    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
+      when: "ubtu22cis_sshd_denygroups | length > 0"
       ansible.builtin.lineinfile:
-        path: /etc/ssh/sshd_config
-        regexp: '^DenyGroups|^#DenyGroups'
-        line: 'DenyGroups {{ ubtu22cis_sshd_deny_groups }}'
-        validate: 'sshd -t -f %s'
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: "^DenyGroups"
+        line: DenyGroups {{ ubtu22cis_sshd_denygroups }}
       notify: Restart sshd
 
-- name: "5.1.5| PATCH | Ensure sshd Banner is configured"
+- name: "5.1.5 | PATCH | Ensure sshd Banner is configured"
   when: ubtu22cis_rule_5_1_5
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.5
-    - ssh
+    - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^Banner|^#Banner'
-    line: Banner /etc/issue.net
-    insertafter: '^# no default banner path'
-    validate: 'sshd -t -f %s'
+    - rule_5.1.5
   notify: Restart sshd
+  ansible.builtin.replace:
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)\s*Banner.*$
+    replace: Banner /etc/issue.net
 
 - name: "5.1.6 | PATCH | Ensure sshd Ciphers are configured"
   when: ubtu22cis_rule_5_1_6
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.6
-    - ssh
+    - sshd
+    - ciphers
     - NIST800-53R5_SC-8
+    - rule_5.1.6
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
-    regexp: '^Ciphers|^#Ciphers'
-    line: "Ciphers {{ ubtu22cis_sshd_ciphers | default(ubtu22cis_sshd_default_ciphers) | join(',') }}"
+    regexp: ^Ciphers
+    line: "Ciphers {{ ubtu22cis_sshd_ciphers | join(',') }}"
     insertafter: '^# Ciphers and keying'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -162,58 +182,76 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.7
     - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: "{{ item.regexp }}"
-    line: "{{ item.line }}"
-    validate: 'sshd -t -f %s'
-  with_items:
-    - { regexp: '^ClientAliveInterval|^#ClientAliveInterval', line: 'ClientAliveInterval {{ ubtu22cis_sshd_client_alive_interval | default(ubtu22cis_sshd_default_client_alive_interval) }}' }
-    - { regexp: '^ClientAliveCountMax|^#ClientAliveCountMax', line: 'ClientAliveCountMax {{ ubtu22cis_sshd_client_alive_count_max | default(ubtu22cis_sshd_default_client_alive_count_max) }}' }
+    - rule_5.1.7
   notify: Restart sshd
+  block:
+    - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Add line in sshd_config for ClientAliveInterval"
+      ansible.builtin.lineinfile:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: '^ClientAliveInterval'
+        line: "ClientAliveInterval {{ ubtu22cis_sshd_clientaliveinterval }}"
+        validate: sshd -t -f %s
+
+    - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
+      ansible.builtin.lineinfile:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: '^ClientAliveCountMax'
+        line: "ClientAliveCountMax {{ ubtu22cis_sshd_clientalivecountmax }}"
+        validate: sshd -t -f %s
 
 - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled"
   when: ubtu22cis_rule_5_1_8
   tags:
     - level2-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.8
-    - ssh
+    - sshd
     - NIST800-53R5_CM-7
-  ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^DisableForwarding|^#DisableForwarding'
-    line: 'DisableForwarding yes'
-    validate: 'sshd -t -f %s'
-  notify: Restart sshd
+    - rule_5.1.8
+  block:
+    - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled"
+      ansible.builtin.replace:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: (?i)^(#?)\s*DisableForwarding (no|false)
+        replace: 'DisableForwarding yes'
+        validate: sshd -t -f %s
+
+    - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled"
+      ansible.builtin.lineinfile:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        line: 'DisableForwarding yes'
+        validate: sshd -t -f %s
+
+    - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled | ensure x11 disabled"
+      ansible.builtin.replace:
+        path: "{{ ubtu22cis_sshd_config_file }}"
+        regexp: (?i)^\s*X11Forwarding\s*(yes|no)
+        replace: '# X11Forwarding no'
+        validate: sshd -t -f %s
 
 - name: "5.1.9 | PATCH | Ensure sshd GSSAPIAuthentication is disabled"
   when: ubtu22cis_rule_5_1_9
   tags:
-    - level2-server
+    - level1-server
     - level1-workstation
     - patch
-    - rule_5.1.9
-    - ssh
-    - NIST800-53R5_CM-1
-    - NIST800-53R5_CM-2
+    - sshd
     - NIST800-53R5_CM-6
-    - NIST800-53R5_CM-7
-    - NIST800-53R5_IA-5
+    - rule_5.1.9
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^(?i)GSSAPIAuthentication|^(?i)#GSSAPIAuthentication'
-    line: 'GSSAPIAuthentication no'
-    validate: 'sshd -t -f %s'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: (?i)^(#?)\s*GSSAPIAuthentication
+    line: GSSAPIAuthentication no
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.10 | PATCH | Ensure sshd HostbasedAuthentication is disabled"
@@ -221,19 +259,16 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.10
-    - ssh
-    - NIST800-53R5_CM-1
-    - NIST800-53R5_CM-2
+    - sshd
     - NIST800-53R5_CM-6
-    - NIST800-53R5_CM-7
-    - NIST800-53R5_IA-5
+    - rule_5.1.10
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^HostbasedAuthentication|^#HostbasedAuthentication'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)HostbasedAuthentication
     line: 'HostbasedAuthentication no'
-    validate: 'sshd -t -f %s'
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.11 | PATCH | Ensure sshd IgnoreRhosts is enabled"
@@ -241,34 +276,37 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.11
-    - ssh
+    - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - rule_5.1.11
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^IgnoreRhosts|^#IgnoreRhosts'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)IgnoreRhosts
     line: 'IgnoreRhosts yes'
-    validate: 'sshd -t -f %s'
+    validate: sshd -t -f %s
   notify: Restart sshd
 
-- name: "5.1.12 | PATCH | Ensure sshd Kexalgorithms is configured"
+- name: "5.1.12 | PATCH | Ensure sshd KexAlgorithms is configured"
   when: ubtu22cis_rule_5_1_12
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.12
-    - ssh
+    - sshd
+    - kex
     - NIST800-53R5_SC-8
+    - rule_5.1.12
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^KexAlgorithms|^#KexAlgorithms'
-    line: "KexAlgorithms {{ ubtu22cis_sshd_kex_algorithms | default(ubtu22cis_sshd_default_kex_algorithms) | join(',') }}"
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: (?i)^(#?)\s*KexAlgorithms
+    line: "KexAlgorithms {{ ubtu22cis_sshd_kex_algorithms | join(',') }}"
     insertafter: '^# Ciphers and keying'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -278,16 +316,16 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.13
-    - ssh
+    - sshd
     - NIST800-53R5_CM-6
+    - rule_5.1.13
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^LoginGraceTime|^#LoginGraceTime'
-    line: 'LoginGraceTime {{ ubtu22cis_sshd_login_grace_time | default(ubtu22cis_sshd_default_login_grace_time) }}'
-    insertafter: '^# Authentication'
-    validate: 'sshd -t -f %s'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)LoginGraceTime
+    line: "LoginGraceTime {{ ubtu22cis_sshd_logingracetime }}"
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.14 | PATCH | Ensure sshd LogLevel is configured"
@@ -295,18 +333,18 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.14
-    - ssh
+    - sshd
     - NIST800-53R5_AU-3
     - NIST800-53R5_AU-12
     - NIST800-53R5_SI-5
+    - rule_5.1.14
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^LogLevel|^#LogLevel'
-    line: 'LogLevel {{ ubtu22cis_sshd_log_level | default(ubtu22cis_sshd_default_log_level) }}'
-    insertafter: '^# Logging'
-    validate: 'sshd -t -f %s'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)LogLevel
+    line: "LogLevel {{ ubtu22cis_sshd_loglevel }}"
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.15 | PATCH | Ensure sshd MACs are configured"
@@ -314,18 +352,20 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.15
-    - ssh
+    - sshd
+    - macs
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - rule_5.1.15
   ansible.builtin.lineinfile:
     path: /etc/ssh/sshd_config
-    regexp: '^MACs|^#MACs'
-    line: "MACs {{ ubtu22cis_sshd_macs | default(ubtu22cis_sshd_default_macs) | join(',') }}"
+    regexp: (?i)^(#?)\s*MACs
+    line: "MACs {{ ubtu22cis_sshd_macs | join(',') }}"
     insertafter: '^# Ciphers and keying'
     validate: 'sshd -t -f %s'
   notify: Restart sshd
@@ -335,16 +375,16 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.16
-    - ssh
+    - sshd
     - NIST800-53R5_AU-3
+    - rule_5.1.13
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^MaxAuthTries|^#MaxAuthTries'
-    line: 'MaxAuthTries {{ ubtu22cis_sshd_max_auth_tries | default(ubtu22cis_sshd_default_max_auth_tries) }}'
-    insertafter: '^# Authentication'
-    validate: 'sshd -t -f %s'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: '^(#)?MaxAuthTries \d'
+    line: "MaxAuthTries {{ ubtu22cis_sshd_maxauthtries }}"
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.17 | PATCH | Ensure sshd MaxSessions is configured"
@@ -352,20 +392,20 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.17
-    - ssh
+    - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - rule_5.1.17
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^MaxSessions|^#MaxSessions'
-    line: 'MaxSessions {{ ubtu22cis_sshd_max_sessions | default(ubtu22cis_sshd_default_max_sessions) }}'
-    insertafter: '^# Authentication'
-    validate: 'sshd -t -f %s'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)MaxSessions
+    line: "MaxSessions {{ ubtu22cis_sshd_maxsessions }}"
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.18 | PATCH | Ensure sshd MaxStartups is configured"
@@ -373,19 +413,20 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.18
-    - ssh
+    - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - rule_5.1.18
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^MaxStartups|^#MaxStartups'
-    line: 'MaxStartups 10:30:60'
-    validate: 'sshd -t -f %s'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: (?i)MaxStartups
+    line: "MaxStartups {{ ubtu22cis_sshd_maxstartups }}"
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.19 | PATCH | Ensure sshd PermitEmptyPasswords is disabled"
@@ -393,20 +434,16 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.19
-    - ssh
-    - NIST800-53R5_CM-1
-    - NIST800-53R5_CM-2
+    - sshd
     - NIST800-53R5_CM-6
-    - NIST800-53R5_CM-7
-    - NIST800-53R5_IA-5
+    - rule_5.1.19
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^PermitEmptyPasswords|^#PermitEmptyPasswords'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)PermitEmptyPasswords
     line: 'PermitEmptyPasswords no'
-    insertafter: '# To disable tunneled clear text passwords'
-    validate: 'sshd -t -f %s'
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.20 | PATCH | Ensure sshd PermitRootLogin is disabled"
@@ -414,15 +451,16 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.20
-    - ssh
+    - sshd
     - NIST800-53R5_AC-6
+    - rule_5.1.20
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^PermitRootLogin|^#PermitRootLogin'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)PermitRootLogin
     line: 'PermitRootLogin no'
-    validate: 'sshd -t -f %s'
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.21 | PATCH | Ensure sshd PermitUserEnvironment is disabled"
@@ -430,19 +468,20 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.21
-    - ssh
+    - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - rule_5.1.21
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^PermitUserEnvironment|^#PermitUserEnvironment'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)PermitUserEnvironment
     line: 'PermitUserEnvironment no'
-    validate: 'sshd -t -f %s'
+    validate: sshd -t -f %s
   notify: Restart sshd
 
 - name: "5.1.22 | PATCH | Ensure sshd UsePAM is enabled"
@@ -450,19 +489,18 @@
   tags:
     - level1-server
     - level1-workstation
+    - automated
     - patch
-    - rule_5.1.22
-    - ssh
-    - pam
+    - sshd
     - NIST800-53R5_CM-1
     - NIST800-53R5_CM-2
     - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
+    - rule_5.1.22
   ansible.builtin.lineinfile:
-    path: /etc/ssh/sshd_config
-    regexp: '^UsePAM|^#UsePAM'
+    path: "{{ ubtu22cis_sshd_config_file }}"
+    regexp: ^(#?)UsePAM
     line: 'UsePAM yes'
-    insertafter: '^# and ChallengeResponseAuthentication'
-    validate: 'sshd -t -f %s'
+    validate: sshd -t -f %s
   notify: Restart sshd

@@ -2,7 +2,7 @@
 
 ## Configure a UBUNTU 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [CIS UBUNTU 22 Benchmark v2.0.0](https://www.cisecurity.org/cis-benchmarks/)
+### Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v3.0.0](https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 
@@ -12,14 +12,13 @@
 ![Stars](https://img.shields.io/github/stars/ansible-lockdown/UBUNTU22-CIS?label=Repo%20Stars&style=social)
 ![Forks](https://img.shields.io/github/forks/ansible-lockdown/UBUNTU22-CIS?style=social)
 ![Followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
-[![Twitter URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://twitter.com/AnsibleLockdown)
+[![X URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://x.com/AnsibleLockdown)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
 ![License](https://img.shields.io/github/license/ansible-lockdown/UBUNTU22-CIS?label=License)
 
 ## Lint & Pre-Commit Tools 🔧
 
-[![Pre-Commit.ci](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/UBUNTU22-CIS/pre-commit-ci.json)](https://results.pre-commit.ci/latest/github/ansible-lockdown/UBUNTU22-CIS/devel)
 ![YamlLint](https://img.shields.io/badge/yamllint-Present-brightgreen?style=flat&logo=yaml&logoColor=white)
 ![Ansible-Lint](https://img.shields.io/badge/ansible--lint-Present-brightgreen?style=flat&logo=ansible&logoColor=white)
 
@@ -49,7 +48,6 @@
 ![Private Benchmark Version](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/benchmark-version.json)
 
 [![Private Remediate Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/remediate.json)](https://github.com/ansible-lockdown/Private-UBUNTU22-CIS/actions/workflows/main_pipeline_validation.yml)
-[![Private GPO Pipeline](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/gpo.json)](https://github.com/ansible-lockdown/Private-UBUNTU22-CIS/actions/workflows/main_pipeline_validation_gpo.yml)
 
 ![Private Pull Requests](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/prs.json)
 ![Private Closed Issues](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/issues-closed.json)
@@ -58,9 +56,9 @@
 
 ## Looking for support? 🤝
 
-[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UBUNTU22_CIS)
+[Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UBUNTU22-CIS)
 
-[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UBUNTU22_CIS)
+[Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UBUNTU22-CIS)
 
 ### Community 💬
 
@@ -86,7 +84,7 @@ This role **will make changes to the system** which may have unintended conseque
 
 ## Coming From A Previous Release ⏪
 
-CIS release always contains changes, it is highly recommended to review the new references and available variables. This have changed significantly since ansible-lockdown initial release.
+CIS release always contains changes, it is highly recommended to review the new references and available variables. This has changed significantly since the ansible-lockdown initial release.
 This is now compatible with python3 if it is found to be the default interpreter. This does come with pre-requisites which it configures the system accordingly.
 
 Further details can be seen in the [Changelog](./ChangeLog.md)
@@ -103,7 +101,7 @@ This is managed using tags:
 - level2-server
 - level2-workstation
 
-The control found in defaults main also need to reflect this as this control the testing that takes place if you are using the audit component.
+The controls found in defaults/main.yml also need to reflect this as they control the testing that takes place if you are using the audit component.
 
 ---
 ## Requirements ✅
@@ -121,14 +119,13 @@ The control found in defaults main also need to reflect this as this control the
 
 **Technical Dependencies:**
 
-UBUNTU 22 - Other versions are not supported.
+UBUNTU 22.04
 
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
-- Python3.8
-- Ansible 2.12+
-- python-def
-- libselinux-python
+- Python3.10+
+- Ansible 2.16+
+- python3-apt
 
 ---
 
@@ -152,10 +149,9 @@ Note: More tests are run during audit as we check config and running state.
 
 ok: [default] => {
     "msg": [
-        "msg": [
-        "The pre remediation audit results are: Count: 763, Failed: 234, Skipped: 4, Duration: 9.741s",
-        "The post remediation audit results are: Count: 763, Failed: 19, Skipped: 4, Duration: 12.725s",
-        "Full breakdown can be found in /opt",
+        "The pre remediation results are: ['Total Duration: 5.454s', 'Count: 338, Failed: 47, Skipped: 5'].",
+        "The post remediation results are: ['Total Duration: 5.007s', 'Count: 338, Failed: 46, Skipped: 5'].",
+        "Full breakdown can be found in /var/tmp",
         ""
     ]
 }
@@ -232,6 +228,8 @@ uses:
 - self-hosted runners using OpenTofu
 
 ## Known Issues
+
+Some cloud provider repositories may not support GPG key validation (rule_1.2.1.1, rule_1.2.1.2) which may cause issues during the playbook run.
 
 
 ## Local Testing 💻

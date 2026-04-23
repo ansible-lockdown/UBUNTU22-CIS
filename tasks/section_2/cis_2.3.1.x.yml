@@ -26,6 +26,8 @@
       loop:
         - chrony
         - ntp
+      loop_control:
+        label: "{{ item }}"
 
     - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | mask service"
       when:

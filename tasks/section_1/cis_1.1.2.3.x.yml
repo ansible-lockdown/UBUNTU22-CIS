@@ -18,6 +18,7 @@
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
       failed_when: discovered_home_mount.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_home_mount
 
     - name: "1.1.2.3.1 | AUDIT | Ensure /home is a separate partition | Absent"
