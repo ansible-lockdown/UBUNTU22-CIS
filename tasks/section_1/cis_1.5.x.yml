@@ -90,7 +90,7 @@
       changed_when: false
       failed_when: false
 
-    - name: "1.5.45| PATCH | Ensure prelink is not installed | Remove prelink package"
+    - name: "1.5.4 | PATCH | Ensure prelink is not installed | Remove prelink package"
       ansible.builtin.package:
         name: prelink
         state: absent
