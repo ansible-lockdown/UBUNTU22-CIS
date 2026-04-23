@@ -31,7 +31,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.2 | PATCH | Ensure avahi daemon services are not in use"
   when: ubtu22cis_rule_2_1_2
   tags:
@@ -134,7 +133,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.5 | PATCH | Ensure dnsmasq services are not in use"
   when: ubtu22cis_rule_2_1_5
   tags:
@@ -164,7 +162,6 @@
         state: "{{ ('dnsmasq' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
-
 
 - name: "2.1.6 | PATCH | Ensure ftp server services are not in use"
   when: ubtu22cis_rule_2_1_6
@@ -197,7 +194,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.7 | PATCH | Ensure ldap server services are not in use"
   when: ubtu22cis_rule_2_1_7
   tags:
@@ -227,7 +223,6 @@
         state: "{{ ('slapd' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
-
 
 - name: "2.1.8 | PATCH | Ensure message access server services are not in use"
   when: ubtu22cis_rule_2_1_8
@@ -300,7 +295,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.10 | PATCH | Ensure nis server services are not in use"
   when: ubtu22cis_rule_2_1_10
   tags:
@@ -331,7 +325,6 @@
         state: "{{ ('ypserv' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
-
 
 - name: "2.1.11 | PATCH | Ensure print server services are not in use"
   when: ubtu22cis_rule_2_1_11
@@ -433,7 +426,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.14 | PATCH | Ensure samba file server services are not in use"
   when: ubtu22cis_rule_2_1_14
   tags:
@@ -464,7 +456,6 @@
         state: "{{ ('samba' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
-
 
 - name: "2.1.15 | PATCH | Ensure snmp services are not in use"
   when: ubtu22cis_rule_2_1_15
@@ -497,7 +488,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.16 | PATCH | Ensure tftp server services are not in use"
   when: ubtu22cis_rule_2_1_16
   tags:
@@ -528,7 +518,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.17 | PATCH | Ensure web proxy server services are not in use"
   when: ubtu22cis_rule_2_1_17
   tags:
@@ -558,7 +547,6 @@
         state: "{{ ('squid' in ansible_facts.packages) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
-
 
 - name: "2.1.18 | PATCH | Ensure web server services are not in use"
   when: ubtu22cis_rule_2_1_18
@@ -617,7 +605,6 @@
         masked: true
       notify: Systemd daemon reload
 
-
 - name: "2.1.19 | PATCH | Ensure xinetd services are not in use"
   when: ubtu22cis_rule_2_1_19
   tags:
@@ -647,7 +634,6 @@
         masked: true
         state: "{{ ('xinetd' in ansible_facts.packages) | ternary('stopped', omit) }}"
       notify: Systemd daemon reload
-
 
 - name: "2.1.20 | PATCH | Ensure X window server services are not in use"
   when:

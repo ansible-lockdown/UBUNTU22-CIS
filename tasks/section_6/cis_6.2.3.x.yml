@@ -78,10 +78,9 @@
         for i in  $(findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | grep -Pv "noexec|nosuid" | awk '{print $1}'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
       args:
         executable: /bin/bash
-      check_mode: false
-      register: discovered_priv_procs
       changed_when: false
       check_mode: false
+      register: discovered_priv_procs
 
     - name: "6.2.3.6 | PATCH | Ensure use of privileged commands is collected | Set privileged rules"
       ansible.builtin.set_fact:
