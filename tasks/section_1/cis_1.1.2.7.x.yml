@@ -1,35 +1,34 @@
 ---
 
-- name: "1.1.2.7.1 | PATCH | Ensure separate partition exists for /var/log/audit"
+- name: "1.1.2.7.1 | PATCH | Ensure /var/log/audit is a separate partition"
   when:
     - ubtu22cis_rule_1_1_2_7_1
     - required_mount not in mount_names
   tags:
-    - level2-server
-    - level2-workstation
+    - level1-server
+    - level1-workstation
     - audit
     - mounts
     - rule_1.1.2.7.1
-    - NIST800-53R5_CM-6
     - NIST800-53R5_CM-7
   vars:
     warn_control_id: '1.1.2.7.1'
     required_mount: '/var/log/audit'
   block:
-    - name: "1.1.2.7.1 | AUDIT | Ensure separate partition exists for /var/log/audit | check for mount"
+    - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | check for mount"
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
       failed_when: discovered_var_log_audit_mount.rc not in [ 0, 1 ]
       check_mode: false
       register: discovered_var_log_audit_mount
 
-    - name: "1.1.2.7.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Absent"
-      when: discovered_var_log_audit_mount is undefined
+    - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | Absent"
+      when: discovered_var_log_audit_mount.rc != 0
       ansible.builtin.debug:
         msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
 
-    - name: "1.1.2.7.1 | AUDIT | Ensure separate partition exists for /var/log/audit | Present"
-      when: discovered_var_log_audit_mount is undefined
+    - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | Present"
+      when: discovered_var_log_audit_mount.rc != 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -43,7 +42,8 @@
     - patch
     - mounts
     - rule_1.1.2.7.2
-    - NIST800-53R5_CM-7
+    - NIST800-53R5_AC-3
+    - NIST800-53R5_MP-2
   vars:
     mount_point: "/var/log/audit"
     required_option: nodev
@@ -67,7 +67,6 @@
     - rule_1.1.2.7.3
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
-    - NIST800-53R5_CM-7
   vars:
     mount_point: "/var/log/audit"
     required_option: nosuid
@@ -88,7 +87,6 @@
     - rule_1.1.2.7.4
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
-    - NIST800-53R5_CM-7
   vars:
     mount_point: "/var/log/audit"
     required_option: noexec
