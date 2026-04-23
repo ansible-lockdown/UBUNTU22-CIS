@@ -2,7 +2,7 @@
 
 ## Configure a UBUNTU 22 machine to be [CIS](https://www.cisecurity.org/cis-benchmarks/) compliant
 
-### Based on [CIS RedHat Enterprise UBUNTU 22 Benchmark v3.0.0](https://www.cisecurity.org/cis-benchmarks/)
+### Based on [CIS Ubuntu Linux 22.04 LTS Benchmark v3.0.0](https://www.cisecurity.org/cis-benchmarks/)
 
 ---
 
@@ -123,10 +123,9 @@ UBUNTU 22.04
 
 - Access to download or add the goss binary and content to the system if using auditing
 (other options are available on how to get the content to the system.)
-- Python3.8
-- Ansible 2.12+
-- python-def
-- libselinux-python
+- Python3.10+
+- Ansible 2.16+
+- python3-apt
 
 ---
 
@@ -230,7 +229,7 @@ uses:
 
 ## Known Issues
 
-Almalinux BaseOS, EPEL and many cloud providers repositories, do not allow gpgcheck(rule_1.2.1.2) or repo_gpgcheck (rule_1.2.1.3) this will cause issues during the playbook unless or a workaround is found.
+Some cloud provider repositories may not support GPG key validation (rule_1.2.1.1, rule_1.2.1.2) which may cause issues during the playbook run.
 
 
 ## Local Testing 💻

@@ -1,4 +1,4 @@
-# Changelog — Private-UBUNTU22-CIS
+# Changelog — UBUNTU22-CIS
 
 ## Based on CIS v3.0.0 - Branch [2026_April_QA]
 
@@ -35,7 +35,7 @@
 - **defaults/main.yml:** Aligned header comments with UB20-CIS structure — added role identification, variable precedence warning, `system_is_container`, UID discovery variables (`discover_int_uid`, `min_int_uid`, `max_int_uid`), `system_is_ec2`, `ubtu22cis_skip_for_test`
 - **defaults/main.yml:** Removed duplicate variables (`system_is_ec2`, `discover_int_uid`, `min_int_uid`, `max_int_uid`) that appeared twice after restructuring
 - **tasks/main.yml:213:** Fixed last remaining absolute mode notation (`u=rwx,go=rx` → `go-w`) — all mode directives now use relative/negative notation matching UB20-CIS
-- **48 shell tasks:** Added `set -o pipefail` to all `ansible.builtin.shell` tasks with pipes across 17 files using RHEL10-CIS multiline block style (`shell: |\n  set -o pipefail\n  command`) with `args: executable: /bin/bash` — Ubuntu's `/bin/sh` is `dash` which doesn't support pipefail
+- **48 shell tasks:** Added `set -o pipefail` to all `ansible.builtin.shell` tasks with pipes across 17 files using Lockdown standard multiline block style (`shell: |\n  set -o pipefail\n  command`) with `args: executable: /bin/bash` — Ubuntu's `/bin/sh` is `dash` which doesn't support pipefail
 - **prelim.yml, cis_5.4.2.x.yml:** Fixed 3 escaped quote issues (`\"` → `"`) that broke when converting from inline to block scalar YAML style
 
 #### Fixed (Community-Reported Issues)
@@ -53,14 +53,14 @@
 - **24 tasks:** Converted single-item `when:` lists to inline format across 12 files — matches Lockdown convention
 - **68 loop tasks:** Added `loop_control: label` to all loop/with_items tasks — prevents verbose item dumps in Ansible output. Also fixed `fix_loop_control.py` script bug that placed loop_control at block level instead of inner task level
 
-#### RHEL10-CIS Alignment
+#### Standards Alignment
 
-- **cis_2.1.x.yml:** Applied package-aware masking pattern to 19 systemd mask tasks — uses `ternary(false, omit)` to only stop/disable services when the packageFixed is installed, preventing failures on systems where the package was never installed (aligned with RHEL10-CIS)
+- **cis_2.1.x.yml:** Applied package-aware masking pattern to 19 systemd mask tasks — uses `ternary(false, omit)` to only stop/disable services when the packageFixed is installed, preventing failures on systems where the package was never installed (aligned with Lockdown standards)
 - **cis_3.1.x.yml:** Applied same ternary pattern to bluetooth service masking
-- **tasks/main.yml:** Simplified root password check — replaced complex grep pattern with `awk '{print $2}'` and direct status check `stdout not in ['P', 'L']` (aligned with RHEL10-CIS)
-- **60 discovery tasks:** Added `check_mode: false` to all shell/command tasks with `register:` across 25 files — ensures discovery tasks run in `--check` mode so dependent tasks don't fail on undefined variables (aligned with RHEL10-CIS)
-- **34 discovery tasks:** Replaced broad `failed_when: false` with specific `failed_when: <var>.rc not in [0, 1]` — catches real errors (rc=2+) while allowing "no matches" (rc=1). Kept `failed_when: false` on action commands (chage, passwd, useradd) and pwck tasks (SIGPIPE rc=141) (aligned with RHEL10-CIS)
-- **cis_1.1.2.1.x.yml:** Refactored tmp mount from monolithic template (`tmp.mount.j2`) to systemd drop-in directory pattern (`/etc/systemd/system/tmp.mount.d/60-options.conf`) — more maintainable, doesn't override entire mount unit (aligned with RHEL10-CIS)
+- **tasks/main.yml:** Simplified root password check — replaced complex grep pattern with `awk '{print $2}'` and direct status check `stdout not in ['P', 'L']` (aligned with Lockdown standards)
+- **60 discovery tasks:** Added `check_mode: false` to all shell/command tasks with `register:` across 25 files — ensures discovery tasks run in `--check` mode so dependent tasks don't fail on undefined variables (aligned with Lockdown standards)
+- **34 discovery tasks:** Replaced broad `failed_when: false` with specific `failed_when: <var>.rc not in [0, 1]` — catches real errors (rc=2+) while allowing "no matches" (rc=1). Kept `failed_when: false` on action commands (chage, passwd, useradd) and pwck tasks (SIGPIPE rc=141) (aligned with Lockdown standards)
+- **cis_1.1.2.1.x.yml:** Refactored tmp mount from monolithic template (`tmp.mount.j2`) to systemd drop-in directory pattern (`/etc/systemd/system/tmp.mount.d/60-options.conf`) — more maintainable, doesn't override entire mount unit (aligned with Lockdown standards)
 - **58 loop_control labels:** Fixed indentation — `label:` must be indented 2 spaces under `loop_control:`, not at the same level
 
 #### QA Validation
