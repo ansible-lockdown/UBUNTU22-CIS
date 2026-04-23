@@ -39,7 +39,7 @@ ansible_facts_path: /etc/ansible/facts.d
 # The audit variable found at the base
 benchmark: UBUNTU22-CIS
 ## metadata for Audit benchmark
-benchmark_version: v3.0.0
+benchmark_version: '3.0.0'
 
 # We've defined disruption-high to indicate items that are likely to cause
 # disruption in a normal workflow.  These items can be remediated automatically
