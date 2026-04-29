@@ -70,6 +70,7 @@ ubtu22cis_rule_4_1_4_10: false
 ubtu22cis_rule_4_1_4_11: false
 
 # Auditd service - requires kernel audit subsystem
+ubtu22cis_rule_6_2_1_1: false
 ubtu22cis_rule_6_2_1_2: false
 ubtu22cis_rule_6_2_1_3: false
 ubtu22cis_rule_6_2_1_4: false

@@ -1,5 +1,23 @@
 # Changelog — UBUNTU22-CIS
 
+## Based on CIS v3.0.0 - Branch [2026_Community_Updates]
+
+### Fixed
+
+- **prelim.yml:** Fixed mount UUID/LABEL loss — added fstab source parsing so handlers preserve UUID/LABEL entries instead of replacing them with `/dev/sdX` device names
+- **cis_2.1.x.yml:** Added ternary masking to 2.1.1 autofs service mask task — prevents failure when autofs package is not installed
+- **templates/tmp.mount.j2:** Fixed `Options:` (colon) to `Options=` (equals) in systemd mount unit — colon syntax is invalid and silently ignored by systemd
+- **defaults/main.yml:** Added `ubtu22cis_tmp_partition_mount_options` variable for tmp.mount template
+- **vars/is_container.yml:** Added missing `ubtu22cis_rule_6_2_1_1` to container skip list — auditd package install requires kernel audit subsystem unavailable in containers
+- **18 files:** Added `lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"` to all remaining `ansible.builtin.package` tasks across the role — prevents apt/dpkg frontend lock failures when unattended-upgrades or other apt processes are running (extends fix for [#330](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/330))
+
+### Already Fixed (verified in this pass)
+
+- **pwck/getent SIGPIPE rc=141:** All pwck and getent tasks already use `failed_when: false` — no changes needed
+- **UFW "all" loop error** ([#328](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/328)): Rule 4.1.4 already has separate `when` conditions for string `"all"` vs list of port dicts — no changes needed
+
+---
+
 ## Based on CIS v3.0.0 - Branch [2026_April_QA]
 
 ### Molecule Testing

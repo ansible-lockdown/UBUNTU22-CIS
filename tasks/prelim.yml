@@ -43,13 +43,31 @@
       check_mode: false
       register: prelim_mount_output
 
+    - name: PRELIM | AUDIT | Section 1.1 | Retrieve fstab sources to preserve UUID/LABEL entries
+      ansible.builtin.shell: |
+        set -o pipefail
+        awk '$0 !~ /^[[:space:]]*#/ && NF >= 2 {print $1, $2}' /etc/fstab
+      args:
+        executable: /bin/bash
+      changed_when: false
+      check_mode: false
+      register: prelim_fstab_sources
+
     - name: PRELIM | AUDIT | Section 1.1 | Retrieve mount options - build fact
       ansible.builtin.set_fact:
         prelim_mount_point_fs_and_options: >-
+          {%- set fstab_src = {} -%}
+          {%- for line in prelim_fstab_sources.stdout_lines -%}
+          {%- set parts = line.split() -%}
+          {%- if parts | length >= 2 -%}
+          {%- set _ = fstab_src.update({parts[1]: parts[0]}) -%}
+          {%- endif -%}
+          {%- endfor -%}
           {%- set prelim_mount_point_fs_and_options = {} -%}
           {%- for line in prelim_mount_output.stdout_lines -%}
           {%- set fields = line.split() -%}
-          {%- set _ = prelim_mount_point_fs_and_options.update({fields[1]: {'src': fields[0], 'fs_type': fields[2], 'original_options': fields[3][1:-1].split(','), 'options': fields[3][1:-1].split(',')}}) -%}
+          {%- set mount_src = fstab_src.get(fields[1], fields[0]) -%}
+          {%- set _ = prelim_mount_point_fs_and_options.update({fields[1]: {'src': mount_src, 'fs_type': fields[2], 'original_options': fields[3][1:-1].split(','), 'options': fields[3][1:-1].split(',')}}) -%}
           {%- endfor -%}
           {{ prelim_mount_point_fs_and_options }}
 

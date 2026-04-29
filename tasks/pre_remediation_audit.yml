@@ -19,6 +19,7 @@
       ansible.builtin.package:
         name: git
         state: present
+        lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
     - name: Pre Audit Setup | Retrieve audit content files from git
       ansible.builtin.git:

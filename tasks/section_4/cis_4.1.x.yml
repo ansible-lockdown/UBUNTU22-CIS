@@ -14,6 +14,7 @@
   ansible.builtin.package:
     name: ufw
     state: present
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 # Adding the allow OpenSSH rule while enabling ufw to allow ansible to run after enabling
 - name: "4.1.2 | PATCH | Ensure ufw service is configured"

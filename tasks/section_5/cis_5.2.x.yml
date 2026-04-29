@@ -12,6 +12,7 @@
   ansible.builtin.package:
     name: "{{ ubtu22cis_sudo_package }}"
     state: present
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 - name: "5.2.2 | PATCH | Ensure sudo commands use pty"
   when: ubtu22cis_rule_5_2_2

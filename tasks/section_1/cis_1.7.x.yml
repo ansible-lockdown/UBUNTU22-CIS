@@ -14,6 +14,7 @@
   ansible.builtin.package:
     name: gdm3
     state: absent
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 - name: "1.7.2 | PATCH | Ensure GDM login banner is configured"
   when:
