@@ -673,6 +673,11 @@ ubtu22cis_debug_mount_data: false
 # These /tmp settings will include nosuid,nodev,noexec to conform to CIS standards.
 ubtu22cis_tmp_svc: false
 
+# Mount options applied to the tmp.mount systemd unit when ubtu22cis_tmp_svc is true
+ubtu22cis_tmp_partition_mount_options:
+  - mode=1777
+  - strictatime
+
 ## Controls 1.3.1.x - apparmor
 # AppArmor security policies define what system resources applications can access and their privileges.
 # This automatically limits the damage that the software can do to files accessible by the calling user.

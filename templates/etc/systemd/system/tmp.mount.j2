@@ -13,7 +13,7 @@ What=tmpfs
 Where=/tmp
 Type=tmpfs
 
-Options: "{{ mount_point_fs_and_options[mount_point]['options'] | unique | join(',') }}"
+Options={{ ubtu22cis_tmp_partition_mount_options | unique | join(',') }}
 
 [Install]
 WantedBy=local-fs.target

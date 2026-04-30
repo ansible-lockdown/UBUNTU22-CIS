@@ -15,6 +15,7 @@
   ansible.builtin.package:
     name: ['auditd', 'audispd-plugins']
     state: present
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 - name: "6.2.1.2 | PATCH | Ensure auditd service is enabled and active"
   when: ubtu22cis_rule_6_2_1_2

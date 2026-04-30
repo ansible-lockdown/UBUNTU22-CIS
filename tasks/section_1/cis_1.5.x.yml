@@ -95,6 +95,7 @@
         name: prelink
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
+        lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 - name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is not enabled"
   when: ubtu22cis_rule_1_5_6
@@ -121,3 +122,4 @@
         name: apport
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
+        lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"

@@ -18,6 +18,7 @@
   ansible.builtin.package:
     name: rsyslog
     state: present
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 - name: "6.1.2.2 | PATCH | Ensure rsyslog service is enabled and active"
   when: ubtu22cis_rule_6_1_2_2
