@@ -1,5 +1,5 @@
 # Welcome to the chrony configuration file. See chrony.conf(5) for more
-# information about useable directives.
+# information about usable directives.
 
 # This will use (up to):
 # - 4 sources from ntp.ubuntu.com which some are ipv6 enabled
@@ -89,3 +89,5 @@ logchange 0.5
 # chrony postinst based on what it found in /etc/default/rcS.  You may
 # change it if necessary.
 rtconutc
+
+user {{ ubtu22cis_chrony_user }}

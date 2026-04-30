@@ -1,6 +1,6 @@
 ---
 
-- name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is a separate partition"
+- name: "1.1.2.2.1 | PATCH | Ensure /dev/shm is tmpfs or a separate partition"
   when:
     - ubtu22cis_rule_1_1_2_2_1
     - required_mount not in mount_names
@@ -15,19 +15,20 @@
     warn_control_id: "1.1.2.2.1"
     required_mount: "/dev/shm"
   block:
-    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | check for mount"
+    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs or a separate partition | not tmpfs"
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
       failed_when: discovered_dev_shm_mount.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_dev_shm_mount
 
     - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | Absent"
-      when: discovered_dev_shm_mount is undefined
+      when: discovered_dev_shm_mount.rc != 0
       ansible.builtin.debug:
-        msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
+        msg: "Warning!! {{ required_mount }} is not a separate partition"
 
     - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | Present"
-      when: discovered_dev_shm_mount is undefined
+      when: discovered_dev_shm_mount.rc != 0 or 'tmpfs' not in discovered_dev_shm_mount.stdout
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
@@ -41,8 +42,8 @@
     - patch
     - mounts
     - rule_1.1.2.2.2
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
+    - NIST800-53R5_CM-7
+    - CCI-001864
   vars:
     mount_point: "/dev/shm"
     required_option: nodev
@@ -64,8 +65,8 @@
     - patch
     - mounts
     - rule_1.1.2.2.3
-    - NIST800-53R5_AC-3
-    - NIST800-53R5_MP-2
+    - NIST800-53R5_CM-7
+    - CCI-001864
   vars:
     mount_point: "/dev/shm"
     required_option: nosuid

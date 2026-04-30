@@ -14,6 +14,7 @@
   ansible.builtin.package:
     name: gdm3
     state: absent
+    lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
 - name: "1.7.2 | PATCH | Ensure GDM login banner is configured"
   when:
@@ -53,6 +54,8 @@
         - { regexp: "\\[org\\/gnome\\/login-screen\\]", line: "[org/gnome/login-screen]", insertafter: EOF }
         - { regexp: "banner-message-enable", line: "banner-message-enable=true", insertafter: "\\[org\\/gnome\\/login-screen\\]" }
         - { regexp: "banner-message-text", line: "banner-message-text='{{ ubtu22cis_warning_banner | regex_replace('\n', ' ') | trim }}'", insertafter: "banner-message-enable" }
+      loop_control:
+        label: "{{ item }}"
       notify: Update dconf
 
 - name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled"
@@ -113,6 +116,8 @@
         - regexp: "^file-db:/usr/share/gdm/greeter-dconf-defaults"
           line: "file-db:/usr/share/gdm/greeter-dconf-defaults"
           insertafter: "system-db:{{ prelim_dconf_system_db.stdout }}"
+      loop_control:
+        label: "{{ item }}"
       notify: Update dconf
 
 - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle"
@@ -140,6 +145,8 @@
       loop:
         - { regexp: "user-db:user", line: "user-db:user" }
         - { regexp: "system-db:{{ prelim_dconf_system_db.stdout }}", line: "system-db:{{ prelim_dconf_system_db.stdout }}", after: "^user-db.*" }
+      loop_control:
+        label: "{{ item }}"
 
     - name: "1.7.4 | PATCH | Ensure GDM screen locks when the user is idle | make directory"
       ansible.builtin.file:
@@ -341,3 +348,25 @@
     path: /etc/gdm3/custom.conf
     regexp: "^Enable.*=.*true"
     state: absent
+
+- name: "1.7.11 | PATCH | Ensure Xwayland is configured"
+  when:
+    - ubtu22cis_rule_1_7_11
+    - ubtu22cis_desktop_required
+  tags:
+    - level2-server
+    - level2-workstation
+    - patch
+    - gui
+    - rule_1.7.11
+  ansible.builtin.lineinfile:
+    path: /etc/gdm/custom.conf
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line | default(omit) }}"
+    insertafter: "{{ item.insertafter | default(omit) }}"
+    state: "{{ item.state | default('present') }}"
+  loop:
+    - { regexp: 'Enable=true', state: 'absent' }
+    - { regexp: 'WaylandEnable\s*=\s*', line: 'WaylandEnable\s*=\s*false', insertafter: '[daemon]' }
+  loop_control:
+    label: "{{ item }}"

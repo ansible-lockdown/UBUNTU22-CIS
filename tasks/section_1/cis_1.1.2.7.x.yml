@@ -19,15 +19,16 @@
       ansible.builtin.command: findmnt -kn "{{ required_mount }}"
       changed_when: false
       failed_when: discovered_var_log_audit_mount.rc not in [ 0, 1 ]
+      check_mode: false
       register: discovered_var_log_audit_mount
 
     - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | Absent"
-      when: discovered_var_log_audit_mount is undefined
+      when: discovered_var_log_audit_mount.rc != 0
       ansible.builtin.debug:
         msg: "Warning!! {{ required_mount }} is not mounted on a separate partition"
 
     - name: "1.1.2.7.1 | AUDIT | Ensure /var/log/audit is a separate partition | Present"
-      when: discovered_var_log_audit_mount is undefined
+      when: discovered_var_log_audit_mount.rc != 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

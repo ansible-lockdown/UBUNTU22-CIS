@@ -16,7 +16,7 @@
     - name: "1.2.1.1 | AUDIT | Ensure GPG keys are configured | Get apt gpg keys"
       ansible.builtin.command: apt-key list
       changed_when: false
-      failed_when: false
+      failed_when: discovered_apt_gpgkeys.rc not in [0, 1]
       check_mode: false
       register: discovered_apt_gpgkeys
 
@@ -47,7 +47,7 @@
     - name: "1.2.1.2 | AUDIT | Ensure package manager repositories are configured | Get repositories"
       ansible.builtin.command: apt-cache policy
       changed_when: false
-      failed_when: false
+      failed_when: discovered_apt_policy.rc not in [0, 1]
       check_mode: false
       register: discovered_apt_policy
 

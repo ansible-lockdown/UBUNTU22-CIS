@@ -1,24 +1,24 @@
 ---
 
-- name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured"
-  when:
-    - ubtu22cis_rule_6_2_2_1
+- name: "6.1.3.1 | PATCH | Ensure access to all logfiles has been configured"
+  when: ubtu22cis_rule_6_1_3_1
   tags:
     - level1-server
     - level1-workstation
     - patch
     - logfiles
-    - rule_6.2.2.1
+    - rule_6.1.3.1
     - NIST800-53R5_AC-3
     - NIST800-53R5_MP-2
   block:
-    - name: "6.2.2.1 | AUDIT | Ensure access to all logfiles has been configured | find files"
+    - name: "6.1.3.1 | AUDIT | Ensure access to all logfiles has been configured | find files"
       ansible.builtin.shell: find /var/log/ -type f -exec ls {} \;
       changed_when: false
-      failed_when: false
+      failed_when: discovered_logfiles.rc not in [0, 1]
+      check_mode: false
       register: discovered_logfiles
 
-    - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
+    - name: "6.1.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
       when:
         - item != "/var/log/btmp"
         - item != "/var/log/utmp"
@@ -26,10 +26,10 @@
         - item != "/var/log/lastlog"
       ansible.builtin.file:
         path: "{{ item }}"
-        mode: u-x,g-wx,o-rwx
+        mode: 'u-x,g-wx,o-rwx'
       loop: "{{ discovered_logfiles.stdout_lines }}"
 
-    - name: "6.2.2.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
+    - name: "6.1.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
       when:
         - discovered_system_logfiles.stdout_lines is defined
         - item == "/var/log/btmp"
@@ -41,3 +41,5 @@
         path: "{{ item }}"
         mode: 'ug-x,o-wx'
       loop: "{{ discovered_system_logfiles.stdout_lines }}"
+      loop_control:
+        label: "{{ item }}"

@@ -13,7 +13,6 @@
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp"
-  when: not ubtu22cis_tmp_svc
   vars:
     mount_point: '/tmp'
   ansible.posix.mount:
@@ -22,7 +21,6 @@
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp systemd"
-  when: ubtu22cis_tmp_svc
   vars:
     mount_point: '/tmp'
   ansible.builtin.systemd:
@@ -161,7 +159,7 @@
     name: "{{ ubtu22cis_time_sync_tool }}"
     state: restarted
 
-- name: Systemd_daemon_reload
+- name: Systemd daemon reload
   ansible.builtin.systemd:
     daemon_reload: true
 
@@ -206,6 +204,10 @@
     value: '1'
     sysctl_set: true
 
+- name: Reload sysctl
+  ansible.builtin.command: sysctl --system
+  changed_when: true
+
 - name: Reload ufw
   community.general.ufw:
     state: reloaded
@@ -244,8 +246,8 @@
 
 - name: Auditd rules reload
   when:
-    - not prelim_auditd_immutable_check or
-      '"No change" not in ubtu22cis_rule_4_1_3_21_augen_check.stdout'
+    - prelim_auditd_immutable_check is defined
+    - prelim_auditd_immutable_check.stdout | default('0') == '0'
   ansible.builtin.command: augenrules --load
   changed_when: true
 

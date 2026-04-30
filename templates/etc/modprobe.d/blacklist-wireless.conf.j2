@@ -1,0 +1,6 @@
+{{ file_managed_by_ansible }}
+
+{% for module in discovered_loaded_wireless_modules.stdout_lines %}
+# Discovered loaded wireless modules
+install {{ module }} /bin/true
+{% endfor %}

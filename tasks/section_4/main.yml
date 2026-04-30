@@ -4,25 +4,3 @@
   when: ubtu22cis_firewall_package == "ufw"
   ansible.builtin.import_tasks:
     file: cis_4.1.x.yml
-
-- name: "SECTION | 4.2 | Configure nftables software"
-  when: ubtu22cis_firewall_package == "nftables"
-  ansible.builtin.import_tasks:
-    file: cis_4.2.x.yml
-
-- name: "SECTION | 4.3.1.x | Configure iptables software"
-  when: ubtu22cis_firewall_package == "iptables"
-  ansible.builtin.import_tasks:
-    file: cis_4.3.1.x.yml
-
-- name: "SECTION | 4.3.2.x | Configure ipv4 iptables"
-  when: ubtu22cis_firewall_package == "iptables"
-  ansible.builtin.import_tasks:
-    file: cis_4.3.2.x.yml
-
-- name: "SECTION | 4.3.3.x | Configure ipv6 iptables"
-  when:
-    - ubtu22cis_firewall_package == "iptables"
-    - ubtu22cis_ipv6_required
-  ansible.builtin.import_tasks:
-    file: cis_4.3.3.x.yml

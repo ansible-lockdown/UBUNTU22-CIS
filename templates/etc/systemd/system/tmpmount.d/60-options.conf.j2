@@ -1,0 +1,6 @@
+{{ file_managed_by_ansible }}
+
+# YOUR CHANGES WILL BE LOST!
+
+[Mount]
+Options=mode=1777,strictatime,{% if ubtu22cis_rule_1_1_2_1_2 %}nodev,{% endif %}{% if ubtu22cis_rule_1_1_2_1_3 %}nosuid,{% endif %}{% if ubtu22cis_rule_1_1_2_1_4 %}noexec{% endif %}

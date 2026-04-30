@@ -1,8 +1,10 @@
+{{ file_managed_by_ansible }}
+
 [Unit]
 Description=Aide check
 
 [Timer]
-OnCalendar={{ ubtu22cis_aide_cron.aide_day | default(ubtu22cis_aide_systemd_day, true) }}-{{ ubtu22cis_aide_cron.aide_month | default(ubtu22cis_aide_systemd_month, true) }}-{{ ubtu22cis_aide_cron.aide_weekday | default(ubtu22cis_aide_systemd_weekday, true) }} {{ ubtu22cis_aide_cron.aide_hour | default(ubtu22cis_aide_systemd_hour, true) }}:{{ ubtu22cis_aide_cron.aide_minute | default(ubtu22cis_aide_systemd_minute, true) }}:00
+OnCalendar={{ ubtu22cis_aide_cron_day }}-{{ ubtu22cis_aide_cron_month }}-{{ ubtu22cis_aide_cron_weekday }} {{ ubtu22cis_aide_cron_hour }}:{{ ubtu22cis_aide_cron_minute }}:00
 Unit=aidecheck.service
 
 [Install]

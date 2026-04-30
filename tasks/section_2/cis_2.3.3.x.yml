@@ -21,6 +21,8 @@
       loop:
         - etc/chrony/sources.d/pool.sources
         - etc/chrony/sources.d/server.sources
+      loop_control:
+        label: "{{ item }}"
       notify: Restart timeservice
 
     - name: "2.3.3.1 | PATCH | Ensure chrony is configured with authorized timeserver | load sources"
@@ -53,12 +55,6 @@
     - chrony
     - NIST800-53R5_AU-8
   block:
-    - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running"
-      ansible.builtin.systemd:
-        name: chrony
-        state: started
-        enabled: true
-
     - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running | disable other time sources | timesyncd"
       when: "'systemd-timesyncd' in ansible_facts.packages"
       ansible.builtin.systemd:
@@ -74,3 +70,9 @@
         state: stopped
         enabled: false
         masked: true
+
+    - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running"
+      ansible.builtin.systemd:
+        name: chrony
+        state: started
+        enabled: true

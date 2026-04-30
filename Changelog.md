@@ -1,22 +1,199 @@
-# Ubuntu22CIS
+# Changelog — UBUNTU22-CIS
+
+## Based on CIS v3.0.0 - Branch [2026_Community_Updates]
+
+### Fixed
+
+- **prelim.yml:** Fixed mount UUID/LABEL loss — added fstab source parsing so handlers preserve UUID/LABEL entries instead of replacing them with `/dev/sdX` device names
+- **cis_2.1.x.yml:** Added ternary masking to 2.1.1 autofs service mask task — prevents failure when autofs package is not installed
+- **templates/tmp.mount.j2:** Fixed `Options:` (colon) to `Options=` (equals) in systemd mount unit — colon syntax is invalid and silently ignored by systemd
+- **defaults/main.yml:** Added `ubtu22cis_tmp_partition_mount_options` variable for tmp.mount template
+- **vars/is_container.yml:** Added missing `ubtu22cis_rule_6_2_1_1` to container skip list — auditd package install requires kernel audit subsystem unavailable in containers
+- **18 files:** Added `lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"` to all remaining `ansible.builtin.package` tasks across the role — prevents apt/dpkg frontend lock failures when unattended-upgrades or other apt processes are running (extends fix for [#330](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/330))
+
+### Already Fixed (verified in this pass)
+
+- **pwck/getent SIGPIPE rc=141:** All pwck and getent tasks already use `failed_when: false` — no changes needed
+- **UFW "all" loop error** ([#328](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/328)): Rule 4.1.4 already has separate `when` conditions for string `"all"` vs list of port dicts — no changes needed
+
+---
+
+## Based on CIS v3.0.0 - Branch [2026_April_QA]
+
+### Molecule Testing
+
+**Test Results:** Converge PASSED (ok=249, changed=84, failed=0), Verify PASSED (audit score improved: 209 → 140 failures)
+
+#### Fixed (Molecule Findings)
+
+- **Rule 3.1.2:** Fixed broken conditional — `prelim_wireless_adapters_exist` (registered dict) used directly as bool in `when:` clause, fails on ansible-core 2.19+. Added `is not skipped` guard + `.stdout | length > 0` check
+- **post.yml:** Added missing `reboot_warning_changed_when` variable to `vars/main.yml` — referenced at post.yml:38 but never defined, causing fatal error during post-remediation
+- **tasks/main.yml:** Added `community.docker.docker` to container connection detection — FQCN connection plugin was not recognized, preventing container variable loading
+
+#### Changed (Molecule Findings)
+
+- **vars/is_container.yml:** Added 44 auditd rules to container skip list — auditd service (6.2.1.2-4), configuration (6.2.2.1-20), and audit rules (6.2.3.1-21) all require kernel audit subsystem unavailable in containers
+
+#### Fixed (Duplicate Register Variables)
+
+- **post_remediation_audit.yml:** Renamed duplicate `post_audit_summary` to `post_audit_summary_json` and `post_audit_summary_documentation` (aligned with UB20-CIS convention)
+- **pre_remediation_audit.yml:** Renamed duplicate `pre_audit_summary` to `pre_audit_summary_json` and `pre_audit_summary_documentation`
+- **cis_1.1.2.2.x.yml:** Renamed `discovered_tmp_mount` to `discovered_dev_shm_mount` for /dev/shm mount check (was colliding with /tmp mount in cis_1.1.2.1.x.yml)
+- **cis_1.3.1.x.yml:** Renamed `discovered_apparmor_pre_count` / `discovered_apparmor_post_count` in rule 1.3.1.3 to `discovered_apparmor_complain_pre_count` / `discovered_apparmor_complain_post_count` (was colliding with 1.3.1.4 enforce counts)
+- **cis_6.2.1.x.yml:** Renamed `discovered_grub_cmdline_settings` in rule 6.2.1.3 to `discovered_grub_cmdline_audit_settings` and in rule 6.2.1.4 to `discovered_grub_cmdline_backlog_settings` (was colliding with 3.1.1 IPv6 grub check)
+
+#### Added (Molecule Findings)
+
+- **molecule/default/:** Docker test scenario for Ubuntu 22.04 with audit verification (molecule.yml, prepare.yml, converge.yml, verify.yml)
+- **molecule/localhost/:** Delegated local test scenario (molecule.yml, converge.yml, verify.yml)
+- **molecule/wsl/:** WSL delegated test scenario (molecule.yml, converge.yml, verify.yml)
+
+#### Changed (Defaults & Code Quality)
+
+- **defaults/main.yml:** Aligned header comments with UB20-CIS structure — added role identification, variable precedence warning, `system_is_container`, UID discovery variables (`discover_int_uid`, `min_int_uid`, `max_int_uid`), `system_is_ec2`, `ubtu22cis_skip_for_test`
+- **defaults/main.yml:** Removed duplicate variables (`system_is_ec2`, `discover_int_uid`, `min_int_uid`, `max_int_uid`) that appeared twice after restructuring
+- **tasks/main.yml:213:** Fixed last remaining absolute mode notation (`u=rwx,go=rx` → `go-w`) — all mode directives now use relative/negative notation matching UB20-CIS
+- **48 shell tasks:** Added `set -o pipefail` to all `ansible.builtin.shell` tasks with pipes across 17 files using Lockdown standard multiline block style (`shell: |\n  set -o pipefail\n  command`) with `args: executable: /bin/bash` — Ubuntu's `/bin/sh` is `dash` which doesn't support pipefail
+- **prelim.yml, cis_5.4.2.x.yml:** Fixed 3 escaped quote issues (`\"` → `"`) that broke when converting from inline to block scalar YAML style
+
+#### Fixed (Community-Reported Issues)
+
+- **cis_4.1.x.yml:** Fixed `ubtu22cis_ufw_allow_out_ports: "all"` causing `Invalid data passed to 'loop'` error — task now handles both string `"all"` (allow all outbound) and list of port dicts (specific ports). (fixes [#328](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/328)) - Thank you @tmeckel
+- **prelim.yml, cis_1.2.2.x.yml, cis_6.3.x.yml:** Replaced 7 hardcoded `lock_timeout: 180` with configurable `ubtu22cis_apt_lock_timeout` variable — prevents apt/dpkg lock failures when unattended-upgrades is running. (fixes [#330](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/330)) - Thank you @tmeckel
+- **cis_5.3.3.4.x.yml:** Added file existence check before `replace` on `/usr/share/pam-configs/pam_unix` for rules 5.3.3.4.2 and 5.3.3.4.3 — prevents failure when pam_unix config file doesn't exist.  5.3.3.4.3 referencing wrong variable (`discovered_pam_remember` → `discovered_pam_pwhash`). Fixed 5.3.3.4.4 wrong `when` condition (`discovered_pam_authtok | length` → `discovered_pam_authtok.stdout | length`)
+
+#### Security
+
+- **main.yml, cis_5.4.1.x.yml, cis_7.2.x.yml:** Added `no_log: true` to 8 tasks that read `/etc/shadow` — prevents password hashes from being exposed in Ansible logs and stdout
+
+#### Code Style
+
+- **24 tasks:** Converted single-item `when:` lists to inline format across 12 files — matches Lockdown convention
+- **68 loop tasks:** Added `loop_control: label` to all loop/with_items tasks — prevents verbose item dumps in Ansible output. Also fixed `fix_loop_control.py` script bug that placed loop_control at block level instead of inner task level
+
+#### Standards Alignment
+
+- **cis_2.1.x.yml:** Applied package-aware masking pattern to 19 systemd mask tasks — uses `ternary(false, omit)` to only stop/disable services when the packageFixed is installed, preventing failures on systems where the package was never installed (aligned with Lockdown standards)
+- **cis_3.1.x.yml:** Applied same ternary pattern to bluetooth service masking
+- **tasks/main.yml:** Simplified root password check — replaced complex grep pattern with `awk '{print $2}'` and direct status check `stdout not in ['P', 'L']` (aligned with Lockdown standards)
+- **60 discovery tasks:** Added `check_mode: false` to all shell/command tasks with `register:` across 25 files — ensures discovery tasks run in `--check` mode so dependent tasks don't fail on undefined variables (aligned with Lockdown standards)
+- **34 discovery tasks:** Replaced broad `failed_when: false` with specific `failed_when: <var>.rc not in [0, 1]` — catches real errors (rc=2+) while allowing "no matches" (rc=1). Kept `failed_when: false` on action commands (chage, passwd, useradd) and pwck tasks (SIGPIPE rc=141) (aligned with Lockdown standards)
+- **cis_1.1.2.1.x.yml:** Refactored tmp mount from monolithic template (`tmp.mount.j2`) to systemd drop-in directory pattern (`/etc/systemd/system/tmp.mount.d/60-options.conf`) — more maintainable, doesn't override entire mount unit (aligned with Lockdown standards)
+- **58 loop_control labels:** Fixed indentation — `label:` must be indented 2 spaces under `loop_control:`, not at the same level
+
+#### QA Validation
+
+- Main QA tool: PASS on Rule Coverage, File Mode Quoting, Company Naming, Audit Template, FQCN Usage, Spell Check, Grammar Check
+- Standalone checks: 306/306 rule coverage, 0 duplicate registers, 0 duplicate defaults, 0 absolute/octal modes
+- Cross-repo validator: Report generated, no critical failures between remediation and audit repos
+
+#### Known Pre-Existing Issues (not addressed in this QA pass)
+
+- 3 undefined chrony template variables (`ubtu22cis_time_synchronization_servers`, `ubtu22cis_chrony_server_options`, `ubtu22cis_chrony_user`)
+- 1 dotted notation in `pam_unix.j2` (`ubtu22cis_rule_5.3.3.4.x` should use underscores)
+- 27 manual warn count block-level vars (auto-fixable)
+- 6 verify.yml register prefix warnings (cosmetic — `verify_` prefix instead of standard `discovered_`)
+
+---
+
+### Added
+- Initial v3.0.0 CIS benchmark implementation (306 controls)
+- New Section 4: Host Based Firewall (UFW) controls
+- Ansible facts gathering, fetch option for apt cache
+- APT lock_timeout option for package operations
+- APT purge lockout capability (thanks to @tmeckel)
+- Ability to change max-concurrent processes for audit
+- Port 53 UDP to outbound firewall rules
+- Firewall port variables and conditionals (4.1.4)
+- Enhanced 7.1.12 filesystem type exclusion variable
+- aarch64 support for pre-audit setup conditions
+- Syscalls table for all architectures
+- NIST 800-53 values to task tags
+- issue_message as now required field
+- Missing variable for issue #296 from public repo
+
+### Changed
+- Complete section renumbering for CIS v3.0.0 (Section 4 = Firewall, ~290 controls renumbered)
+- Company name and date alignment across all files
+- Separated 6.2.4.1/3 tasks into distinct files
+- Moved default variables to vars/main rather than set_fact
+- Updated service script
+- Improved logic for 5.4.1.1, 5.4.2.5, log file permissions
+- Updated ansible facts logic
+- Aligned with coding standards (lint, FQCN, mode quoting)
+- Updated pre-commit hooks (multiple autoupdates)
+- Renamed register variables to isolate for tasks
+- Updated copy loop logic
+- Changed 6.3.2.1 to use path instead of dest in module
+
+### Fixed
+- Handler typos (thanks to @dderemiah)
+- tmp mount handler logic (thanks to #304 @huntermccallum)
+- 5.4.2.5 improved tests and conditionals (thanks to #303 @numericillustration)
+- Fix for #280 (thanks to @omeravner)
+- Issue #287 addressed
+- Issue #270 addressed (thanks to @bgro)
+- exec bits for 1.4.1 (thanks to @dderemiah)
+- Typo in register value 5.3.3.3.2
+- Quotes on mode for ansible facts and spacing
+- Multiple typo fixes across task files
+- Type fix for firewall_ports variable
+- Arch name to match Ansible-provided arch
+- Conflict resolution for multiple files (post_remediation_audit, section 5/6)
+
+### Removed
+- Legacy options cleaned up
+
+### Security
+- Updated permissions across role files
+- 6.1.3 added conditional for log file access
+- Added supported_syscalls variable for auditd
+
+---
+
+## Based on CIS v3.0.0 - Feb 2026
+
+- 7.1.12 enhancement
+- Company naming alignment
+- Legacy options removed
+- pre-commit update
+- apt purge lockout variable and rule updates thanks to @tmeckel
+- Fixed handler auditd rules reload referencing undefined variable (old v2.0.0 rule 4.1.3.21 naming)
+- Fixed aidecheck.timer.j2 template variable references to match defaults (ubtu22cis_aide_cron dict to individual vars)
+- Fixed variable name bug in prelim.yml: ubtu22_sshd_config_file corrected to ubtu22cis_sshd_config_file
+- Fixed spelling: logiles, Noe, thier, maxx, dicover, foe, fate, choses, e.gf
+- Fixed grammar: repeated words (to to, of of, the the), subject-verb disagreements (This are, This have), and typos (can must, Wait to do, and or)
+- Fixed comment phrasing: hashed out, product so cannot, one to specify, Clients Services
+- Fixed inconsistent comment in goss template (dovecot-pop3 corrected to cyrus-imap)
+- Fixed multiple consecutive spaces in comments across defaults/main.yml, templates, and prelim.yml
+- Corrected grub user password assertion message in tasks/main.yml
+
+## Based on CIS v3.0.0 - Dec 2025
+
+- pre-commit update
+- 4.1.4 ufw updated to include ntp port and improved logic
+- 6.2.4.1/2/3 tasks separated
+- aide service script updated
+
+## Based on CIS v3.0.0 - Oct 2025
+
+- Numbering changed
+- CCI added where required
+- overlay kernel module added
+- /tmp updated
+- cis levels changed for partitions
+- xwayland for gdm disabled
+- ipv4 and ipv6 sysctl separated
+- ssh config file options
+- UFW Only firewall documented now rewritten - check ports allowed etc
 
 ## Based on CIS v2.0.0
 
-### Do not migrate
+### Oct 2025
 
-# Jan26
-pre-commits
-#325 nopasswd for sudoers options added
-chrony template tidied up
+- Readme and workflows updated
 
-# Dec 25 update
-pre-commits
-
-4.1.5 updated variables, loop and added ntp
-6.3.4.1/2/3 separated the tasks
-prelim check for pwquality changed_when logic update thanks to @FrsECM #318
-
-# Sept 25 updates
+### Sept 2025
 
 - 5.4.2.5 improved thanks to @numericillustration
 - tmp handler logic improved thanks to @huntermccallum
@@ -26,283 +203,88 @@ prelim check for pwquality changed_when logic update thanks to @FrsECM #318
 - fixed handler typos for systemd thanks to @dderemiah
 - updated auditd template logic - thanks to @matt-j-griffin
 
-# 2.0.0 release
+### May 2025 QA Fixes
 
-CIS have rewritten with a full release including but not limited to
+- Typo fixes
 
-- reordering
-- new sections and controls in differing sections
-
-This is a rewrite off approx 75% of controls
-
-- New variables
-- improved audit related checks
-- greater options on some controls
-- linting improvements and updated to latest
+> **Note:** CIS v3.0.0 is a rewrite of approx 75% of controls including reordering, new sections, and controls in differing sections. Do not migrate from v2.0.0 — use a clean v3.0.0 base.
 
 ## Based on CIS V1.0.0
 
 ### 1.1.1
 
-- Huge thanks to
-  - @rostskadat
-    - #175 - Allowing changes to the ssh default variables
-  - @DianaMariaDDM
-    - #200 - new approach to tmp mount options
+- Huge thanks to @rostskadat (#175 - SSH default variables) and @DianaMariaDDM (#200 - tmp mount options)
 
 ### 1.1.0
 
-- #223 thanks to feedback @txsastre
-- audit
-  - moved the audit to run prior to any changes taking place on the system (exception of required)
-  - improvements to copy/archive/get_url content methods incl notes in defaults/main.yml
-  - tidy up and logic of var naming
-- lint and tidy up
-- ansible version update
-- unused filesystem added to skip if container list
-- unused vars removed
+- #223 thanks to @txsastre
+- Audit moved to run prior to changes, improvements to content methods
+- lint and tidy up, ansible version update
+- unused filesystem added to container skip list, unused vars removed
 
 ### 1.0.9
 
-- updated audit command to allow multiple groups from inventory
-- #144 usb-blacklisting - thanks to @paulquevedojdrf
-- #152 and #170 Added ssh validate to tasks - thanks to @dderemiah and @twadelij
-- #180 and #181 password reuse 5.3.4 - thanks to @DianaMariaDDM
-- #182 pwquality enhancement New variable to allow extended or minclass (default)options - thanks to @ma3s7ro
-- #184 Initial container config feedback required - thanks to @ipruteanu-sie
-- #204 reboot not idempotent - changed auditd and reboot logic update to 4.1.3.6 discovery - thanks to @bhuddah
+- Updated audit command for multiple groups
+- #144 usb-blacklisting thanks to @paulquevedojdrf
+- #152 and #170 SSH validate thanks to @dderemiah and @twadelij
+- #180 and #181 password reuse thanks to @DianaMariaDDM
+- #182 pwquality enhancement thanks to @ma3s7ro
+- #184 container config thanks to @ipruteanu-sie
+- #204 reboot idempotent fix thanks to @bhuddah
 
 ### 1.0.8
 
-- updated goss binary to 0.4.4
-- moved majority of audit variables to vars/audit.yml
-- new function to enable audit_only using remediation
-- removed some dupes in audit config
+- Updated goss binary to 0.4.4, moved audit variables to vars/audit.yml
+- New audit_only function, removed dupes in audit config
 
 ### 1.0.7
 
-Huge thanks to the discord community
-Thanks to @loz for all the testing and feedback
+- Thanks to @loz for testing and feedback
+- 1.7.1 dynamic check, 4.1.4.1/4.1.4.5 improved logic
+- SSH defaults, bootloader password, audit updates
+- sshd ciphers/macs/kex now lists, CIS level corrections
+- Rule 5.4.2 logic improvements thanks to @Petri, @Loz, @bgro
+- Issues: #131, #148, #123, #132, #135, #136, #138-#145, #146, #151, #153, #154, #158, #161, #164
 
-- 1.7.1 added dymamic check to audit
-- 4.1.4.1 & 4.1.4.5 improved logic
-- ssh default groups emptied
-- bootloader password default now false and improved test
-- audit updates for documentation
-- 1.1.1.2 conditional logic improvement
-- 4.2.3 ensure checking for hidden logfiles
-- sshd ciphers/macs/kex all now lists to allow greater testing
-- correction to cis level
-- section 6.1 mode updates
+### 1.0.6
 
-@Petri and @Loz for all the testing on this partcular issue
+- Collections links updated for galaxy-ng changes
+- Issues: #120, #121, #124, #125, #126, #128 — thanks to @zac90, @ipruteanu-sie, @dderemiah
 
-- rule 5.4.2 logic and extra variables added in defaults/main.yml
+### 1.0.5
 
-thanks to @bgro
+- Updated import_tasks to state file
+- Issues: #79, #80, #81, #82 thanks to @bgro; PR #63 thanks to @andrejzverev
 
-- #131
-- #148
+### 1.0.4
 
-thanksto @tomi-bigpi
+- Goss version updated, linting, pre-commit added
+- Issues: #59, #61, #62, #64, #67, #69
 
-- #123
+### 1.0.3
 
-thanks to @jovial
+- Issues: #53, #54, #55 thanks to @zac90; PR #50 thanks to @rspataru
+- Workflow updates, lint file updates, readme tidy up
 
-- #132
+### 1.0.2
 
-thanks to @paulquevedojdrf
+- Issues: #35-#45 thanks to @zac90
+- Mount command improvements, section 5.4 tags, umask improvements
 
-- #135
-- #136
+### 1.0.1
 
-thanks to @zac90
+- Issues: #25 (@bgro), #27 (@FaisalAli92), #30, #31, #33 (@zac90), #32 (@twadelij)
+- PR #29 thanks to @treyperonne
+- Improvements to prelim checks (#13)
 
-- #138
-- #139
-- #140
-- #141
-- #142
-- #143
-- #145
+### 1.0 - Initial CIS v1.0.0 release
 
-thanks to @dderemiah
+- Issues: #25, #27; PR #5
+- Ansible 2.10.1 minimum, FQCNs, audit alignment
+- Default firewall now UFW, sysctl/syslog options added
 
-- #146
+### 0.9 - April 2023
 
-thanks to @lozzolloz
-
-- #151
-- #153
-- #154
-
-thanks to @brisky
-
-- #158
-
-thanks to Jeroen0494
-
-- #161
-
-thanks to @r0bc94
-
-- #164
-
-### v1.0.6
-
-collections links updates since galaxy-ng changes and older ansible versions not supported
-README also updates as quality scores inconsistent since change
-
-- #120 thanks you @zac90
-- #121 thanks to @ipruteanu-sie
-- #124 thanks to @ipruteanu-sie
-- #125 thanks to @ipruteanu-sie
-- #126 thanks to @ipruteanu-sie
-- #128 thanks to @dderemiah
-
-### V1.0.5
-
-updated import_tasks to state file
-
-issues addressed
-thanks to @bgro
-
-- #79
-- #80
-- #81
-- #82
-
-adopted PR changed
-thanks to @andrejzverev
-
-- #63
-
-### v1.0.4
-
-Several issues addressed
-Version of goss updated along with associated audit content
-linting update
-pre-commit added
-
-- #59
-- #61
-- #62
-- #64
-- #67
-- #69
-
-### v1.0.3
-
-Issues:
-Thanks to @zac90
-
-- [#53](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/53)
-- [#54](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/54)
-- [#55](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/55)
-
-PR:
-thanks to @rspataru
-
-- [#50](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/50)
-
-Updates to workflow now using centralised config
-templates removed as inherited from org
-legacy workflow files removed
-
-lint file updates
-readme updates to badges and layout
-added secrets-baseline in preperation for pre-commit
-readme tidy up
-
-## v1.0.2
-
-- issues addressed
-  - thanks to @zac90
-    - [#35](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/35)
-    - [#36](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/36)
-    - [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
-    - [#39](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/39)
-    - [#40](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/40)
-    - [#41](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/41)
-    - [#42](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/42)
-    - [#43](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/43)
-    - [#44](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/44)
-    - [#45](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/45)
-
-Improvements to the mount commands and fstype usage as part of [#37](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/37)
-section 5.4 tags updated
-.ansible-lint updated
-improvements to 5.5.4 for umask
-
-### v1.0.1
-
-Issues:
-Thank to the discord community for feedback on these and the following issues
-
-- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
-  - thanks to @bgro
-- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
-  - thanks to @FaisalAli92
-- [#30](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/30)
-- [#31](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/31)
-- [#33](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/33)
-  - thanks to @zac90
-
-- [[#32](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/32)
-  - thanks to @twadelij
-
-Thanks to @treyperonne for the PR [#29](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/29/files) integrated to this PR
-
-Update to the issue [#13](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/13) improvements to the prelim checks
-
-## V1.0 based on v1.0.0
-
-Issues:
-
-- [#25](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/25)
-- [#27](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/27)
-
-PRs incorporated
-
-- [#5](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/5/files)
-
-## v0.9 based on v1.0.0
-
-## April 2023 Updates
-
-- Yamllint Check
-- Ansible-lint Check
-- Fqcn[canonical] module name
-- PR's Addressed
-  - [#21](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/21) - #Thanks @IdrisDose
-- Bugs Fixed
-  - [#13](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/13) - Thanks @vdmkenny
-  - [#14](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/14) - Thanks @bgro
-  - [#15](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/15) - Thanks @bgro
-  - [#16](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/16) - Thanks @bgro
-  - [#17](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/17) - Thanks @bgro
-  - [#18](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/18) - Thanks @bgro
-  - [#19](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/19) - Thanks @bgro
-  - [#20](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/20) - Thanks @bgro
-
-## Initial ubuntu22cis release
-
-- Ansible 2.10.1 minimum
-- fqcns added
-- audit alignment to use corresponding benchamrk version
-- many lint improvements
-- All required changes for CIS 1.0.0 (very different from original base of ubuntu2004)
-
-### New options
-
-- default firewall now ufw
-
-- If firewall = UFW to use system sysctl settings: default
-  - _ubtu22cis_ufw_use_sysctl: true_
-
-- Abilty to set alternate sysctl file for network settings: default
-  - _ubtu22cis_sysctl_network_conf: /etc/sysctl.conf_
-
-- Abilty to set syslog service: choose between rsyslog or journald: default
-  - _ubtu22cis_syslog_service: rsyslog_
+- Yamllint, ansible-lint, FQCN checks
+- PRs: #21 thanks to @IdrisDose
+- Issues: #13-#20 thanks to @vdmkenny, @bgro

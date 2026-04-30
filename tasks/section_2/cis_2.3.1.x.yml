@@ -17,15 +17,19 @@
       ansible.builtin.package:
         name: "{{ ubtu22cis_time_sync_tool }}"
         state: present
+        lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
     - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | other pkgs removed"
       when: item != ubtu22cis_time_sync_tool
       ansible.builtin.package:
         name: "{{ item }}"
         state: absent
+        lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
       loop:
         - chrony
         - ntp
+      loop_control:
+        label: "{{ item }}"
 
     - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | mask service"
       when:
