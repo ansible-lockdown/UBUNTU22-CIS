@@ -191,7 +191,6 @@
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
     - rule_5.1.7
-  notify: Restart sshd
   block:
     - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Add line in sshd_config for ClientAliveInterval"
       ansible.builtin.lineinfile:
@@ -206,6 +205,7 @@
         regexp: '^ClientAliveCountMax'
         line: "ClientAliveCountMax {{ ubtu22cis_sshd_clientalivecountmax }}"
         validate: sshd -t -f %s
+      notify: Restart sshd
 
 - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled"
   when: ubtu22cis_rule_5_1_8
