@@ -9,10 +9,22 @@
 # Firewall
 ubtu22cis_firewall_package: None
 
+# ptrace_scope - yama LSM is not exposed at /proc/sys/kernel/yama in a container
+ubtu22cis_rule_1_5_2: false
+
+# time sync - systemd-timesyncd unit conditions fail in a container
+ubtu22cis_rule_2_3_2_1: false
+ubtu22cis_rule_2_3_2_2: false
+
 # Filesystems
 
 ## Related individual rules
 # Aide
+# AppArmor - profiles and grub cmdline cannot be managed in a container
+ubtu22cis_rule_1_3_1_1: false
+ubtu22cis_rule_1_3_1_2: false
+ubtu22cis_rule_1_3_1_3: false
+ubtu22cis_rule_1_3_1_4: false
 ubtu22cis_rule_1_4_1: false
 ubtu22cis_rule_1_4_2: false
 
@@ -117,6 +129,17 @@ ubtu22cis_rule_6_2_3_18: false
 ubtu22cis_rule_6_2_3_19: false
 ubtu22cis_rule_6_2_3_20: false
 ubtu22cis_rule_6_2_3_21: false
+# Auditd log file settings - auditd is not installed in a container
+ubtu22cis_rule_6_2_4_1: false
+ubtu22cis_rule_6_2_4_2: false
+ubtu22cis_rule_6_2_4_3: false
+ubtu22cis_rule_6_2_4_4: false
+ubtu22cis_rule_6_2_4_5: false
+ubtu22cis_rule_6_2_4_6: false
+ubtu22cis_rule_6_2_4_7: false
+ubtu22cis_rule_6_2_4_8: false
+ubtu22cis_rule_6_2_4_9: false
+ubtu22cis_rule_6_2_4_10: false
 
 # cron
 ubtu22cis_rule_5_1_1: false
@@ -151,3 +174,5 @@ ubtu22cis_rule_5_2_19: false
 ubtu22cis_rule_5_2_20: false
 ubtu22cis_rule_5_2_21: false
 ubtu22cis_rule_5_2_22: false
+# IPv6 status is set via the grub cmdline, absent in a container
+ubtu22cis_rule_3_1_1: false
