@@ -14,8 +14,8 @@
   block:
     - name: "6.3.1 | PATCH | Ensure AIDE is installed"
       when:
-        - "'aide' not in ansible_facts.packages or
-          'aide-common' not in ansible_facts.packages"
+        - "'aide' not in ansible_facts['packages'] or
+          'aide-common' not in ansible_facts['packages']"
       ansible.builtin.package:
         name: ['aide', 'aide-common']
         state: present

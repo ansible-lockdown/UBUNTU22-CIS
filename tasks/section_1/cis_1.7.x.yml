@@ -4,7 +4,7 @@
     - ubtu22cis_rule_1_7_1
     - not ubtu22cis_desktop_required
     - ubtu22cis_disruption_high
-    - "'gdm3' in ansible_facts.packages"
+    - "'gdm3' in ansible_facts['packages']"
   tags:
     - level2-server
     - patch
@@ -85,7 +85,7 @@
         - /etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d
         - /etc/dconf/profile
 
-    - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | disable-user-list setting login-screen"
+    - name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled | disable-user-list setting login-screen"
       ansible.builtin.lineinfile:
         path: "/etc/dconf/db/{{ prelim_dconf_system_db.stdout }}.d/00-login-screen"
         regexp: "{{ item.regexp }}"
@@ -100,7 +100,7 @@
         - { regexp: "disable-user-list", line: "disable-user-list=true", insertafter: "\\[org\\/gnome\\/login-screen\\]" }
       notify: Update dconf
 
-    - name: "1.7.3 | PATCH | Ensure disable-user-list option is enabled | disable-user-list setting profile"
+    - name: "1.7.3 | PATCH | Ensure GDM disable-user-list option is enabled | disable-user-list setting profile"
       ansible.builtin.lineinfile:
         path: "/etc/dconf/profile/{{ prelim_dconf_system_db.stdout }}"
         regexp: "{{ item.regexp }}"
@@ -332,7 +332,7 @@
         mode: 'u-x,go-wx'
       notify: Update dconf
 
-- name: "1.7.10 | PATCH | Ensure XDCMP is not enabled"
+- name: "1.7.10 | PATCH | Ensure XDMCP is not enabled"
   when:
     - ubtu22cis_rule_1_7_10
     - ubtu22cis_desktop_required

@@ -58,7 +58,7 @@
       loop_control:
         label: "{{ item }}"
 
-- name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled"
+- name: "3.1.2 | PATCH | Ensure wireless interfaces are not available"
   when:
     - ubtu22cis_rule_3_1_2
     - prelim_wireless_adapters_exist is not skipped
@@ -72,13 +72,13 @@
   vars:
     warn_control_id: '3.1.2'
   block:
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | find wireless files"
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | find wireless files"
       ansible.builtin.find:
         path: /lib/modules/{{ ansible_kernel }}//kernel/drivers/net/wireless
         patterns: "*.ko"
       register: discovered_loaded_wireless_modules
 
-    - name: "3.1.2 | PATCH | Ensure wireless interfaces are disabled | add to blacklist"
+    - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | add to blacklist"
       when:
         - discovered_loaded_wireless_modules.stdout is defined
         - discovered_loaded_wireless_modules.stdout | length > 0
@@ -115,6 +115,6 @@
       notify: Systemd daemon reload
       ansible.builtin.systemd:
         name: bluetooth.service
-        enabled: "{{ ('bluez' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('bluez' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('bluez' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('bluez' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true

@@ -3,7 +3,7 @@
 - name: "2.1.1 | PATCH | Ensure autofs services are not in use"
   when:
     - ubtu22cis_rule_2_1_1
-    - "'autofs' in ansible_facts.packages"
+    - "'autofs' in ansible_facts['packages']"
     - not system_is_ec2
   tags:
     - level1-server
@@ -29,8 +29,8 @@
         - ubtu22cis_autofs_mask
       ansible.builtin.systemd:
         name: autofs
-        enabled: "{{ ('autofs' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('autofs' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('autofs' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('autofs' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -62,8 +62,8 @@
         - ubtu22cis_avahi_mask
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: "{{ ('avahi-daemon' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('avahi-daemon' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('avahi-daemon' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('avahi-daemon' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       loop:
         - avahi-daemon.socket
@@ -98,8 +98,8 @@
         - ubtu22cis_dhcp_mask
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: "{{ ('isc-dhcp-server' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('isc-dhcp-server' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('isc-dhcp-server' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('isc-dhcp-server' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       loop:
         - isc-dhcp-server.service
@@ -134,8 +134,8 @@
         - ubtu22cis_dns_mask
       ansible.builtin.systemd:
         name: named.service
-        enabled: "{{ ('bind9' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('bind9' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('bind9' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('bind9' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -165,8 +165,8 @@
         - ubtu22cis_dnsmasq_mask
       ansible.builtin.systemd:
         name: dnsmasq.service
-        enabled: "{{ ('dnsmasq' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('dnsmasq' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('dnsmasq' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('dnsmasq' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -197,8 +197,8 @@
         - ubtu22cis_ftp_mask
       ansible.builtin.systemd:
         name: vsftpd.service
-        enabled: "{{ ('vsftpd' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('vsftpd' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('vsftpd' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('vsftpd' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -228,8 +228,8 @@
         - ubtu22cis_ldap_mask
       ansible.builtin.systemd:
         name: slapd.service
-        enabled: "{{ ('slapd' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('slapd' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('slapd' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('slapd' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -263,8 +263,8 @@
         - ubtu22cis_message_mask
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: "{{ ('dovecot-imapd' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('dovecot-imapd' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('dovecot-imapd' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('dovecot-imapd' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       loop:
         - "dovecot.socket"
@@ -301,8 +301,8 @@
         - ubtu22cis_nfs_mask
       ansible.builtin.systemd:
         name: nfs-server.service
-        enabled: "{{ ('nfs-kernel-server' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('nfs-kernel-server' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('nfs-kernel-server' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('nfs-kernel-server' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -333,8 +333,8 @@
         - ubtu22cis_nis_mask
       ansible.builtin.systemd:
         name: ypserv.service
-        enabled: "{{ ('ypserv' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('ypserv' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('ypserv' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('ypserv' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -363,8 +363,8 @@
         - ubtu22cis_print_mask
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: "{{ ('cups' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('cups' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('cups' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('cups' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       loop:
         - "cups.socket"
@@ -400,8 +400,8 @@
         - ubtu22cis_rpc_mask
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: "{{ ('rpcbind' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('rpcbind' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('rpcbind' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('rpcbind' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       loop:
         - rpcbind.service
@@ -436,8 +436,8 @@
         - ubtu22cis_rsync_mask
       ansible.builtin.systemd:
         name: rsync.service
-        enabled: "{{ ('rsync' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('rsync' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('rsync' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('rsync' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -468,8 +468,8 @@
         - ubtu22cis_samba_mask
       ansible.builtin.systemd:
         name: smbd.service
-        enabled: "{{ ('samba' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('samba' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('samba' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('samba' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -500,8 +500,8 @@
         - ubtu22cis_snmp_mask
       ansible.builtin.systemd:
         name: snmpd.service
-        enabled: "{{ ('snmpd' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('snmpd' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('snmpd' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('snmpd' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -531,8 +531,8 @@
         - ubtu22cis_tftp_mask
       ansible.builtin.systemd:
         name: tftpd-hpa.service
-        enabled: "{{ ('tftpd-hpa' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('tftpd-hpa' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('tftpd-hpa' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('tftpd-hpa' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -562,8 +562,8 @@
         - ubtu22cis_squid_mask
       ansible.builtin.systemd:
         name: squid.service
-        enabled: "{{ ('squid' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('squid' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('squid' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('squid' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -605,8 +605,8 @@
         - ubtu22cis_apache2_mask
       ansible.builtin.systemd:
         name: "{{ item }}"
-        enabled: "{{ ('apache2' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('apache2' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        enabled: "{{ ('apache2' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('apache2' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       loop:
         - apache2.service
@@ -620,9 +620,9 @@
         - not ubtu22cis_nginx_server
         - ubtu22cis_nginx_mask
       ansible.builtin.systemd:
-        name: ngnix.service
-        enabled: "{{ ('nginx' in ansible_facts.packages) | ternary(false, omit) }}"
-        state: "{{ ('nginx' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        name: nginx.service
+        enabled: "{{ ('nginx' in ansible_facts['packages']) | ternary(false, omit) }}"
+        state: "{{ ('nginx' in ansible_facts['packages']) | ternary('stopped', omit) }}"
         masked: true
       notify: Systemd daemon reload
 
@@ -652,9 +652,9 @@
         - ubtu22cis_xinetd_mask
       ansible.builtin.systemd:
         name: xinetd.service
-        enabled: "{{ ('xinetd' in ansible_facts.packages) | ternary(false, omit) }}"
+        enabled: "{{ ('xinetd' in ansible_facts['packages']) | ternary(false, omit) }}"
         masked: true
-        state: "{{ ('xinetd' in ansible_facts.packages) | ternary('stopped', omit) }}"
+        state: "{{ ('xinetd' in ansible_facts['packages']) | ternary('stopped', omit) }}"
       notify: Systemd daemon reload
 
 - name: "2.1.20 | PATCH | Ensure X window server services are not in use"
@@ -673,7 +673,7 @@
     purge: "{{ ubtu22cis_purge_apt }}"
     lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
-- name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode"
+- name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode"
   when:
     - not ubtu22cis_is_mail_server
     - ubtu22cis_rule_2_1_21
@@ -687,8 +687,8 @@
   vars:
     warn_control_id: "2.1.21"
   block:
-    - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if exim4 installed"
-      when: "'exim4' in ansible_facts.packages"
+    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if exim4 installed"
+      when: "'exim4' in ansible_facts['packages']"
       ansible.builtin.lineinfile:  # noqa: args[module]
         path: /etc/exim4/update-exim4.conf.conf
         regexp: "{{ item.regexp }}"
@@ -709,8 +709,8 @@
           label: "{{ item }}"
       notify: Restart exim4
 
-    - name: "2.1.21 | PATCH | Ensure mail transfer agent is configured for local-only mode | Make changes if postfix is installed"
-      when: "'postfix' in ansible_facts.packages"
+    - name: "2.1.21 | PATCH | Ensure mail transfer agents are configured for local-only mode | Make changes if postfix is installed"
+      when: "'postfix' in ansible_facts['packages']"
       notify: Restart postfix
       ansible.builtin.lineinfile:
         path: /etc/postfix/main.cf
@@ -719,8 +719,8 @@
 
     - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | Message out other main agents"
       when:
-        - "'exim4' not in ansible_facts.packages"
-        - "'postfix' not in ansible_facts.packages"
+        - "'exim4' not in ansible_facts['packages']"
+        - "'postfix' not in ansible_facts['packages']"
       ansible.builtin.debug:
         msg:
           - "Warning!! You are not using either exim4 or postfix, please ensure mail services set for local only mode"
@@ -728,8 +728,8 @@
 
     - name: "2.1.21 | WARN | Ensure mail transfer agent is configured for local-only mode | warn_count"
       when:
-        - "'exim4' not in ansible_facts.packages"
-        - "'postfix' not in ansible_facts.packages"
+        - "'exim4' not in ansible_facts['packages']"
+        - "'postfix' not in ansible_facts['packages']"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

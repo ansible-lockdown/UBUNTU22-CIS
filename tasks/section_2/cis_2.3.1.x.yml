@@ -34,7 +34,7 @@
     - name: "2.3.1.1 | PATCH | Ensure a single time synchronization daemon is in use | mask service"
       when:
         - ubtu22cis_time_sync_tool != "systemd-timesyncd"
-        - "'systemd-timesyncd' in ansible_facts.packages"
+        - "'systemd-timesyncd' in ansible_facts['packages']"
       ansible.builtin.service:
         name: systemd-timesyncd
         state: stopped
