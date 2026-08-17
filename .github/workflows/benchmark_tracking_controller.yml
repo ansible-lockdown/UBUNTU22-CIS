@@ -1,0 +1,38 @@
+---
+
+# GitHub schedules all cron jobs in UTC.
+# This expression will run the job every day at 9 AM Eastern Time during Daylight Saving Time (mid-March to early November).
+# This expression will run the job every day at 8 AM Eastern Time during Standard Time (early November to mid-March).
+
+name: Central Benchmark Orchestrator
+
+on:
+  push:
+    branches:
+      - latest
+  schedule:
+    - cron: '0 6 * * *'  # Runs daily at 9 AM ET
+  workflow_dispatch:
+
+jobs:
+  call-benchmark-tracker:
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.ref_name == 'latest')
+    name: Start Benchmark Tracker
+    uses: ansible-lockdown/github_linux_IaC/.github/workflows/benchmark_track.yml@self_hosted
+    with:
+      repo_name: ${{ github.repository }}
+    secrets:
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      BADGE_PUSH_TOKEN: ${{ secrets.BADGE_PUSH_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
+
+  call-monitor-promotions:
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch'
+    name: Monitor Promotions and Auto-Promote
+    uses: ansible-lockdown/github_linux_IaC/.github/workflows/benchmark_promote.yml@self_hosted
+    with:
+      repo_name: ${{ github.repository }}
+    secrets:
+      TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
+      BADGE_PUSH_TOKEN: ${{ secrets.BADGE_PUSH_TOKEN }}
+      DISCORD_WEBHOOK_URL: ${{ secrets.DISCORD_WEBHOOK_URL }}
