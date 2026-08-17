@@ -68,7 +68,7 @@
     - goss_template
     - run_audit
   ansible.builtin.template:
-    src: ansible_vars_goss.yml.j2
+    src: lockdown_audit.yml.j2
     dest: "{{ audit_vars_path }}"
     mode: 'go-rwx'
 

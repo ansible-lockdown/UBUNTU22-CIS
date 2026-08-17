@@ -2,16 +2,16 @@
 
 - name: Check OS version and family
   when:
-    - ansible_facts.distribution == 'Ubuntu'
-    - ansible_facts.distribution_major_version is version_compare('22', '!=')
+    - ansible_facts['distribution'] == 'Ubuntu'
+    - ansible_facts['distribution_major_version'] is version('22', '!=')
   tags: always
   ansible.builtin.fail:
-    msg: "This role can only be run against Ubuntu 22. {{ ansible_facts.distribution }} {{ ansible_facts.distribution_major_version }} is not supported."
+    msg: "This role can only be run against Ubuntu 22. {{ ansible_facts['distribution'] }} {{ ansible_facts['distribution_major_version'] }} is not supported."
 
 - name: Check ansible version
   tags: always
   ansible.builtin.assert:
-    that: ansible_version.full is version_compare(min_ansible_version, '>=')
+    that: ansible_version.full is version(min_ansible_version, '>=')
     fail_msg: "You must use Ansible {{ min_ansible_version }} or greater"
     success_msg: "This role is running a supported version of ansible {{ ansible_version.full }} >= {{ min_ansible_version }}"
 
@@ -19,14 +19,14 @@
 - name: "Check password set for connecting user"
   when:
     - ubtu22cis_rule_5_2_4
-    - ansible_env.SUDO_USER is defined
+    - ansible_facts['env']['SUDO_USER'] is defined
   tags: always
   no_log: true
   block:
     - name: Capture current password state of connecting user"
       ansible.builtin.shell: |
         set -o pipefail
-        grep -w {{ ansible_env.SUDO_USER }} /etc/shadow | awk -F: '{print $2}'
+        grep -w {{ ansible_facts['env']['SUDO_USER'] }} /etc/shadow | awk -F: '{print $2}'
       args:
         executable: /bin/bash
       changed_when: false
@@ -34,11 +34,11 @@
       check_mode: false
       register: prelim_ansible_user_password_set
 
-    - name: "Assert that password set for {{ ansible_env.SUDO_USER }} and account not locked"  # noqa name[template]
+    - name: "Assert that password set for {{ ansible_facts['env']['SUDO_USER'] }} and account not locked"  # noqa name[template]
       ansible.builtin.assert:
         that: prelim_ansible_user_password_set.stdout != "!!" and prelim_ansible_user_password_set.stdout | length > 10
-        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_env.SUDO_USER }} has no password set - It can break access"
-        success_msg: "You have a password set for sudo user {{ ansible_env.SUDO_USER }}"
+        fail_msg: "You have {{ sudo_password_rule }} enabled but the user = {{ ansible_facts['env']['SUDO_USER'] }} has no password set - It can break access"
+        success_msg: "You have a password set for sudo user {{ ansible_facts['env']['SUDO_USER'] }}"
       vars:
         sudo_password_rule: ubtu22cis_rule_5_2_4  # pragma: allowlist secret
 
@@ -73,7 +73,9 @@
     msg: "This role will not be able to run single user password commands as ubtu22cis_bootloader_password_hash variable has not been set correctly"
 
 - name: Check ubtu22cis_grub_user password variable has been changed
-  when: ubtu22cis_rule_1_4_1
+  when:
+    - ubtu22cis_set_boot_pass
+    - ubtu22cis_rule_1_4_1
   tags: always
   no_log: true
   block:
@@ -84,6 +86,7 @@
       args:
         executable: /bin/bash
       changed_when: false
+      failed_when: prelim_password_set_grub_user.rc not in [0, 1]
       check_mode: false
       register: prelim_password_set_grub_user
 
@@ -93,7 +96,7 @@
         - ubtu22cis_set_grub_user_pass
         - ubtu22cis_rule_1_4_1
       ansible.builtin.assert:
-        that: prelim_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'
+        that: prelim_password_set_grub_user.stdout.find('$y$') != -1 or ubtu22cis_grub_user_passwd.find('$y$') != -1 and ubtu22cis_grub_user_passwd != '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # pragma: allowlist secret
         msg: "The {{ ubtu22cis_grub_user }} user password is not set or the ubtu22cis_grub_user_passwd variable has not been set correctly"
 
     - name: Check ubtu22cis_grub_user password variable has been changed | if password blank or incorrect type and not being set
@@ -106,8 +109,8 @@
 - name: Setup rules if container
   when:
     - ansible_connection in ['docker', 'community.docker.docker'] or
-      (ansible_facts.virtualization_type is defined and
-       ansible_facts.virtualization_type in ["docker", "lxc", "openvz", "podman", "container"])
+      (ansible_facts['virtualization_type'] is defined and
+       ansible_facts['virtualization_type'] in ["docker", "lxc", "openvz", "podman", "container"])
   tags:
     - container_discovery
     - always
