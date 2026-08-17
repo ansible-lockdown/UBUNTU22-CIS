@@ -84,64 +84,8 @@ max_int_uid: 65533
 
 ###########################################
 ### Goss is required on the remote host ###
-### vars/auditd.yml for other settings ###
 
-# Allow audit to setup the requirements including installing git (if option chosen and downloading and adding goss binary to system)
-setup_audit: false
-
-# enable audits to run - this runs the audit and get the latest content
-run_audit: false
-# Run heavy tests - some tests can have more impact on a system enabling these can have greater impact on a system
-audit_run_heavy_tests: true
-
-# Ability to limit the number of concurrent processes used by goss (default 50)
-audit_max_concurrent: 50
-
-## Only run Audit do not remediate
-audit_only: false
-
-#############################
-
-# How to retrieve audit binary
-# Options are copy or download - detailed settings at the bottom of this file
-# you will need to access to either github or the file already downloaded
-get_audit_binary_method: download
-
-## if get_audit_binary_method - copy the following needs to be updated for your environment
-## it is expected that it will be copied from somewhere accessible to the control node
-## e.g copy from ansible control node to remote host
-audit_bin_copy_location: /some/accessible/path
-
-# how to get audit files onto host options
-# options are git/copy/archive/get_url other e.g. if you wish to run from already downloaded conf
-audit_content: git
-
-# If using either archive, copy, get_url:
-## Note: This will work with .tar files - zip will require extra configuration
-### If using get_url this is expecting github url in tar.gz format e.g.
-### https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit/archive/refs/heads/benchmark-v1.0.0.tar.gz
-audit_conf_source: "some path or url to copy from"
-
-# Destination for the audit content to be placed on managed node
-# note may not need full path e.g. /opt with the directory being the {{ benchmark }}-Audit directory
-audit_conf_dest: "/opt"
-
-# Where the audit logs are stored
-audit_log_dir: '/opt'
-
-## Ability to collect and take audit files moving to a centralised location
-# This enables the collection of the files from the host
-fetch_audit_output: false
-
-# Method of getting,uploading the summary files
-## Ensure access and permissions are available for these to occur.
-## options are
-# fetch - fetches from server and moves to location on the ansible controller (could be a mount point available to controller)
-# copy - copies file to a location available to the managed node
-audit_output_collection_method: fetch
-
-# Location to put the audit files
-audit_output_destination: /opt/audit_summaries/
+# Moved to defaults/main/audit.yml
 
 ### Goss Settings ##
 ####### END ########
@@ -702,7 +646,7 @@ ubtu22cis_apparmor_mode: complain
 # HAVING THAT PW EXPOSED IN RAW TEXT IS NOT SECURE!!!!
 ubtu22cis_grub_user: root
 ubtu22cis_set_grub_user_pass: false
-ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme
+ubtu22cis_grub_user_passwd: '$y$j9T$MBA5l/tQyWifM869nQjsi.$cTy0ConcNjIYOn6Cppo5NAky20osrkRxz4fEWA8xac6'  # Set to changeme  # pragma: allowlist secret
 ubtu22cis_grub_user_file: /etc/grub.d/00_user
 ubtu22cis_bootloader_password_hash: "grub.pbkdf2.sha512.changethispassword"  # pragma: allowlist secret
 ubtu22cis_set_boot_pass: false
