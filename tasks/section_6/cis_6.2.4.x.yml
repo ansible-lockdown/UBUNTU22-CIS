@@ -82,7 +82,7 @@
       ansible.builtin.file:
         path: "{{ discovered_auditlog_dir.stat.path }}"
         state: directory
-        mode: '0750'
+        mode: 'g-w,o-rwx'
 
 - name: "6.2.4.5 | PATCH | Ensure audit configuration files mode is configured"
   when: ubtu22cis_rule_6_2_4_5
