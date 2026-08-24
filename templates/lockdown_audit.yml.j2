@@ -496,7 +496,7 @@ ubtu22cis_disable_dynamic_motd: {{ ubtu22cis_disable_dynamic_motd }}
 # This variable specifies the GNOME configuration database file to which configurations are written.
 # (See https://help.gnome.org/admin/system-admin-guide/stable/dconf-keyfiles.html.en)
 # The default database is `local`.
-ubtu22cis_dconf_db_name: local
+ubtu22cis_dconf_db_name: {{ ubtu22cis_dconf_db_name }}
 
 ##
 # Section 2
@@ -625,6 +625,8 @@ ubtu22cis_sysctl_network_conf: {{ ubtu22cis_sysctl_network_conf }}
 # that `nftables` has been chosen; all settings have to be carried out manually.
 # Any other value, e.g. `none` will skip all firewall-related controls.
 ubtu22cis_firewall_package: {{ ubtu22cis_firewall_package }}
+# Control 4.1.4 sets the outgoing default to allow when all outbound ports are permitted
+ubtu22cis_ufw_allow_out_all: {{ 'true' if ubtu22cis_ufw_allow_out_ports == 'all' else 'false' }}
 
 ## auditd settings
 ubtu22cis_auditd:
