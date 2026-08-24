@@ -1,6 +1,6 @@
 {{ file_managed_by_ansible }}
 
-{% for module in discovered_loaded_wireless_modules.stdout_lines %}
 # Discovered loaded wireless modules
+{% for module in discovered_loaded_wireless_modules.files | map(attribute='path') | map('basename') | map('regex_replace', '\.ko$', '') | sort %}
 install {{ module }} /bin/true
 {% endfor %}
