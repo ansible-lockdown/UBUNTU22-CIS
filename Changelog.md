@@ -2,6 +2,18 @@
 
 ## Based on CIS v3.0.0 - Branch [v3.00_aug26]
 
+- aug26_updates branch
+  - 3.1.2: prelim wireless discovery used command with a glob, never matched, control never ran
+  - 3.1.2: blacklist gated on stdout of a find register, blacklist file was never written
+  - 3.1.2: kernel module path used ansible_kernel dot notation and a doubled slash
+  - blacklist-wireless.conf.j2: iterates the find files list instead of stdout_lines
+  - 1.7.x: dconf db name taken from the overridable variable instead of the raw register
+  - prelim: dconf systemdb discovery gated on desktop_required as well as gui
+  - Bridge: dconf db name no longer hardcoded to local
+  - 4.1.4: ufw_allow_out_ports set to all raised an invalid loop error, loop is templated before when is evaluated ([#328](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/328), [#342](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/342)) - Thank you @tmeckel
+  - defaults: ufw outbound comment renumbered from 4.1.5 to 4.1.4
+  - CONTRIBUTING.rst replaced with canonical CONTRIBUTING.md, README section added
+
 - v3.00_aug26 branch
   - 6.1.3.x tasks never imported, control 6.1.3.1 never ran
   - pam_unix.j2 rule toggles used dot notation, 5.3.3.4.3 and 5.3.3.4.4 did nothing
