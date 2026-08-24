@@ -31,7 +31,7 @@
 - name: PRELIM | AUDIT | Section 1.1 | Create list of mount points
   tags: always
   ansible.builtin.set_fact:
-    mount_names: "{{ ansible_facts.mounts | map(attribute='mount') | list }}"
+    mount_names: "{{ ansible_facts['mounts'] | map(attribute='mount') | list }}"
 
 - name: PRELIM | AUDIT | Section 1.1 | Retrieve mount options
   tags: always
@@ -84,16 +84,6 @@
     lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
   changed_when: not ubtu22cis_ignore_apt_update_changed_when
 
-- name: Include audit specific variables
-  when:
-    - run_audit or audit_only
-    - setup_audit
-  tags:
-    - setup_audit
-    - run_audit
-  ansible.builtin.include_vars:
-    file: audit.yml
-
 - name: Include pre-remediation audit tasks
   when:
     - run_audit or audit_only
@@ -143,7 +133,7 @@
   when:
     - ubtu22cis_rule_4_1_1
     - ubtu22cis_ufw_use_sysctl
-    - "'ufw' not in ansible_facts.packages"
+    - "'ufw' not in ansible_facts['packages']"
   tags:
     - level1-server
     - level1-workstation
@@ -196,8 +186,8 @@
     mode: 'g-w,o-rwx'
     modification_time: preserve
     access_time: preserve
-  register: prelim_pwquality_dummy
   changed_when: prelim_pwquality_dummy.changed
+  register: prelim_pwquality_dummy
   loop:
     - { path: '/etc/security/pwquality.conf.d', state: 'directory' }
     - { path: '/etc/security/pwquality.conf.d/cis_dummy.conf', state: 'touch' }
@@ -309,7 +299,7 @@
 - name: PRELIM | PATCH | Ensure auditd is installed
   when:
     - ubtu22cis_rule_6_2_1_1
-    - "'auditd' not in ansible_facts.packages or 'auditd-plugins' not in ansible_facts.packages"
+    - "'auditd' not in ansible_facts['packages'] or 'auditd-plugins' not in ansible_facts['packages']"
   tags:
     - level2-server
     - level2-workstation
@@ -334,7 +324,7 @@
   register: prelim_auditd_conf_files
 
 - name: PRELIM | AUDIT | Check if auditd is immutable before changes
-  when: "'auditd' in ansible_facts.packages"
+  when: "'auditd' in ansible_facts['packages']"
   tags: always
   ansible.builtin.shell: |
     set -o pipefail
@@ -346,7 +336,7 @@
   check_mode: false
   register: prelim_auditd_immutable_check
 
-- name: PRELIM | AUDIT | 6.3.4.x | Capture information about auditd logfile path | discover file
+- name: PRELIM | AUDIT | 6.2.4.x | Capture information about auditd logfile path | discover file
   when:
     - ubtu22cis_rule_6_2_4_1 or
       ubtu22cis_rule_6_2_4_2 or
@@ -374,7 +364,7 @@
 - name: PRELIM | PATCH | Install ACL
   when:
     - ubtu22cis_rule_7_2_9
-    - "'acl' not in ansible_facts.packages"
+    - "'acl' not in ansible_facts['packages']"
   tags: always
   ansible.builtin.package:
     name: acl
@@ -387,14 +377,9 @@
 - name: "PRELIM | PATCH | SSH Config file is not exist"
   when:
     - ubtu22cis_sshd_config_file != '/etc/ssh/sshd_config'
-    - "'openssh-server' in ansible_facts.packages"
+    - "'openssh-server' in ansible_facts['packages']"
   tags: always
   block:
-    - name: "PRELIM | AUDIT | Check SSH Config drop in is supported for distribution version"
-      ansible.builtin.assert:
-        that: ansible_distribution_version is version_compare('8.6', '>=')
-        fail_msg: "{{ ansible_distribution }} {{ ansible_distribution_version }} does not support SSH Config drop in"
-
     - name: "PRELIM | PATCH | SSH Config drop in directory is not exist"
       ansible.builtin.file:
         path: "{{ ubtu22cis_sshd_config_file | dirname }}"

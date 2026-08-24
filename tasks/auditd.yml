@@ -21,7 +21,7 @@
     dest: /etc/audit/rules.d/99_auditd.rules
     owner: root
     group: root
-    mode: "0640"
+    mode: "u-x,g-wx,o-rwx"
   vars:
     supported_syscalls: "{{ discovered_auditd_syscalls.stdout_lines }}"
   register: discovered_audit_rules_updated
@@ -38,7 +38,7 @@
     dest: /etc/audit/rules.d/98_auditd_exceptions.rules
     owner: root
     group: root
-    mode: "0600"
+    mode: "go-rwx"
   notify: Restart auditd
 
 - name: POST | Flush handlers

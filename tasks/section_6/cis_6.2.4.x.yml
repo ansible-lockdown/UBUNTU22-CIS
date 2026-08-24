@@ -9,10 +9,20 @@
     - auditd
     - rule_6.2.4.1
     - NIST800-53R5_AU-3
-  ansible.builtin.file:
-    path: "{{ prelim_auditd_logfile.stdout | dirname }}"
-    recurse: true
-    mode: 'u-x,g-wx,o-rwx'
+  block:
+    - name: "6.2.4.1 | AUDIT | Ensure audit log files mode is configured | find log files"
+      ansible.builtin.find:
+        path: "{{ prelim_auditd_logfile.stdout | dirname }}"
+        file_type: file
+      register: discovered_auditd_logfiles
+
+    - name: "6.2.4.1 | PATCH | Ensure audit log files mode is configured | set mode"
+      ansible.builtin.file:
+        path: "{{ item.path }}"
+        mode: 'u-x,g-wx,o-rwx'
+      loop: "{{ discovered_auditd_logfiles.files }}"
+      loop_control:
+        label: "{{ item.path }}"
 
 - name: "6.2.4.2 | PATCH | Ensure audit log files owner is configured"
   when: ubtu22cis_rule_6_2_4_2

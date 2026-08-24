@@ -22,12 +22,12 @@
       check_mode: false
       register: discovered_tmp_mount
 
-    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is a separate partition | Absent"
+    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is tmpfs or a separate partition | Absent"
       when: discovered_tmp_mount.rc != 0
       ansible.builtin.debug:
         msg: "Warning!! {{ mount_point }} is not a separate partition"
 
-    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is a separate partition | Present"
+    - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is tmpfs or a separate partition | Present"
       when: discovered_tmp_mount.rc != 0 or 'tmpfs' not in discovered_tmp_mount.stdout
       ansible.builtin.import_tasks:
         file: warning_facts.yml
@@ -126,13 +126,13 @@
   vars:
     mount_point: "/tmp"
   block:
-    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is configured | Create tmp.mount.d directory"
+    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is tmpfs or a separate partition | Create tmp.mount.d directory"
       ansible.builtin.file:
         path: /etc/systemd/system/tmp.mount.d
         state: directory
         mode: 'go-wx'
 
-    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is configured | Create 60-options.conf file"
+    - name: "1.1.2.1.1 | PATCH | Ensure /tmp is tmpfs or a separate partition | Create 60-options.conf file"
       ansible.builtin.template:
         src: etc/systemd/system/tmpmount.d/60-options.conf.j2
         dest: /etc/systemd/system/tmp.mount.d/60-options.conf

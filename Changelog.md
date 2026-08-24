@@ -1,5 +1,30 @@
 # Changelog — UBUNTU22-CIS
 
+## Based on CIS v3.0.0 - Branch [v3.00_aug26]
+
+- v3.00_aug26 branch
+  - 6.1.3.x tasks never imported, control 6.1.3.1 never ran
+  - pam_unix.j2 rule toggles used dot notation, 5.3.3.4.3 and 5.3.3.4.4 did nothing
+  - grub user assert regated on set_boot_pass, blocked the play at defaults
+  - prelim: removed RHEL8 distribution version assert
+  - 2.1.18: unit typo ngnix.service corrected
+  - 2.3.3.3: package and unit ntpd corrected to ntp
+  - 6.1.1.2.4: journal-remote mask given package presence ternary
+  - 1.5.5 and 5.3.3.3.1: sub-task IDs and titles corrected
+  - Audit template renamed to lockdown_audit.yml.j2
+  - Bridge: remote log server boolean and warning banner mappings fixed
+  - Container gating moved to is_container.yml, apparmor, ipv6, auditd, ptrace, timesync added
+  - Molecule: rule overrides and grub stub removed, role referenced by path
+  - Goss version updated to krameff v0.5.0, checksums verified
+  - Audit variables moved from defaults to vars/audit.yml
+  - Titles updated for alignment
+  - Bracket notation applied, symbolic modes, failed_when before register
+  - Orphan chrony.conf.j2 and ntp.conf.j2 removed
+  - Public only workflows removed, actions/checkout bumped
+  - README emoticons removed, badge updated to x.com
+  - titles updated
+  - audit variables moved from var/audit.yml to defaults/main/audit.yml for easier override of values
+
 ## Based on CIS v3.0.0 - Branch [2026_Community_Updates]
 
 ### Fixed
