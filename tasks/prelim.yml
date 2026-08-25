@@ -99,7 +99,7 @@
   register: prelim_gnome_present
 
 - name: PRELIM | AUDIT | Discover dconf systemdb
-  when: ubtu22cis_gui
+  when: ubtu22cis_gui or ubtu22cis_desktop_required
   ansible.builtin.shell: |
     set -o pipefail
     grep system-db /etc/dconf/profile/user | cut -d ':' -f2
@@ -123,7 +123,7 @@
     - ubtu22cis_rule_3_1_2
     - not system_is_container
   tags: always
-  ansible.builtin.command: find /sys/class/net/*/ -type d -name wireless
+  ansible.builtin.shell: find /sys/class/net/*/ -type d -name wireless
   changed_when: false
   failed_when: prelim_wireless_adapters_exist.rc not in [ 0, 1 ]
   check_mode: false

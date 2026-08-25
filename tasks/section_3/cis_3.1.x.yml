@@ -74,14 +74,12 @@
   block:
     - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | find wireless files"
       ansible.builtin.find:
-        path: /lib/modules/{{ ansible_kernel }}//kernel/drivers/net/wireless
+        path: /lib/modules/{{ ansible_facts['kernel'] }}/kernel/drivers/net/wireless
         patterns: "*.ko"
       register: discovered_loaded_wireless_modules
 
     - name: "3.1.2 | PATCH | Ensure wireless interfaces are not available | add to blacklist"
-      when:
-        - discovered_loaded_wireless_modules.stdout is defined
-        - discovered_loaded_wireless_modules.stdout | length > 0
+      when: discovered_loaded_wireless_modules.matched > 0
       ansible.builtin.template:
         src: etc/modprobe.d/blacklist-wireless.conf.j2
         dest: /etc/modprobe.d/blacklist-wireless.conf
