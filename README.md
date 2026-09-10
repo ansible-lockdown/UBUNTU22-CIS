@@ -6,23 +6,23 @@
 
 ---
 
-## Public Repository 📣
+## Public Repository
 
 ![Org Stars](https://img.shields.io/github/stars/ansible-lockdown?label=Org%20Stars&style=social)
 ![Stars](https://img.shields.io/github/stars/ansible-lockdown/UBUNTU22-CIS?label=Repo%20Stars&style=social)
 ![Forks](https://img.shields.io/github/forks/ansible-lockdown/UBUNTU22-CIS?style=social)
 ![Followers](https://img.shields.io/github/followers/ansible-lockdown?style=social)
-[![X URL](https://img.shields.io/twitter/url/https/twitter.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://x.com/AnsibleLockdown)
+[![X URL](https://img.shields.io/twitter/url/https/x.com/AnsibleLockdown.svg?style=social&label=Follow%20%40AnsibleLockdown)](https://x.com/AnsibleLockdown)
 ![Discord Badge](https://img.shields.io/discord/925818806838919229?logo=discord)
 
 ![License](https://img.shields.io/github/license/ansible-lockdown/UBUNTU22-CIS?label=License)
 
-## Lint & Pre-Commit Tools 🔧
+## Lint & Pre-Commit Tools
 
 ![YamlLint](https://img.shields.io/badge/yamllint-Present-brightgreen?style=flat&logo=yaml&logoColor=white)
 ![Ansible-Lint](https://img.shields.io/badge/ansible--lint-Present-brightgreen?style=flat&logo=ansible&logoColor=white)
 
-## Community Release Information 📂
+## Community Release Information
 
 ![Release Branch](https://img.shields.io/badge/Release%20Branch-Main-brightgreen)
 ![Release Tag](https://img.shields.io/github/v/tag/ansible-lockdown/UBUNTU22-CIS?label=Release%20Tag&&color=success)
@@ -42,7 +42,7 @@
 
 ---
 
-## Subscriber Release Information 🔐
+## Subscriber Release Information
 
 ![Private Release Branch](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/release-branch.json)
 ![Private Benchmark Version](https://img.shields.io/endpoint?url=https://ansible-lockdown.github.io/github_linux_IaC/badges/Private-UBUNTU22-CIS/benchmark-version.json)
@@ -54,25 +54,31 @@
 
 ---
 
-## Looking for support? 🤝
+## Looking for support?
 
 [Lockdown Enterprise](https://www.lockdownenterprise.com#GH_AL_UBUNTU22-CIS)
 
 [Ansible support](https://www.mindpointgroup.com/cybersecurity-products/ansible-counselor#GH_AL_UBUNTU22-CIS)
 
-### Community 💬
+### Community
 
 On our [Discord Server](https://www.lockdownenterprise.com/discord) to ask questions, discuss features, or just chat with other Ansible-Lockdown users
 
+### Contributing
+
+Bug reports and feature requests are welcome from everyone, please raise an issue.
+
+Pull requests are accepted from approved contributors only. To be onboarded, join the [Discord Server](https://www.lockdownenterprise.com/discord) and request contributor access. See [CONTRIBUTING.md](CONTRIBUTING.md) for the full process.
+
 ---
 
-## 🚨 Caution(s) 🚨
+## Caution(s)
 
 This role **will make changes to the system** which may have unintended consequences. This is not an auditing tool but rather a remediation tool to be used after an audit has been conducted.
 
 - Testing is the most important thing you can do.
 
-- Check Mode is not guaranteed! 🚫 The role will complete in check mode without errors, but it is not supported and should be used with caution.
+- Check Mode is not guaranteed! The role will complete in check mode without errors, but it is not supported and should be used with caution.
 
 - This role was developed against a clean install of the Operating System. If you are implementing to an existing system please review this role for any site specific changes that are needed.
 
@@ -82,7 +88,7 @@ This role **will make changes to the system** which may have unintended conseque
 
 ---
 
-## Coming From A Previous Release ⏪
+## Coming From A Previous Release
 
 CIS release always contains changes, it is highly recommended to review the new references and available variables. This has changed significantly since the ansible-lockdown initial release.
 This is now compatible with python3 if it is found to be the default interpreter. This does come with pre-requisites which it configures the system accordingly.
@@ -104,16 +110,16 @@ This is managed using tags:
 The controls found in defaults/main.yml also need to reflect this as they control the testing that takes place if you are using the audit component.
 
 ---
-## Requirements ✅
+## Requirements
 
 **General:**
 
 - Basic knowledge of Ansible, below are some links to the Ansible documentation to help get started if you are unfamiliar with Ansible
 
-  - [Main Ansible documentation page](https://docs.ansible.com)
-  - [Ansible Getting Started](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html)
-  - [Tower User Guide](https://docs.ansible.com/ansible-tower/latest/html/userguide/index.html)
-  - [Ansible Community Info](https://docs.ansible.com/ansible/latest/community/index.html)
+ - [Main Ansible documentation page](https://docs.ansible.com)
+ - [Ansible Getting Started](https://docs.ansible.com/ansible/latest/user_guide/intro_getting_started.html)
+ - [Tower User Guide](https://docs.ansible.com/ansible-tower/latest/html/userguide/index.html)
+ - [Ansible Community Info](https://docs.ansible.com/ansible/latest/community/index.html)
 - Functioning Ansible and/or Tower Installed, configured, and running. This includes all of the base Ansible/Tower configurations, needed packages installed, and infrastructure setup.
 - Please read through the tasks in this role to gain an understanding of what each control is doing. Some of the tasks are disruptive and can have unintended consequences in a live production system. Also familiarize yourself with the variables in the defaults/main.yml file.
 
@@ -129,13 +135,13 @@ UBUNTU 22.04
 
 ---
 
-## Auditing 🔍
+## Auditing
 
 This can be turned on or off within the defaults/main.yml file with the variable run_audit. The value is false by default, please refer to the wiki for more details. The defaults file also populates the goss checks to check only the controls that have been enabled in the ansible role.
 
 This is a much quicker, very lightweight, checking (where possible) config compliance and live/running settings.
 
-A new form of auditing has been developed, by using a small (12MB) go binary called [goss](https://github.com/goss-org/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
+A new form of auditing has been developed, by using a small (16MB) go binary called [goss](https://github.com/krameff/goss) along with the relevant configurations to check. Without the need for infrastructure or other tooling.
 This audit will not only check the config has the correct setting but aims to capture if it is running with that configuration also trying to remove [false positives](https://www.mindpointgroup.com/blog/is-compliance-scanning-still-relevant/) in the process.
 
 Refer to [UBUNTU22-CIS-Audit](https://github.com/ansible-lockdown/UBUNTU22-CIS-Audit).
@@ -148,19 +154,19 @@ Note: More tests are run during audit as we check config and running state.
 ```txt
 
 ok: [default] => {
-    "msg": [
-        "The pre remediation results are: ['Total Duration: 5.454s', 'Count: 338, Failed: 47, Skipped: 5'].",
-        "The post remediation results are: ['Total Duration: 5.007s', 'Count: 338, Failed: 46, Skipped: 5'].",
-        "Full breakdown can be found in /var/tmp",
-        ""
-    ]
+ "msg": [
+ "The pre remediation results are: ['Total Duration: 5.454s', 'Count: 338, Failed: 47, Skipped: 5'].",
+ "The post remediation results are: ['Total Duration: 5.007s', 'Count: 338, Failed: 46, Skipped: 5'].",
+ "Full breakdown can be found in /var/tmp",
+ ""
+ ]
 }
 
 PLAY RECAP *******************************************************************************************************************************************
-default                    : ok=270  changed=23   unreachable=0    failed=0    skipped=140  rescued=0    ignored=0
+default : ok=270 changed=23 unreachable=0 failed=0 skipped=140 rescued=0 ignored=0
 ```
 
-## Documentation 📖
+## Documentation
 
 - [Read The Docs](https://ansible-lockdown.readthedocs.io/en/latest/)
 - [Getting Started](https://www.lockdownenterprise.com/docs/getting-started-with-lockdown#GH_AL_UBUNTU22_cis)
@@ -173,42 +179,42 @@ default                    : ok=270  changed=23   unreachable=0    failed=0    s
 
 This role is designed that the end user should not have to edit the tasks themselves. All customizing should be done via the defaults/main.yml file or with extra vars within the project, job, workflow, etc.
 
-## Tags 🏷️
+## Tags
 
 There are many tags available for added control precision. Each control has its own set of tags noting what level, what OS element it relates to, whether it's a patch or audit, and the rule number. Additionally, NIST references follow a specific conversion format for consistency and clarity.
 
 ### Conversion Format for NIST References:
 
-  1. Standard Prefix:
+ 1. Standard Prefix:
 
-    - All references are prefixed with "NIST".
+ - All references are prefixed with "NIST".
 
-  2. Standard Types:
+ 2. Standard Types:
 
-    - "800-53" references are formatted as NIST800-53.
-    - "800-53r5" references are formatted as NIST800-53R5 (with 'R' capitalized).
-    - "800-171" references are formatted as NIST800-171.
+ - "800-53" references are formatted as NIST800-53.
+ - "800-53r5" references are formatted as NIST800-53R5 (with 'R' capitalized).
+ - "800-171" references are formatted as NIST800-171.
 
-  3. Details:
+ 3. Details:
 
-    - Section and subsection numbers use periods (.) for numeric separators.
-    - Parenthetical elements are separated by underscores (_), e.g., IA-5(1)(d) becomes IA-5_1_d.
-    - Subsection letters (e.g., "b") are appended with an underscore.
+ - Section and subsection numbers use periods (.) for numeric separators.
+ - Parenthetical elements are separated by underscores (_), e.g., IA-5(1)(d) becomes IA-5_1_d.
+ - Subsection letters (e.g., "b") are appended with an underscore.
 Below is an example of the tag section from a control within this role. Using this example if you set your run to skip all controls with the tag services, this task will be skipped. The opposite can also happen where you run only controls tagged with services.
 
 ```sh
-      tags:
-      - level1-server
-      - level1-workstation
-      - scored
-      - avahi
-      - services
-      - patch
-      - rule_2.2.4
+ tags:
+ - level1-server
+ - level1-workstation
+ - scored
+ - avahi
+ - services
+ - patch
+ - rule_2.2.4
 ```
 
 
-## Community Contribution 🧑‍🤝‍🧑
+## Community Contribution
 
 We encourage you (the community) to contribute to this role. Please read the rules below.
 
@@ -217,7 +223,7 @@ We encourage you (the community) to contribute to this role. Please read the rul
 - Pull Requests into devel will confirm your commits have a GPG signature, Signed-off-by, and a functional test before being approved
 - Once your changes are merged and a more detailed review is complete, an authorized member will merge your changes into the main branch for a new release
 
-## Pipeline Testing 🔄
+## Pipeline Testing
 
 uses:
 
@@ -232,7 +238,7 @@ uses:
 Some cloud provider repositories may not support GPG key validation (rule_1.2.1.1, rule_1.2.1.2) which may cause issues during the playbook run.
 
 
-## Local Testing 💻
+## Local Testing
 
 ### example
 
@@ -252,7 +258,7 @@ local testing uses:
 - molecule-azure 0.5.0
 
 
-## Credits and Thanks 🙏
+## Credits and Thanks
 
 Massive thanks to the fantastic community and all its members.
 

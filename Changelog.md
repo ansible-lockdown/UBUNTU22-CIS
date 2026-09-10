@@ -1,5 +1,43 @@
 # Changelog — UBUNTU22-CIS
 
+## Based on CIS v3.0.0 - Branch [v3.00_aug26]
+
+- aug26_updates branch
+  - 3.1.2: prelim wireless discovery used command with a glob, never matched, control never ran
+  - 3.1.2: blacklist gated on stdout of a find register, blacklist file was never written
+  - 3.1.2: kernel module path used ansible_kernel dot notation and a doubled slash
+  - blacklist-wireless.conf.j2: iterates the find files list instead of stdout_lines
+  - 1.7.x: dconf db name taken from the overridable variable instead of the raw register
+  - prelim: dconf systemdb discovery gated on desktop_required as well as gui
+  - Bridge: dconf db name no longer hardcoded to local
+  - 4.1.4: ufw_allow_out_ports set to all raised an invalid loop error, loop is templated before when is evaluated ([#328](https://github.com/ansible-lockdown/UBUNTU22-CIS/issues/328), [#342](https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/342)) - Thank you @tmeckel
+  - defaults: ufw outbound comment renumbered from 4.1.5 to 4.1.4
+  - CONTRIBUTING.rst replaced with canonical CONTRIBUTING.md, README section added
+  - README: goss link moved to the krameff fork, binary size corrected to 16MB
+
+- v3.00_aug26 branch
+  - 6.1.3.x tasks never imported, control 6.1.3.1 never ran
+  - pam_unix.j2 rule toggles used dot notation, 5.3.3.4.3 and 5.3.3.4.4 did nothing
+  - grub user assert regated on set_boot_pass, blocked the play at defaults
+  - prelim: removed RHEL8 distribution version assert
+  - 2.1.18: unit typo ngnix.service corrected
+  - 2.3.3.3: package and unit ntpd corrected to ntp
+  - 6.1.1.2.4: journal-remote mask given package presence ternary
+  - 1.5.5 and 5.3.3.3.1: sub-task IDs and titles corrected
+  - Audit template renamed to lockdown_audit.yml.j2
+  - Bridge: remote log server boolean and warning banner mappings fixed
+  - Container gating moved to is_container.yml, apparmor, ipv6, auditd, ptrace, timesync added
+  - Molecule: rule overrides and grub stub removed, role referenced by path
+  - Goss version updated to krameff v0.5.0, checksums verified
+  - Audit variables moved from defaults to vars/audit.yml
+  - Titles updated for alignment
+  - Bracket notation applied, symbolic modes, failed_when before register
+  - Orphan chrony.conf.j2 and ntp.conf.j2 removed
+  - Public only workflows removed, actions/checkout bumped
+  - README emoticons removed, badge updated to x.com
+  - titles updated
+  - audit variables moved from var/audit.yml to defaults/main/audit.yml for easier override of values
+
 ## Based on CIS v3.0.0 - Branch [2026_Community_Updates]
 
 ### Fixed

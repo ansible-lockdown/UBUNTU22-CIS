@@ -56,17 +56,17 @@
     - NIST800-53R5_AU-8
   block:
     - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running | disable other time sources | timesyncd"
-      when: "'systemd-timesyncd' in ansible_facts.packages"
+      when: "'systemd-timesyncd' in ansible_facts['packages']"
       ansible.builtin.systemd:
         name: systemd-timesyncd
         state: stopped
         enabled: false
         masked: true
 
-    - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running | disable other time sources | ntpd"
-      when: "'ntpd' in ansible_facts.packages"
+    - name: "2.3.3.3 | PATCH | Ensure chrony is enabled and running | disable other time sources | ntp"
+      when: "'ntp' in ansible_facts['packages']"
       ansible.builtin.systemd:
-        name: ntpd
+        name: ntp
         state: stopped
         enabled: false
         masked: true

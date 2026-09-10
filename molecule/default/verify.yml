@@ -12,13 +12,13 @@
 
   tasks:
     - name: Verify | Find pre-audit results file
-      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts['hostname'] }}-{{ benchmark }}-{{ benchmark_version }}_pre_scan_*.{{ audit_format }} 2>/dev/null | head -1
       register: verify_pre_audit_file
       changed_when: false
       failed_when: false
 
     - name: Verify | Find post-audit results file
-      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts.hostname }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
+      ansible.builtin.shell: ls -t {{ audit_log_dir }}/{{ ansible_facts['hostname'] }}-{{ benchmark }}-{{ benchmark_version }}_post_scan_*.{{ audit_format }} 2>/dev/null | head -1
       register: verify_post_audit_file
       changed_when: false
       failed_when: false
