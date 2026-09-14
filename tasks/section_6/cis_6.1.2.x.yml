@@ -3,7 +3,7 @@
 - name: "6.1.2.1 | PATCH | Ensure rsyslog is installed"
   when:
     - ubtu22cis_rule_6_1_2_1
-    - "'rsyslog' not in ansible_facts.packages"
+    - "'rsyslog' not in ansible_facts['packages']"
   tags:
     - level1-server
     - level1-workstation
@@ -73,7 +73,7 @@
     line: '$FileCreateMode 0640'
   notify: Restart syslog service
 
-- name: "6.1.2.5 | PATCH | Ensure logging is configured"
+- name: "6.1.2.5 | PATCH | Ensure rsyslog logging is configured"
   when: ubtu22cis_rule_6_1_2_5
   tags:
     - level1-server
@@ -88,7 +88,7 @@
   vars:
     warn_control_id: '6.1.2.5'
   block:
-    - name: "6.1.2.5 | AUDIT | Ensure logging is configured | Find configuration file"
+    - name: "6.1.2.5 | AUDIT | Ensure rsyslog logging is configured | Find configuration file"
       ansible.builtin.shell: |
         set -o pipefail
         grep -r "*.emerg" /etc/* | cut -f1 -d":"
@@ -99,26 +99,26 @@
       check_mode: false
       register: discovered_rsyslog_config_path
 
-    - name: "6.1.2.5 | AUDIT | Ensure logging is configured | Gather rsyslog current config"
+    - name: "6.1.2.5 | AUDIT | Ensure rsyslog logging is configured | Gather rsyslog current config"
       ansible.builtin.command: "cat {{ discovered_rsyslog_config_path.stdout }}"
       changed_when: false
       failed_when: discovered_rsyslog_config.rc not in [0, 1]
       check_mode: false
       register: discovered_rsyslog_config
 
-    - name: "6.1.2.5 | AUDIT | Ensure logging is configured | Message out config"
+    - name: "6.1.2.5 | AUDIT | Ensure rsyslog logging is configured | Message out config"
       when: not ubtu22cis_rsyslog_ansible_managed
       ansible.builtin.debug:
         msg:
           - "Warning!! Below is the current logging configurations for rsyslog, please review"
           - "{{ discovered_rsyslog_config.stdout_lines }}"
 
-    - name: "6.1.2.5 | PATCH | Ensure logging is configured | Set warning count"
+    - name: "6.1.2.5 | PATCH | Ensure rsyslog logging is configured | Set warning count"
       when: not ubtu22cis_rsyslog_ansible_managed
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 
-    - name: "6.1.2.5 | PATCH | Ensure logging is configured | Automated rsyslog configuration"
+    - name: "6.1.2.5 | PATCH | Ensure rsyslog logging is configured | Automated rsyslog configuration"
       when: ubtu22cis_rsyslog_ansible_managed
       ansible.builtin.lineinfile:
         path: "{{ discovered_rsyslog_config_path.stdout }}"

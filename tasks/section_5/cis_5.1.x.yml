@@ -92,7 +92,7 @@
       loop_control:
         label: "{{ item.path }}"
 
-- name: "5.1.4 | PATCH | Ensure SSH access is configured"
+- name: "5.1.4 | PATCH | Ensure sshd access is configured"
   when:
     - ubtu22cis_rule_5_1_4
     - ubtu22cis_sshd_limited
@@ -106,7 +106,7 @@
     - NIST800-53R5_MP-2
     - rule_5.1.4
   block:
-    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowusers"
+    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add line to sshd_config for allowusers"
       when: "ubtu22cis_sshd_allowusers | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ ubtu22cis_sshd_config_file }}"
@@ -114,7 +114,7 @@
         line: AllowUsers {{ ubtu22cis_sshd_allowusers }}
       notify: Restart sshd
 
-    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for allowgroups"
+    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add line to sshd_config for allowgroups"
       when: "ubtu22cis_sshd_allowgroups | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ ubtu22cis_sshd_config_file }}"
@@ -122,7 +122,7 @@
         line: AllowGroups {{ ubtu22cis_sshd_allowgroups }}
       notify: Restart sshd
 
-    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denyusers"
+    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add line to sshd_config for denyusers"
       when: "ubtu22cis_sshd_denyusers | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ ubtu22cis_sshd_config_file }}"
@@ -130,7 +130,7 @@
         line: DenyUsers {{ ubtu22cis_sshd_denyusers }}
       notify: Restart sshd
 
-    - name: "5.1.4 | PATCH | Ensure SSH access is configured | Add line to sshd_config for denygroups"
+    - name: "5.1.4 | PATCH | Ensure sshd access is configured | Add line to sshd_config for denygroups"
       when: "ubtu22cis_sshd_denygroups | length > 0"
       ansible.builtin.lineinfile:
         path: "{{ ubtu22cis_sshd_config_file }}"

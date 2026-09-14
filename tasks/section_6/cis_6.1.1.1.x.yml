@@ -1,6 +1,6 @@
 ---
 
-- name: "6.1.1.1.1 | PATCH | Ensure journald service is enabled and active"
+- name: "6.1.1.1.1 | PATCH | Ensure journald service is active"
   when: ubtu22cis_rule_6_1_1_1_1
   tags:
     - level1-server

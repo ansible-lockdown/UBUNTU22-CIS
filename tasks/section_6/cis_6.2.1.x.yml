@@ -75,7 +75,7 @@
         before: '"'
       notify: Grub update
 
-- name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient"
+- name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is configured"
   when: ubtu22cis_rule_6_2_1_4
   tags:
     - level2-server
@@ -87,7 +87,7 @@
     - NIST800-53R5_AU-3
     - NIST800-53R5_AU-12
   block:
-    - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Get current GRUB_CMDLINE_LINUX"
+    - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is configured | Get current GRUB_CMDLINE_LINUX"
       ansible.builtin.shell: |
         set -o pipefail
         grep "GRUB_CMDLINE_LINUX=" /etc/default/grub | cut -f2 -d'"'
@@ -98,7 +98,7 @@
       check_mode: false
       register: discovered_grub_cmdline_backlog_settings
 
-    - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Add setting if doesn't exist"
+    - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is configured | Add setting if doesn't exist"
       when: "'audit_backlog_limit=' not in discovered_grub_cmdline_backlog_settings.stdout"
       ansible.builtin.lineinfile:
         path: /etc/default/grub
@@ -106,7 +106,7 @@
         line: 'GRUB_CMDLINE_LINUX="{{ discovered_grub_cmdline_backlog_settings.stdout }} audit_backlog_limit={{ ubtu22cis_audit_back_log_limit }}"'
       notify: Grub update
 
-    - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is sufficient | Update setting if exists"
+    - name: "6.2.1.4 | PATCH | Ensure audit_backlog_limit is configured | Update setting if exists"
       ansible.builtin.replace:
         dest: /etc/default/grub
         regexp: 'audit_backlog_limit=([0-9]+)'

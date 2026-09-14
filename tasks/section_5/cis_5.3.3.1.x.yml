@@ -62,9 +62,9 @@
     - name: "5.3.3.1.2 | AUDIT | Ensure password unlock time is configured | discover pam config with unlock_time"
       ansible.builtin.shell: grep -Pl -- '\bpam_faillock\.so\h+([^#\n\r]+\h+)?unlock_time\b' /usr/share/pam-configs/*
       check_mode: false
-      register: discovered_faillock_unlock_files
       changed_when: false
       failed_when: discovered_faillock_unlock_files.rc not in [ 0, 1 ]
+      register: discovered_faillock_unlock_files
 
     - name: "5.3.3.1.2 | PATCH | Ensure password unlock time is configured | if exists remove unlock_time from faillock line in pam-auth conf files"
       when: discovered_faillock_unlock_files.stdout | length > 0

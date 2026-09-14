@@ -63,7 +63,7 @@
       loop_control:
         label: "{{ item }}"
 
-- name: "5.4.1.2 | PATCH | Ensure minimum password age is configured"
+- name: "5.4.1.2 | PATCH | Ensure minimum password days is configured"
   when: ubtu22cis_rule_5_4_1_2
   tags:
     - level2-server
@@ -75,20 +75,20 @@
     - NIST800-53R5_NA
   no_log: true
   block:
-    - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured | Set /etc/login.defs PASS_MIN_DAYS"
+    - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured | Set /etc/login.defs PASS_MIN_DAYS"
       ansible.builtin.lineinfile:
         path: /etc/login.defs
         regexp: '^PASS_MIN_DAYS|^#PASS_MIN_DAYS'
         line: 'PASS_MIN_DAYS {{ ubtu22cis_pass_min_days }}'
 
-    - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured | Get existing users PASS_MIN_DAYS"
+    - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured | Get existing users PASS_MIN_DAYS"
       ansible.builtin.command: "awk -F: '(/^[^:]+:[^!*]/ && ($4<{{ ubtu22cis_pass_min_days }})) {print $1}' /etc/shadow"
       changed_when: false
       failed_when: discovered_passwd_min_days.rc not in [0, 1]
       check_mode: false
       register: discovered_passwd_min_days
 
-    - name: "5.4.1.2 | PATCH | Ensure minimum password age is configured | Set existing users PASS_MIN_DAYS"
+    - name: "5.4.1.2 | PATCH | Ensure minimum password days is configured | Set existing users PASS_MIN_DAYS"
       when:
         - ubtu22cis_disruption_high
         - (item != 'root') or (not ubtu22cis_uses_root)
@@ -172,7 +172,7 @@
       check_mode: false
       register: discovered_passwd_inactive_setting
 
-    - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured| Set inactive period for new users"
+    - name: "5.4.1.5 | PATCH | Ensure inactive password lock is configured"
       when: discovered_passwd_inactive_setting.stdout != ubtu22cis_pass_inactive | string
       ansible.builtin.command: useradd -D -f {{ ubtu22cis_pass_inactive }}
       failed_when: false

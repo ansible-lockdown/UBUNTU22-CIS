@@ -18,6 +18,10 @@
   ansible.builtin.import_tasks:
     file: cis_6.1.2.8.yml
 
+- name: "SECTION | 6.1.3.x | Configure Logfiles"
+  ansible.builtin.import_tasks:
+    file: cis_6.1.3.x.yml
+
 - name: "SECTION | 6.2.1.x | Configure auditd Service"
   ansible.builtin.import_tasks:
     file: cis_6.2.1.x.yml

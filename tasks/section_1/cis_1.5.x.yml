@@ -85,19 +85,19 @@
     - NIST800-53R5_CM-6
   block:
     - name: "1.5.5 | PATCH | Ensure prelink is not installed | Restore binaries to normal"
-      when: "'prelink' in ansible_facts.packages"
+      when: "'prelink' in ansible_facts['packages']"
       ansible.builtin.command: prelink -ua
       changed_when: false
       failed_when: false
 
-    - name: "1.5.4 | PATCH | Ensure prelink is not installed | Remove prelink package"
+    - name: "1.5.5 | PATCH | Ensure prelink is not installed | Remove prelink package"
       ansible.builtin.package:
         name: prelink
         state: absent
         purge: "{{ ubtu22cis_purge_apt }}"
         lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
-- name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is not enabled"
+- name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is configured"
   when: ubtu22cis_rule_1_5_6
   tags:
     - level1-server
@@ -107,7 +107,7 @@
     - apport
     - NIST800-53R5_NA
   block:
-    - name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is not enabled | disable"
+    - name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is configured | disable"
       ansible.builtin.lineinfile:
         path: /etc/default/apport
         regexp: ^enabled
@@ -117,7 +117,7 @@
         group: root
         mode: 'go-wx'
 
-    - name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is not enabled | remove package"
+    - name: "1.5.6 | PATCH | Ensure Automatic Error Reporting is configured | remove package"
       ansible.builtin.package:
         name: apport
         state: absent

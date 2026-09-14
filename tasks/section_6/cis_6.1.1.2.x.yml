@@ -18,7 +18,7 @@
     state: present
     lock_timeout: "{{ ubtu22cis_apt_lock_timeout }}"
 
-- name: "6.1.1.2.2 | PATCH | Ensure systemd-journal-remote authentication is configured"
+- name: "6.1.1.2.2 | PATCH | Ensure systemd-journal-upload authentication is configured"
   when:
     - ubtu22cis_rule_6_1_1_2_2
     - not ubtu22cis_system_is_log_server
@@ -75,8 +75,8 @@
     - NIST800-53R5_AU-12
   ansible.builtin.systemd:
     name: "{{ item }}"
-    state: stopped
-    enabled: false
+    enabled: "{{ ('systemd-journal-remote' in ansible_facts['packages']) | ternary(false, omit) }}"
+    state: "{{ ('systemd-journal-remote' in ansible_facts['packages']) | ternary('stopped', omit) }}"
     masked: true
   loop:
     - systemd-journal-remote.socket

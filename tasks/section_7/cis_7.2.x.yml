@@ -118,12 +118,12 @@
     - name: "7.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
       ansible.builtin.debug:
         msg: "Warning!! - You have users in the shadow group"
-      when: ansible_facts.getent_group.shadow[2] | length > 0
+      when: ansible_facts['getent_group']['shadow'][2] | length > 0
 
     - name: "7.2.4 | AUDIT | Ensure shadow group is empty | check users in group"
       ansible.builtin.import_tasks:
         file: warning_facts.yml
-      when: ansible_facts.getent_group.shadow[2] | length > 0
+      when: ansible_facts['getent_group']['shadow'][2] | length > 0
 
 - name: "7.2.5 | AUDIT | Ensure no duplicate UIDs exist"
   when: ubtu22cis_rule_7_2_5

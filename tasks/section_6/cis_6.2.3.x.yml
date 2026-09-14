@@ -72,7 +72,7 @@
     - auditd
     - NIST800-53R5_AU-3
   block:
-    - name: "6.2.3.6 | AUDIT | Ensure use of privileged commands is collected | Get list of privileged programs"
+    - name: "6.2.3.6 | AUDIT | Ensure use of privileged commands are collected | Get list of privileged programs"
       ansible.builtin.shell: |
         set -o pipefail
         for i in  $(findmnt -n -l -k -it $(awk '/nodev/ { print $2 }' /proc/filesystems | paste -sd,) | grep -Pv "noexec|nosuid" | awk '{print $1}'); do find $i -xdev -type f -perm -4000 -o -type f -perm -2000 2>/dev/null; done
@@ -82,7 +82,7 @@
       check_mode: false
       register: discovered_priv_procs
 
-    - name: "6.2.3.6 | PATCH | Ensure use of privileged commands is collected | Set privileged rules"
+    - name: "6.2.3.6 | PATCH | Ensure use of privileged commands are collected | Set privileged rules"
       ansible.builtin.set_fact:
         update_audit_template: true
 
@@ -185,7 +185,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: "6.2.3.15 | PATCH | Ensure successful and unsuccessful attempts to use the chcon command are recorded"
+- name: "6.2.3.15 | PATCH | Ensure successful and unsuccessful attempts to use the chcon command are collected"
   when: ubtu22cis_rule_6_2_3_15
   tags:
     - level2-server
@@ -199,7 +199,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: "6.2.3.16 | PATCH | Ensure successful and unsuccessful attempts to use the setfacl command are recorded"
+- name: "6.2.3.16 | PATCH | Ensure successful and unsuccessful attempts to use the setfacl command are collected"
   when: ubtu22cis_rule_6_2_3_16
   tags:
     - level2-server
@@ -213,7 +213,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: "6.2.3.17 | PATCH | Ensure successful and unsuccessful attempts to use the chacl command are recorded"
+- name: "6.2.3.17 | PATCH | Ensure successful and unsuccessful attempts to use the chacl command are collected"
   when: ubtu22cis_rule_6_2_3_17
   tags:
     - level2-server
@@ -227,7 +227,7 @@
   ansible.builtin.set_fact:
     update_audit_template: true
 
-- name: "6.2.3.18 | PATCH | Ensure successful and unsuccessful attempts to use the usermod command are recorded"
+- name: "6.2.3.18 | PATCH | Ensure successful and unsuccessful attempts to use the usermod command are collected"
   when: ubtu22cis_rule_6_2_3_18
   tags:
     - level2-server

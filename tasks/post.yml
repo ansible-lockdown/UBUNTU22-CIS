@@ -5,7 +5,8 @@
   when:
     - ubtu22cis_sysctl_update
     - not system_is_container
-    - "'procps' in ansible_facts.packages"
+    - "'procps' in ansible_facts['packages']"
+  tags: always
   ansible.builtin.template:
     src: "etc/sysctl.d/{{ item }}.j2"
     dest: "/etc/sysctl.d/{{ item }}"

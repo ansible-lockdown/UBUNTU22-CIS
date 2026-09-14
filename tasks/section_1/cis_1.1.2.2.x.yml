@@ -22,12 +22,12 @@
       check_mode: false
       register: discovered_dev_shm_mount
 
-    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | Absent"
+    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs or a separate partition | Absent"
       when: discovered_dev_shm_mount.rc != 0
       ansible.builtin.debug:
         msg: "Warning!! {{ required_mount }} is not a separate partition"
 
-    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is a separate partition | Present"
+    - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs or a separate partition | Present"
       when: discovered_dev_shm_mount.rc != 0 or 'tmpfs' not in discovered_dev_shm_mount.stdout
       ansible.builtin.import_tasks:
         file: warning_facts.yml

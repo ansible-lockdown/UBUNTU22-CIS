@@ -20,6 +20,6 @@ Session-Initial:
         required pam_unix.so
 Password-Type: Primary
 Password:
-        [success=end default=ignore] pam_unix.so obscure{% if ubtu22cis_rule_5.3.3.4.4 %} use_authtok{% endif %} try_first_pass{% if ubtu22cis_rule_5.3.3.4.3 %} {{ ubtu22cis_passwd_hash_algo }}{% endif %}
+        [success=end default=ignore] pam_unix.so obscure{% if ubtu22cis_rule_5_3_3_4_4 %} use_authtok{% endif %} try_first_pass{% if ubtu22cis_rule_5_3_3_4_3 %} {{ ubtu22cis_passwd_hash_algo }}{% endif %}
 Password-Initial:
-        [success=end default=ignore] pam_unix.so obscure{% if ubtu22cis_rule_5.3.3.4.3 %} {{ ubtu22cis_passwd_hash_algo }}{% endif %}
+        [success=end default=ignore] pam_unix.so obscure{% if ubtu22cis_rule_5_3_3_4_3 %} {{ ubtu22cis_passwd_hash_algo }}{% endif %}
