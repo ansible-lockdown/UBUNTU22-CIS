@@ -6,6 +6,7 @@
     - level1-server
     - level1-workstation
     - audit
+    - patch
     - journald
     - rule_6.1.1.1.1
     - NIST800-53R5_AU-2
@@ -22,6 +23,7 @@
     - level1-server
     - level1-workstation
     - audit
+    - patch
     - journald
     - rule_6.1.1.1.2
     - NIST800-53R5_AC-3
@@ -104,7 +106,7 @@
   when: ubtu22cis_rule_6_1_1_1_4
   tags:
     - level1-server
-    - level2-workstation
+    - level1-workstation
     - patch
     - journald
     - rule_6.1.1.1.4

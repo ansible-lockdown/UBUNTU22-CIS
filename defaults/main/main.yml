@@ -52,9 +52,6 @@ ubtu22cis_disruption_high: true
 # boot *without* querying for the bootloader password.
 ubtu22cis_ask_passwd_to_boot: false  # pragma: allowlist secret
 
-# skip tests that fail in CI/test environments
-ubtu22cis_skip_for_test: false
-
 # skip events for ec2 instance testing pipeline
 # set true to skip EC2-incompatible tasks (e.g., GRUB, reboot)
 system_is_ec2: false
@@ -354,7 +351,7 @@ ubtu22cis_rule_5_3_2_4: true
 ubtu22cis_rule_5_3_3_1_1: true
 ubtu22cis_rule_5_3_3_1_2: true
 ubtu22cis_rule_5_3_3_1_3: true
-# 5.3.3.2 Configure pam_quality module
+# 5.3.3.2 Configure pam_pwquality module
 ubtu22cis_rule_5_3_3_2_1: true
 ubtu22cis_rule_5_3_3_2_2: true
 ubtu22cis_rule_5_3_3_2_3: true
@@ -363,7 +360,7 @@ ubtu22cis_rule_5_3_3_2_5: true
 ubtu22cis_rule_5_3_3_2_6: true
 ubtu22cis_rule_5_3_3_2_7: true
 ubtu22cis_rule_5_3_3_2_8: true
-# 5.3.3.3 Configure pam_history module
+# 5.3.3.3 Configure pam_pwhistory module
 # These are added as part of 5.3.2.4 using jinja2 template
 ubtu22cis_rule_5_3_3_3_1: true
 ubtu22cis_rule_5_3_3_3_2: true
@@ -390,7 +387,7 @@ ubtu22cis_rule_5_4_2_5: true
 ubtu22cis_rule_5_4_2_6: true
 ubtu22cis_rule_5_4_2_7: true
 ubtu22cis_rule_5_4_2_8: true
-# 5.4.2 Configure user default environment
+# 5.4.3 Configure user default environment
 ubtu22cis_rule_5_4_3_1: true
 ubtu22cis_rule_5_4_3_2: true
 ubtu22cis_rule_5_4_3_3: true
@@ -403,7 +400,7 @@ ubtu22cis_rule_6_1_1_1_3: true
 ubtu22cis_rule_6_1_1_1_4: true
 ubtu22cis_rule_6_1_1_1_5: true
 ubtu22cis_rule_6_1_1_1_6: true
-# 6.1.1.2 Configure systemd-journald service
+# 6.1.1.2 Configure systemd-journal-remote
 ubtu22cis_rule_6_1_1_2_1: true
 ubtu22cis_rule_6_1_1_2_2: true
 ubtu22cis_rule_6_1_1_2_3: true
@@ -420,7 +417,7 @@ ubtu22cis_rule_6_1_2_7: true
 ubtu22cis_rule_6_1_2_8: true
 # 6.1.3.1 logfiles
 ubtu22cis_rule_6_1_3_1: true
-# 6.2.2 Configure auditd Service
+# 6.2.1 Configure auditd Service
 ubtu22cis_rule_6_2_1_1: true
 ubtu22cis_rule_6_2_1_2: true
 ubtu22cis_rule_6_2_1_3: true
@@ -625,7 +622,7 @@ ubtu22cis_tmp_partition_mount_options:
 ## Controls 1.3.1.x - apparmor
 # AppArmor security policies define what system resources applications can access and their privileges.
 # This automatically limits the damage that the software can do to files accessible by the calling user.
-# The following variables are related to the set of rules from section 1.6.1.x
+# The following variables are related to the set of rules from section 1.3.1.x
 
 ## Controls 1.3.1.3 and 1.3.1.4 Ensure all AppArmor Profiles are in enforce (1.3.1.3/4) or complain (1.3.1.3) mode
 
@@ -676,7 +673,7 @@ ubtu22cis_ptrace_scope: 1
 ubtu22cis_warning_banner: |
         Authorized users only. All activity may be monitored and reported.
 
-# This variable governs, whether dynamic motd is disabled (as required by control 1.7.1)
+# This variable governs, whether dynamic motd is disabled (as required by control 1.6.1)
 ubtu22cis_disable_dynamic_motd: true
 
 ## Controls 1.7.x - Settings for GDM
@@ -747,7 +744,7 @@ ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
 ## Section 4 Control Variables
 ##
 
-## Controls 4.1.x, 4.2.x, and 4.3.x - Firewall configuration
+## Controls 4.1.x - Firewall configuration
 # This variable represents the toggle for which firewall package is used.
 # The options that have an effect on the system are `ufw` and `iptables`.
 # The option `nftables` is also possible, but will only result in a message,
@@ -756,10 +753,10 @@ ubtu22cis_sysctl_network_conf: /etc/sysctl.conf
 ubtu22cis_firewall_package: "ufw"
 
 # This variable is used in a preliminary task that forces the UFW firewall to use /etc/sysctl.conf
-# settings. If set to "true" the task will get done in the prelim section of the role.
+# settings. If set to "true" the task runs with the section 4 ufw controls.
 ubtu22cis_ufw_use_sysctl: true
 
-## Control 4.1.4 - Ensure ufw outbound connections are configured
+## Control 4.1.4 - Ensure ufw outgoing default is configured
 # The value of this variable represents the ports for the firewall to allow outbound traffic from.
 # If you want to allow outbound traffic on all ports, set the variable to `all`, e.g.,
 # ubtu22cis_ufw_allow_out_ports: "all"
@@ -775,7 +772,7 @@ ubtu22cis_ufw_allow_out_ports:
   - port: 443
     proto: tcp
 
-## Controls 4.2.x - nftables
+## nftables
 # Nftables is not supported in this role. Some tasks have parts of them commented out, this is one example
 # of such a task.
 # "ubtu22cis_nftables_table_name" is the name of the table in nftables you want to create.
@@ -821,22 +818,22 @@ ubtu22cis_sshd_kex_algorithms:
   - diffie-hellman-group14-sha256
 
 ## Control 5.1.4 - Ensure sshd access is configured
-# (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
-# for users whose primary group or supplementary group list matches one of the patterns. This is done
-# by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
+# (String) This variable, if specified, configures a list of USER name patterns, separated by spaces, to allow SSH access
+# for users whose user name matches one of the patterns. This is done
+# by setting the value of `AllowUsers` option in `/etc/ssh/sshd_config` file.
 ubtu22cis_sshd_allowusers: ""
-## Control 5.1.6 - Ensure sshd access is configured
+## Control 5.1.4 - Ensure sshd access is configured
 # (String) This variable, if specified, configures a list of GROUP name patterns, separated by spaces, to allow SSH access
 # for users whose primary group or supplementary group list matches one of the patterns. This is done
 # by setting the value of `AllowGroups` option in `/etc/ssh/sshd_config` file.
 ubtu22cis_sshd_allowgroups: ""
-## Control 5.1.6 - Ensure sshd access is configured
+## Control 5.1.4 - Ensure sshd access is configured
 # This variable, if specified, configures a list of USER name patterns, separated by spaces, to prevent SSH access
 # for users whose user name matches one of the patterns. This is done
 # by setting the value of `DenyUsers` option in `/etc/ssh/sshd_config` file.
 # If an USER@HOST format will be used, the specified user will be restricted only on that particular host.
 ubtu22cis_sshd_denyusers: "nobody"
-## Control 5.1.6 - Ensure sshd access is configured
+## Control 5.1.4 - Ensure sshd access is configured
 # This variable, if specified, configures a list of GROUP name patterns, separated by spaces,
 # to prevent SSH access for users whose primary group or supplementary group list matches one of the patterns. This is done
 # by setting the value of `DenyGroups` option in `/etc/ssh/sshd_config` file.
@@ -870,7 +867,7 @@ ubtu22cis_pam_confd_dir: 'usr/share/pam-configs/'
 
 # Controls 5.3.2.1 - pam_unix
 # Name of file for the pam unix configuration
-ubtu22cis_pam_pwunix_file: 'pam_unix'
+ubtu22cis_pam_pwunix_file: 'unix'
 # Should NOT be enabled if allowing custom config that enabled pam_faillock
 ubtu22cis_pam_create_pamunix_file: false
 # Allow pam-auth-update --enable ubtu22cis_pam_pwunix_file to run
@@ -973,7 +970,7 @@ ubtu22cis_pass_max_days: 365
 # This variable specifies the minimum number of days allowed between changing passwords.
 # CIS requires a value of at least 1.
 ubtu22cis_pass_min_days: 1
-## Control 5.5.1.3
+## Control 5.4.1.3
 # This variable governs, how many days before a password expires, the user will be warned.
 # CIS requires a value of at least 7.
 ubtu22cis_pass_warn_age: 7
@@ -984,11 +981,11 @@ ubtu22cis_pass_inactive: 45
 
 # 5.4.2.6 root umask
 ubtu22cis_root_umask: '0027'  # 0027 or more restrictive
-## Control 5.4.4
+## Control 5.4.1.4
 # ubtu22cis_passwd_hash_algo is the hashing algorithm used
 ubtu22cis_passwd_hash_algo: yescrypt  # pragma: allowlist secret
 
-## Control 5.4.3 - Default user mask
+## Control 5.4.3.3 - Default user mask
 # The following variable specifies the "umask" to set in the `/etc/bash.bashrc` and `/etc/profile`.
 # The value needs to be `027` or more restrictive to comply with CIS standards
 ubtu22cis_bash_umask: '027'
@@ -1010,7 +1007,7 @@ ubtu22cis_shell_session_file: /etc/profile.d/tmout.sh
 ##
 ## Section 6 Control Variables
 ##
-## Control 6.1.x - allow aide to be configured
+## Control 6.3.x - allow aide to be configured
 # AIDE is a file integrity checking tool, similar in nature to Tripwire.
 # While it cannot prevent intrusions, it can detect unauthorized changes
 # to configuration files by alerting when the files are changed. Review
@@ -1035,7 +1032,7 @@ ubtu22cis_aide_init_async: 600
 # Polling Interval in seconds
 ubtu22cis_aide_init_poll: 15
 
-## Control 6.1.2
+## Control 6.3.2
 # Set how aide is scanned either cron or timer
 ubtu22cis_aide_scan: cron
 # These are the crontab settings for periodical checking of the filesystem's integrity using AIDE.
@@ -1084,7 +1081,7 @@ ubtu22cis_syslog_service: 'journald'
 # Enable rsyslog logging to be managed by ansible
 ubtu22cis_rsyslog_ansible_managed: true
 
-## Controls 6.1.2.x journald
+## Controls 6.1.1.2.x and 6.1.2.x - remote logging
 
 # This variable specifies the address of the remote log host where logs are being sent.
 ubtu22cis_remote_log_server: 192.168.2.100
@@ -1148,7 +1145,7 @@ ubtu22cis_allow_auditd_uid_user_exclusions: false
 ubtu22cis_auditd_uid_exclude:
   - 1999
 
-##  Control 6.2.2.4 - Ensure audit_backlog_limit is sufficient
+## Control 6.2.1.4 - Ensure audit_backlog_limit is sufficient
 # This variable represents the audit backlog limit, i.e., the maximum number of audit records that the
 # system can buffer in memory, if the audit subsystem is unable to process them in real-time.
 # Buffering in memory is useful in situations, where the audit system is overwhelmed
@@ -1204,13 +1201,13 @@ ubtu22cis_auditd_admin_space_left_action: halt
 ## Section 7 Control Variables
 ##
 
-## Control 6.1.9
+## Control 7.1.11
 # The following variable is a toggle for enabling/disabling the automated
 # removal of world-writable permissions from all files.
 # Possible values are `true` and `false`.
 ubtu22cis_no_world_write_adjust: true
 
-## Control 6.2.7
+## Control 7.2.10
 # This variable is a toggle for enabling/disabling the automated modification of
 # permissions on dot files.
 # Possible values are `true` and `false`.

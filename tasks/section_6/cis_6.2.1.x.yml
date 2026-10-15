@@ -28,7 +28,7 @@
     - NIST800-53R5_AU-2
     - NIST800-53R5_AU-12
     - NIST800-53R5_SI-5
-  ansible.builtin.service:
+  ansible.builtin.systemd:
     name: auditd
     state: started
     enabled: true

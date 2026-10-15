@@ -229,7 +229,7 @@
     - name: "7.2.7 | WARNING | Ensure no duplicate user names exist | Print warning about users with duplicate User Names"
       when: discovered_dup_username.stdout | length > 0
       ansible.builtin.debug:
-        msg: "Warning!! The following user names are duplicates: {{ discovered_user_username_check.stdout_lines }}"
+        msg: "Warning!! The following user names are duplicates: {{ discovered_dup_username.stdout_lines }}"
 
     - name: "7.2.7 | WARNING | Ensure no duplicate user names exist | Set warning count"
       when: discovered_dup_username.stdout | length > 0
@@ -284,11 +284,12 @@
     - NIST800-53R5_NA
   block:
     - name: "7.2.9 | PATCH | Ensure local interactive user home directories are configured | Create dir if absent"
-      ansible.builtin.file:  # noqa risky-file-permissions
+      ansible.builtin.file:
         path: "{{ item.dir }}"
         state: directory
         owner: "{{ item.id }}"
         group: "{{ item.gid }}"
+        mode: 'g-w,o-rwx'
       loop: "{{ ubtu22cis_passwd | selectattr('uid', '>=', min_int_uid | int) | selectattr('uid', '<=', max_int_uid | int) | list }}"
       loop_control:
         label: "{{ item.id }}"
@@ -342,7 +343,7 @@
     - name: "7.2.10 | AUDIT | Ensure local interactive user dot files access is configured | Warning on files found"
       when:
         - discovered_homedir_dot_files.stdout | length > 0
-        - ubtu22cis_dotperm_ansiblemanaged
+        - not ubtu22cis_dotperm_ansiblemanaged
       ansible.builtin.debug:
         msg:
           - "Warning!! We have discovered group or world-writable dot files on your system and this host is configured for manual intervention. Please investigate
@@ -351,7 +352,7 @@
     - name: "7.2.10 | PATCH | Ensure local interactive user dot files access is configured | Set warning count"
       when:
         - discovered_homedir_dot_files.stdout | length > 0
-        - ubtu22cis_dotperm_ansiblemanaged
+        - not ubtu22cis_dotperm_ansiblemanaged
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

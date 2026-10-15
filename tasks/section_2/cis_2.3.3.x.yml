@@ -51,6 +51,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - patch
     - rule_2.3.3.3
     - chrony
     - NIST800-53R5_AU-8

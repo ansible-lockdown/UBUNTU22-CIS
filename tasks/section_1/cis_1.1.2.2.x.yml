@@ -28,7 +28,7 @@
         msg: "Warning!! {{ required_mount }} is not a separate partition"
 
     - name: "1.1.2.2.1 | AUDIT | Ensure /dev/shm is tmpfs or a separate partition | Present"
-      when: discovered_dev_shm_mount.rc != 0 or 'tmpfs' not in discovered_dev_shm_mount.stdout
+      when: discovered_dev_shm_mount.rc != 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

@@ -1,5 +1,53 @@
 # Changelog — UBUNTU22-CIS
 
+## CIS Benchmark 3.0.0
+
+## October 2026 - QA fixes
+
+- 2.1.10 and 5.1.7 notify moved off the block (addresses https://github.com/ansible-lockdown/UBUNTU22-CIS/pull/346) - Thank you @Lacedaemon
+- 5.1.7 both sshd lines notify Restart sshd
+- pam-configs templates: managed-by-ansible header removed (same as https://github.com/ansible-lockdown/UBUNTU24-CIS/issues/188) - Thank you @golflimaechoecho
+- unix.j2 Password line ends {% endif +%}
+- pwquality.j2 Password-Initial module line added
+- pwhistory.j2 hardcoded enforce_for_root and try_first_pass removed
+- pam_unix profile renamed to unix, ubtu22cis_pam_pwunix_file default unix
+- 6.2.4.1 to 6.2.4.4 skip when auditd is absent (same as https://github.com/ansible-lockdown/UBUNTU24-CIS/issues/183) - Thank you @zac90
+- 6.2.4.x audit log path defaults to /var/log/audit
+- prelim auditd install gate checks audispd-plugins
+- 1.4.1 00_user readable and executable by all (same as https://github.com/ansible-lockdown/UBUNTU24-CIS/issues/178) - Thank you @alexmroke
+- 6.1.3.1 tolerates log files rotated during the run (same as https://github.com/ansible-lockdown/UBUNTU24-CIS/issues/68) - Thank you @bvegso
+- 6.1.3.1 btmp, utmp, wtmp, lastlog and sssd logs task can now run
+- 3.2.1 to 3.2.4 modprobe loops converted to per-item regexp and line pairs
+- 3.2.1 blacklist writes dccp instead of cramfs
+- 5.4.1.3 existing users set with --warndays instead of --maxdays
+- 5.4.1.5 existing users with an empty or excessive INACTIVE now found
+- 2.1.1 autofs masked when the package is not installed
+- 7.1.13 SUID/SGID find expression corrected
+- 7.2.7 duplicate user warning register name corrected
+- 7.2.9 home directories set to g-w,o-rwx
+- 7.2.10 manual intervention warning only when not ansible managed
+- 2.3.1.1 and 6.2.1.2 use ansible.builtin.systemd
+- 2.2.1, 2.3.2.2 and 2.3.3.3 given the patch tag
+- 6.1.1.1.1 and 6.1.1.1.2 given the patch tag beside audit
+- UFW IPT_SYSCTL task moved out of tags: always into section 4
+- 1.1.2.1.1 and 1.1.2.2.1 warning count no longer raised for a separate partition
+- 6.1.1.2.2 journal-upload.conf changes restart systemd-journal-upload
+- 5.1.1 task names carry PATCH
+- 5.4.2.5 trailing colon check reads the PATH value instead of echoing the command
+- level tags aligned with the benchmark for 29 controls
+- 1.1.2.3.1 to 1.1.2.7.1 tagged level 2
+- route table flush handlers notified from post, gated on their flush facts
+- /tmp systemd handler gated on ubtu22cis_tmp_svc, reloads and enables tmp.mount
+- ansible_local replaced with ansible_facts
+- Company name updated to MindPoint Group - A Quantum Sky Company
+- unreachable Update_Initramfs and iptables persistence handlers removed
+- unused ubtu22cis_skip_for_test removed
+- vars/is_container.yml rule IDs moved to v3.0.0 numbering
+- defaults section comments aligned to v3.0.0 control IDs
+- unused tmp.mount.j2 template removed
+- 1.3.1.3 and 1.3.1.4 fail on aa-complain and aa-enforce errors
+- ubtu22cis_disruption_high passed to the audit
+
 ## Based on CIS v3.0.0 - Branch [v3.00_aug26]
 
 - aug26_updates branch

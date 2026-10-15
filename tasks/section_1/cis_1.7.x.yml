@@ -270,7 +270,7 @@
     - ubtu22cis_desktop_required
   tags:
     - level1-server
-    - level2-workstation
+    - level1-workstation
     - patch
     - rule_1.7.8
     - gnome
@@ -304,7 +304,7 @@
     - ubtu22cis_desktop_required
   tags:
     - level1-server
-    - level2-workstation
+    - level1-workstation
     - patch
     - rule_1.7.9
     - gnome

@@ -21,11 +21,12 @@
   listen: "Remount /tmp"
 
 - name: "Remounting /tmp systemd"
-  vars:
-    mount_point: '/tmp'
+  when: ubtu22cis_tmp_svc
   ansible.builtin.systemd:
     name: tmp.mount
-    state: restarted
+    state: reloaded
+    enabled: true
+    masked: false
     daemon_reload: true
   listen: "Remount /tmp"
 
@@ -143,11 +144,6 @@
     state: remounted
   listen: "Remount /var/log/audit"
 
-- name: Update_Initramfs
-  ansible.builtin.command: update-initramfs -u
-  changed_when: true
-  notify: Set_reboot_required
-
 - name: Grub update
   ansible.builtin.command: update-grub
   changed_when: true
@@ -183,13 +179,20 @@
     name: systemd-journald
     state: restarted
 
+- name: Restart systemd_journal_upload
+  ansible.builtin.systemd:
+    name: systemd-journal-upload
+    state: restarted
+
 - name: Restart exim4
   ansible.builtin.systemd:
     name: exim4
     state: restarted
 
 - name: Flush ipv4 route table
-  when: ansible_facts['virtualization_type'] != "docker"
+  when:
+    - ubtu22cis_flush_ipv4_route | default(false)
+    - not system_is_container
   ansible.posix.sysctl:
     name: net.ipv4.route.flush
     value: '1'
@@ -197,7 +200,8 @@
 
 - name: Flush ipv6 route table
   when:
-    - ansible_facts['virtualization_type'] != "docker"
+    - ubtu22cis_flush_ipv6_route | default(false)
+    - not system_is_container
     - ubtu22cis_ipv6_required
   ansible.posix.sysctl:
     name: net.ipv6.route.flush
@@ -211,18 +215,6 @@
 - name: Reload ufw
   community.general.ufw:
     state: reloaded
-
-- name: Iptables persistent
-  ansible.builtin.command: bash -c "iptables-save > /etc/iptables/rules.v4"
-  changed_when: discovered_ip4tables_save.rc == 0
-  failed_when: discovered_ip4tables_save.rc > 0
-  register: discovered_ip4tables_save
-
-- name: Ip6tables persistent
-  ansible.builtin.command: bash -c "ip6tables-save > /etc/iptables/rules.v6"
-  changed_when: discovered_ip6tables_save.rc == 0
-  failed_when: discovered_ip6tables_save.rc > 0
-  register: discovered_ip6tables_save
 
 - name: Pam_auth_update_pwunix
   ansible.builtin.command: pam-auth-update --enable {{ ubtu22cis_pam_pwunix_file }}
