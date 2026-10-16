@@ -299,7 +299,7 @@
 - name: PRELIM | PATCH | Ensure auditd is installed
   when:
     - ubtu22cis_rule_6_2_1_1
-    - "'auditd' not in ansible_facts['packages'] or 'auditd-plugins' not in ansible_facts['packages']"
+    - "'auditd' not in ansible_facts['packages'] or 'audispd-plugins' not in ansible_facts['packages']"
   tags:
     - level2-server
     - level2-workstation
@@ -342,6 +342,7 @@
       ubtu22cis_rule_6_2_4_2 or
       ubtu22cis_rule_6_2_4_3 or
       ubtu22cis_rule_6_2_4_4
+    - "'auditd' in ansible_facts['packages']"
   tags:
     - level2-server
     - level2-workstation
@@ -357,7 +358,7 @@
   args:
     executable: /bin/bash
   changed_when: false
-  failed_when: prelim_auditd_logfile.rc not in [0, 1]
+  failed_when: prelim_auditd_logfile.rc not in [0, 1, 2]
   check_mode: false
   register: prelim_auditd_logfile
 
@@ -395,13 +396,3 @@
         group: root
         mode: 'go-rwx'
         state: touch
-
-- name: "Optional | PATCH | UFW firewall force to use /etc/sysctl.conf settings"
-  when:
-    - ubtu22cis_firewall_package == "ufw"
-    - ubtu22cis_ufw_use_sysctl
-  tags: always
-  ansible.builtin.lineinfile:
-    path: /etc/default/ufw
-    regexp: ^IPT_SYSCTL=.*
-    line: IPT_SYSCTL=/etc/sysctl.conf

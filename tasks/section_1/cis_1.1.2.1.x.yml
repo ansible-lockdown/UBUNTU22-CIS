@@ -28,7 +28,7 @@
         msg: "Warning!! {{ mount_point }} is not a separate partition"
 
     - name: "1.1.2.1.1 | AUDIT | Ensure /tmp is tmpfs or a separate partition | Present"
-      when: discovered_tmp_mount.rc != 0 or 'tmpfs' not in discovered_tmp_mount.stdout
+      when: discovered_tmp_mount.rc != 0
       ansible.builtin.import_tasks:
         file: warning_facts.yml
 

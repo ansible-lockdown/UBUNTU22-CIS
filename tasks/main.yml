@@ -218,7 +218,7 @@
   when:
     - create_benchmark_facts
     - (post_audit_summary is defined) or
-      (ansible_local['compliance_facts']['lockdown_audit_details']['audit_summary'] is undefined and post_audit_summary is undefined)
+      (ansible_facts['local']['compliance_facts']['lockdown_audit_details']['audit_summary'] is undefined and post_audit_summary is undefined)
   tags:
     - always
     - benchmark

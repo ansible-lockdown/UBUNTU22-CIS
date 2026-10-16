@@ -1,6 +1,6 @@
 ---
 
-- name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
+- name: "5.1.1 | PATCH | Ensure access to /etc/ssh/sshd_config is configured"
   when: ubtu22cis_rule_5_1_1
   tags:
     - level1-server
@@ -13,7 +13,7 @@
     - NIST800-53R5_MP-2
     - rule_5.1.1
   block:
-    - name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
+    - name: "5.1.1 | PATCH | Ensure access to /etc/ssh/sshd_config is configured | sshd_config.d files"
       ansible.builtin.file:
         path: "{{ item.path }}"
         owner: root
@@ -23,7 +23,7 @@
       loop_control:
         label: "{{ item }}"
 
-    - name: "5.1.1 | Ensure access to /etc/ssh/sshd_config is configured"
+    - name: "5.1.1 | PATCH | Ensure access to /etc/ssh/sshd_config is configured | sshd_config"
       ansible.builtin.file:
         path: "{{ ubtu22cis_sshd_config_file }}"
         owner: root
@@ -191,7 +191,6 @@
     - NIST800-53R5_CM-7
     - NIST800-53R5_IA-5
     - rule_5.1.7
-  notify: Restart sshd
   block:
     - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Add line in sshd_config for ClientAliveInterval"
       ansible.builtin.lineinfile:
@@ -199,6 +198,7 @@
         regexp: '^ClientAliveInterval'
         line: "ClientAliveInterval {{ ubtu22cis_sshd_clientaliveinterval }}"
         validate: sshd -t -f %s
+      notify: Restart sshd
 
     - name: "5.1.7 | PATCH | Ensure sshd ClientAliveInterval and ClientAliveCountMax are configured | Ensure SSH ClientAliveCountMax set to <= 3"
       ansible.builtin.lineinfile:
@@ -206,6 +206,7 @@
         regexp: '^ClientAliveCountMax'
         line: "ClientAliveCountMax {{ ubtu22cis_sshd_clientalivecountmax }}"
         validate: sshd -t -f %s
+      notify: Restart sshd
 
 - name: "5.1.8 | PATCH | Ensure sshd DisableForwarding is enabled"
   when: ubtu22cis_rule_5_1_8
@@ -241,8 +242,8 @@
 - name: "5.1.9 | PATCH | Ensure sshd GSSAPIAuthentication is disabled"
   when: ubtu22cis_rule_5_1_9
   tags:
-    - level1-server
     - level1-workstation
+    - level2-server
     - patch
     - sshd
     - NIST800-53R5_CM-6

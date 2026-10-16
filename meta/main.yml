@@ -3,7 +3,7 @@
 galaxy_info:
   author: Ansible-Lockdown Team
   description: Apply the Ubuntu 22 CIS benchmarks
-  company: MindPoint Group - A Tyto Athene Company
+  company: MindPoint Group - A Quantum Sky Company
   license: MIT
   namespace: mindpointgroup
   role_name: ubuntu22_cis

@@ -119,7 +119,8 @@
     - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | Apply enforcing to /etc/apparmor.d profiles"
       ansible.builtin.shell: aa-enforce /etc/apparmor.d/*
       changed_when: false
-      failed_when: discovered_apparmor_pre_count.rc not in [0, 1]
+      failed_when: discovered_apparmor_enforce_apply.rc != 0
+      register: discovered_apparmor_enforce_apply
 
     - name: "1.3.1.4 | PATCH | Ensure all AppArmor Profiles are enforcing | Get post apply enforce count"
       ansible.builtin.shell: |
@@ -177,7 +178,8 @@
     - name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are not disabled | Apply complaining/enforcing to /etc/apparmor.d profiles"
       ansible.builtin.shell: aa-{{ ubtu22cis_apparmor_mode }} /etc/apparmor.d/*
       changed_when: false
-      failed_when: discovered_apparmor_complain_pre_count.rc not in [0, 1]
+      failed_when: discovered_apparmor_mode_apply.rc != 0
+      register: discovered_apparmor_mode_apply
 
     - name: "1.3.1.3 | PATCH | Ensure all AppArmor Profiles are not disabled | Get post apply enforce count"
       ansible.builtin.shell: |

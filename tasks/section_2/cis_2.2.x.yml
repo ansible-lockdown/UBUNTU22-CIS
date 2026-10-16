@@ -7,6 +7,7 @@
   tags:
     - level1-server
     - level1-workstation
+    - patch
     - rule_2.2.1
     - nis
     - NIST800-53R5_CM-7

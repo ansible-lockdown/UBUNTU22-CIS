@@ -17,7 +17,10 @@
     - 60-disable_ipv6.conf
     - 60-netipv4_sysctl.conf
     - 60-netipv6_sysctl.conf
-  notify: Reload sysctl
+  notify:
+    - Reload sysctl
+    - Flush ipv4 route table
+    - Flush ipv6 route table
   loop_control:
     label: "{{ item }}"
 

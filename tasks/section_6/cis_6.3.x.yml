@@ -117,8 +117,8 @@
     - ubtu22cis_rule_6_3_3
     - ubtu22cis_config_aide
   tags:
-    - level1-server
-    - level1-workstation
+    - level2-server
+    - level2-workstation
     - aide
     - file_integrity
     - patch

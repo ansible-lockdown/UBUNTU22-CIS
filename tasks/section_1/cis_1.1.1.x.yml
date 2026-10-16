@@ -168,8 +168,8 @@
 - name: "1.1.1.6 | PATCH | Ensure overlay kernel module is not available"
   when: ubtu22cis_rule_1_1_1_6
   tags:
-    - level1-server
-    - level1-workstation
+    - level2-server
+    - level2-workstation
     - patch
     - rule_1.1.1.6
     - overlay

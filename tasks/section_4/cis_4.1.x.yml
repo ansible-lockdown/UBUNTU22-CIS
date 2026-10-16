@@ -57,8 +57,8 @@
 - name: "4.1.4 | PATCH | Ensure ufw outgoing default is configured"
   when: ubtu22cis_rule_4_1_4
   tags:
-    - level1-server
-    - level1-workstation
+    - level2-server
+    - level2-workstation
     - patch
     - rule_4.1.4
     - ufw
@@ -102,4 +102,18 @@
   community.general.ufw:
     default: deny
     direction: routed
+  notify: Reload ufw
+
+- name: "OPTIONAL | PATCH | UFW firewall force to use /etc/sysctl.conf settings"
+  when: ubtu22cis_ufw_use_sysctl
+  tags:
+    - level1-server
+    - level1-workstation
+    - patch
+    - ufw
+  ansible.builtin.lineinfile:
+    path: /etc/default/ufw
+    regexp: ^IPT_SYSCTL=.*
+    line: IPT_SYSCTL=/etc/sysctl.conf
+    mode: 'u-x,go-wx'
   notify: Reload ufw

@@ -28,18 +28,14 @@
         path: "{{ item }}"
         mode: 'u-x,g-wx,o-rwx'
       loop: "{{ discovered_logfiles.stdout_lines }}"
+      failed_when: discovered_logfile_perms.state not in '[ file, absent ]'
+      register: discovered_logfile_perms
 
-    - name: "6.1.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions"
-      when:
-        - discovered_system_logfiles.stdout_lines is defined
-        - item == "/var/log/btmp"
-        - item == "/var/log/utmp"
-        - item == "/var/log/wtmp"
-        - item == "/var/log/lastlog"
-        - "'sssd' in item or 'SSSD' in item"
+    - name: "6.1.3.1 | PATCH | Ensure access to all logfiles has been configured | change permissions on login records and sssd logs"
+      when: item in ["/var/log/btmp", "/var/log/utmp", "/var/log/wtmp", "/var/log/lastlog"] or ('sssd' in item or 'SSSD' in item)
       ansible.builtin.file:
         path: "{{ item }}"
         mode: 'ug-x,o-wx'
-      loop: "{{ discovered_system_logfiles.stdout_lines }}"
-      loop_control:
-        label: "{{ item }}"
+      loop: "{{ discovered_logfiles.stdout_lines }}"
+      failed_when: discovered_system_logfile_perms.state not in '[ file, absent ]'
+      register: discovered_system_logfile_perms

@@ -3,7 +3,6 @@
 - name: "2.1.1 | PATCH | Ensure autofs services are not in use"
   when:
     - ubtu22cis_rule_2_1_1
-    - "'autofs' in ansible_facts['packages']"
     - not system_is_ec2
   tags:
     - level1-server
@@ -315,7 +314,6 @@
     - nis
     - rule_2.1.10
     - NIST800-53R5_CM-7
-  notify: Systemd daemon reload
   block:
     - name: "2.1.10 | PATCH | Ensure nis server services are not in use | Remove package"
       when:
@@ -342,6 +340,7 @@
   when: ubtu22cis_rule_2_1_11
   tags:
     - level1-server
+    - level2-workstation
     - patch
     - cups
     - rule_2.1.11
